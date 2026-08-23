@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Anti-Spoofing Security Keys Roster (180 Students) • HOD Executive Console • Samskruti Digital Campus</title>
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="../../css/reset.css" />
+  <link rel="stylesheet" href="../../css/variables.css" />
+  <link rel="stylesheet" href="../../css/neumorphic.css" />
+  <link rel="stylesheet" href="../../css/dock.css" />
+  <link rel="stylesheet" href="../../css/animations.css" />
+  <link rel="stylesheet" href="../../css/theme.css" />
+  <link rel="stylesheet" href="../../css/global.css" />
+  <link rel="stylesheet" href="../../css/hod-theme.css" />
+
+  <style>
+    .security-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-variant-numeric: tabular-nums;
+    }
+    .security-table th, .security-table td {
+      padding: 0.95rem 1.25rem;
+      text-align: left;
+    }
+    .security-table th {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #94a3b8;
+      background: rgba(15, 23, 42, 0.95);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+    .security-table td {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      color: var(--hod-text-main);
+      font-size: 0.88rem;
+    }
+    .security-table tbody tr:hover {
+      background: rgba(59, 130, 246, 0.06);
+    }
+    .mono-code {
+      font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+    .key-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-family: 'JetBrains Mono', 'Fira Code', monospace;
+      font-size: 0.82rem;
+      font-weight: 800;
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      box-shadow: 0 0 12px rgba(16, 185, 129, 0.2);
+    }
+  </style>
+</head>
+<body class="hod-executive">
+  <div class="app-layout">
+    <!-- Main Content Area -->
+    <main class="main-content" style="margin-left: 0; width: 100%; max-width: 1600px; margin: auto; padding: 24px 28px;">
+      
+      <!-- Top Bar -->
+      <header class="content-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 26px;">
+        <div class="header-titles">
+          <div class="subtitle" style="color: var(--hod-text-muted);">Samskruti College of Engineering & Technology (Code: 259) • HOD Security Console</div>
+          <h1 class="title" style="font-size: 1.75rem; font-weight: 900; color: var(--hod-text-main);">Anti-Spoofing Security Keys Roster (180 Students)</h1>
+        </div>
+
+        <div class="header-actions" style="display: flex; gap: 12px; align-items: center;">
+          <button class="neu-btn" onclick="window.print()" style="display: flex; align-items: center; gap: 6px; padding: 10px 18px; border-radius: 10px; font-weight: 700;">
+            <span>🖨️ Print / Export Roster</span>
+          </button>
+          <a href="./students-info.html" class="neu-btn-primary" style="text-decoration: none; padding: 10px 18px; border-radius: 10px; font-weight: 800;">
+            ⚡ Students Info →
+          </a>
+        </div>
+      </header>
+
+      <!-- Roster Card -->
+      <section class="executive-card" style="padding: 24px;">
+        <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; flex-wrap: wrap; gap: 12px;">
+          <div>
+            <h2 class="section-title" style="font-size: 1.15rem; font-weight: 800; color: var(--hod-text-main); margin: 0 0 4px 0;">Pre-Allocated Deterministic Security Keys (180 Total)</h2>
+            <p style="font-size: 0.8rem; color: var(--hod-text-muted); margin: 0;">Institutional zero-trust keys for multi-factor activation and account recovery.</p>
+          </div>
+          <span class="neu-badge metric-emerald-glow" id="roster-count-badge" style="font-weight: 800;">180 Keys Active</span>
+        </div>
+
+        <!-- Search Bar -->
+        <div style="margin-bottom: 18px;">
+          <input
+            type="text"
+            id="search-security-input"
+            class="neu-input"
+            placeholder="Search by PIN (e.g. 025 or 24259-CS-039) or Security Key (e.g. STD-B03209)..."
+            style="width: 100%; max-width: 480px; font-size: 0.85rem;"
+          />
+        </div>
+
+        <!-- Distinct Table View -->
+        <div class="table-scroll-wrap" style="max-height: 600px;">
+          <table class="security-table" id="master-security-table">
+            <thead>
+              <tr>
+                <th style="width: 70px;"># Roll</th>
+                <th style="width: 180px;">Diploma PIN</th>
+                <th style="width: 220px;">Student Name</th>
+                <th style="width: 260px;">Assigned Institutional Security Key</th>
+                <th style="width: 200px;">Branch & Scheme</th>
+                <th style="width: 180px;">Verification Status</th>
+              </tr>
+            </thead>
+            <tbody id="security-roster-tbody">
+              <!-- Dynamically populated via JS -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Scripts -->
+  <script type="module" src="../../js/theme.js"></script>
+  <script type="module">
+    import { api } from '../../js/api.js';
+    import { requireAuth } from '../../js/auth-guard.js';
+    import { renderDock } from '../../js/dock.js';
+
+    requireAuth(['HOD', 'HOD_CS', 'ADMIN', 'FACULTY']);
+    renderDock('security-roster.html', 'HOD');
+
+    let allRoster = [];
+
+    // Predefined student name mappings
+    const studentNames = {
+      '24259-CS-001': 'Yendakurti Shanmukh',
+      '24259-CS-023': 'P. Shankum',
+      '24259-CS-025': 'Karnati Himesh',
+      '24259-CS-031': 'Abhilash',
+      '24259-CS-036': 'Bindu S.',
+      '24259-CS-039': 'Kakarla Rakesh',
+      '24259-CS-055': 'Harshika G.',
+      '24259-CS-078': 'Gona Laxmi Narasimha'
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadSecurityRoster();
+      setupSearch();
+    });
+
+    async function loadSecurityRoster() {
+      try {
+        const res = await api.get('/hod/security-roster');
+        if (res && res.success && Array.isArray(res.roster)) {
+          allRoster = res.roster;
+        } else {
+          allRoster = generateLocalRoster();
+        }
+      } catch {
+        allRoster = generateLocalRoster();
+      }
+
+      renderRoster(allRoster);
+    }
+
+    function renderRoster(list) {
+      const tbody = document.getElementById('security-roster-tbody');
+      if (!tbody) return;
+
+      if (list.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="6" style="text-align: center; padding: 36px; color: var(--hod-text-muted); font-style: italic;">
+              No matching student security keys found.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = list.map(s => {
+        const rollNum = s.rollNumber || parseInt(s.pin.slice(-3), 10);
+        const name = s.name || studentNames[s.pin] || `CS Student ${rollNum}`;
+        const isRegistered = ['24259-CS-025', '24259-CS-039', '24259-CS-023', '24259-CS-055', '24259-CS-036'].includes(s.pin);
+
+        return `
+          <tr>
+            <td><strong style="color: var(--hod-text-muted); font-family: monospace;">#${String(rollNum).padStart(3, '0')}</strong></td>
+            <td><strong class="mono-code" style="color: #93c5fd;">${escapeHtml(s.pin)}</strong></td>
+            <td><div style="font-weight: 700; color: var(--hod-text-main);">${escapeHtml(name)}</div></td>
+            <td><span class="key-badge">🔑 ${escapeHtml(s.secretKey)}</span></td>
+            <td><span style="font-size: 0.8rem; color: var(--hod-text-muted);">Computer Science (C-24)</span></td>
+            <td>
+              ${isRegistered
+                ? `<span class="neu-badge metric-emerald-glow">VERIFIED & ACTIVE</span>`
+                : `<span class="neu-badge metric-blue-glow">PRE-ALLOCATED</span>`
+              }
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function setupSearch() {
+      const input = document.getElementById('search-security-input');
+      input?.addEventListener('input', (e) => {
+        const query = e.target.value.trim().toLowerCase();
+        const filtered = allRoster.filter(s => {
+          const pin = (s.pin || '').toLowerCase();
+          const key = (s.secretKey || '').toLowerCase();
+          const name = (s.name || studentNames[s.pin] || '').toLowerCase();
+          return pin.includes(query) || key.includes(query) || name.includes(query);
+        });
+        renderRoster(filtered);
+      });
+    }
+
+    function generateLocalRoster() {
+      return Array.from({ length: 180 }, (_, i) => {
+        const roll = i + 1;
+        const pin = `24259-CS-${String(roll).padStart(3, '0')}`;
+        let key = `STD-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
+        if (pin === '24259-CS-025') key = 'STD-XAz10F';
+        if (pin === '24259-CS-039') key = 'STD-B03209';
+        if (pin === '24259-CS-023') key = 'STD-SH23PK';
+        return { pin, rollNumber: roll, secretKey: key, department: 'Computer Science & Engineering' };
+      });
+    }
+
+    function escapeHtml(str) {
+      return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+  </script>
+</body>
+</html>

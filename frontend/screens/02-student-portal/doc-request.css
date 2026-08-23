@@ -1,0 +1,159 @@
+/* ==========================================================================
+   DOCUMENT LOGISTICS & COUNTER PICKUP STYLES
+   ========================================================================== */
+
+.grid-dashboard {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 24px;
+}
+
+@media (max-width: 900px) {
+  .grid-dashboard {
+    grid-template-columns: 1fr;
+  }
+}
+
+.custom-fields-panel {
+  padding: 16px;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-inset);
+  margin-bottom: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.active-doc-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.doc-status-card {
+  padding: 18px;
+  border-radius: var(--radius-md);
+  background: var(--bg-primary);
+  box-shadow: var(--shadow-raised);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: var(--transition-smooth);
+}
+
+.doc-status-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
+}
+
+.doc-status-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.doc-type-badge {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.doc-purpose-text {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+  margin: 0;
+}
+
+.doc-meta-small {
+  font-size: 0.75rem;
+  color: var(--text-light);
+}
+
+/* 1. Approved OTP Box */
+.otp-box {
+  background: var(--accent-success-light);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  text-align: center;
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  margin-top: 4px;
+}
+
+.otp-label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--accent-success);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.otp-code {
+  display: block;
+  font-size: 1.4rem;
+  font-weight: 900;
+  color: var(--accent-success);
+  font-family: monospace;
+  letter-spacing: 3px;
+  margin-top: 4px;
+}
+
+.pickup-instructions {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+/* 2. Rejected Box */
+.rejection-box {
+  background: var(--accent-danger-light);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  border-left: 3px solid var(--accent-danger);
+  font-size: 0.82rem;
+  color: var(--accent-danger);
+  line-height: 1.4;
+}
+
+.rejection-box strong {
+  display: block;
+  font-size: 0.78rem;
+  margin-bottom: 2px;
+}
+
+/* 3. Pending Box */
+.pending-box {
+  background: var(--accent-warning-light);
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  border-left: 3px solid var(--accent-warning);
+  font-size: 0.8rem;
+  color: var(--accent-warning);
+}
+
+/* 4. Empty State Tile */
+.empty-requests-state {
+  text-align: center;
+  padding: 36px 20px;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-inset);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.empty-requests-state svg {
+  color: var(--text-muted);
+}
+
+.empty-requests-state p {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin: 0;
+}

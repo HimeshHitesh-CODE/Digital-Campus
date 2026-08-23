@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Account Activation | Samskruti Digital Campus</title>
+  <link rel="stylesheet" href="../../css/reset.css" />
+  <link rel="stylesheet" href="../../css/variables.css" />
+  <link rel="stylesheet" href="../../css/neumorphic.css" />
+  <link rel="stylesheet" href="../../css/global.css" />
+  <link rel="stylesheet" href="./register.css" />
+</head>
+<body>
+  <div class="auth-page-container">
+    <div class="neu-card register-card">
+      
+      <div class="auth-header">
+        <div class="auth-logo">SCET</div>
+        <h1>Account Activation</h1>
+        <p class="college-subtitle">Samskruti College of Engineering & Technology (Code: 259)</p>
+        <span class="neu-badge neu-badge-primary">SBTET Diploma C-24 Curriculum</span>
+      </div>
+
+      <!-- Step 1: Student Details Form -->
+      <form id="register-init-form" class="auth-form">
+        
+        <div class="neu-input-group">
+          <label class="neu-input-label" for="reg-pin">Student Diploma PIN</label>
+          <input 
+            class="neu-input" 
+            type="text" 
+            id="reg-pin" 
+            name="pin" 
+            placeholder="24259-CS-025" 
+            maxlength="14"
+            required 
+          />
+          <div class="pin-status-wrapper">
+            <span class="input-hint">Pattern: <code>24259-BRANCH-ROLL</code> (e.g. 24259-CS-025)</span>
+            <span id="pin-badge" class="neu-badge neu-badge-primary" style="display: none;">Verified Branch</span>
+          </div>
+        </div>
+
+        <div class="neu-input-group">
+          <label class="neu-input-label" for="reg-name">Full Name (As per SBTET Records)</label>
+          <input 
+            class="neu-input" 
+            type="text" 
+            id="reg-name" 
+            name="name" 
+            placeholder="e.g. Himesh Vance" 
+            required 
+          />
+        </div>
+
+        <div class="neu-input-group">
+          <label class="neu-input-label" for="reg-contact">Registered Mobile Number / Email</label>
+          <input 
+            class="neu-input" 
+            type="text" 
+            id="reg-contact" 
+            name="contact" 
+            placeholder="+91 98765 43210 or student@gmail.com" 
+            required 
+          />
+          <span class="input-hint">OTP will be dispatched to this contact.</span>
+        </div>
+
+        <button type="submit" class="neu-btn neu-btn-primary submit-btn" id="send-otp-btn">
+          Send Activation OTP →
+        </button>
+      </form>
+
+      <!-- Step 2: OTP Verification & Password Setup Modal/Section -->
+      <div id="otp-section" class="neu-card-inset otp-container" style="display: none;">
+        <div class="otp-header">
+          <h3>Verify OTP & Set Password</h3>
+          <p id="otp-sent-info">Enter the 6-digit OTP sent to your contact.</p>
+        </div>
+
+        <form id="register-complete-form" class="auth-form">
+          <div class="neu-input-group">
+            <label class="neu-input-label" for="reg-otp">6-Digit Verification OTP</label>
+            <input 
+              class="neu-input otp-input" 
+              type="text" 
+              id="reg-otp" 
+              placeholder="••••••" 
+              maxlength="6"
+              required 
+            />
+          </div>
+
+          <div class="neu-input-group">
+            <label class="neu-input-label" for="reg-password">Create New Password</label>
+            <input 
+              class="neu-input" 
+              type="password" 
+              id="reg-password" 
+              placeholder="Min 8 chars, 1 uppercase, 1 number" 
+              required 
+            />
+          </div>
+
+          <div class="neu-input-group">
+            <label class="neu-input-label" for="reg-confirm-password">Confirm Password</label>
+            <input 
+              class="neu-input" 
+              type="password" 
+              id="reg-confirm-password" 
+              placeholder="Re-enter password" 
+              required 
+            />
+          </div>
+
+          <div class="otp-actions">
+            <button type="button" class="neu-btn" id="back-to-step1-btn">← Back</button>
+            <button type="submit" class="neu-btn neu-btn-primary" id="complete-activation-btn" style="flex: 1;">
+              Activate & Launch Dashboard
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <div class="auth-footer">
+        <p>Already activated? <a href="./login.html">Sign In here</a></p>
+      </div>
+
+    </div>
+  </div>
+
+  <script type="module" src="./register.js"></script>
+</body>
+</html>

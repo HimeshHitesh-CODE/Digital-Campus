@@ -1,0 +1,211 @@
+/* ==========================================================================
+   SBTET CONSOLIDATED ACADEMIC RESULTS STYLES
+   ========================================================================== */
+
+/* --- Student Profile Header Bar --- */
+.student-profile-bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  margin-bottom: 20px;
+}
+
+.profile-avatar-wrap {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-full);
+  background: var(--accent-primary-light);
+  color: var(--accent-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.profile-info-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.profile-info-content h2 {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--text-main);
+  letter-spacing: 0.5px;
+}
+
+.profile-pin-tag {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.profile-meta-pills {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* --- Performance Metric Cards --- */
+.performance-metrics-grid {
+  margin-bottom: 24px;
+}
+
+.stat-metric-card {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.stat-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.stat-value {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--text-main);
+  line-height: 1.1;
+}
+
+.stat-footer {
+  font-size: 0.78rem;
+  color: var(--text-light);
+  margin-top: 4px;
+}
+
+/* --- Marksheet Card & Semester Tabs --- */
+.marksheet-card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.section-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.section-subtitle {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.semester-tab-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.sem-btn {
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.sem-btn.active {
+  background: var(--accent-primary);
+  color: #ffffff;
+  box-shadow: var(--shadow-sm);
+}
+
+/* --- Table Styling --- */
+.table-responsive {
+  overflow-x: auto;
+  margin-top: 10px;
+}
+
+.neu-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 8px;
+}
+
+.neu-table th {
+  padding: 12px 16px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  text-align: left;
+  letter-spacing: 0.05em;
+}
+
+.neu-table tbody tr {
+  background: var(--bg-secondary);
+  box-shadow: var(--shadow-flat);
+  border-radius: var(--radius-sm);
+  transition: var(--transition-smooth);
+}
+
+.neu-table tbody tr:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
+}
+
+.neu-table td {
+  padding: 14px 16px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.neu-table td:first-child {
+  border-top-left-radius: var(--radius-sm);
+  border-bottom-left-radius: var(--radius-sm);
+}
+
+.neu-table td:last-child {
+  border-top-right-radius: var(--radius-sm);
+  border-bottom-right-radius: var(--radius-sm);
+}
+
+.grade-pill {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  font-weight: 800;
+  font-size: 0.82rem;
+  background: var(--bg-primary);
+  box-shadow: var(--shadow-inset);
+  color: var(--accent-primary);
+  min-width: 32px;
+  text-align: center;
+}
+
+.spinning {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@media (max-width: 900px) {
+  .grid-cols-3 {
+    grid-template-columns: 1fr;
+  }
+}

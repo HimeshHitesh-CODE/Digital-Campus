@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Messages & Campus Chat • Samskruti Digital Campus</title>
+
+  <!-- Base & Neumorphic Styles -->
+  <link rel="stylesheet" href="../../css/reset.css" />
+  <link rel="stylesheet" href="../../css/variables.css" />
+  <link rel="stylesheet" href="../../css/neumorphic.css" />
+  <link rel="stylesheet" href="../../css/dock.css" />
+  <link rel="stylesheet" href="../../css/animations.css" />
+  <link rel="stylesheet" href="../../css/theme.css" />
+  <link rel="stylesheet" href="../../css/global.css" />
+  <link rel="stylesheet" href="./messages.css" />
+</head>
+<body>
+  <div class="app-layout">
+    <!-- Fixed Left-Aligned Dock rendered automatically by dock.js -->
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Top Title Bar -->
+      <header class="content-header" style="margin-bottom: 0;">
+        <div class="header-titles">
+          <div class="subtitle" id="messages-subtitle">Samskruti College (259) • Real-Time Student Messenger</div>
+          <h1 class="title">Campus Messages & Threads</h1>
+        </div>
+      </header>
+
+      <!-- Split-Pane Messenger Layout -->
+      <div class="messenger-wrapper">
+        <!-- Left Panel: Conversations Threads List -->
+        <aside class="neu-card threads-panel">
+          <div class="threads-header">
+            <h2>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+              <span>Conversations</span>
+            </h2>
+
+            <!-- Filter Tabs -->
+            <div class="thread-filter-tabs" id="thread-filter-bar">
+              <button class="thread-filter-btn active" data-filter="ALL">All</button>
+              <button class="thread-filter-btn" data-filter="COLLAB">Idea Hub</button>
+              <button class="thread-filter-btn" data-filter="MARKET">Market</button>
+            </div>
+
+            <!-- Search input -->
+            <div class="thread-search-wrap">
+              <svg class="thread-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input type="text" id="thread-search-input" class="thread-search-input" placeholder="Search conversations by student or item..." />
+            </div>
+          </div>
+
+          <!-- Active Threads Container -->
+          <div class="threads-list" id="threads-container">
+            <!-- Rendered dynamically -->
+          </div>
+        </aside>
+
+        <!-- Right Panel: Active Chat Stream -->
+        <section class="neu-card active-chat-panel" id="active-chat-container">
+          <!-- Default Empty State Placeholder when no thread is selected -->
+          <div class="empty-chat-placeholder" id="empty-chat-view">
+            <div class="empty-state-icon">
+              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+            </div>
+            <h3 style="font-size: 1.1rem; font-weight: 800; color: var(--text-main); margin-top: 10px;">Select a Conversation</h3>
+            <p style="font-size: 0.85rem; color: var(--text-muted); max-width: 300px; margin-top: 6px;">
+              Choose a thread on the left or connect with peers directly through Idea Hub and Marketplace.
+            </p>
+          </div>
+
+          <!-- Active Chat View (Hidden until thread selected) -->
+          <div id="live-chat-view" style="display: none; flex-direction: column; height: 100%;">
+            <!-- Header -->
+            <div class="chat-header">
+              <div class="chat-peer-profile">
+                <div class="chat-peer-avatar" id="active-peer-avatar">SP</div>
+                <div>
+                  <h3 class="chat-peer-title" id="active-peer-name">Peer Name</h3>
+                  <span class="chat-peer-sub" id="active-peer-sub">PIN: 24259-CS-XXX</span>
+                </div>
+              </div>
+
+              <!-- Context Badge (Collab or Marketplace) -->
+              <div class="chat-context-pill" id="active-context-badge">
+                <span id="context-badge-icon">💡</span>
+                <span id="context-badge-text">Collab: Web Project</span>
+              </div>
+            </div>
+
+            <!-- Message Stream -->
+            <div class="chat-messages-viewport" id="active-messages-stream">
+              <!-- Rendered dynamically -->
+            </div>
+
+            <!-- Composer Bar -->
+            <form id="chat-composer-form" class="chat-composer-bar">
+              <input type="text" id="chat-composer-input" class="chat-composer-input" placeholder="Type your message... (Press Enter to send)" autocomplete="off" />
+              <button type="submit" class="neu-btn neu-btn-primary chat-send-btn" id="btn-send-message" title="Send Message">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              </button>
+            </form>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="alert-container" id="alert-container"></div>
+
+  <!-- Script Modules -->
+  <script type="module" src="../../js/theme.js"></script>
+  <script type="module" src="./messages.js"></script>
+</body>
+</html>

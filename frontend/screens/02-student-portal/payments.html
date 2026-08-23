@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fee Payments & Receipts | Samskruti Digital Campus</title>
+  <link rel="stylesheet" href="../../css/reset.css" />
+  <link rel="stylesheet" href="../../css/variables.css" />
+  <link rel="stylesheet" href="../../css/neumorphic.css" />
+  <link rel="stylesheet" href="../../css/dock.css" />
+  <link rel="stylesheet" href="../../css/animations.css" />
+  <link rel="stylesheet" href="../../css/theme.css" />
+  <link rel="stylesheet" href="../../css/global.css" />
+  <link rel="stylesheet" href="./results.css" />
+</head>
+<body>
+  <div class="app-layout">
+    <main class="main-content">
+      
+      <header class="top-bar">
+        <div class="welcome-text">
+          <h1>Fee Ledger & Online Payments</h1>
+          <p>Samskruti College (259) • Accounts & SBTET Examination Cell</p>
+        </div>
+      </header>
+
+      <!-- Payment Stats Overview -->
+      <section class="grid-cols-3">
+        <div class="neu-card">
+          <div class="stat-label">Total Semester Dues</div>
+          <div class="stat-value" style="color: var(--accent-success);">₹0.00</div>
+          <div class="stat-footer">Tuition Fee Cleared</div>
+        </div>
+        <div class="neu-card">
+          <div class="stat-label">SBTET Exam Fee</div>
+          <div class="stat-value">₹650</div>
+          <div class="stat-footer">Regular Exam Registration Open</div>
+        </div>
+        <div class="neu-card">
+          <div class="stat-label">Official Receipts</div>
+          <div class="stat-value">3</div>
+          <div class="stat-footer">Download PDF Receipts</div>
+        </div>
+      </section>
+
+      <!-- Fee Ledger Table -->
+      <section class="neu-card">
+        <div class="section-header">
+          <h2 class="section-title">Institutional Transaction History</h2>
+        </div>
+
+        <div class="table-responsive">
+          <table class="neu-table">
+            <thead>
+              <tr>
+                <th>Receipt No</th>
+                <th>Fee Head</th>
+                <th>Academic Year</th>
+                <th>Amount</th>
+                <th>Payment Mode</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>REC-2026-0921</code></td>
+                <td>Semester III Tuition & Lab Fee</td>
+                <td>2026-2027</td>
+                <td>₹28,500</td>
+                <td>UPI / Net Banking</td>
+                <td><span class="neu-badge neu-badge-success">PAID</span></td>
+                <td><button class="neu-btn" style="font-size: 0.8rem; padding: 4px 12px;">Download PDF</button></td>
+              </tr>
+              <tr>
+                <td><code>REC-2026-0412</code></td>
+                <td>Semester II Tuition Fee</td>
+                <td>2025-2026</td>
+                <td>₹28,500</td>
+                <td>Challan / Bank</td>
+                <td><span class="neu-badge neu-badge-success">PAID</span></td>
+                <td><button class="neu-btn" style="font-size: 0.8rem; padding: 4px 12px;">Download PDF</button></td>
+              </tr>
+              <tr>
+                <td><code>DUE-2026-EXAM</code></td>
+                <td>SBTET C-24 Semester End Exam Fee</td>
+                <td>2026-2027</td>
+                <td>₹650</td>
+                <td>Online Gateway</td>
+                <td><span class="neu-badge neu-badge-warning">DUE</span></td>
+                <td><button class="neu-btn neu-btn-primary" style="font-size: 0.8rem; padding: 4px 12px;" onclick="alert('Redirecting to Payment Gateway...')">Pay Now</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script type="module">
+    import { requireAuth } from '../../js/auth-guard.js';
+    import { renderDock } from '../../js/dock.js';
+    requireAuth(['STUDENT']);
+    renderDock('payments.html', 'STUDENT');
+  </script>
+</body>
+</html>

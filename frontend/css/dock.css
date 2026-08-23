@@ -1,0 +1,220 @@
+/* ==========================================================================
+   120HZ HARDWARE-ACCELERATED NEUMORPHIC PILL DOCK & LAYOUT SHELL
+   ========================================================================== */
+
+/* Layout Shell */
+.app-layout,
+.app-container {
+  display: flex;
+  min-height: 100vh;
+  background-color: #eaf0f7;
+  padding: 1.25rem;
+  box-sizing: border-box;
+}
+
+/* GPU-Accelerated Fixed Left Pill Dock */
+.neumorphic-dock {
+  position: fixed;
+  left: 1.25rem;
+  top: 1.25rem;
+  bottom: 1.25rem;
+  width: 72px;
+  background: #eaf0f7;
+  border-radius: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 0.5rem;
+  box-sizing: border-box;
+  z-index: 1000;
+  box-shadow: 
+    8px 8px 18px rgba(166, 180, 200, 0.45),
+    -8px -8px 18px rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Dock Header & Spacing */
+.dock-header {
+  margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+/* Circular Logo Badge (SMSK Institutional Monogram) */
+.smsk-badge,
+.scet-badge,
+.dock-logo-badge {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 0.78rem;
+  color: #2563eb;
+  background: #eaf0f7;
+  box-shadow: 
+    inset 3px 3px 6px rgba(166, 180, 200, 0.45),
+    inset -3px -3px 6px rgba(255, 255, 255, 0.95);
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  cursor: pointer;
+  will-change: transform;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.smsk-badge:hover,
+.scet-badge:hover {
+  transform: scale(1.06) translate3d(0, 0, 0);
+}
+
+/* Offset Main Content Area with 120Hz GPU Transitions */
+.main-content {
+  margin-left: calc(72px + 2rem);
+  flex: 1;
+  width: calc(100% - 96px);
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 1440px;
+  will-change: opacity, transform;
+  transition: opacity 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+}
+
+.main-content.view-exit {
+  opacity: 0 !important;
+  transform: translate3d(0, 8px, 0) !important;
+}
+
+.main-content.view-enter {
+  animation: viewEnter 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes viewEnter {
+  from {
+    opacity: 0;
+    transform: translate3d(0, -6px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* Vertical Navigation */
+.dock-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  align-items: center;
+  width: 100%;
+}
+
+.dock-item {
+  position: relative;
+  width: 46px;
+  height: 46px;
+  border-radius: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748b;
+  text-decoration: none;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  will-change: transform, color, background-color, box-shadow;
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+              color 0.2s ease,
+              background-color 0.2s ease,
+              box-shadow 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translate3d(0, 0, 0);
+}
+
+.dock-icon {
+  width: 22px;
+  height: 22px;
+  will-change: transform, stroke;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), stroke 0.2s ease;
+}
+
+/* Hover Interaction */
+.dock-item:hover {
+  color: #2563eb;
+  transform: translate3d(0, -2px, 0);
+}
+
+.dock-item:hover .dock-icon {
+  transform: scale(1.12);
+}
+
+.dock-item:active {
+  transform: translate3d(0, 1px, 0);
+}
+
+/* Active Pressed Neumorphic State */
+.dock-item.active {
+  color: #2563eb;
+  background: #eaf0f7;
+  box-shadow: 
+    inset 4px 4px 8px rgba(166, 180, 200, 0.5),
+    inset -4px -4px 8px rgba(255, 255, 255, 1);
+}
+
+/* Active Accent Bar */
+.dock-item .active-indicator {
+  display: none;
+  position: absolute;
+  left: -7px;
+  width: 4px;
+  height: 20px;
+  background: #2563eb;
+  border-radius: 4px;
+  will-change: transform, opacity;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dock-item.active .active-indicator {
+  display: block;
+}
+
+/* Right-Side Floating Tooltips */
+.dock-item::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: calc(100% + 14px);
+  background: #1e293b;
+  color: #ffffff;
+  padding: 0.35rem 0.75rem;
+  border-radius: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate3d(-6px, 0, 0);
+  transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1500;
+}
+
+.dock-item:hover::after {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+.dock-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}

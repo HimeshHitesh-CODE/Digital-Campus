@@ -1,0 +1,49 @@
+:root {
+  /* --- Background & Surfaces --- */
+  --bg-primary: #E8ECF2;
+  --bg-secondary: #EDF1F7;
+  --surface-light: #F2F5F9;
+  --surface-hover: #E3E8EF;
+  --surface-active: #D9E0EA;
+  
+  /* --- Typography & Contrasts --- */
+  --text-main: #2D3748;
+  --text-muted: #64748B;
+  --text-light: #94A3B8;
+  --text-inverse: #FFFFFF;
+
+  /* --- Institutional Accents (Samskruti Royal Indigo & Emerald) --- */
+  --accent-primary: #3B5BDB;
+  --accent-primary-hover: #2B4AC5;
+  --accent-primary-light: rgba(59, 91, 219, 0.12);
+  --accent-success: #12B886;
+  --accent-success-light: rgba(18, 184, 134, 0.14);
+  --accent-warning: #F59F00;
+  --accent-warning-light: rgba(245, 159, 0, 0.14);
+  --accent-danger: #E03131;
+  --accent-danger-light: rgba(224, 49, 49, 0.14);
+
+  /* --- Soft Neumorphic Dual Shadows --- */
+  --shadow-raised: 8px 8px 16px #C8D0DC, -8px -8px 16px #FFFFFF;
+  --shadow-flat: 5px 5px 10px #C8D0DC, -5px -5px 10px #FFFFFF;
+  --shadow-hover: 10px 10px 20px #BEC8D6, -10px -10px 20px #FFFFFF;
+  --shadow-inset: inset 4px 4px 8px #C8D0DC, inset -4px -4px 8px #FFFFFF;
+  --shadow-inset-deep: inset 6px 6px 12px #B8C3D2, inset -6px -6px 12px #FFFFFF;
+
+  /* --- Frosted Blur & Glassmorphism --- */
+  --blur-amount: blur(12px);
+  --frosted-bg: rgba(232, 236, 242, 0.8);
+  --glass-border: 1px solid rgba(255, 255, 255, 0.5);
+
+  /* --- Layout Spacing & Geometry --- */
+  --dock-width: 96px;
+  --header-height: 72px;
+  --radius-sm: 10px;
+  --radius-md: 18px;
+  --radius-lg: 24px;
+  --radius-full: 9999px;
+
+  /* --- Motion --- */
+  --transition-smooth: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  --transition-bounce: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}

@@ -1,0 +1,550 @@
+/* ==========================================================================
+   IDEA HUB & PEER COLLABORATION STYLING
+   ========================================================================== */
+
+.my-skills-banner {
+  padding: 24px;
+  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.my-skills-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+  padding-bottom: 16px;
+}
+
+.my-profile-brief {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.my-profile-brief .user-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: var(--radius-full);
+  background: var(--accent-primary);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 1.1rem;
+  box-shadow: var(--shadow-raised);
+}
+
+.my-profile-brief h3 {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin: 0;
+}
+
+.my-profile-brief .user-meta {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.my-skills-tags-wrap {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.skills-heading {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.skills-pill-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.skill-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  background: var(--bg-secondary);
+  box-shadow: var(--shadow-inset);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--accent-primary);
+}
+
+.skill-pill.active {
+  background: var(--accent-primary-light);
+  color: var(--accent-primary);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+}
+
+.badge-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--accent-danger);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 800;
+  width: 20px;
+  height: 20px;
+  border-radius: var(--radius-full);
+  margin-left: 4px;
+}
+
+/* Search & Filters */
+.directory-filter-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.search-input-wrap {
+  position: relative;
+  width: 100%;
+}
+
+.search-input-wrap .neu-input {
+  padding-left: 42px;
+}
+
+.search-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+  color: var(--text-muted);
+}
+
+.filter-pill-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.filter-tag-btn {
+  padding: 8px 16px;
+  border-radius: var(--radius-full);
+  background: var(--bg-primary);
+  box-shadow: var(--shadow-raised);
+  border: none;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.filter-tag-btn:hover {
+  box-shadow: var(--shadow-hover);
+  color: var(--text-main);
+}
+
+.filter-tag-btn.active {
+  box-shadow: var(--shadow-inset);
+  color: var(--accent-primary);
+  background: var(--bg-secondary);
+}
+
+/* Peer Directory Grid */
+.peer-directory-section .section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.peer-count {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.peer-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+.peer-card {
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  transition: var(--transition-smooth);
+}
+
+.peer-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
+}
+
+.peer-card-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.peer-avatar {
+  width: 46px;
+  height: 46px;
+  border-radius: var(--radius-full);
+  background: var(--bg-secondary);
+  box-shadow: var(--shadow-inset);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  color: var(--accent-primary);
+  font-size: 1rem;
+}
+
+.peer-card-info h4 {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin: 0;
+}
+
+.peer-card-info .peer-pin {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-family: monospace;
+}
+
+.peer-card-skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-height: 48px;
+}
+
+.peer-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.collab-req-btn {
+  font-size: 0.82rem;
+  padding: 8px 14px;
+}
+
+/* Modals */
+.neu-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 20px;
+}
+
+.neu-modal-card {
+  width: 100%;
+  max-width: 540px;
+  background: var(--bg-primary);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-raised);
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  animation: fadeIn 0.25s ease;
+}
+
+.skills-modal-card {
+  max-width: 640px;
+  max-height: 88vh;
+  overflow-y: auto;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+  padding-bottom: 12px;
+}
+
+.modal-header h3 {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin: 0;
+}
+
+.modal-close-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  line-height: 1;
+}
+
+.modal-subtext {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 14px;
+}
+
+.skill-category-group {
+  margin-bottom: 14px;
+}
+
+.skill-category-label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: var(--accent-primary);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.quick-skills-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.selectable-pill {
+  border: none;
+  padding: 6px 12px;
+  border-radius: var(--radius-full);
+  background: var(--bg-primary);
+  box-shadow: var(--shadow-raised);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.selectable-pill:hover {
+  color: var(--accent-primary);
+  transform: translate3d(0, -1px, 0);
+}
+
+.selectable-pill.selected {
+  background: var(--accent-primary);
+  color: #fff;
+  box-shadow: var(--shadow-inset);
+}
+
+/* Empty Peers State */
+.empty-peers-state {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 48px 20px;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-inset);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.empty-peers-state p {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  margin: 0;
+}
+  transition: var(--transition-smooth);
+}
+
+.selectable-pill:hover {
+  color: var(--accent-primary);
+}
+
+.selectable-pill.selected {
+  background: var(--accent-primary);
+  color: #fff;
+  box-shadow: var(--shadow-inset);
+}
+
+.modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.5);
+  padding-top: 16px;
+}
+
+/* Invites list */
+.invites-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 380px;
+  overflow-y: auto;
+}
+
+.invite-card {
+  padding: 16px;
+  border-radius: var(--radius-md);
+  background: var(--bg-secondary);
+  box-shadow: var(--shadow-inset);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.invite-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.invite-sender {
+  font-weight: 800;
+  font-size: 0.92rem;
+  color: var(--text-main);
+}
+
+.invite-topic {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--accent-primary);
+}
+
+.invite-msg {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.invite-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+/* Chat Modal */
+.chat-modal-card {
+  max-width: 580px;
+  height: 580px;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  overflow: hidden;
+}
+
+.chat-modal-header {
+  padding: 18px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+  background: var(--bg-primary);
+}
+
+.chat-peer-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.chat-peer-info .user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  background: var(--accent-primary);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 0.95rem;
+}
+
+.chat-peer-info h4 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.chat-peer-sub {
+  font-size: 0.75rem;
+  color: var(--accent-success);
+  font-weight: 600;
+}
+
+.chat-messages-container {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: var(--bg-secondary);
+  box-shadow: var(--shadow-inset);
+}
+
+.chat-bubble {
+  max-width: 75%;
+  padding: 10px 16px;
+  border-radius: 16px;
+  font-size: 0.88rem;
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.chat-bubble.mine {
+  align-self: flex-end;
+  background: var(--accent-primary);
+  color: #fff;
+  border-bottom-right-radius: 4px;
+  box-shadow: var(--shadow-raised);
+}
+
+.chat-bubble.peer {
+  align-self: flex-start;
+  background: var(--bg-primary);
+  color: var(--text-main);
+  border-bottom-left-radius: 4px;
+  box-shadow: var(--shadow-raised);
+}
+
+.chat-bubble-meta {
+  font-size: 0.7rem;
+  opacity: 0.8;
+  margin-top: 4px;
+  text-align: right;
+}
+
+.chat-input-bar {
+  padding: 16px 20px;
+  display: flex;
+  gap: 10px;
+  background: var(--bg-primary);
+  border-top: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.chat-input-bar .neu-input {
+  flex: 1;
+}

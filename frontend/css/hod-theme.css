@@ -1,0 +1,312 @@
+/* ==========================================================================
+   EXECUTIVE DARK GLASS-NEUMORPHIC UI THEME (HOD-THEME.CSS)
+   Samskruti Digital Campus • Head of Department Console
+   ========================================================================== */
+
+:root {
+  --hod-bg-canvas: radial-gradient(circle at 50% 0%, #172033 0%, #0b0f19 75%, #070a10 100%);
+  --hod-surface-card: linear-gradient(135deg, rgba(30, 41, 59, 0.72) 0%, rgba(15, 23, 42, 0.85) 100%);
+  --hod-surface-card-hover: linear-gradient(135deg, rgba(37, 51, 74, 0.8) 0%, rgba(18, 28, 51, 0.9) 100%);
+  --hod-surface-inset: rgba(11, 15, 25, 0.6);
+  --hod-border: rgba(255, 255, 255, 0.08);
+  --hod-border-highlight: rgba(255, 255, 255, 0.16);
+  
+  --hod-glow-blue: 0 0 24px rgba(37, 99, 235, 0.45);
+  --hod-glow-emerald: 0 0 20px rgba(16, 185, 129, 0.35);
+  --hod-glow-ruby: 0 0 20px rgba(239, 68, 68, 0.35);
+  --hod-glow-amber: 0 0 20px rgba(245, 158, 11, 0.35);
+
+  --hod-text-main: #f8fafc;
+  --hod-text-muted: #94a3b8;
+  --hod-text-sub: #64748b;
+  
+  --hod-shadow-card: 0 12px 36px 0 rgba(0, 0, 0, 0.45), inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+  --hod-shadow-inset: inset 0 2px 4px 0 rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+body.hod-executive,
+html[data-theme="dark"] body.hod-executive,
+body {
+  background: var(--hod-bg-canvas) !important;
+  color: var(--hod-text-main);
+  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* --- Executive Glass-Neumorphic Card Surfaces --- */
+.executive-card,
+.hod-stat-card,
+.neu-card {
+  background: var(--hod-surface-card) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--hod-border) !important;
+  box-shadow: var(--hod-shadow-card) !important;
+  border-radius: 1.25rem;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.executive-card:hover,
+.hod-stat-card:hover {
+  border-color: var(--hod-border-highlight) !important;
+  box-shadow: 0 16px 44px 0 rgba(0, 0, 0, 0.55), inset 0 1px 0 0 rgba(255, 255, 255, 0.15) !important;
+}
+
+/* --- Metric Glow Badges --- */
+.metric-ruby-glow {
+  background: rgba(239, 68, 68, 0.15) !important;
+  color: #f87171 !important;
+  border: 1px solid rgba(239, 68, 68, 0.3) !important;
+  box-shadow: var(--hod-glow-ruby);
+}
+
+.metric-emerald-glow {
+  background: rgba(16, 185, 129, 0.15) !important;
+  color: #34d399 !important;
+  border: 1px solid rgba(16, 185, 129, 0.3) !important;
+  box-shadow: var(--hod-glow-emerald);
+}
+
+.metric-amber-glow {
+  background: rgba(245, 158, 11, 0.15) !important;
+  color: #fbbf24 !important;
+  border: 1px solid rgba(245, 158, 11, 0.3) !important;
+  box-shadow: var(--hod-glow-amber);
+}
+
+.metric-blue-glow {
+  background: rgba(37, 99, 235, 0.15) !important;
+  color: #60a5fa !important;
+  border: 1px solid rgba(37, 99, 235, 0.3) !important;
+  box-shadow: var(--hod-glow-blue);
+}
+
+/* --- Electric Blue Action Buttons --- */
+.neu-btn-primary,
+#btn-start-batch-sync {
+  background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  box-shadow: var(--hod-glow-blue) !important;
+  font-weight: 800;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.neu-btn-primary:hover,
+#btn-start-batch-sync:hover {
+  transform: translate3d(0, -2px, 0);
+  box-shadow: 0 0 28px rgba(37, 99, 235, 0.65) !important;
+}
+
+.neu-btn {
+  background: var(--hod-surface-card) !important;
+  color: var(--hod-text-main) !important;
+  border: 1px solid var(--hod-border) !important;
+  box-shadow: var(--hod-shadow-card) !important;
+  backdrop-filter: blur(12px);
+}
+
+.neu-btn:hover {
+  border-color: var(--hod-border-highlight) !important;
+}
+
+/* --- Table Refinements & Tabular Numbers --- */
+.master-students-table,
+.fee-table {
+  font-variant-numeric: tabular-nums;
+  border-collapse: separate;
+  border-spacing: 0;
+  width: 100%;
+}
+
+.master-students-table th,
+.fee-table th {
+  background: rgba(15, 23, 42, 0.95) !important;
+  color: var(--hod-text-muted) !important;
+  font-size: 0.76rem !important;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 14px 16px !important;
+  border-bottom: 1px solid var(--hod-border) !important;
+}
+
+.master-students-table td,
+.fee-table td {
+  padding: 14px 16px !important;
+  color: var(--hod-text-main);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04) !important;
+  transition: background 0.15s ease;
+}
+
+.master-students-table tbody tr:hover,
+.fee-table tbody tr:hover {
+  background: rgba(59, 130, 246, 0.08) !important;
+}
+
+/* --- High-End Inset Inputs --- */
+.neu-input,
+#student-search-input,
+#fee-search-input {
+  background: var(--hod-surface-inset) !important;
+  border: 1px solid var(--hod-border) !important;
+  box-shadow: var(--hod-shadow-inset) !important;
+  color: var(--hod-text-main) !important;
+  border-radius: var(--radius-md, 12px);
+  padding: 10px 16px;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.neu-input:focus,
+#student-search-input:focus,
+#fee-search-input:focus {
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25), inset 0 2px 4px rgba(0,0,0,0.5) !important;
+}
+
+/* --- Dock Header Spacing --- */
+.dock-header {
+  margin-bottom: 1.5rem !important;
+}
+
+/* --- Circular Progress Ring --- */
+.progress-ring-circle {
+  transition: stroke-dashoffset 0.5s ease-in-out;
+  transform: rotate(-90deg);
+  transform-origin: 50% 50%;
+}
+
+/* --- Summary Metric Cards (6-Column Glass Grid) --- */
+.grid {
+  display: grid;
+}
+.grid-cols-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+@media (min-width: 768px) {
+  .md\:grid-cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (min-width: 1024px) {
+  .lg\:grid-cols-6 {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+}
+.gap-3\.5 {
+  gap: 0.875rem;
+}
+.mb-6 {
+  margin-bottom: 1.5rem;
+}
+
+.metric-card {
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.5) 0%, rgba(15, 23, 42, 0.7) 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+  border-radius: 1rem !important;
+  padding: 1.1rem 1rem !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  min-height: 120px !important;
+  transition: transform 0.2s ease, border-color 0.2s ease !important;
+  box-sizing: border-box;
+}
+
+.metric-card:hover {
+  transform: translateY(-2px) !important;
+  border-color: rgba(59, 130, 246, 0.3) !important;
+}
+
+.metric-label {
+  font-size: 0.68rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+  color: #94a3b8 !important;
+  line-height: 1.25 !important;
+}
+
+.metric-value {
+  font-size: 1.75rem !important;
+  font-weight: 900 !important;
+  font-family: 'JetBrains Mono', monospace !important;
+  margin: 0.4rem 0 0.2rem 0 !important;
+  letter-spacing: -0.02em !important;
+  font-variant-numeric: tabular-nums !important;
+}
+
+.metric-subtext {
+  font-size: 0.68rem !important;
+  color: #64748b !important;
+  font-weight: 500 !important;
+}
+
+.text-slate-100 { color: #f1f5f9 !important; }
+.text-sky-400 { color: #38bdf8 !important; }
+.text-emerald-400 { color: #34d399 !important; }
+.text-amber-400 { color: #fbbf24 !important; }
+.text-rose-500 { color: #f43f5e !important; }
+.text-purple-400 { color: #c084fc !important; }
+
+/* Backlog Interactive Button Pill */
+.btn-backlog-inspect {
+  background: none !important;
+  border: none !important;
+  padding: 0 !important;
+  cursor: pointer !important;
+  outline: none !important;
+  display: inline-flex !important;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.btn-backlog-inspect:hover {
+  transform: translate3d(0, -1px, 0) scale(1.05) !important;
+}
+
+.btn-backlog-inspect:active {
+  transform: translate3d(0, 1px, 0) scale(0.97) !important;
+}
+
+/* Modal Overlay & Card Surface */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(4, 7, 13, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: 9999;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-overlay.hidden {
+  display: none !important;
+}
+
+.modal-overlay.flex {
+  display: flex !important;
+}
+
+.neumorphic-modal {
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.88) 0%, rgba(15, 23, 42, 0.96) 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+  border-radius: 1.5rem !important;
+  padding: 1.5rem 1.75rem !important;
+  animation: modalPop 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+}
+
+@keyframes modalPop {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 16px, 0) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}

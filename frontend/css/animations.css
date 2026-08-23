@@ -1,0 +1,179 @@
+/* ==========================================================================
+   UNIVERSAL 60HZ–120HZ FLUID MOTION & MICRO-ANIMATION ENGINE
+   ========================================================================== */
+
+/* Universal GPU Hardware Acceleration */
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+:root {
+  --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-fast: 0.18s var(--ease-spring);
+  --transition-normal: 0.28s var(--ease-spring);
+  --transition-page: 0.32s var(--ease-spring);
+}
+
+/* 1. Universal Interactive Elements (Buttons, Chips, Badges, Dock Items) */
+button, 
+.neu-btn, 
+.neumorphic-btn, 
+.dock-item, 
+.skill-chip, 
+.skill-pill, 
+.selectable-pill, 
+.filter-chip,
+.user-profile-badge {
+  will-change: transform, box-shadow;
+  transition: transform var(--transition-fast), 
+              box-shadow var(--transition-fast), 
+              background-color 0.2s ease, 
+              color 0.2s ease !important;
+}
+
+button:hover, 
+.neu-btn:hover, 
+.neumorphic-btn:hover, 
+.skill-chip:hover, 
+.skill-pill:hover, 
+.selectable-pill:hover {
+  transform: translate3d(0, -2px, 0);
+}
+
+button:active, 
+.neu-btn:active, 
+.neumorphic-btn:active, 
+.skill-chip:active, 
+.skill-pill:active, 
+.selectable-pill:active {
+  transform: translate3d(0, 1px, 0) scale(0.98);
+}
+
+/* 2. Seamless View Transitions */
+.main-content {
+  will-change: opacity, transform;
+  animation: pageFadeIn var(--transition-page) forwards;
+}
+
+@keyframes pageFadeIn {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* 3. Staggered Card Entrances & Universal Empty State Tile */
+.neu-card, 
+.card, 
+.neumorphic-card, 
+.peer-card, 
+.product-card, 
+.item-card, 
+.empty-state-tile,
+.doc-status-card {
+  will-change: opacity, transform;
+  animation: cardEntrance 0.36s var(--ease-spring) backwards;
+}
+
+@keyframes cardEntrance {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 16px, 0) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+/* Empty State Tile Styling */
+.empty-state-tile {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 48px 24px;
+  background: var(--bg-secondary, #e2e8f0);
+  border-radius: var(--radius-lg, 1.5rem);
+  box-shadow: var(--shadow-inset, inset 4px 4px 8px rgba(166, 180, 200, 0.4), inset -4px -4px 8px #ffffff);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 12px 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.empty-state-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--bg-primary, #eaf0f7);
+  box-shadow: var(--shadow-raised, 6px 6px 14px rgba(166, 180, 200, 0.45), -6px -6px 14px #ffffff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent-primary, #2563eb);
+  margin-bottom: 12px;
+}
+
+.empty-state-tile h4 {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--text-main, #1e293b);
+  margin: 4px 0 6px 0;
+}
+
+.empty-state-tile p {
+  font-size: 0.86rem;
+  color: var(--text-muted, #64748b);
+  max-width: 400px;
+  line-height: 1.45;
+  margin: 0;
+}
+
+/* 4. Modal Overlays & Scale Reveals */
+.neu-modal-overlay, 
+.modal-overlay {
+  backdrop-filter: blur(8px);
+  transition: opacity var(--transition-normal);
+}
+
+.neu-modal-card, 
+.modal-content {
+  will-change: transform, opacity;
+  animation: modalPop var(--transition-normal) forwards;
+}
+
+@keyframes modalPop {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 20px, 0) scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+/* 5. Neumorphic Focus Ring on Form Inputs */
+input, 
+select, 
+textarea, 
+.neu-input {
+  transition: border-color var(--transition-fast), 
+              box-shadow var(--transition-fast), 
+              transform var(--transition-fast);
+}
+
+input:focus, 
+select:focus, 
+textarea:focus, 
+.neu-input:focus {
+  transform: translate3d(0, -1px, 0);
+}

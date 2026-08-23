@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HOD Executive Console • Computer Science & Engineering • Samskruti Digital Campus</title>
+  
+  <!-- Web Fonts for Pro UI -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="../../css/reset.css" />
+  <link rel="stylesheet" href="../../css/variables.css" />
+  <link rel="stylesheet" href="../../css/neumorphic.css" />
+  <link rel="stylesheet" href="../../css/dock.css" />
+  <link rel="stylesheet" href="../../css/animations.css" />
+  <link rel="stylesheet" href="../../css/theme.css" />
+  <link rel="stylesheet" href="../../css/global.css" />
+  <link rel="stylesheet" href="../../css/hod-theme.css" />
+
+  <style>
+    body.hod-executive {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      letter-spacing: -0.01em;
+    }
+    .pro-gradient-title {
+      background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 50%, #94a3b8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-size: 2rem;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      line-height: 1.2;
+    }
+    .pro-subtitle-badge {
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #60a5fa;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 4px;
+    }
+    .grid-cols-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+    .grid-cols-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+      gap: 24px;
+    }
+    .pro-stat-card {
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    .pro-stat-card::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 80px;
+      height: 80px;
+      background: radial-gradient(circle, rgba(37, 99, 235, 0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .mono-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-variant-numeric: tabular-nums;
+    }
+  </style>
+</head>
+<body class="hod-executive">
+  <div class="app-layout">
+    <main class="main-content" style="margin-left: 0; width: 100%; max-width: 1600px; margin: auto; padding: 28px 32px;">
+      
+      <!-- Top Bar with Executive Pro Typography -->
+      <header class="content-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 18px; margin-bottom: 28px;">
+        <div class="header-titles">
+          <div class="pro-subtitle-badge">
+            <span style="width: 6px; height: 6px; border-radius: 50%; background: #3b82f6; display: inline-block; box-shadow: 0 0 8px #3b82f6;"></span>
+            Samskruti College (259) • Department of Computer Science & Engineering
+          </div>
+          <h1 class="pro-gradient-title">Head of Department Executive Console</h1>
+        </div>
+
+        <div class="header-actions">
+          <div class="executive-card" style="display: flex; align-items: center; gap: 14px; padding: 8px 18px; border-radius: 9999px; border: 1px solid var(--hod-border-highlight); box-shadow: var(--hod-shadow-card);">
+            <div class="user-avatar" style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #2563eb, #3b82f6); color: white; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 0.95rem; box-shadow: var(--hod-glow-blue);">VK</div>
+            <div class="user-info">
+              <div style="font-size: 0.9rem; font-weight: 800; color: var(--hod-text-main);">Prof. Vamshi Krishna</div>
+              <div style="font-size: 0.72rem; color: #60a5fa; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em;">Official HOD (Computer Science)</div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Stats Overview Grid -->
+      <section class="grid-cols-3">
+        <div class="executive-card pro-stat-card">
+          <div class="hod-stat-title">Department Total Intake</div>
+          <div class="hod-stat-val mono-num">180</div>
+          <div class="hod-stat-sub">Diploma C-24 3rd Semester (CS-001 to CS-180)</div>
+        </div>
+
+        <div class="executive-card pro-stat-card">
+          <div class="hod-stat-title">Average Department Clearance</div>
+          <div class="hod-stat-val mono-num" style="color: #34d399;">86.4%</div>
+          <div class="hod-stat-sub">Above Mandatory 75% SBTET Examination Line</div>
+        </div>
+
+        <div class="executive-card pro-stat-card">
+          <div class="hod-stat-title">Pending Document Approvals</div>
+          <div class="hod-stat-val mono-num" style="color: #fbbf24;" id="dash-pending-docs-count">3</div>
+          <div class="hod-stat-sub">Bonafide, NOC & Custodian Physical Requests</div>
+        </div>
+      </section>
+
+      <!-- High-Priority Navigation Quick Banners -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 20px; margin-bottom: 28px;">
+        <!-- Live Batch Sync Banner -->
+        <div class="executive-card" style="padding: 22px; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid #2563eb;">
+          <div>
+            <div style="font-size: 0.75rem; font-weight: 800; color: #60a5fa; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 2px;">⚡ Live Data Engine</div>
+            <h3 style="font-size: 1.1rem; font-weight: 800; color: var(--hod-text-main); margin: 0 0 4px 0;">Students Info & Batch Live Sync (001–180)</h3>
+            <p style="font-size: 0.82rem; color: var(--hod-text-muted); margin: 0;">Automated 5-worker SBTET attendance scraping, backlog tracker, and SSE stream.</p>
+          </div>
+          <a href="./students-info.html" class="neu-btn-primary" style="display: inline-flex; align-items: center; gap: 6px; font-weight: 800; text-decoration: none; padding: 10px 20px; border-radius: 10px; flex-shrink: 0; margin-left: 12px;">
+            <span>Open Info →</span>
+          </a>
+        </div>
+
+        <!-- Fee Analytics Banner -->
+        <div class="executive-card" style="padding: 22px; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid #10b981;">
+          <div>
+            <div style="font-size: 0.75rem; font-weight: 800; color: #34d399; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 2px;">💳 Financial Ledger</div>
+            <h3 style="font-size: 1.1rem; font-weight: 800; color: var(--hod-text-main); margin: 0 0 4px 0;">Department Fee Collection Analytics</h3>
+            <p style="font-size: 0.82rem; color: var(--hod-text-muted); margin: 0;">Department clearance rate, defaulter alerts, and automated in-app payment reminders.</p>
+          </div>
+          <a href="./fee-analytics.html" class="neu-btn" style="display: inline-flex; align-items: center; gap: 6px; font-weight: 800; text-decoration: none; padding: 10px 20px; border-radius: 10px; flex-shrink: 0; margin-left: 12px; border-color: rgba(16, 185, 129, 0.4); color: #34d399 !important;">
+            <span>Open Fees →</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Department Quick Actions & Approvals Grid -->
+      <div class="grid-cols-2">
+        <!-- Pending Approvals Queue -->
+        <div class="executive-card" style="padding: 24px;">
+          <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <div>
+              <h2 class="section-title" style="font-size: 1.15rem; font-weight: 800; color: var(--hod-text-main); margin: 0 0 2px 0;">Pending Document Sign-Offs</h2>
+              <span style="font-size: 0.75rem; color: var(--hod-text-muted);">Digital Verification & Collection OTPs</span>
+            </div>
+            <a href="./document-approvals.html" class="neu-btn" style="font-size: 0.78rem; padding: 6px 14px; border-radius: 8px; text-decoration: none; font-weight: 700;">Full Queue →</a>
+          </div>
+
+          <div class="table-responsive">
+            <table class="fee-table">
+              <thead>
+                <tr>
+                  <th>PIN</th>
+                  <th>Student Name</th>
+                  <th>Request Type</th>
+                  <th>Attendance</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="dash-docs-tbody">
+                <tr>
+                  <td><code class="mono-num" style="color: #93c5fd; font-weight: 700;">24259-CS-025</code></td>
+                  <td><strong style="color: var(--hod-text-main);">K. Himesh</strong></td>
+                  <td>Bonafide Certificate</td>
+                  <td><span class="neu-badge metric-emerald-glow">88.5%</span></td>
+                  <td><a href="./document-approvals.html" class="neu-btn-primary" style="font-size: 0.75rem; padding: 5px 12px; border-radius: 6px; text-decoration: none;">Review →</a></td>
+                </tr>
+                <tr>
+                  <td><code class="mono-num" style="color: #93c5fd; font-weight: 700;">24259-CS-039</code></td>
+                  <td><strong style="color: var(--hod-text-main);">Kakarla Rakesh</strong></td>
+                  <td>Internship NOC</td>
+                  <td><span class="neu-badge metric-ruby-glow">26.6%</span></td>
+                  <td><a href="./document-approvals.html" class="neu-btn-primary" style="font-size: 0.75rem; padding: 5px 12px; border-radius: 6px; text-decoration: none;">Review →</a></td>
+                </tr>
+                <tr>
+                  <td><code class="mono-num" style="color: #93c5fd; font-weight: 700;">24259-CS-023</code></td>
+                  <td><strong style="color: var(--hod-text-main);">P. Shankum</strong></td>
+                  <td>Custodian Certificate</td>
+                  <td><span class="neu-badge metric-emerald-glow">78.4%</span></td>
+                  <td><a href="./document-approvals.html" class="neu-btn-primary" style="font-size: 0.75rem; padding: 5px 12px; border-radius: 6px; text-decoration: none;">Review →</a></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Verified Registered Students Sample -->
+        <div class="executive-card" style="padding: 24px;">
+          <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <div>
+              <h2 class="section-title" style="font-size: 1.15rem; font-weight: 800; color: var(--hod-text-main); margin: 0 0 2px 0;">Student Security Keys Roster</h2>
+              <span style="font-size: 0.75rem; color: var(--hod-text-muted);">180 Pre-Allocated Anti-Spoofing Keys</span>
+            </div>
+            <a href="./security-roster.html" class="neu-btn" style="font-size: 0.78rem; padding: 6px 14px; border-radius: 8px; text-decoration: none; font-weight: 700;">View Roster →</a>
+          </div>
+
+          <div class="table-responsive">
+            <table class="fee-table">
+              <thead>
+                <tr>
+                  <th>PIN</th>
+                  <th>Student Name</th>
+                  <th>Institutional Key</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code class="mono-num" style="color: #93c5fd; font-weight: 700;">24259-CS-039</code></td>
+                  <td><strong style="color: var(--hod-text-main);">Kakarla Rakesh</strong></td>
+                  <td><span class="neu-badge metric-emerald-glow mono-num">STD-B03209</span></td>
+                </tr>
+                <tr>
+                  <td><code class="mono-num" style="color: #93c5fd; font-weight: 700;">24259-CS-025</code></td>
+                  <td><strong style="color: var(--hod-text-main);">K. Himesh</strong></td>
+                  <td><span class="neu-badge metric-emerald-glow mono-num">STD-XAz10F</span></td>
+                </tr>
+                <tr>
+                  <td><code class="mono-num" style="color: #93c5fd; font-weight: 700;">24259-CS-023</code></td>
+                  <td><strong style="color: var(--hod-text-main);">P. Shankum</strong></td>
+                  <td><span class="neu-badge metric-emerald-glow mono-num">STD-SH23PK</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script type="module">
+    import { requireAuth } from '../../js/auth-guard.js';
+    import { renderDock } from '../../js/dock.js';
+
+    requireAuth(['HOD', 'HOD_CS', 'ADMIN', 'FACULTY']);
+    renderDock('hod-dashboard.html', 'HOD');
+  </script>
+</body>
+</html>

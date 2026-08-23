@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Academics & Timetable | Samskruti Digital Campus</title>
+  <link rel="stylesheet" href="../../css/reset.css" />
+  <link rel="stylesheet" href="../../css/variables.css" />
+  <link rel="stylesheet" href="../../css/neumorphic.css" />
+  <link rel="stylesheet" href="../../css/global.css" />
+  <link rel="stylesheet" href="./dashboard.css" />
+  <style>
+    .timetable-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 12px;
+      overflow-x: auto;
+      margin-top: 14px;
+    }
+    .timetable-slot {
+      padding: 14px 10px;
+      border-radius: var(--radius-md);
+      background: var(--bg-secondary);
+      box-shadow: var(--shadow-flat);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      text-align: center;
+    }
+    .slot-time { font-size: 0.72rem; font-weight: 700; color: var(--accent-primary); }
+    .slot-subject { font-size: 0.85rem; font-weight: 700; color: var(--text-main); }
+    .slot-room { font-size: 0.75rem; color: var(--text-muted); }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <main class="main-content">
+      
+      <header class="top-bar">
+        <div class="welcome-text">
+          <h1>Academics & Course Schedules</h1>
+          <p>Samskruti College (259) • Department of Artificial Intelligence</p>
+        </div>
+      </header>
+
+      <!-- Weekly Schedule Grid -->
+      <section class="neu-card">
+        <div class="section-header">
+          <h2 class="section-title">Weekly Class Schedule (Semester III)</h2>
+          <span class="neu-badge neu-badge-primary">Room: AI Lab 2</span>
+        </div>
+
+        <div class="timetable-grid">
+          <div class="timetable-slot">
+            <span class="slot-time">09:30 - 10:30</span>
+            <span class="slot-subject">Machine Learning</span>
+            <span class="slot-room">LH 201</span>
+          </div>
+          <div class="timetable-slot">
+            <span class="slot-time">10:30 - 11:30</span>
+            <span class="slot-subject">Neural Networks</span>
+            <span class="slot-room">LH 201</span>
+          </div>
+          <div class="timetable-slot">
+            <span class="slot-time">11:45 - 12:45</span>
+            <span class="slot-subject">Python Computing</span>
+            <span class="slot-room">LH 202</span>
+          </div>
+          <div class="timetable-slot">
+            <span class="slot-time">01:30 - 02:30</span>
+            <span class="slot-subject">OS & Cloud</span>
+            <span class="slot-room">LH 201</span>
+          </div>
+          <div class="timetable-slot">
+            <span class="slot-time">02:30 - 04:30</span>
+            <span class="slot-subject">AI Deep Learning Lab</span>
+            <span class="slot-room">Lab 3</span>
+          </div>
+          <div class="timetable-slot">
+            <span class="slot-time">04:30 - 05:00</span>
+            <span class="slot-subject">Tutorial & Library</span>
+            <span class="slot-room">Central Lib</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Internal Assessment & Assignments -->
+      <div class="grid-cols-2">
+        <div class="neu-card">
+          <div class="section-header">
+            <h2 class="section-title">Internal Marks (Mid 1 & 2)</h2>
+            <span class="neu-badge neu-badge-success">Avg: 38/40</span>
+          </div>
+          <div class="table-responsive">
+            <table class="neu-table">
+              <thead>
+                <tr>
+                  <th>Subject</th>
+                  <th>Mid-I (20)</th>
+                  <th>Mid-II (20)</th>
+                  <th>Internal Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Machine Learning</td>
+                  <td>19</td>
+                  <td>19</td>
+                  <td><strong>38 / 40</strong></td>
+                </tr>
+                <tr>
+                  <td>Neural Networks</td>
+                  <td>18</td>
+                  <td>20</td>
+                  <td><strong>38 / 40</strong></td>
+                </tr>
+                <tr>
+                  <td>Python Computing</td>
+                  <td>20</td>
+                  <td>19</td>
+                  <td><strong>39 / 40</strong></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="neu-card">
+          <div class="section-header">
+            <h2 class="section-title">Assignment Submissions</h2>
+            <span class="neu-badge neu-badge-primary">3 Completed</span>
+          </div>
+          <div class="schedule-timeline">
+            <div class="schedule-card">
+              <div class="period-info">
+                <span class="period-time">Due in 3 days</span>
+                <span class="subject-name">Assignment 2: Backpropagation Algorithm</span>
+                <span class="faculty-name">Dr. Sarah Connor</span>
+              </div>
+              <button class="neu-btn neu-btn-primary" style="font-size: 0.8rem; padding: 6px 14px;">Upload PDF</button>
+            </div>
+            <div class="schedule-card">
+              <div class="period-info">
+                <span class="period-time" style="color: var(--accent-success);">Graded: 10/10</span>
+                <span class="subject-name">Assignment 1: Linear Regression Solver</span>
+                <span class="faculty-name">Prof. Mark Davis</span>
+              </div>
+              <span class="neu-badge neu-badge-success">Verified</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script type="module">
+    import { requireAuth } from '../../js/auth-guard.js';
+    import { renderDock } from '../../js/dock.js';
+    requireAuth(['STUDENT']);
+    renderDock('academics.html', 'STUDENT');
+  </script>
+</body>
+</html>

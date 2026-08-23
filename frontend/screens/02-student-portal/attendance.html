@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SBTET Attendance Dashboard | Samskruti Digital Campus (Code: 259)</title>
+  
+  <link rel="stylesheet" href="../../css/reset.css" />
+  <link rel="stylesheet" href="../../css/variables.css" />
+  <link rel="stylesheet" href="../../css/neumorphic.css" />
+  <link rel="stylesheet" href="../../css/dock.css" />
+  <link rel="stylesheet" href="../../css/animations.css" />
+  <link rel="stylesheet" href="../../css/theme.css" />
+  <link rel="stylesheet" href="../../css/global.css" />
+  <link rel="stylesheet" href="./attendance.css" />
+</head>
+<body>
+  <div class="app-layout">
+    <main class="main-content">
+      
+      <!-- Top Navigation & Header -->
+      <header class="top-bar">
+        <div class="welcome-text">
+          <h1>SBTET Biometric Attendance Analytics</h1>
+          <p id="student-meta-subtitle">Samskruti College (259) • Live Tracking via Direct API & OCR Proxy</p>
+        </div>
+        <div class="top-bar-actions">
+          <button class="neu-btn neu-btn-primary" id="sync-sbtet-btn">
+            <svg id="sync-btn-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+            <span id="sync-btn-label">Re-sync Latest</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Student Identity Profile Card (SBTET Connect Style) -->
+      <section class="neu-card student-profile-bar">
+        <div class="profile-avatar-wrap">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <div class="profile-info-content">
+          <h2 id="student-display-name">KAKARLA RAKESH</h2>
+          <span class="profile-pin-tag" id="student-display-pin">24259-CS-039</span>
+        </div>
+        <div class="profile-meta-pills">
+          <span class="neu-badge neu-badge-primary">Scheme: <strong id="student-display-scheme">C24</strong></span>
+          <span class="neu-badge neu-badge-primary">Branch: <strong id="student-display-branch">CS</strong></span>
+          <span class="neu-badge neu-badge-success" id="proxy-source-badge">Direct SBTET Gateway</span>
+        </div>
+      </section>
+
+      <!-- 1. Top Section: Radial Aggregate Card & SBTET Eligibility -->
+      <section class="attendance-hero-grid">
+        
+        <!-- Radial Gauge Card (Overall Attendance) -->
+        <div class="neu-card gauge-card">
+          <div class="gauge-header">
+            <h3>Overall Attendance</h3>
+            <span class="neu-badge neu-badge-danger" id="gauge-standing-badge">Detained Risk (&lt;65%)</span>
+          </div>
+          
+          <div class="radial-gauge-container">
+            <svg class="radial-gauge-svg" viewBox="0 0 120 120">
+              <circle class="gauge-bg" cx="60" cy="60" r="50" />
+              <circle class="gauge-progress" id="radial-progress-bar" cx="60" cy="60" r="50" />
+            </svg>
+            <div class="gauge-center-text">
+              <span class="gauge-percentage" id="aggregate-percentage">26.56%</span>
+              <span class="gauge-caption">Overall</span>
+            </div>
+          </div>
+
+          <!-- Exam Attendance Percentage Sub-meter -->
+          <div class="exam-percentage-box">
+            <span class="exam-percentage-label">Attendance % to be considered for examination:</span>
+            <strong class="exam-percentage-val" id="exam-percentage">18.89%</strong>
+          </div>
+          
+          <div class="gauge-footer-caption" id="gauge-pin-caption">
+            PIN: 24259-CS-039 • Scheme: C24 • Samskruti (259)
+          </div>
+        </div>
+
+        <!-- SBTET 75% Exam Eligibility & Action Target Card -->
+        <div class="neu-card eligibility-card">
+          <div class="section-header">
+            <h3 class="section-title">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              SBTET Examination Status & Projections
+            </h3>
+          </div>
+          
+          <div class="eligibility-status-box" id="eligibility-box">
+            <div class="eligibility-icon-wrap" id="eligibility-icon">✕</div>
+            <div class="eligibility-info">
+              <strong id="eligibility-title">Detainment Warning (Below 65%)</strong>
+              <p id="eligibility-desc">Your attendance (26.56%) is critically low. Regular attendance is required.</p>
+            </div>
+          </div>
+
+          <!-- 75% Target & Remaining Days Projection Box -->
+          <div class="target-projection-grid">
+            <div class="neu-card-inset target-tile">
+              <span class="target-label">ⓘ To reach 75% Threshold:</span>
+              <strong class="target-val text-warning" id="target-days-needed">Attend 51 more days</strong>
+            </div>
+            <div class="neu-card-inset target-tile">
+              <span class="target-label">📅 Remaining in Semester:</span>
+              <strong class="target-val" id="remaining-sem-days">26 days left (of 90)</strong>
+            </div>
+          </div>
+
+          <div class="neu-card-inset rule-notice-box">
+            <strong>SBTET Examination Guidelines:</strong>
+            <ul>
+              <li><strong>≥ 75%:</strong> Eligible for Hall Ticket generation directly.</li>
+              <li><strong>65% – 74%:</strong> Requires medical condonation fee with HOD sign-off.</li>
+              <li><strong>&lt; 65%:</strong> Detained (Must repeat semester as per SBTET regulations).</li>
+            </ul>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- 2. Days Metric Cards (Soft Neumorphic Inset/Outset Grid) -->
+      <section class="days-metrics-grid">
+        
+        <!-- Total Working Days -->
+        <div class="neu-card day-stat-card">
+          <span class="day-stat-label">Working Days</span>
+          <strong class="day-stat-value" id="total-working-days">64</strong>
+          <span class="day-stat-sub">Sessions Held to Date</span>
+        </div>
+
+        <!-- Days Present -->
+        <div class="neu-card day-stat-card">
+          <span class="day-stat-label">Present Days</span>
+          <strong class="day-stat-value text-success" id="days-present">17</strong>
+          <span class="day-stat-sub">Biometric Marked Present</span>
+        </div>
+
+        <!-- Days Absent -->
+        <div class="neu-card day-stat-card">
+          <span class="day-stat-label">Absent Days</span>
+          <strong class="day-stat-value text-danger" id="days-absent">47</strong>
+          <span class="day-stat-sub">Unattended Sessions</span>
+        </div>
+
+        <!-- Remaining Left Days -->
+        <div class="neu-card day-stat-card">
+          <span class="day-stat-label">Remaining Days</span>
+          <strong class="day-stat-value text-primary" id="left-working-days">26</strong>
+          <span class="day-stat-sub">Left in Semester (of 90)</span>
+        </div>
+
+        <!-- Biometric Errors / HP -->
+        <div class="neu-card day-stat-card">
+          <span class="day-stat-label">Errors / HP</span>
+          <strong class="day-stat-value text-warning" id="biometric-errors">0</strong>
+          <span class="day-stat-sub">Logged Exception Logs</span>
+        </div>
+
+      </section>
+
+      <!-- 3. Day-Wise Attendance Timeline Calendar -->
+      <section class="neu-card">
+        <div class="section-header">
+          <h2 class="section-title">Monthly Attendance Calendars</h2>
+          <div class="month-tab-bar">
+            <button class="neu-btn neu-btn-sm neu-btn-primary month-tab active" data-month="August">August</button>
+            <button class="neu-btn neu-btn-sm month-tab" data-month="July">July</button>
+            <button class="neu-btn neu-btn-sm month-tab" data-month="June">June</button>
+          </div>
+        </div>
+        
+        <div class="calendar-grid" id="daily-calendar-grid">
+          <!-- Populated dynamically: Date number + Status pill/dot only -->
+        </div>
+
+        <div class="calendar-legend">
+          <div class="legend-item"><span class="legend-dot dot-present"></span> Present (P)</div>
+          <div class="legend-item"><span class="legend-dot dot-absent"></span> Absent (A)</div>
+          <div class="legend-item"><span class="legend-dot dot-halfday"></span> Half Day (HP)</div>
+          <div class="legend-item"><span class="legend-dot dot-holiday"></span> Holiday (H)</div>
+          <div class="legend-item"><span class="legend-dot dot-weekoff"></span> Week Off (W)</div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script type="module" src="./attendance.js"></script>
+</body>
+</html>

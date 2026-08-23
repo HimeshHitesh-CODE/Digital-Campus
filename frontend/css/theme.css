@@ -1,0 +1,162 @@
+/* ==========================================================================
+   SAMSKRUTI NEUMORPHIC DARK / LIGHT THEME ENGINE
+   ========================================================================== */
+
+:root,
+:root[data-theme="light"] {
+  --bg-primary: #eaf0f7;
+  --bg-secondary: #e2e8f0;
+  --bg-card: #eaf0f7;
+  --surface-light: #f2f5f9;
+  --surface-hover: #e3e8ef;
+  --surface-active: #d9e0ea;
+
+  --text-main: #1e293b;
+  --text-muted: #64748b;
+  --text-light: #94a3b8;
+  --text-inverse: #ffffff;
+
+  /* Neumorphic Shadows */
+  --shadow-outset: 8px 8px 18px rgba(166, 180, 200, 0.45), -8px -8px 18px rgba(255, 255, 255, 0.9);
+  --shadow-raised: 6px 6px 14px rgba(166, 180, 200, 0.45), -6px -6px 14px rgba(255, 255, 255, 0.9);
+  --shadow-flat: 4px 4px 10px rgba(166, 180, 200, 0.35), -4px -4px 10px rgba(255, 255, 255, 0.85);
+  --shadow-hover: 10px 10px 22px rgba(166, 180, 200, 0.5), -10px -10px 22px rgba(255, 255, 255, 0.95);
+  --shadow-inset: inset 4px 4px 8px rgba(166, 180, 200, 0.5), inset -4px -4px 8px rgba(255, 255, 255, 1);
+  --shadow-inset-deep: inset 6px 6px 12px rgba(166, 180, 200, 0.6), inset -6px -6px 12px rgba(255, 255, 255, 1);
+
+  --border-subtle: rgba(255, 255, 255, 0.7);
+  --border-card: 1px solid rgba(255, 255, 255, 0.7);
+
+  --accent-primary: #2563eb;
+  --accent-blue: #2563eb;
+  --accent-primary-hover: #1d4ed8;
+  --accent-primary-light: rgba(37, 99, 235, 0.12);
+
+  --dock-bg: #eaf0f7;
+  --dock-shadow: 8px 8px 18px rgba(166, 180, 200, 0.45), -8px -8px 18px rgba(255, 255, 255, 0.9);
+  --dock-border: 1px solid rgba(255, 255, 255, 0.7);
+}
+
+:root[data-theme="dark"] {
+  --bg-primary: #0f172a;
+  --bg-secondary: #1e293b;
+  --bg-card: #1e293b;
+  --surface-light: #1e293b;
+  --surface-hover: #334155;
+  --surface-active: #475569;
+
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --text-light: #64748b;
+  --text-inverse: #0f172a;
+
+  /* Neumorphic Dark Shadows */
+  --shadow-outset: 6px 6px 14px rgba(0, 0, 0, 0.55), -6px -6px 14px rgba(30, 41, 59, 0.4);
+  --shadow-raised: 5px 5px 12px rgba(0, 0, 0, 0.5), -5px -5px 12px rgba(30, 41, 59, 0.35);
+  --shadow-flat: 4px 4px 8px rgba(0, 0, 0, 0.45), -4px -4px 8px rgba(30, 41, 59, 0.3);
+  --shadow-hover: 8px 8px 18px rgba(0, 0, 0, 0.65), -8px -8px 18px rgba(30, 41, 59, 0.45);
+  --shadow-inset: inset 4px 4px 8px rgba(0, 0, 0, 0.65), inset -4px -4px 8px rgba(51, 65, 85, 0.35);
+  --shadow-inset-deep: inset 6px 6px 12px rgba(0, 0, 0, 0.75), inset -6px -6px 12px rgba(51, 65, 85, 0.4);
+
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-card: 1px solid rgba(255, 255, 255, 0.08);
+
+  --accent-primary: #3b82f6;
+  --accent-blue: #3b82f6;
+  --accent-primary-hover: #60a5fa;
+  --accent-primary-light: rgba(59, 130, 246, 0.2);
+
+  --dock-bg: #0f172a;
+  --dock-shadow: 8px 8px 20px rgba(0, 0, 0, 0.65), -8px -8px 20px rgba(30, 41, 59, 0.35);
+  --dock-border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-main);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.app-layout,
+.app-container {
+  background-color: var(--bg-primary);
+  transition: background-color 0.3s ease;
+}
+
+/* Dock Styling Overrides for Dark Mode */
+[data-theme="dark"] .neumorphic-dock {
+  background: var(--dock-bg);
+  box-shadow: var(--dock-shadow);
+  border: var(--dock-border);
+}
+
+[data-theme="dark"] .smsk-badge {
+  background: #1e293b;
+  color: #3b82f6;
+  box-shadow: inset 3px 3px 6px rgba(0, 0, 0, 0.6), inset -3px -3px 6px rgba(51, 65, 85, 0.35);
+}
+
+[data-theme="dark"] .dock-item {
+  color: #94a3b8;
+}
+
+[data-theme="dark"] .dock-item:hover {
+  color: #3b82f6;
+}
+
+[data-theme="dark"] .dock-item.active {
+  color: #3b82f6;
+  background: #1e293b;
+  box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.65), inset -4px -4px 8px rgba(51, 65, 85, 0.35);
+}
+
+[data-theme="dark"] .neu-card,
+[data-theme="dark"] .card {
+  background: var(--bg-card);
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+[data-theme="dark"] .neu-input,
+[data-theme="dark"] input,
+[data-theme="dark"] select,
+[data-theme="dark"] textarea {
+  background: var(--bg-primary);
+  color: #f8fafc;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="dark"] .neu-btn {
+  background: #1e293b;
+  color: #f8fafc;
+}
+
+[data-theme="dark"] .neu-btn-primary {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+[data-theme="dark"] .chat-bubble.peer {
+  background: #1e293b;
+  color: #f8fafc;
+}
+
+/* Theme Toggle Icons */
+.theme-btn {
+  margin-bottom: 0.5rem;
+}
+
+[data-theme="light"] .theme-icon-sun { 
+  display: none !important; 
+}
+[data-theme="light"] .theme-icon-moon { 
+  display: block !important; 
+  color: #64748b; 
+}
+
+[data-theme="dark"] .theme-icon-sun { 
+  display: block !important; 
+  color: #f59e0b; 
+}
+[data-theme="dark"] .theme-icon-moon { 
+  display: none !important; 
+}

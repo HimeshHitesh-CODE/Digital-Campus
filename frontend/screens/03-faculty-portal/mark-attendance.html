@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mark Attendance | Faculty Portal | Samskruti Digital Campus</title>
+  <link rel="stylesheet" href="../../css/reset.css" />
+  <link rel="stylesheet" href="../../css/variables.css" />
+  <link rel="stylesheet" href="../../css/neumorphic.css" />
+  <link rel="stylesheet" href="../../css/global.css" />
+  <link rel="stylesheet" href="../02-student-portal/results.css" />
+  <style>
+    .filter-bar-card {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: center;
+      padding: 20px 24px;
+    }
+    .filter-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      flex: 1;
+      min-width: 180px;
+    }
+    .attendance-toggle-btn {
+      padding: 6px 14px;
+      border-radius: var(--radius-full);
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: var(--shadow-flat);
+      transition: var(--transition-smooth);
+    }
+    .toggle-present {
+      background: var(--accent-success);
+      color: #ffffff;
+    }
+    .toggle-absent {
+      background: var(--accent-danger);
+      color: #ffffff;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <main class="main-content">
+      
+      <header class="top-bar">
+        <div class="welcome-text">
+          <h1>Class Attendance Entry</h1>
+          <p>Samskruti College (259) • Faculty Console • Dr. Sarah Connor</p>
+        </div>
+        <div class="top-bar-actions">
+          <button class="neu-btn neu-btn-primary" id="save-attendance-btn">
+            Submit & Sync to SBTET Biometrics →
+          </button>
+        </div>
+      </header>
+
+      <!-- Selection Filter Bar -->
+      <section class="neu-card filter-bar-card">
+        <div class="filter-item">
+          <label class="neu-input-label">Branch & Scheme</label>
+          <select class="neu-input" id="branch-select">
+            <option value="AI">Diploma in Artificial Intelligence (AI) - C-24</option>
+            <option value="CSE">Computer Science & Engineering (CSE)</option>
+          </select>
+        </div>
+        <div class="filter-item">
+          <label class="neu-input-label">Semester & Section</label>
+          <select class="neu-input">
+            <option>Semester III - Section A</option>
+            <option>Semester III - Section B</option>
+          </select>
+        </div>
+        <div class="filter-item">
+          <label class="neu-input-label">Period / Time Slot</label>
+          <select class="neu-input">
+            <option>Period 1 (09:30 AM - 10:30 AM)</option>
+            <option>Period 2 (10:30 AM - 11:30 AM)</option>
+          </select>
+        </div>
+      </section>
+
+      <!-- Student Roll Call Checklist Table -->
+      <section class="neu-card">
+        <div class="section-header">
+          <h2 class="section-title">Student Roll Call (25 Students)</h2>
+          <div style="display: flex; gap: 8px;">
+            <button class="neu-btn" id="mark-all-present-btn" style="font-size: 0.8rem; padding: 6px 14px;">Mark All Present</button>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="neu-table">
+            <thead>
+              <tr>
+                <th>Roll / PIN</th>
+                <th>Student Name</th>
+                <th>Current Aggregate</th>
+                <th>Attendance Status</th>
+              </tr>
+            </thead>
+            <tbody id="faculty-attendance-tbody">
+              <tr>
+                <td><code>24259-AI-001</code></td>
+                <td>Aarav Sharma</td>
+                <td>89.2%</td>
+                <td><button class="attendance-toggle-btn toggle-present">PRESENT</button></td>
+              </tr>
+              <tr>
+                <td><code>24259-AI-012</code></td>
+                <td>Kiran Reddy</td>
+                <td>86.4%</td>
+                <td><button class="attendance-toggle-btn toggle-present">PRESENT</button></td>
+              </tr>
+              <tr>
+                <td><code>24259-AI-025</code></td>
+                <td>Himesh Vance</td>
+                <td>88.5%</td>
+                <td><button class="attendance-toggle-btn toggle-present">PRESENT</button></td>
+              </tr>
+              <tr>
+                <td><code>24259-AI-030</code></td>
+                <td>Neha Gupta</td>
+                <td>68.0%</td>
+                <td><button class="attendance-toggle-btn toggle-present">PRESENT</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script type="module">
+    import { requireAuth } from '../../js/auth-guard.js';
+    import { renderDock } from '../../js/dock.js';
+    import { alerts } from '../../js/alerts.js';
+
+    requireAuth(['FACULTY', 'ADMIN', 'HOD']);
+    renderDock('mark-attendance.html', 'FACULTY');
+
+    document.querySelectorAll('.attendance-toggle-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (btn.classList.contains('toggle-present')) {
+          btn.classList.remove('toggle-present');
+          btn.classList.add('toggle-absent');
+          btn.textContent = 'ABSENT';
+        } else {
+          btn.classList.remove('toggle-absent');
+          btn.classList.add('toggle-present');
+          btn.textContent = 'PRESENT';
+        }
+      });
+    });
+
+    document.getElementById('mark-all-present-btn')?.addEventListener('click', () => {
+      document.querySelectorAll('.attendance-toggle-btn').forEach(btn => {
+        btn.classList.remove('toggle-absent');
+        btn.classList.add('toggle-present');
+        btn.textContent = 'PRESENT';
+      });
+      alerts.info('All students marked present.');
+    });
+
+    document.getElementById('save-attendance-btn')?.addEventListener('click', () => {
+      alerts.success('Period attendance successfully recorded and synced to SBTET servers!');
+    });
+  </script>
+</body>
+</html>

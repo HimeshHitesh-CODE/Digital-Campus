@@ -1,0 +1,61 @@
+.register-card {
+  width: 100%;
+  max-width: 500px;
+  padding: 36px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.pin-status-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 4px;
+}
+
+.otp-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+  border-left: 4px solid var(--accent-primary);
+  animation: slideDown 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.otp-header h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.otp-header p {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.otp-input {
+  letter-spacing: 0.35em;
+  font-size: 1.25rem;
+  font-weight: 800;
+  text-align: center;
+  font-family: monospace;
+}
+
+.otp-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 8px;
+}
