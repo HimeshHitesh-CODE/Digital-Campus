@@ -2,10 +2,324 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta http-equiv="refresh" content="0; url=./login.html" />
-  <title>Authentication Portal | Samskruti Digital Campus</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Authentication Portal | Samskruti College of Engineering & Technology (Code: 259)</title>
+
+  <!-- Base Styles -->
+  <link rel="stylesheet" href="../../css/reset.css" />
+  <link rel="stylesheet" href="../../css/variables.css" />
+  <link rel="stylesheet" href="../../css/neumorphic.css" />
+  <link rel="stylesheet" href="../../css/global.css" />
+  <link rel="stylesheet" href="./auth.css" />
 </head>
-<body style="background: #E8ECF2;">
-  <script>window.location.replace('./login.html');</script>
+<body class="auth-page-wrapper">
+  <div class="auth-card" id="auth-main-card" data-active-tab="signup">
+    
+    <!-- Institutional Header -->
+    <div class="auth-header">
+      <div class="college-logo-container">
+        <div class="college-logo-badge">SCET</div>
+      </div>
+      <h1>Samskruti College of Engineering & Technology</h1>
+      <p>Unified Digital Campus • Institution Code: <strong>259</strong></p>
+    </div>
+
+    <!-- Sliding Morph Pill Tab Segment -->
+    <div class="tab-pill-track" id="auth-tab-track">
+      <div class="sliding-morph-pill" id="sliding-pill"></div>
+      <button type="button" class="tab-btn active" data-tab="signup" data-index="0">
+        Student Sign Up
+      </button>
+      <button type="button" class="tab-btn" data-tab="signin" data-index="1">
+        Student Sign In
+      </button>
+      <button type="button" class="tab-btn" data-tab="hod" data-index="2">
+        Admin / HOD Login
+      </button>
+    </div>
+
+    <!-- ==========================================
+         TAB 1: STUDENT SIGN UP (STEP 1)
+         ========================================== -->
+    <div class="auth-tab-content active" id="tab-content-signup">
+      <form id="signup-form" class="auth-form">
+        
+        <!-- Diploma PIN No -->
+        <div class="form-group">
+          <label class="field-label" for="signup-pin">Diploma PIN No (Code: 259)</label>
+          <div class="input-container">
+            <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="4" width="18" height="16" rx="2" ry="2"/>
+              <line x1="7" y1="8" x2="17" y2="8"/>
+              <line x1="7" y1="12" x2="13" y2="12"/>
+              <circle cx="16" cy="14" r="2"/>
+            </svg>
+            <input
+              type="text"
+              id="signup-pin"
+              class="neumorphic-field"
+              placeholder="24259-CS-025"
+              required
+              autocomplete="off"
+              style="text-transform: uppercase;"
+            />
+          </div>
+        </div>
+
+        <!-- First Name & Last Name (2-Column Grid Row) -->
+        <div class="form-grid-row">
+          <div class="form-group">
+            <label class="field-label" for="signup-firstname">First Name</label>
+            <div class="input-container">
+              <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+              </svg>
+              <input type="text" id="signup-firstname" class="neumorphic-field" placeholder="First Name" required />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="field-label" for="signup-lastname">Last Name</label>
+            <div class="input-container">
+              <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+              </svg>
+              <input type="text" id="signup-lastname" class="neumorphic-field" placeholder="Last Name" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Department & Current Semester (Aligned 2-Column Grid Row) -->
+        <div class="form-grid-row">
+          <!-- Column 1: Department -->
+          <div class="form-group">
+            <label class="field-label" for="student-dept">Department</label>
+            <div class="input-container">
+              <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+                <line x1="8" y1="21" x2="16" y2="21"/>
+                <line x1="12" y1="17" x2="12" y2="21"/>
+              </svg>
+              <select id="student-dept" class="neumorphic-field">
+                <option value="CS" selected>Computer Science (CS)</option>
+                <option value="AI">Artificial Intelligence (AI)</option>
+                <option value="EC">Electronics (ECE)</option>
+                <option value="EE">Electrical (EEE)</option>
+                <option value="M">Mechanical (MECH)</option>
+                <option value="CIV">Civil Engineering (CIV)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Column 2: Current Semester (Aligned) -->
+          <div class="form-group">
+            <label class="field-label" for="student-sem">Current Semester</label>
+            <div class="input-container">
+              <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+              </svg>
+              <select id="student-sem" class="neumorphic-field">
+                <option value="3" selected>3rd Semester (C-24)</option>
+                <option value="1">1st Semester (C-24)</option>
+                <option value="2">2nd Semester (C-24)</option>
+                <option value="4">4th Semester (C-24)</option>
+                <option value="5">5th Semester (C-24)</option>
+                <option value="6">6th Semester (C-24)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Official / Personal Email -->
+        <div class="form-group">
+          <label class="field-label" for="signup-email">Official / Personal Email</label>
+          <div class="input-container">
+            <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+              <polyline points="22,6 12,13 2,6"/>
+            </svg>
+            <input
+              type="email"
+              id="signup-email"
+              class="neumorphic-field"
+              placeholder="name@example.com"
+              required
+              autocomplete="email"
+            />
+          </div>
+        </div>
+
+        <!-- Create Account Password -->
+        <div class="form-group">
+          <label class="field-label" for="signup-password">Create Account Password</label>
+          <div class="input-container password-wrapper">
+            <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+            <input
+              type="password"
+              id="signup-password"
+              class="neumorphic-field"
+              placeholder="Password (min 8 characters)"
+              required
+              autocomplete="new-password"
+              minlength="8"
+            />
+            <button type="button" class="password-toggle-btn" id="toggle-signup-password" aria-label="Toggle Password Visibility">
+              <svg id="eye-icon-signup" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" class="auth-submit-btn" id="signup-submit-btn">
+          <span id="signup-btn-text">Proceed to Step 2: Verify Identity →</span>
+          <div class="spinner" id="signup-btn-spinner" style="display: none;"></div>
+        </button>
+      </form>
+    </div>
+
+    <!-- ==========================================
+         TAB 2: STUDENT SIGN IN
+         ========================================== -->
+    <div class="auth-tab-content" id="tab-content-signin">
+      <form id="signin-form" class="auth-form">
+        
+        <!-- Student PIN or Email -->
+        <div class="form-group">
+          <label class="field-label" for="signin-identity">Registered Student Email or PIN</label>
+          <div class="input-container">
+            <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+              <polyline points="22,6 12,13 2,6"/>
+            </svg>
+            <input
+              type="text"
+              id="signin-identity"
+              class="neumorphic-field"
+              placeholder="Registered Email or Diploma PIN"
+              required
+              autocomplete="username"
+            />
+          </div>
+        </div>
+
+        <!-- Password -->
+        <div class="form-group">
+          <div class="label-row">
+            <label class="field-label" for="signin-password">Password</label>
+            <a href="./forgot-password.html" class="forgot-link">Forgot Password?</a>
+          </div>
+          <div class="input-container password-wrapper">
+            <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+            <input
+              type="password"
+              id="signin-password"
+              class="neumorphic-field"
+              placeholder="Enter account password"
+              required
+              autocomplete="current-password"
+            />
+            <button type="button" class="password-toggle-btn" id="toggle-signin-password" aria-label="Toggle Password Visibility">
+              <svg id="eye-icon-signin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Remember Me -->
+        <div class="form-options">
+          <label class="neu-checkbox-label">
+            <input type="checkbox" id="signin-remember" checked />
+            <span class="checkbox-custom"></span>
+            <span>Remember Me</span>
+          </label>
+        </div>
+
+        <button type="submit" class="auth-submit-btn" id="signin-submit-btn">
+          <span id="signin-btn-text">Sign In to Student Portal →</span>
+          <div class="spinner" id="signin-btn-spinner" style="display: none;"></div>
+        </button>
+      </form>
+    </div>
+
+    <!-- ==========================================
+         TAB 3: ADMIN / HOD LOGIN (CS ONLY)
+         ========================================== -->
+    <div class="auth-tab-content" id="tab-content-hod">
+      <form id="hod-form" class="auth-form">
+        
+        <div class="hod-info-banner">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+          <span>Department of Computer Science & Engineering • HOD Console</span>
+        </div>
+
+        <!-- HOD Identifier -->
+        <div class="form-group">
+          <label class="field-label" for="hod-username">Admin / HOD Identifier</label>
+          <div class="input-container">
+            <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+            <input
+              type="text"
+              id="hod-username"
+              class="neumorphic-field"
+              value="Vamshi-CS-HOD"
+              placeholder="HOD Identifier (Vamshi-CS-HOD)"
+              required
+              autocomplete="username"
+            />
+          </div>
+        </div>
+
+        <!-- Master Password -->
+        <div class="form-group">
+          <label class="field-label" for="hod-password">HOD Master Password</label>
+          <div class="input-container password-wrapper">
+            <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+            <input
+              type="password"
+              id="hod-password"
+              class="neumorphic-field"
+              placeholder="Enter master password"
+              required
+              autocomplete="current-password"
+            />
+            <button type="button" class="password-toggle-btn" id="toggle-hod-password" aria-label="Toggle Password Visibility">
+              <svg id="eye-icon-hod" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" class="auth-submit-btn" id="hod-submit-btn">
+          <span id="hod-btn-text">Sign In to HOD Portal →</span>
+          <div class="spinner" id="hod-btn-spinner" style="display: none;"></div>
+        </button>
+      </form>
+    </div>
+
+  </div>
+
+  <script type="module" src="./auth.js"></script>
 </body>
 </html>
