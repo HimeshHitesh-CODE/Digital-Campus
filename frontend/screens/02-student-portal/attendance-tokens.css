@@ -1,0 +1,47 @@
+/* ==========================================================================
+   SBTET ATTENDANCE INTELLIGENCE - DESIGN TOKENS
+   Midnight Canvas, Multi-layer Neumorphism & State Variables
+   ========================================================================== */
+
+:root {
+  /* Surface Layering & Midnight Canvas */
+  --bg-canvas: #070b14;
+  --bg-radial: radial-gradient(circle at 50% 0%, #111c35 0%, #070b14 75%);
+  --surface-base: #0c1322;
+  --surface-raised: #131d31;
+  --surface-elevated: #18253d;
+  --surface-inset: #090e1a;
+
+  /* Accent & State Tokens */
+  --brand-primary: #3b82f6;
+  --brand-glow: rgba(59, 130, 246, 0.35);
+  --state-success: #10b981;
+  --state-success-glow: rgba(16, 185, 129, 0.25);
+  --state-warning: #f59e0b;
+  --state-warning-glow: rgba(245, 158, 11, 0.25);
+  --state-danger: #ef4444;
+  --state-danger-glow: rgba(239, 68, 68, 0.3);
+  --state-neutral: #64748b;
+
+  /* Typography Colors */
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+
+  /* Neumorphic Elevation Shadows */
+  --shadow-capsule: 0 12px 32px rgba(0, 0, 0, 0.45), 0 2px 6px rgba(255, 255, 255, 0.04) inset;
+  --shadow-card: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.08);
+  --shadow-inset: inset 3px 3px 6px rgba(0, 0, 0, 0.6), inset -2px -2px 5px rgba(255, 255, 255, 0.04);
+  --border-subtle: 1px solid rgba(255, 255, 255, 0.07);
+  --border-active: 1px solid rgba(59, 130, 246, 0.5);
+
+  /* Geometry & Animation */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-pill: 9999px;
+  --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-fast: 0.18s var(--ease-spring);
+  --transition-normal: 0.28s var(--ease-spring);
+}
