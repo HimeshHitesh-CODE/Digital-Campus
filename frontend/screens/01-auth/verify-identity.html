@@ -5,61 +5,36 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Step 2: Verify Identity | Samskruti Digital Campus (Code: 259)</title>
 
-  <!-- Neumorphic Base Styles -->
+  <!-- Base Neumorphic Styles -->
   <link rel="stylesheet" href="../../css/reset.css" />
   <link rel="stylesheet" href="../../css/variables.css" />
   <link rel="stylesheet" href="../../css/neumorphic.css" />
   <link rel="stylesheet" href="../../css/global.css" />
   <link rel="stylesheet" href="./login.css" />
   <style>
-    .step-indicator {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      margin-bottom: 24px;
-    }
-    .step-pill {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 0.78rem;
-      font-weight: 700;
-      padding: 6px 14px;
-      border-radius: var(--radius-full);
-      background: var(--bg-secondary);
-      color: var(--text-muted);
-      box-shadow: var(--shadow-inset);
-    }
-    .step-pill.completed {
-      background: var(--accent-success-light);
-      color: var(--accent-success);
-    }
-    .step-pill.active {
-      background: var(--accent-primary-light);
-      color: var(--accent-primary);
-      box-shadow: var(--shadow-raised);
-    }
     .pin-verification-banner {
-      background: var(--bg-secondary);
-      border-radius: var(--radius-md);
-      box-shadow: var(--shadow-inset);
-      padding: 16px;
-      margin-bottom: 20px;
+      background: var(--bg-card);
+      border-radius: 1.25rem;
+      box-shadow: 
+        inset 3px 3px 6px rgba(166, 180, 200, 0.35),
+        inset -3px -3px 6px rgba(255, 255, 255, 0.85);
+      padding: 1.15rem;
+      margin-bottom: 1.5rem;
       text-align: center;
     }
     .pin-verification-banner strong {
       display: block;
-      font-size: 1.15rem;
-      color: var(--accent-primary);
+      font-size: 1.2rem;
+      color: var(--theme-accent);
       font-family: monospace;
       margin-top: 4px;
+      letter-spacing: 0.05em;
     }
   </style>
 </head>
 <body class="login-body">
   <div class="login-wrapper">
-    <div class="neu-card login-card" style="max-width: 480px; width: 100%;">
+    <div class="neu-card login-card" id="verify-card" style="max-width: 480px; width: 100%;" data-active-tab="student">
       
       <!-- Institutional Branding Header -->
       <div class="login-header">
@@ -67,7 +42,7 @@
           <div class="college-logo-badge">SCET</div>
         </div>
         <h1 class="college-name">Samskruti College of Engineering & Technology</h1>
-        <p class="college-subtitle">Two-Step Anti-Spoofing Registration</p>
+        <p class="college-subtitle">Two-Step Institutional Verification</p>
       </div>
 
       <!-- Step Indicator -->
@@ -78,9 +53,9 @@
 
       <!-- Verified PIN Banner from Step 1 -->
       <div class="pin-verification-banner">
-        <span style="font-size: 0.8rem; color: var(--text-muted);">Verifying Registration for PIN:</span>
+        <span style="font-size: 0.82rem; color: var(--text-muted);">Verifying Registration for PIN:</span>
         <strong id="display-student-pin">24259-CS-025</strong>
-        <span id="display-student-email" style="font-size: 0.76rem; color: var(--text-muted); display: block; margin-top: 2px;">k.himesh@samskruti.ac.in</span>
+        <span id="display-student-email" style="font-size: 0.78rem; color: var(--text-muted); display: block; margin-top: 2px;">student@samskruti.ac.in</span>
       </div>
 
       <!-- Verification Form -->
@@ -91,29 +66,29 @@
             College-Issued Unique Security ID
           </label>
           <div class="neu-input-wrapper">
+            <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
             <input
               type="text"
               id="institutional-secret-key"
               class="neu-input"
-              placeholder="Unique Security ID (STD-XXXXXX)"
+              placeholder="Security Key (STD-XXXXXX)"
               required
               autocomplete="off"
-              style="text-transform: uppercase; font-family: monospace; letter-spacing: 1px;"
+              style="text-transform: uppercase; font-family: monospace; letter-spacing: 0.05em;"
             />
           </div>
-          <small style="color: var(--text-muted); font-size: 0.75rem; margin-top: 4px; display: block;">
-            💡 Check your official Samskruti admission card or CS Department allotment slip.
-          </small>
         </div>
 
-        <button type="submit" class="neu-btn neu-btn-primary submit-btn" id="verify-submit-btn">
-          <span id="verify-btn-text">Verify Key & Launch Dashboard →</span>
+        <button type="submit" class="auth-submit-btn" id="verify-submit-btn">
+          <span id="verify-btn-text">Verify Identity & Activate Account →</span>
           <div class="spinner" id="verify-btn-spinner" style="display: none;"></div>
         </button>
 
         <div style="text-align: center; margin-top: 14px;">
-          <a href="./login.html" style="font-size: 0.82rem; color: var(--text-muted); text-decoration: none;">
-            ← Back to Sign In
+          <a href="./login.html" style="font-size: 0.84rem; color: var(--text-muted); text-decoration: none; font-weight: 600;">
+            ← Back to Student Sign In
           </a>
         </div>
       </form>

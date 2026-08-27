@@ -1,6 +1,7 @@
 /**
  * Samskruti College Unified Authentication Controller
- * Manages 3-way tabs: Student Sign In, Student Sign Up (Step 1), and CS HOD Admin Login.
+ * Manages 3-way tabs with Role-Based Dynamic Theming (Student Blue vs HOD Green),
+ * Custom Neumorphic Dropdowns, and Fluid Micro-Animations.
  */
 
 import { api } from '../../js/api.js';
@@ -8,16 +9,18 @@ import { alerts } from '../../js/alerts.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   setupTabs();
-  setupStudentSignIn();
+  setupCustomDropdowns();
   setupStudentSignUp();
+  setupStudentSignIn();
   setupAdminHODLogin();
   setupPasswordToggles();
 });
 
 /**
- * 3-Way Tab Switching
+ * 3-Way Tab Switching & Dynamic Role Theming
  */
 function setupTabs() {
+  const card = document.getElementById('auth-main-card');
   const tabBtns = document.querySelectorAll('.auth-tab-btn');
   const panels = document.querySelectorAll('.auth-panel');
 
@@ -28,6 +31,13 @@ function setupTabs() {
 
       btn.classList.add('active');
       const targetPanelId = btn.getAttribute('data-tab');
+      const theme = btn.getAttribute('data-theme') || 'student';
+      
+      // Apply theme scope to main card
+      if (card) {
+        card.setAttribute('data-active-tab', theme);
+      }
+
       const targetPanel = document.getElementById(targetPanelId);
       if (targetPanel) {
         targetPanel.classList.add('active');
@@ -37,15 +47,155 @@ function setupTabs() {
 
   // Check URL query for default tab
   const urlParams = new URLSearchParams(window.location.search);
-  if (urlParams.get('tab') === 'signup') {
-    document.getElementById('tab-student-signup')?.click();
-  } else if (urlParams.get('tab') === 'admin') {
+  const tabParam = urlParams.get('tab');
+  if (tabParam === 'signin') {
+    document.getElementById('tab-student-signin')?.click();
+  } else if (tabParam === 'admin' || tabParam === 'hod') {
     document.getElementById('tab-admin-login')?.click();
+  } else {
+    // Default to Student Sign Up
+    document.getElementById('tab-student-signup')?.click();
   }
 }
 
 /**
- * Tab 1: Student Sign In (Email / PIN + Password)
+ * Custom Neumorphic Dropdowns with Spring Animation
+ */
+function setupCustomDropdowns() {
+  initCustomSelect('custom-branch-select', 'signup-branch', 'branch-display-val');
+  initCustomSelect('custom-semester-select', 'signup-semester', 'semester-display-val');
+
+  // Close open dropdowns when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.custom-select-wrapper')) {
+      document.querySelectorAll('.custom-select-wrapper.open').forEach(el => {
+        el.classList.remove('open');
+      });
+    }
+  });
+
+  // Close on Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      document.querySelectorAll('.custom-select-wrapper.open').forEach(el => {
+        el.classList.remove('open');
+      });
+    }
+  });
+}
+
+function initCustomSelect(wrapperId, hiddenInputId, displayLabelId) {
+  const wrapper = document.getElementById(wrapperId);
+  if (!wrapper) return;
+
+  const trigger = wrapper.querySelector('.custom-select-trigger');
+  const hiddenInput = document.getElementById(hiddenInputId);
+  const displayLabel = document.getElementById(displayLabelId);
+  const options = wrapper.querySelectorAll('.custom-option');
+
+  trigger?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    // Close other dropdowns
+    document.querySelectorAll('.custom-select-wrapper').forEach(other => {
+      if (other !== wrapper) other.classList.remove('open');
+    });
+    wrapper.classList.toggle('open');
+  });
+
+  options.forEach(opt => {
+    opt.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const val = opt.getAttribute('data-value');
+      const label = opt.textContent.trim();
+
+      options.forEach(o => o.classList.remove('active'));
+      opt.classList.add('active');
+
+      if (hiddenInput) hiddenInput.value = val;
+      if (displayLabel) displayLabel.textContent = label;
+
+      wrapper.classList.remove('open');
+    });
+  });
+}
+
+/**
+ * Tab 1: Student Sign Up (Step 1 Registration)
+ */
+function setupStudentSignUp() {
+  const form = document.getElementById('student-signup-form');
+  const pinInput = document.getElementById('signup-pin');
+  const firstInput = document.getElementById('signup-firstname');
+  const lastInput = document.getElementById('signup-lastname');
+  const branchInput = document.getElementById('signup-branch');
+  const semInput = document.getElementById('signup-semester');
+  const emailInput = document.getElementById('signup-email');
+  const passInput = document.getElementById('signup-password');
+  const submitBtn = document.getElementById('signup-submit-btn');
+  const btnText = document.getElementById('signup-btn-text');
+  const btnSpinner = document.getElementById('signup-btn-spinner');
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const pin = pinInput.value.trim().toUpperCase();
+    const firstName = firstInput.value.trim();
+    const lastName = lastInput.value.trim();
+    const branch = branchInput.value || 'CS';
+    const semester = parseInt(semInput.value, 10) || 3;
+    const email = emailInput.value.trim().toLowerCase();
+    const password = passInput.value;
+
+    if (!pin || !firstName || !email || !password) {
+      alerts.warning('Please fill in all required registration fields.');
+      return;
+    }
+
+    if (password.length < 8) {
+      alerts.danger('Password must be at least 8 characters.');
+      return;
+    }
+
+    btnText.textContent = 'Verifying Profile...';
+    btnSpinner.style.display = 'block';
+    submitBtn.disabled = true;
+
+    try {
+      const res = await api.post('/auth/register-step1', {
+        pin,
+        firstName,
+        lastName,
+        branch,
+        scheme: 'C-24',
+        semester,
+        email,
+        password,
+      });
+
+      if (res && res.success) {
+        sessionStorage.setItem('reg_pin', pin);
+        sessionStorage.setItem('reg_email', email);
+
+        alerts.success('Step 1 complete! Redirecting to Identity Verification...');
+
+        setTimeout(() => {
+          window.location.replace(`./verify-identity.html?pin=${encodeURIComponent(pin)}&email=${encodeURIComponent(email)}`);
+        }, 350);
+      }
+    } catch (err) {
+      console.warn('[Sign Up Step 1 Error]:', err);
+      btnText.textContent = 'Proceed to Step 2: Verify Identity →';
+      btnSpinner.style.display = 'none';
+      submitBtn.disabled = false;
+
+      const msg = err.data?.message || err.message || 'Registration Step 1 failed.';
+      alerts.danger(msg);
+    }
+  });
+}
+
+/**
+ * Tab 2: Student Sign In (Email / PIN + Password)
  */
 function setupStudentSignIn() {
   const form = document.getElementById('student-signin-form');
@@ -74,7 +224,7 @@ function setupStudentSignIn() {
       const res = await api.post('/auth/login', { identity, password });
 
       if (res && res.success && res.user) {
-        // Synchronously store session data
+        // Store session credentials
         localStorage.setItem('auth_token', res.token);
         localStorage.setItem('dc_auth_token', res.token);
         localStorage.setItem('user_role', res.user.role || 'STUDENT');
@@ -108,76 +258,6 @@ function setupStudentSignIn() {
           signupBtn?.click();
         }, 700);
       }
-    }
-  });
-}
-
-/**
- * Tab 2: Student Sign Up (Step 1 Registration)
- */
-function setupStudentSignUp() {
-  const form = document.getElementById('student-signup-form');
-  const pinInput = document.getElementById('signup-pin');
-  const firstInput = document.getElementById('signup-firstname');
-  const lastInput = document.getElementById('signup-lastname');
-  const branchSelect = document.getElementById('signup-branch');
-  const semSelect = document.getElementById('signup-semester');
-  const emailInput = document.getElementById('signup-email');
-  const passInput = document.getElementById('signup-password');
-  const submitBtn = document.getElementById('signup-submit-btn');
-  const btnText = document.getElementById('signup-btn-text');
-  const btnSpinner = document.getElementById('signup-btn-spinner');
-
-  form?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    const pin = pinInput.value.trim().toUpperCase();
-    const firstName = firstInput.value.trim();
-    const lastName = lastInput.value.trim();
-    const branch = branchSelect.value;
-    const semester = semSelect.value;
-    const email = emailInput.value.trim().toLowerCase();
-    const password = passInput.value;
-
-    if (password.length < 8) {
-      alerts.danger('Password must be at least 8 characters.');
-      return;
-    }
-
-    btnText.textContent = 'Verifying Profile...';
-    btnSpinner.style.display = 'block';
-    submitBtn.disabled = true;
-
-    try {
-      const res = await api.post('/auth/register-step1', {
-        pin,
-        firstName,
-        lastName,
-        branch,
-        scheme: 'C-24',
-        semester,
-        email,
-        password,
-      });
-
-      if (res && res.success) {
-        sessionStorage.setItem('reg_pin', pin);
-        sessionStorage.setItem('reg_email', email);
-
-        alerts.success('Step 1 complete! Redirecting to Secret Key Verification...');
-
-        setTimeout(() => {
-          window.location.replace(`./verify-identity.html?pin=${encodeURIComponent(pin)}&email=${encodeURIComponent(email)}`);
-        }, 350);
-      }
-    } catch (err) {
-      console.warn('[Sign Up Step 1 Error]:', err);
-      btnText.textContent = 'Proceed to Step 2: Verify Identity →';
-      btnSpinner.style.display = 'none';
-      submitBtn.disabled = false;
-
-      const msg = err.data?.message || err.message || 'Registration Step 1 failed.';
-      alerts.danger(msg);
     }
   });
 }
@@ -240,6 +320,7 @@ function setupAdminHODLogin() {
  */
 function setupPasswordToggles() {
   const eyeIcons = {
+    'toggle-signup-password': { input: 'signup-password', icon: 'eye-icon-signup' },
     'toggle-signin-password': { input: 'signin-password', icon: 'eye-icon-signin' },
     'toggle-admin-password': { input: 'admin-password', icon: 'eye-icon-admin' },
   };
@@ -249,13 +330,22 @@ function setupPasswordToggles() {
     const input = document.getElementById(config.input);
     const icon = document.getElementById(config.icon);
 
-    btn?.addEventListener('click', () => {
+    if (!btn || !input || !icon) return;
+
+    btn.addEventListener('click', () => {
       const isPassword = input.type === 'password';
       input.type = isPassword ? 'text' : 'password';
-      if (icon) {
-        icon.innerHTML = isPassword
-          ? `<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>`
-          : `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>`;
+
+      if (isPassword) {
+        icon.innerHTML = `
+          <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+          <line x1="1" y1="1" x2="23" y2="23"/>
+        `;
+      } else {
+        icon.innerHTML = `
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+          <circle cx="12" cy="12" r="3"/>
+        `;
       }
     });
   });
