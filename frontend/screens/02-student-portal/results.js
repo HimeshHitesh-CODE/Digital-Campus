@@ -9,18 +9,18 @@ import { renderDock } from '../../js/dock.js';
 import { alerts } from '../../js/alerts.js';
 
 // Resolve session of currently logged-in student
-const sessionUser = api.getUser() || JSON.parse(localStorage.getItem('dc_user') || localStorage.getItem('user') || '{}');
-const user = requireAuth(['STUDENT']) || sessionUser;
+const user = requireAuth(['STUDENT', 'HOD', 'HOD_CS', 'ADMIN']);
 
 function getActivePin() {
   const urlParams = new URLSearchParams(window.location.search);
   const queryPin = urlParams.get('pin');
   const storedPin = localStorage.getItem('student_pin');
-  const u = api.getUser() || JSON.parse(localStorage.getItem('dc_user') || localStorage.getItem('user') || '{}');
-  return (queryPin || storedPin || u.sbtetPin || u.rollNumber || u.pin || user?.sbtetPin || user?.rollNumber || '24259-CS-023').trim().toUpperCase();
+  return (queryPin || storedPin || user?.sbtetPin || user?.rollNumber || '').trim().toUpperCase();
 }
 
-renderDock('results.html', 'STUDENT');
+if (user) {
+  renderDock('results.html', user.role || 'STUDENT');
+}
 
 let activeResultsData = null;
 let currentSelectedSem = null;

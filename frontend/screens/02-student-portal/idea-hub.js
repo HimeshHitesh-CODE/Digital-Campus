@@ -9,16 +9,13 @@ import { renderDock } from '../../js/dock.js';
 import { alerts } from '../../js/alerts.js';
 
 // Verify student/HOD authentication
-const user = requireAuth(['STUDENT', 'HOD', 'HOD_CS', 'ADMIN', 'FACULTY']) || {
-  name: 'Student User',
-  rollNumber: '24259-CS-039',
-  sbtetPin: '24259-CS-039',
-  department: 'Computer Science & Engineering',
-};
+const user = requireAuth(['STUDENT', 'HOD', 'HOD_CS', 'ADMIN', 'FACULTY']);
 
 // Render Left Dock Navigation
-const isHODRole = user?.role === 'HOD' || user?.role === 'HOD_CS' || user?.role === 'ADMIN';
-renderDock('idea-hub.html', isHODRole ? 'HOD' : 'STUDENT');
+if (user) {
+  const isHODRole = user?.role === 'HOD' || user?.role === 'HOD_CS' || user?.role === 'ADMIN';
+  renderDock('idea-hub.html', isHODRole ? 'HOD' : 'STUDENT');
+}
 
 // State
 let mySkills = [];

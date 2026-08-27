@@ -99,10 +99,14 @@ function setupStudentSignIn() {
       alerts.danger(msg);
 
       if (err.data?.code === 'ACCOUNT_NOT_REGISTERED' || err.data?.code === 'NOT_REGISTERED') {
+        const signupBtn = document.getElementById('tab-student-signup');
         const signupPinInput = document.getElementById('signup-pin');
-        if (signupPinInput && identity && identity.includes('-')) {
+        if (signupPinInput && identity) {
           signupPinInput.value = identity.toUpperCase();
         }
+        setTimeout(() => {
+          signupBtn?.click();
+        }, 700);
       }
     }
   });

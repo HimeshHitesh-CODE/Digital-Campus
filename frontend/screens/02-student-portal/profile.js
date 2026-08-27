@@ -9,17 +9,12 @@ import { renderDock } from '../../js/dock.js';
 import { alerts } from '../../js/alerts.js';
 
 // Verify student authentication
-const user = requireAuth(['STUDENT']) || {
-  name: 'Kakarla Rakesh',
-  rollNumber: '24259-CS-039',
-  sbtetPin: '24259-CS-039',
-  department: 'Computer Science & Engineering',
-  curriculum: 'C-24',
-  semester: 3,
-};
+const user = requireAuth(['STUDENT', 'HOD', 'HOD_CS', 'ADMIN']);
 
 // Render Left Dock Navigation
-renderDock('profile.html', 'STUDENT');
+if (user) {
+  renderDock('profile.html', user.role || 'STUDENT');
+}
 
 document.addEventListener('DOMContentLoaded', () => {
   populateStudentProfile();

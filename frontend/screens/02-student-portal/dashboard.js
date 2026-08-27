@@ -8,26 +8,21 @@ import { renderDock } from '../../js/dock.js';
 import { alerts } from '../../js/alerts.js';
 
 // Verify authenticated student session
-const user = requireAuth(['STUDENT']) || {
-  name: 'K. Himesh',
-  rollNumber: '24259-CS-025',
-  sbtetPin: '24259-CS-025',
-  department: 'Computer Science & Engineering',
-  curriculum: 'C-24',
-  semester: 3,
-  collegeCode: '259',
-  collegeName: 'Samskruti College of Engineering and Technology',
-};
+const user = requireAuth(['STUDENT', 'HOD', 'HOD_CS', 'ADMIN']);
 
-// Mount the left dock with active state
-renderDock('dashboard.html', 'STUDENT');
+if (user) {
+  // Mount the left dock with active state
+  renderDock('dashboard.html', user.role || 'STUDENT');
 
-document.addEventListener('DOMContentLoaded', () => {
-  populateUserProfile();
-  setupInteractiveCards();
-});
+  document.addEventListener('DOMContentLoaded', () => {
+    populateUserProfile();
+    setupInteractiveCards();
+  });
+}
 
 function populateUserProfile() {
+  if (!user) return;
+
   const greetingElem = document.getElementById('user-greeting');
   const profileNameElem = document.getElementById('profile-name');
   const profilePinElem = document.getElementById('profile-pin');
@@ -35,12 +30,12 @@ function populateUserProfile() {
   const statusElem = document.getElementById('academic-status');
 
   const displayName = user.name || 'Student';
-  const pin = user.sbtetPin || user.rollNumber || '24259-CS-025';
+  const pin = user.sbtetPin || user.rollNumber || '';
   const dept = user.department || 'Computer Science & Engineering';
 
   if (greetingElem) greetingElem.textContent = `Welcome back, ${displayName}`;
   if (profileNameElem) profileNameElem.textContent = displayName;
-  if (profilePinElem) profilePinElem.textContent = `PIN: ${pin}`;
+  if (profilePinElem) profilePinElem.textContent = pin ? `PIN: ${pin}` : '';
   if (statusElem) {
     statusElem.textContent = `Samskruti College (259) • Diploma C-24 • ${dept}`;
   }

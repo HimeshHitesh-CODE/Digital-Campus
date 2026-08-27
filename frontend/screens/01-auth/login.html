@@ -27,15 +27,113 @@
 
       <!-- 3-Way Navigation Tab System -->
       <div class="auth-tab-bar">
-        <button class="auth-tab-btn active" id="tab-student-signin" data-tab="panel-student-signin">Student Sign In</button>
-        <button class="auth-tab-btn" id="tab-student-signup" data-tab="panel-student-signup">Student Sign Up</button>
+        <button class="auth-tab-btn active" id="tab-student-signup" data-tab="panel-student-signup">Student Sign Up</button>
+        <button class="auth-tab-btn" id="tab-student-signin" data-tab="panel-student-signin">Student Sign In</button>
         <button class="auth-tab-btn" id="tab-admin-login" data-tab="panel-admin-login">Admin / HOD Login</button>
       </div>
 
+      <!-- Notice Banner for Fresh Database State -->
+      <div style="margin-bottom: 1rem; padding: 8px 14px; border-radius: 8px; background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.2); font-size: 0.78rem; color: #60a5fa; text-align: center;">
+        ℹ️ <strong>First-Time Setup:</strong> Please complete <strong>Student Sign Up</strong> with your Institutional Security Key to create your password.
+      </div>
+
       <!-- ==========================================
-           TAB 1: STUDENT SIGN IN
+           TAB 2: STUDENT SIGN UP (STEP 1)
            ========================================== -->
-      <div class="auth-panel active" id="panel-student-signin">
+      <div class="auth-panel active" id="panel-student-signup">
+        <form id="student-signup-form" class="login-form">
+          
+          <div class="neu-input-group">
+            <label class="neu-input-label" for="signup-pin">Diploma PIN No (Samskruti Code: 259)</label>
+            <div class="neu-input-wrapper">
+              <input
+                type="text"
+                id="signup-pin"
+                class="neu-input"
+                placeholder="Diploma PIN (Format: 24259-XX-XXX)"
+                required
+                autocomplete="off"
+                style="text-transform: uppercase;"
+              />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="neu-input-group">
+              <label class="neu-input-label" for="signup-firstname">First Name</label>
+              <input type="text" id="signup-firstname" class="neu-input" placeholder="First Name" required />
+            </div>
+            <div class="neu-input-group">
+              <label class="neu-input-label" for="signup-lastname">Last Name</label>
+              <input type="text" id="signup-lastname" class="neu-input" placeholder="Last Name" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="neu-input-group">
+              <label class="neu-input-label" for="signup-branch">Department</label>
+              <select id="signup-branch" class="neu-input">
+                <option value="CS" selected>Computer Science & Engineering</option>
+                <option value="AI">AI & Machine Learning</option>
+                <option value="EC">Electronics & Communication</option>
+                <option value="EE">Electrical & Electronics</option>
+                <option value="M">Mechanical Engineering</option>
+                <option value="CIV">Civil Engineering</option>
+              </select>
+            </div>
+            <div class="neu-input-group">
+              <label class="neu-input-label" for="signup-semester">Current Semester</label>
+              <select id="signup-semester" class="neu-input">
+                <option value="1">1st Semester (C-24)</option>
+                <option value="2">2nd Semester (C-24)</option>
+                <option value="3" selected>3rd Semester (C-24)</option>
+                <option value="4">4th Semester (C-24)</option>
+                <option value="5">5th Semester (C-24)</option>
+                <option value="6">6th Semester (C-24)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="neu-input-group">
+            <label class="neu-input-label" for="signup-email">Official / Personal Email</label>
+            <div class="neu-input-wrapper">
+              <input
+                type="email"
+                id="signup-email"
+                class="neu-input"
+                placeholder="student@samskruti.ac.in"
+                required
+                autocomplete="email"
+              />
+            </div>
+          </div>
+
+          <div class="neu-input-group">
+            <label class="neu-input-label" for="signup-password">Create Account Password</label>
+            <div class="neu-input-wrapper password-wrapper">
+              <input
+                type="password"
+                id="signup-password"
+                class="neu-input"
+                placeholder="Minimum 8 characters"
+                required
+                autocomplete="new-password"
+                minlength="8"
+              />
+            </div>
+          </div>
+
+          <button type="submit" class="neu-btn neu-btn-primary submit-btn" id="signup-submit-btn">
+            <span id="signup-btn-text">Proceed to Step 2: Verify Identity →</span>
+            <div class="spinner" id="signup-btn-spinner" style="display: none;"></div>
+          </button>
+        </form>
+      </div>
+
+      <!-- ==========================================
+           TAB 1: STUDENT SIGN IN (RETURNING USERS)
+           ========================================== -->
+      <div class="auth-panel" id="panel-student-signin">
         <form id="student-signin-form" class="login-form">
           
           <div class="neu-input-group">
@@ -91,58 +189,6 @@
       </div>
 
       <!-- ==========================================
-           TAB 2: STUDENT SIGN UP (STEP 1)
-           ========================================== -->
-      <div class="auth-panel" id="panel-student-signup">
-        <form id="student-signup-form" class="login-form">
-          
-          <div class="neu-input-group">
-            <label class="neu-input-label" for="signup-pin">Diploma PIN No (Samskruti Code: 259)</label>
-            <div class="neu-input-wrapper">
-              <input
-                type="text"
-                id="signup-pin"
-                class="neu-input"
-                placeholder="Diploma PIN (Format: 24259-XX-XXX)"
-                required
-                autocomplete="off"
-                style="text-transform: uppercase;"
-              />
-            </div>
-          </div>
-
-          <div class="form-row">
-            <div class="neu-input-group">
-              <label class="neu-input-label" for="signup-firstname">First Name</label>
-              <input type="text" id="signup-firstname" class="neu-input" placeholder="First Name" required />
-            </div>
-            <div class="neu-input-group">
-              <label class="neu-input-label" for="signup-lastname">Last Name</label>
-              <input type="text" id="signup-lastname" class="neu-input" placeholder="Last Name" required />
-            </div>
-          </div>
-
-          <div class="form-row">
-            <div class="neu-input-group">
-              <label class="neu-input-label" for="signup-branch">Branch</label>
-              <select id="signup-branch" class="neu-input">
-                <option value="CS">Computer Science (CS)</option>
-                <option value="AI">Artificial Intelligence (AI)</option>
-                <option value="AIML">AI & Machine Learning (AIML)</option>
-                <option value="EC">Electronics (EC)</option>
-                <option value="EE">Electrical (EE)</option>
-                <option value="M">Mechanical (M)</option>
-                <option value="CIV">Civil (CIV)</option>
-              </select>
-            </div>
-            <div class="neu-input-group">
-              <label class="neu-input-label" for="signup-semester">Ongoing Semester</label>
-              <select id="signup-semester" class="neu-input">
-                <option value="3">Semester 3 (2nd Year)</option>
-                <option value="1">Semester 1 (1st Year)</option>
-                <option value="2">Semester 2 (1st Year)</option>
-                <option value="4">Semester 4 (2nd Year)</option>
-                <option value="5">Semester 5 (3rd Year)</option>
                 <option value="6">Semester 6 (3rd Year)</option>
               </select>
             </div>
