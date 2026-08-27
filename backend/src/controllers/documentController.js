@@ -110,6 +110,14 @@ export const submitDocRequest = (req, res) => {
 };
 
 /**
+ * Reset / Clear all student document requests
+ */
+export const clearDocumentRequests = () => {
+  documentRequests.length = 0;
+  return true;
+};
+
+/**
  * Process HOD Decision: Approve or Reject
  */
 export const processDocDecision = (req, res) => {

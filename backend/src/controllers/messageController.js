@@ -183,6 +183,15 @@ export const sendMessage = (req, res) => {
   return res.status(201).json({
     success: true,
     message: 'Message sent successfully.',
-    msg: newMsg
+    data: newMsg
   });
+};
+
+/**
+ * Reset / Clear all unified messaging threads and messages
+ */
+export const clearMessageData = () => {
+  unifiedThreads.clear();
+  threadMessages.clear();
+  return true;
 };

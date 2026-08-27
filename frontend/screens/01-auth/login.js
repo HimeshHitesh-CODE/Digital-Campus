@@ -95,8 +95,15 @@ function setupStudentSignIn() {
       btnSpinner.style.display = 'none';
       submitBtn.disabled = false;
 
-      const msg = err.data?.message || err.message || 'Invalid Email or Password.';
+      const msg = err.data?.message || err.message || 'Account not registered. Please complete Student Sign Up first.';
       alerts.danger(msg);
+
+      if (err.data?.code === 'ACCOUNT_NOT_REGISTERED' || err.data?.code === 'NOT_REGISTERED') {
+        const signupPinInput = document.getElementById('signup-pin');
+        if (signupPinInput && identity && identity.includes('-')) {
+          signupPinInput.value = identity.toUpperCase();
+        }
+      }
     }
   });
 }

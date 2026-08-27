@@ -179,11 +179,21 @@ export const postThreadMessage = (req, res) => {
     chatThreads.set(threadId, []);
   }
 
-  chatThreads.get(threadId).push(msg);
+  chatThreads.get(threadId).push(newMsg);
 
   return res.status(201).json({
     success: true,
-    message: 'Message sent.',
-    msg
+    message: 'Message sent successfully.',
+    data: newMsg
   });
+};
+
+/**
+ * Reset / Clear all published skills, collaboration invites, and chat threads
+ */
+export const clearCollaborationData = () => {
+  studentSkillsStore.clear();
+  collaborationRequests.length = 0;
+  chatThreads.clear();
+  return true;
 };

@@ -76,6 +76,7 @@ import { getAllPeerSkills } from './controllers/collaborationController.js';
 
 // 4. API Route Mounts
 app.use('/api/v1/auth', authRoutes);
+app.use('/api/auth', authRoutes);
 app.use('/api/v1/academics', academicRoutes);
 app.use('/api/academics', academicRoutes);
 

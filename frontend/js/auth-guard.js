@@ -31,20 +31,45 @@ export const ROUTE_PERMISSIONS = {
   'dashboard.html':          ['STUDENT', 'HOD', 'HOD_CS', 'ADMIN', 'FACULTY']
 };
 
-export function requireAuth(allowedRoles = []) {
-  const token = api.getToken() || localStorage.getItem('auth_token') || localStorage.getItem('dc_auth_token');
-  const user = api.getUser();
+/**
+ * Validate and Auto-Logout Invalidated Sessions
+ */
+export function validateActiveSession() {
+  const token = api.getToken() || localStorage.getItem('auth_token') || localStorage.getItem('dc_auth_token') || localStorage.getItem('smsk_token');
+  const user = api.getUser() || JSON.parse(localStorage.getItem('smsk_user') || localStorage.getItem('dc_user') || 'null');
 
-  // If unauthenticated
-  if (!token || !user) {
-    const isInsideScreens = window.location.pathname.includes('/screens/');
-    const loginTarget = isInsideScreens ? '../01-auth/login.html' : '/screens/01-auth/login.html';
-    
-    // Prevent redirect loops if already on auth screens
-    if (!window.location.pathname.includes('/01-auth/')) {
-      console.warn('[Auth Guard] No active session found. Redirecting to login.');
-      window.location.replace(loginTarget);
+  const currentPath = window.location.pathname;
+  const isAuthPage = currentPath.includes('/01-auth/') || currentPath.endsWith('auth.html') || currentPath.endsWith('login.html') || currentPath.endsWith('register.html') || currentPath.endsWith('verify-identity.html');
+
+  if (!token || !user || user.isRegistered === false || user.isActivated === false) {
+    // Clear all stored credentials
+    localStorage.removeItem('smsk_user');
+    localStorage.removeItem('smsk_token');
+    localStorage.removeItem('smsk_theme_session');
+    localStorage.removeItem('auth_token');
+    localStorage.removeItem('dc_auth_token');
+    localStorage.removeItem('dc_user');
+    localStorage.removeItem('user_role');
+    localStorage.removeItem('student_pin');
+    localStorage.removeItem('user_name');
+    localStorage.removeItem('session_start');
+
+    if (!isAuthPage && !currentPath.endsWith('index.html')) {
+      const prefix = currentPath.includes('/screens/') ? '..' : '/screens';
+      window.location.replace(`${prefix}/01-auth/login.html`);
     }
+    return false;
+  }
+  return true;
+}
+
+export function requireAuth(allowedRoles = []) {
+  const token = api.getToken() || localStorage.getItem('auth_token') || localStorage.getItem('dc_auth_token') || localStorage.getItem('smsk_token');
+  const user = api.getUser() || JSON.parse(localStorage.getItem('smsk_user') || localStorage.getItem('dc_user') || 'null');
+
+  // If unauthenticated or unregistered
+  if (!token || !user || user.isRegistered === false || user.isActivated === false) {
+    validateActiveSession();
     return null;
   }
 
@@ -73,7 +98,7 @@ export function requireAuth(allowedRoles = []) {
 }
 
 export function checkPageAccess() {
-  const user = api.getUser() || JSON.parse(localStorage.getItem('smsk_user') || '{}');
+  const user = api.getUser() || JSON.parse(localStorage.getItem('smsk_user') || localStorage.getItem('dc_user') || '{}');
   const currentFile = window.location.pathname.split('/').pop() || 'dashboard.html';
   const allowedRoles = ROUTE_PERMISSIONS[currentFile];
 
@@ -95,4 +120,8 @@ export function redirectToDefaultPortal(role) {
   } else {
     window.location.replace(`${prefix}/02-student-portal/dashboard.html`);
   }
+}
+
+if (typeof document !== 'undefined') {
+  document.addEventListener('DOMContentLoaded', validateActiveSession);
 }

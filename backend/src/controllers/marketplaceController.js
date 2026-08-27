@@ -106,3 +106,12 @@ export const postItemChatMessage = (req, res) => {
     msg: newMsg
   });
 };
+
+/**
+ * Reset / Clear all marketplace items and chat threads
+ */
+export const clearMarketplaceItems = () => {
+  marketplaceItems.length = 0;
+  itemChatThreads.clear();
+  return true;
+};
