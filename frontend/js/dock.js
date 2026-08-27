@@ -134,7 +134,7 @@ export function renderDock(activeFileName = '', explicitRole = null) {
 
     dock.innerHTML = `
       <div class="dock-header" style="margin-bottom: 1.5rem; display: flex; justify-content: center; width: 100%;">
-        <a href="${homeLink}" class="smsk-badge" title="Samskruti College of Engineering & Technology">SMSK</a>
+        <a href="${homeLink}" class="smsk-badge" title="Samskruti College of Engineering & Technology">SCET</a>
       </div>
 
       <nav class="dock-nav">

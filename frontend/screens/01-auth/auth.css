@@ -1,6 +1,6 @@
 /* ==========================================================================
    SAMSKRUTI DIGITAL CAMPUS - PRECISION AUTHENTICATION UI STYLES
-   Pixel-Perfect Viewport Centering, 2-Column Grid Alignment & Morphing Tab Bar
+   SCET Text Badge, Custom Glass Dropdowns, Card Depth, & Sliding Morph Tab Bar
    ========================================================================== */
 
 :root {
@@ -13,7 +13,7 @@
   --icon-color: #64748B;
   --theme-accent: #2563EB;
   --theme-accent-hover: #1D4ED8;
-  --theme-accent-glow: rgba(37, 99, 235, 0.25);
+  --theme-accent-glow: rgba(37, 99, 235, 0.28);
   --btn-gradient: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
   --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -23,11 +23,11 @@
 .theme-hod {
   --theme-accent: #059669;
   --theme-accent-hover: #047857;
-  --theme-accent-glow: rgba(5, 150, 105, 0.25);
+  --theme-accent-glow: rgba(5, 150, 105, 0.28);
   --btn-gradient: linear-gradient(135deg, #059669 0%, #047857 100%);
 }
 
-/* --- 1. Full Viewport Flexible Shell (No Top/Bottom Clipping) --- */
+/* --- 1. Full Viewport Flexible Shell --- */
 * {
   box-sizing: border-box;
 }
@@ -59,7 +59,7 @@ html, body {
   box-sizing: border-box;
 }
 
-/* --- 2. Scaled & Self-Contained Neumorphic Card --- */
+/* --- 2. Scaled & Self-Contained Neumorphic Card with Hover Reaction --- */
 .auth-card,
 .login-card {
   width: 100%;
@@ -69,16 +69,28 @@ html, body {
   padding: 2.25rem 2rem;
   box-sizing: border-box;
   box-shadow: 
-    14px 14px 28px rgba(166, 180, 200, 0.5),
+    14px 14px 28px rgba(166, 180, 200, 0.48),
     -14px -14px 28px rgba(255, 255, 255, 0.95);
   border: 1px solid var(--border-card);
   position: relative;
   margin: auto;
-  transition: border-color 0.38s var(--ease-spring),
-              box-shadow 0.38s var(--ease-spring);
+  transition: transform 0.4s var(--ease-spring),
+              box-shadow 0.4s var(--ease-spring),
+              border-color 0.3s ease;
+  will-change: transform, box-shadow;
 }
 
-/* --- 3. Balanced Institutional Header --- */
+.auth-card:hover,
+.login-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 
+    18px 18px 36px rgba(166, 180, 200, 0.55),
+    -18px -18px 36px rgba(255, 255, 255, 1),
+    0 0 24px var(--theme-accent-glow);
+  border-color: rgba(255, 255, 255, 1);
+}
+
+/* --- 3. Institutional Header & SCET Text Badge --- */
 .auth-header,
 .login-header {
   margin-bottom: 1.35rem;
@@ -91,13 +103,12 @@ html, body {
 .college-logo-container {
   display: flex;
   justify-content: center;
-  margin-bottom: 0.35rem;
+  margin-bottom: 0.4rem;
 }
 
-.college-logo-badge,
-.auth-logo {
-  width: 64px;
-  height: 64px;
+.college-logo-badge {
+  width: 62px;
+  height: 62px;
   border-radius: 50%;
   background: var(--bg-card);
   box-shadow: 
@@ -106,12 +117,23 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.25rem;
+  font-size: 1.22rem;
   font-weight: 800;
   color: var(--theme-accent);
-  letter-spacing: 0.05em;
-  border: 2px solid rgba(255, 255, 255, 0.8);
-  transition: all 0.38s var(--ease-spring);
+  letter-spacing: 0.06em;
+  border: 2px solid rgba(255, 255, 255, 0.85);
+  cursor: pointer;
+  transition: transform 0.38s var(--ease-spring),
+              box-shadow 0.38s var(--ease-spring),
+              color 0.35s ease;
+}
+
+.college-logo-badge:hover {
+  transform: translateY(-2px) scale(1.08);
+  box-shadow: 
+    4px 4px 8px rgba(166, 180, 200, 0.35),
+    -4px -4px 8px rgba(255, 255, 255, 1),
+    0 6px 16px var(--theme-accent-glow);
 }
 
 .auth-header h1,
@@ -119,7 +141,7 @@ html, body {
   font-size: 1.22rem;
   font-weight: 800;
   color: var(--text-main);
-  margin: 0.5rem 0 0.25rem 0;
+  margin: 0.4rem 0 0.2rem 0;
   line-height: 1.35;
   letter-spacing: -0.01em;
 }
@@ -224,7 +246,7 @@ html, body {
   gap: 0.95rem;
 }
 
-/* --- 6. Form Groups & Precise 2-Column Grid Alignment --- */
+/* --- 6. Form Groups & 2-Column Grid Alignment --- */
 .form-group,
 .neu-input-group {
   display: flex;
@@ -277,7 +299,7 @@ html, body {
   display: flex;
   align-items: center;
   width: 100%;
-  height: 46px; /* Uniform height for all fields */
+  height: 46px;
 }
 
 .field-icon {
@@ -335,30 +357,143 @@ html, body {
   transform: translateY(-50%) scale(1.08);
 }
 
-/* Select Dropdown Styling (Matching baseline & chevron) */
-select.neumorphic-field,
-select.neu-input {
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
+/* --- 8. Custom Glass-Neumorphic Dropdown Menu --- */
+.custom-select-container {
+  position: relative;
+  width: 100%;
+}
+
+.custom-select-trigger {
+  height: 46px;
+  width: 100%;
+  border-radius: 1rem;
+  background: var(--bg-card);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  padding: 0 0.85rem 0 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   cursor: pointer;
-  padding-right: 2rem;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 0.85rem center;
-  background-size: 14px 14px;
+  user-select: none;
+  box-sizing: border-box;
+  box-shadow: 
+    inset 3px 3px 6px rgba(166, 180, 200, 0.45),
+    inset -3px -3px 6px rgba(255, 255, 255, 0.95);
+  transition: all 0.3s var(--ease-spring);
 }
 
-select.neumorphic-field:focus,
-select.neu-input:focus {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%232563eb' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+.custom-select-trigger:focus,
+.custom-select-container.open .custom-select-trigger {
+  outline: none;
+  border-color: var(--theme-accent);
+  box-shadow: 
+    inset 4px 4px 8px rgba(166, 180, 200, 0.55),
+    inset -4px -4px 8px rgba(255, 255, 255, 1),
+    0 0 0 2px var(--theme-accent-glow);
 }
 
-.auth-card[data-active-tab="hod"] select.neumorphic-field:focus {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23059669' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+.field-icon-inline {
+  width: 17px;
+  height: 17px;
+  color: var(--icon-color);
+  flex-shrink: 0;
+  transition: color 0.3s var(--ease-spring);
 }
 
-/* Password Toggle Button */
+.custom-select-container.open .field-icon-inline {
+  color: var(--theme-accent);
+}
+
+.selected-text {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dropdown-chevron {
+  width: 16px;
+  height: 16px;
+  color: var(--icon-color);
+  flex-shrink: 0;
+  transition: transform 0.35s var(--ease-spring), color 0.2s ease;
+}
+
+.custom-select-container.open .dropdown-chevron {
+  transform: rotate(180deg);
+  color: var(--theme-accent);
+}
+
+/* Floating Glass Dropdown Panel */
+.custom-options-panel {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  background: rgba(234, 240, 247, 0.96);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: 1.25rem;
+  padding: 0.4rem;
+  box-shadow: 
+    8px 12px 24px rgba(166, 180, 200, 0.5),
+    -4px -4px 12px rgba(255, 255, 255, 0.95);
+  z-index: 120;
+  max-height: 210px;
+  overflow-y: auto;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px) scale(0.98);
+  transition: opacity 0.3s var(--ease-spring),
+              transform 0.3s var(--ease-spring),
+              visibility 0.3s ease;
+}
+
+.custom-select-container.open .custom-options-panel {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+}
+
+/* Option Items */
+.option-item {
+  padding: 0.65rem 0.85rem;
+  border-radius: 0.85rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #334155;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.option-item:hover {
+  background: var(--theme-accent-glow);
+  color: var(--theme-accent);
+  transform: translateX(3px);
+}
+
+.option-item.active {
+  background: var(--theme-accent);
+  color: #ffffff;
+  box-shadow: 0 4px 10px var(--theme-accent-glow);
+}
+
+/* Custom Scrollbar */
+.custom-options-panel::-webkit-scrollbar {
+  width: 5px;
+}
+.custom-options-panel::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 10px;
+}
+
+/* --- 9. Password Toggle --- */
 .password-wrapper .neumorphic-field,
 .password-wrapper .neu-input {
   padding-right: 2.75rem;
@@ -392,7 +527,7 @@ select.neu-input:focus {
   height: 17px;
 }
 
-/* --- 8. Options Checkbox --- */
+/* --- 10. Options Checkbox --- */
 .form-options {
   display: flex;
   align-items: center;
@@ -440,7 +575,7 @@ select.neu-input:focus {
   font-weight: 800;
 }
 
-/* --- 9. Neumorphic Submit Button --- */
+/* --- 11. Neumorphic Submit Button --- */
 .auth-submit-btn,
 .submit-btn {
   width: 100%;
@@ -484,7 +619,7 @@ select.neu-input:focus {
   transform: none;
 }
 
-/* --- 10. HOD Info Banner --- */
+/* --- 12. HOD Info Banner --- */
 .hod-info-banner {
   padding: 0.75rem 1rem;
   border-radius: 0.95rem;
@@ -502,7 +637,7 @@ select.neu-input:focus {
   border: 1px solid rgba(5, 150, 105, 0.15);
 }
 
-/* --- 11. Spinner --- */
+/* --- 13. Spinner --- */
 .spinner {
   width: 16px;
   height: 16px;
@@ -516,7 +651,7 @@ select.neu-input:focus {
   to { transform: rotate(360deg); }
 }
 
-/* --- 12. Responsive --- */
+/* --- 14. Responsive --- */
 @media (max-width: 520px) {
   .auth-page-wrapper,
   .login-body,

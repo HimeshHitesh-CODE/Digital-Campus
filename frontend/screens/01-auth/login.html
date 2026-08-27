@@ -1,3 +1,4 @@
+<!-- Synced with auth.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,10 +16,10 @@
 <body class="auth-page-wrapper">
   <div class="auth-card" id="auth-main-card" data-active-tab="signup">
     
-    <!-- Institutional Header -->
+    <!-- Institutional Header with SCET Text Badge -->
     <div class="auth-header">
       <div class="college-logo-container">
-        <div class="college-logo-badge">SCET</div>
+        <div class="college-logo-badge" title="Samskruti College of Engineering & Technology">SCET</div>
       </div>
       <h1>Samskruti College of Engineering & Technology</h1>
       <p>Unified Digital Campus • Institution Code: <strong>259</strong></p>
@@ -91,44 +92,62 @@
           </div>
         </div>
 
-        <!-- Department & Current Semester (Aligned 2-Column Grid Row) -->
+        <!-- Department & Current Semester (Custom Glass-Neumorphic Dropdowns) -->
         <div class="form-grid-row">
-          <!-- Column 1: Department -->
+          <!-- Column 1: Department Dropdown -->
           <div class="form-group">
-            <label class="field-label" for="student-dept">Department</label>
-            <div class="input-container">
-              <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
-                <line x1="8" y1="21" x2="16" y2="21"/>
-                <line x1="12" y1="17" x2="12" y2="21"/>
-              </svg>
-              <select id="student-dept" class="neumorphic-field">
-                <option value="CS" selected>Computer Science (CS)</option>
-                <option value="AI">Artificial Intelligence (AI)</option>
-                <option value="EC">Electronics (ECE)</option>
-                <option value="EE">Electrical (EEE)</option>
-                <option value="M">Mechanical (MECH)</option>
-                <option value="CIV">Civil Engineering (CIV)</option>
-              </select>
+            <label class="field-label">Department</label>
+            <div class="custom-select-container" id="dept-select-wrapper">
+              <input type="hidden" name="branch" id="dept-hidden-input" value="CS" />
+              <div class="custom-select-trigger" tabindex="0" role="combobox" aria-expanded="false">
+                <div style="display: flex; align-items: center; gap: 8px; pointer-events: none; overflow: hidden;">
+                  <svg class="field-icon-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                    <line x1="8" y1="21" x2="16" y2="21"></line>
+                    <line x1="12" y1="17" x2="12" y2="21"></line>
+                  </svg>
+                  <span class="selected-text" id="dept-selected-text">Computer Science (CS)</span>
+                </div>
+                <svg class="dropdown-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </div>
+              <div class="custom-options-panel">
+                <div class="option-item active" data-value="CS">Computer Science (CS)</div>
+                <div class="option-item" data-value="AI">Artificial Intelligence (AI)</div>
+                <div class="option-item" data-value="EC">Electronics (ECE)</div>
+                <div class="option-item" data-value="EE">Electrical (EEE)</div>
+                <div class="option-item" data-value="M">Mechanical (MECH)</div>
+                <div class="option-item" data-value="CIV">Civil Engineering (CIV)</div>
+              </div>
             </div>
           </div>
 
-          <!-- Column 2: Current Semester (Aligned) -->
+          <!-- Column 2: Current Semester Dropdown -->
           <div class="form-group">
-            <label class="field-label" for="student-sem">Current Semester</label>
-            <div class="input-container">
-              <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
-                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
-              </svg>
-              <select id="student-sem" class="neumorphic-field">
-                <option value="3" selected>3rd Semester (C-24)</option>
-                <option value="1">1st Semester (C-24)</option>
-                <option value="2">2nd Semester (C-24)</option>
-                <option value="4">4th Semester (C-24)</option>
-                <option value="5">5th Semester (C-24)</option>
-                <option value="6">6th Semester (C-24)</option>
-              </select>
+            <label class="field-label">Current Semester</label>
+            <div class="custom-select-container" id="semester-select-wrapper">
+              <input type="hidden" name="semester" id="semester-hidden-input" value="3" />
+              <div class="custom-select-trigger" tabindex="0" role="combobox" aria-expanded="false">
+                <div style="display: flex; align-items: center; gap: 8px; pointer-events: none; overflow: hidden;">
+                  <svg class="field-icon-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                  </svg>
+                  <span class="selected-text" id="sem-selected-text">3rd Semester (C-24)</span>
+                </div>
+                <svg class="dropdown-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </div>
+              <div class="custom-options-panel">
+                <div class="option-item" data-value="1">1st Semester (C-24)</div>
+                <div class="option-item" data-value="2">2nd Semester (C-24)</div>
+                <div class="option-item active" data-value="3">3rd Semester (C-24)</div>
+                <div class="option-item" data-value="4">4th Semester (C-24)</div>
+                <div class="option-item" data-value="5">5th Semester (C-24)</div>
+                <div class="option-item" data-value="6">6th Semester (C-24)</div>
+              </div>
             </div>
           </div>
         </div>

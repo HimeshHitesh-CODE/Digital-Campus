@@ -1,7 +1,7 @@
 /**
  * Samskruti Digital Campus - Precision Authentication Controller
- * Features: Hardware-accelerated Morphing Pill Tab Indicator, Dynamic Role Theming,
- * Form Validation, and Two-Step Security Registration.
+ * Features: Custom Glass-Neumorphic Dropdown Component, Morphing Pill Tab Indicator,
+ * Dynamic Role Logo Swapping (Blue vs Green), and Form Validation.
  */
 
 import { api } from '../../js/api.js';
@@ -9,6 +9,7 @@ import { alerts } from '../../js/alerts.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   setupMorphingPillTabs();
+  initCustomDropdowns();
   setupStudentSignUp();
   setupStudentSignIn();
   setupAdminHODLogin();
@@ -16,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /**
- * 1. Hardware-Accelerated Sliding Morph Pill Tab Indicator
+ * 1. Hardware-Accelerated Sliding Morph Pill Tab Indicator & Logo Swapper
  */
 function setupMorphingPillTabs() {
   const track = document.getElementById('auth-tab-track');
@@ -24,6 +25,7 @@ function setupMorphingPillTabs() {
   const tabs = document.querySelectorAll('.tab-btn');
   const card = document.getElementById('auth-main-card');
   const contents = document.querySelectorAll('.auth-tab-content');
+  const logoImg = document.getElementById('portal-brand-logo');
 
   if (!track || !pill || !tabs.length) return;
 
@@ -38,20 +40,36 @@ function setupMorphingPillTabs() {
     pill.style.width = `${btnWidth}px`;
     pill.style.transform = `translate3d(${leftOffset}px, 0, 0)`;
 
-    // Role Theme Switching: HOD gets Emerald Green, Student gets Royal Blue
+    // Role Theme & Logo Switching: HOD gets Emerald Green, Student gets Royal Blue
     const tabRole = activeBtn.dataset.tab;
     if (card) {
       card.setAttribute('data-active-tab', tabRole);
       if (tabRole === 'hod') {
         card.style.setProperty('--theme-accent', '#059669');
         card.style.setProperty('--theme-accent-hover', '#047857');
-        card.style.setProperty('--theme-accent-glow', 'rgba(5, 150, 105, 0.25)');
+        card.style.setProperty('--theme-accent-glow', 'rgba(5, 150, 105, 0.28)');
         card.style.setProperty('--btn-gradient', 'linear-gradient(135deg, #059669 0%, #047857 100%)');
+        
+        if (logoImg && !logoImg.src.includes('samskruti-logo-green.png')) {
+          logoImg.style.opacity = '0';
+          setTimeout(() => {
+            logoImg.src = '/assets/images/samskruti-logo-green.png';
+            logoImg.style.opacity = '1';
+          }, 150);
+        }
       } else {
         card.style.setProperty('--theme-accent', '#2563eb');
         card.style.setProperty('--theme-accent-hover', '#1d4ed8');
-        card.style.setProperty('--theme-accent-glow', 'rgba(37, 99, 235, 0.25)');
+        card.style.setProperty('--theme-accent-glow', 'rgba(37, 99, 235, 0.28)');
         card.style.setProperty('--btn-gradient', 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)');
+        
+        if (logoImg && !logoImg.src.includes('samskruti-logo-blue.png')) {
+          logoImg.style.opacity = '0';
+          setTimeout(() => {
+            logoImg.src = '/assets/images/samskruti-logo-blue.png';
+            logoImg.style.opacity = '1';
+          }, 150);
+        }
       }
     }
   }
@@ -90,14 +108,13 @@ function setupMorphingPillTabs() {
   if (initialTab) {
     tabs.forEach(t => t.classList.remove('active'));
     initialTab.classList.add('active');
-    // Ensure styles are rendered before computing bounding rects
     requestAnimationFrame(() => {
       updatePillPosition(initialTab);
       switchTabForm(initialTab.dataset.tab);
     });
   }
 
-  // Recalculate on Resize / Orientation Change
+  // Recalculate on Window Resize
   window.addEventListener('resize', () => {
     const currentActive = document.querySelector('.tab-btn.active');
     if (currentActive) updatePillPosition(currentActive);
@@ -105,15 +122,61 @@ function setupMorphingPillTabs() {
 }
 
 /**
- * 2. Student Sign Up (Step 1 Registration)
+ * 2. Custom Glass-Neumorphic Dropdown Controllers
+ */
+function initCustomDropdowns() {
+  document.querySelectorAll('.custom-select-container').forEach(container => {
+    const trigger = container.querySelector('.custom-select-trigger');
+    const selectedText = container.querySelector('.selected-text');
+    const hiddenInput = container.querySelector('input[type="hidden"]');
+    const options = container.querySelectorAll('.option-item');
+
+    trigger?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      // Close all other open dropdowns
+      document.querySelectorAll('.custom-select-container').forEach(other => {
+        if (other !== container) other.classList.remove('open');
+      });
+      container.classList.toggle('open');
+    });
+
+    options.forEach(opt => {
+      opt.addEventListener('click', (e) => {
+        e.stopPropagation();
+        options.forEach(o => o.classList.remove('active'));
+        opt.classList.add('active');
+        if (selectedText) selectedText.textContent = opt.textContent.trim();
+        if (hiddenInput) hiddenInput.value = opt.dataset.value;
+        container.classList.remove('open');
+      });
+    });
+  });
+
+  // Close dropdown on outside click
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.custom-select-container')) {
+      document.querySelectorAll('.custom-select-container.open').forEach(c => c.classList.remove('open'));
+    }
+  });
+
+  // Close dropdown on Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      document.querySelectorAll('.custom-select-container.open').forEach(c => c.classList.remove('open'));
+    }
+  });
+}
+
+/**
+ * 3. Student Sign Up (Step 1 Registration)
  */
 function setupStudentSignUp() {
   const form = document.getElementById('signup-form');
   const pinInput = document.getElementById('signup-pin');
   const firstInput = document.getElementById('signup-firstname');
   const lastInput = document.getElementById('signup-lastname');
-  const deptSelect = document.getElementById('student-dept');
-  const semSelect = document.getElementById('student-sem');
+  const deptInput = document.getElementById('dept-hidden-input');
+  const semInput = document.getElementById('semester-hidden-input');
   const emailInput = document.getElementById('signup-email');
   const passInput = document.getElementById('signup-password');
   const submitBtn = document.getElementById('signup-submit-btn');
@@ -126,8 +189,8 @@ function setupStudentSignUp() {
     const pin = pinInput.value.trim().toUpperCase();
     const firstName = firstInput.value.trim();
     const lastName = lastInput.value.trim();
-    const branch = deptSelect.value || 'CS';
-    const semester = parseInt(semSelect.value, 10) || 3;
+    const branch = deptInput?.value || 'CS';
+    const semester = parseInt(semInput?.value, 10) || 3;
     const email = emailInput.value.trim().toLowerCase();
     const password = passInput.value;
 
@@ -180,7 +243,7 @@ function setupStudentSignUp() {
 }
 
 /**
- * 3. Student Sign In (PIN/Email + Password)
+ * 4. Student Sign In (PIN/Email + Password)
  */
 function setupStudentSignIn() {
   const form = document.getElementById('signin-form');
@@ -247,7 +310,7 @@ function setupStudentSignIn() {
 }
 
 /**
- * 4. Admin / HOD Login
+ * 5. Admin / HOD Login
  */
 function setupAdminHODLogin() {
   const form = document.getElementById('hod-form');
@@ -297,7 +360,7 @@ function setupAdminHODLogin() {
 }
 
 /**
- * 5. Password Visibility Toggles
+ * 6. Password Visibility Toggles
  */
 function setupPasswordToggles() {
   const toggles = [
