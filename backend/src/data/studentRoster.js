@@ -8,54 +8,38 @@ import crypto from 'crypto';
 
 // Explicit predefined overrides for specified students
 const explicitKeys = {
-  '24259-CS-025': 'STD-XAz10F', // K. Himesh
+  '24259-CS-001': 'STD-LA01NS', // Gona Laxmi Narasimha Swami (Roll 1)
   '24259-CS-023': 'STD-SH23PK', // P. Shankum
+  '24259-CS-025': 'STD-XAz10F', // Karnati Himesh
+  '24259-CS-031': 'STD-AB31LA', // M. Abhilash
+  '24259-CS-036': 'STD-BI36ND', // Bindu S.
   '24259-CS-039': 'STD-B03209', // Kakarla Rakesh
-  '24259-CS-055': 'STD-HA55RS', // Harshika
-  '24259-CS-036': 'STD-BI36ND', // Bindu
-  '24259-CS-031': 'STD-AB31LA', // Abhilash
-  '24259-CS-001': 'STD-SH01AN', // Y. Shanmukh
-  '24259-CS-078': 'STD-LA78SW', // Gona Laxmi Narasimha
-  '24259-AI-119': 'STD-HI19TE', // Karnati Hitesh (AI & ML)
+  '24259-CS-055': 'STD-HA55RS', // Harshika G.
+  '24259-AI-119': 'STD-HI19TE', // Karnati Hitesh
   '24259-AIML-019': 'STD-HI19TE',
 };
 
 const explicitNames = {
-  '24259-CS-001': 'YENDAKURTI SHANMUKH',
+  '24259-CS-001': 'GONA LAXMI NARASIMHA SWAMI',
   '24259-CS-023': 'P. SHANKUM',
   '24259-CS-025': 'KARNATI HIMESH',
   '24259-CS-031': 'M. ABHILASH',
   '24259-CS-036': 'BINDU S.',
   '24259-CS-039': 'KAKARLA RAKESH',
   '24259-CS-055': 'HARSHIKA G.',
-  '24259-CS-078': 'GONA LAXMI NARASIMHA SWAMI',
   '24259-AI-119': 'KARNATI HITESH',
   '24259-AIML-019': 'KARNATI HITESH'
 };
-
-const firstNames = [
-  'SAI TEJA', 'ANIRUDH', 'PAVAN KALYAN', 'DEEPIKA', 'RAHUL', 'SNEHA', 'THARUN', 'AKHIL', 'MEGHANA', 'VARUN',
-  'NAVYA', 'VISHNU', 'PRIYANKA', 'SRIKANTH', 'ANUSHA', 'PRANAY', 'MOUNIKA', 'KALYAN', 'RAMYA', 'MANOJ',
-  'SHRAVANI', 'SAI KUMAR', 'POOJA', 'DINESH', 'SWATHI', 'CHARAN', 'KAVYA', 'NITHIN', 'BHAVANA', 'ROHIT',
-  'SOWMYA', 'ADITYA', 'SRAVANTHI', 'VENKATESH', 'DIVYA', 'SANJAY', 'TEJASWINI', 'KISHORE', 'HARINI', 'AJAY'
-];
-
-const lastNames = [
-  'KONDURU', 'MOHAMMED', 'CHILUKURI', 'VANGALA', 'GUTHA', 'BOMMA', 'TALLURI', 'DUDDU', 'REDDY', 'GOUD',
-  'KUMAR', 'RAO', 'SHARMA', 'PATEL', 'SINGH', 'VARMA', 'NAIDU', 'CHOWDHARY', 'SHAIK', 'KULKARNI'
-];
 
 export function getStudentNameForPin(pin) {
   const cleanPin = (pin || '').trim().toUpperCase();
   if (explicitNames[cleanPin]) return explicitNames[cleanPin];
 
   const match = cleanPin.match(/\d{5}-([A-Z]+)-(\d{3})/i);
-  if (!match) return `STUDENT ${cleanPin.slice(-3)}`;
+  if (!match) return `Student ${cleanPin}`;
 
   const roll = parseInt(match[2], 10);
-  const first = firstNames[(roll * 7 + 3) % firstNames.length];
-  const last = lastNames[(roll * 11 + 5) % lastNames.length];
-  return `${last} ${first}`;
+  return `Student (Roll #${String(roll).padStart(3, '0')})`;
 }
 
 export function generateInstitutionalKey(branch, pin) {
