@@ -1,211 +1,361 @@
 /* ==========================================================================
-   SBTET CONSOLIDATED ACADEMIC RESULTS STYLES
+   CAMPUS CONNECT - SBTET ACADEMIC RESULTS STYLESHEET
+   3-Column KPI Metric Cards, Aligned Semester Breakdown Table, Neumorphic Depth
    ========================================================================== */
 
-/* --- Student Profile Header Bar --- */
+.main-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+}
+
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+.welcome-text h1 {
+  font-size: 1.65rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+}
+
+.welcome-text p {
+  font-size: 0.84rem;
+  color: var(--text-secondary);
+  margin-top: 0.25rem;
+}
+
+/* --- Student Identity Profile Bar --- */
 .student-profile-bar {
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding: 16px 20px;
-  margin-bottom: 20px;
+  gap: 1.25rem;
+  padding: 1.1rem 1.5rem;
+  background: var(--surface-card);
+  border: var(--border-subtle);
+  border-radius: 1.25rem;
+  box-shadow: var(--shadow-neumorphic-card);
 }
 
 .profile-avatar-wrap {
   width: 44px;
   height: 44px;
-  border-radius: var(--radius-full);
-  background: var(--accent-primary-light);
-  color: var(--accent-primary);
+  border-radius: 0.85rem;
+  background: linear-gradient(135deg, var(--brand-blue) 0%, var(--brand-blue-hover) 100%);
+  color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  box-shadow: 0 4px 10px var(--brand-blue-glow);
+}
+
+.profile-avatar-wrap svg,
+.profile-avatar-wrap i {
+  width: 22px;
+  height: 22px;
 }
 
 .profile-info-content {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 0.15rem;
 }
 
 .profile-info-content h2 {
-  font-size: 1.15rem;
+  font-size: 1.1rem;
   font-weight: 800;
-  color: var(--text-main);
-  letter-spacing: 0.5px;
+  color: var(--text-primary);
 }
 
 .profile-pin-tag {
-  font-family: var(--font-mono);
-  font-size: 0.85rem;
-  color: var(--text-muted);
-  font-weight: 600;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.82rem;
+  color: var(--brand-blue);
+  font-weight: 700;
 }
 
 .profile-meta-pills {
   margin-left: auto;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 0.75rem;
   flex-wrap: wrap;
 }
 
-/* --- Performance Metric Cards --- */
-.performance-metrics-grid {
-  margin-bottom: 24px;
+/* ==========================================================================
+   RESULTS KPI 3-COLUMN GRID
+   ========================================================================== */
+.results-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+  margin-bottom: 0.5rem;
 }
 
-.stat-metric-card {
-  padding: 20px;
+.kpi-card {
+  padding: 1.35rem 1.5rem;
+  background: var(--surface-card);
+  border: var(--border-subtle);
+  border-radius: 1.25rem;
+  box-shadow: var(--shadow-neumorphic-card);
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  justify-content: space-between;
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.28s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.stat-label {
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: var(--text-muted);
+.kpi-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--border-highlight);
 }
 
-.stat-value {
-  font-size: 2rem;
-  font-weight: 800;
-  color: var(--text-main);
-  line-height: 1.1;
-}
-
-.stat-footer {
-  font-size: 0.78rem;
-  color: var(--text-light);
-  margin-top: 4px;
-}
-
-/* --- Marksheet Card & Semester Tabs --- */
-.marksheet-card {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.section-header {
+.kpi-card-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+}
+
+.kpi-label {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.kpi-icon-pill {
+  width: 34px;
+  height: 34px;
+  border-radius: 0.65rem;
+  background: var(--surface-raised);
+  border: var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--brand-blue);
+  box-shadow: var(--shadow-neumorphic-inset);
+}
+
+.kpi-icon-pill i,
+.kpi-icon-pill svg {
+  width: 18px;
+  height: 18px;
+}
+
+.kpi-val {
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: var(--text-primary);
+  margin: 0.6rem 0 0.25rem 0;
+  letter-spacing: -0.02em;
+}
+
+.kpi-subtext {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   SUBJECT BREAKDOWN TABLE CONTAINER
+   ========================================================================== */
+.subject-breakdown-card {
+  padding: 1.5rem;
+  background: var(--surface-card);
+  border: var(--border-subtle);
+  border-radius: 1.25rem;
+  box-shadow: var(--shadow-neumorphic-card);
+}
+
+.table-toolbar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
   flex-wrap: wrap;
+  gap: 1rem;
 }
 
 .section-title {
-  font-size: 1.15rem;
+  font-size: 1.05rem;
   font-weight: 800;
-  color: var(--text-main);
+  color: var(--text-primary);
 }
 
 .section-subtitle {
-  font-size: 0.78rem;
+  font-size: 0.75rem;
   color: var(--text-muted);
-  margin-top: 2px;
+  margin-top: 0.15rem;
 }
 
-.semester-tab-bar {
+.toolbar-controls-group {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 1rem;
   flex-wrap: wrap;
 }
 
+.semester-pill-group {
+  display: flex;
+  background: var(--surface-inset);
+  padding: 3px;
+  border-radius: 9999px;
+  border: var(--border-subtle);
+  box-shadow: var(--shadow-neumorphic-inset);
+}
+
 .sem-btn {
-  font-size: 0.8rem;
+  background: transparent;
+  border: none;
+  padding: 0.4rem 0.95rem;
+  border-radius: 9999px;
+  font-size: 0.76rem;
   font-weight: 700;
-  padding: 6px 14px;
-  border-radius: var(--radius-full);
+  color: var(--text-muted);
   cursor: pointer;
-  transition: var(--transition-smooth);
+  transition: all 0.2s ease;
+}
+
+.sem-btn:hover {
+  color: var(--text-primary);
 }
 
 .sem-btn.active {
-  background: var(--accent-primary);
+  background: var(--brand-blue);
   color: #ffffff;
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 2px 8px var(--brand-blue-glow);
 }
 
-/* --- Table Styling --- */
-.table-responsive {
+.clearance-badge-success {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.85rem;
+  border-radius: 9999px;
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: var(--brand-green);
+  font-size: 0.74rem;
+  font-weight: 800;
+}
+
+.clearance-badge-success i,
+.clearance-badge-success svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Polished Table Rows */
+.table-responsive-wrapper {
+  width: 100%;
   overflow-x: auto;
-  margin-top: 10px;
 }
 
-.neu-table {
+.neumorphic-data-table {
   width: 100%;
   border-collapse: separate;
-  border-spacing: 0 8px;
+  border-spacing: 0 0.5rem;
+  text-align: left;
 }
 
-.neu-table th {
-  padding: 12px 16px;
-  font-size: 0.76rem;
-  font-weight: 700;
+.neumorphic-data-table th {
+  padding: 0.75rem 1rem;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
   color: var(--text-muted);
-  text-align: left;
-  letter-spacing: 0.05em;
+  border-bottom: var(--border-subtle);
 }
 
-.neu-table tbody tr {
-  background: var(--bg-secondary);
-  box-shadow: var(--shadow-flat);
-  border-radius: var(--radius-sm);
-  transition: var(--transition-smooth);
+.neumorphic-data-table tbody tr {
+  background: var(--surface-raised);
+  transition: transform 0.2s ease, background-color 0.2s ease;
+  box-shadow: var(--shadow-neumorphic-card);
 }
 
-.neu-table tbody tr:hover {
+.neumorphic-data-table tbody tr:hover {
   transform: translateY(-2px);
-  box-shadow: var(--shadow-hover);
+  border-color: var(--border-highlight);
 }
 
-.neu-table td {
-  padding: 14px 16px;
-  font-size: 0.88rem;
-  font-weight: 600;
-  color: var(--text-main);
+.neumorphic-data-table td {
+  padding: 0.95rem 1rem;
+  font-size: 0.82rem;
+  color: var(--text-primary);
+  border-top: var(--border-subtle);
+  border-bottom: var(--border-subtle);
 }
 
-.neu-table td:first-child {
-  border-top-left-radius: var(--radius-sm);
-  border-bottom-left-radius: var(--radius-sm);
+.neumorphic-data-table td:first-child {
+  border-top-left-radius: 0.75rem;
+  border-bottom-left-radius: 0.75rem;
+  border-left: var(--border-subtle);
 }
 
-.neu-table td:last-child {
-  border-top-right-radius: var(--radius-sm);
-  border-bottom-right-radius: var(--radius-sm);
+.neumorphic-data-table td:last-child {
+  border-top-right-radius: 0.75rem;
+  border-bottom-right-radius: 0.75rem;
+  border-right: var(--border-subtle);
+}
+
+.text-center {
+  text-align: center;
 }
 
 .grade-pill {
   display: inline-block;
-  padding: 3px 10px;
-  border-radius: var(--radius-full);
+  padding: 0.2rem 0.55rem;
+  border-radius: 0.4rem;
   font-weight: 800;
-  font-size: 0.82rem;
-  background: var(--bg-primary);
-  box-shadow: var(--shadow-inset);
-  color: var(--accent-primary);
-  min-width: 32px;
-  text-align: center;
+  font-size: 0.74rem;
+  font-family: 'JetBrains Mono', monospace;
+  background: rgba(59, 130, 246, 0.15);
+  color: var(--brand-blue);
+  border: 1px solid rgba(59, 130, 246, 0.3);
 }
 
-.spinning {
-  animation: spin 1s linear infinite;
+.grade-aplus, .grade-a {
+  background: rgba(59, 130, 246, 0.15);
+  color: var(--brand-blue);
+  border: 1px solid rgba(59, 130, 246, 0.3);
 }
 
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+.grade-b, .grade-c {
+  background: rgba(245, 158, 11, 0.15);
+  color: var(--state-warning);
+  border: 1px solid rgba(245, 158, 11, 0.3);
 }
 
-@media (max-width: 900px) {
-  .grid-cols-3 {
-    grid-template-columns: 1fr;
-  }
+.grade-f {
+  background: rgba(239, 68, 68, 0.15);
+  color: var(--state-danger);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.status-pill {
+  display: inline-block;
+  padding: 0.25rem 0.6rem;
+  border-radius: 9999px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+.status-pass {
+  background: rgba(16, 185, 129, 0.12);
+  color: var(--brand-green);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+}
+
+.status-fail {
+  background: rgba(239, 68, 68, 0.12);
+  color: var(--state-danger);
+  border: 1px solid rgba(239, 68, 68, 0.25);
 }

@@ -160,7 +160,7 @@ function renderSemesterTabs(semestersMap, semesterList) {
     const isActive = semKey === currentSelectedSem ? 'active' : '';
 
     return `
-      <button class="neu-btn neu-btn-sm sem-btn ${isActive}" data-sem="${semKey}">
+      <button type="button" class="sem-btn ${isActive}" data-sem="${semKey}">
         ${label}
       </button>
     `;
@@ -202,33 +202,36 @@ function renderSemesterTable(semData, semKey) {
 
   if (statusBadge) {
     if (hasBacklog) {
-      statusBadge.textContent = 'BACKLOG DETECTED';
+      statusBadge.innerHTML = `<i data-lucide="alert-triangle"></i> <span>BACKLOG DETECTED</span>`;
       statusBadge.className = 'neu-badge neu-badge-danger';
     } else {
-      statusBadge.textContent = 'PASS - ALL CLEARED';
-      statusBadge.className = 'neu-badge neu-badge-success';
+      statusBadge.innerHTML = `<i data-lucide="check"></i> <span>PASS - ALL CLEARED</span>`;
+      statusBadge.className = 'clearance-badge-success';
+    }
+    if (window.lucide) {
+      lucide.createIcons();
     }
   }
 
   if (tbody) {
     if (subjects.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-muted);">No records available for this semester.</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 1.5rem;">No records available for this semester.</td></tr>`;
       return;
     }
 
     tbody.innerHTML = subjects.map(sub => {
       const isPass = sub.status === 'PASS';
-      const statusClass = isPass ? 'neu-badge-success' : 'neu-badge-danger';
+      const gradeClass = `grade-${(sub.grade || '').toLowerCase().replace('+', 'plus')}`;
 
       return `
         <tr>
-          <td><code>${sub.code}</code></td>
-          <td>${sub.name}</td>
-          <td>${sub.internal}</td>
-          <td>${sub.external}</td>
-          <td><strong>${sub.total}</strong></td>
-          <td><span class="grade-pill">${sub.grade}</span></td>
-          <td><span class="neu-badge ${statusClass}">${sub.status}</span></td>
+          <td class="font-mono font-bold">${sub.code}</td>
+          <td class="font-semibold">${sub.name}</td>
+          <td class="text-center font-mono">${sub.internal}</td>
+          <td class="text-center font-mono">${sub.external}</td>
+          <td class="text-center font-mono font-bold">${sub.total}</td>
+          <td class="text-center"><span class="grade-pill ${gradeClass}">${sub.grade}</span></td>
+          <td class="text-center"><span class="status-pill status-${isPass ? 'pass' : 'fail'}">${sub.status}</span></td>
         </tr>
       `;
     }).join('');

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SBTET Academic Results | Samskruti Digital Campus (Code: 259)</title>
+  <title>SBTET Academic Results | Campus Connect (Code: 259)</title>
   
   <link rel="stylesheet" href="../../css/reset.css" />
   <link rel="stylesheet" href="../../css/theme-tokens.css" />
@@ -21,69 +21,58 @@
     <header class="top-nav-capsule-container">
       <nav class="capsule-nav" aria-label="Campus Connect Navigation">
         
-        <!-- Brand / Institution Emblem -->
+        <!-- Institution Emblem & Brand -->
         <a href="dashboard.html" class="capsule-brand" title="Campus Connect">
           <div class="brand-emblem-badge">
-            <img 
-              src="/assets/images/samskruti-logo-blue.png" 
-              alt="Campus Connect Logo" 
-              class="brand-logo-img"
-            />
+            <img src="/assets/images/samskruti-logo-blue.png" alt="Campus Connect" class="brand-logo-img" />
           </div>
           <span class="brand-title">CAMPUS <span class="accent-text">CONNECT</span></span>
         </a>
 
         <div class="nav-divider"></div>
 
-        <!-- Working Navigation Links -->
+        <!-- Universal Navigation Items -->
         <div class="capsule-menu-items">
           <a href="dashboard.html" class="nav-item" data-page="dashboard">
             <i data-lucide="layout-dashboard" class="nav-icon"></i>
             <span>Dashboard</span>
           </a>
-          
           <a href="attendance.html" class="nav-item" data-page="attendance">
             <i data-lucide="calendar-check" class="nav-icon"></i>
             <span>Attendance</span>
           </a>
-
           <a href="results.html" class="nav-item active" data-page="results">
             <i data-lucide="graduation-cap" class="nav-icon"></i>
             <span>Results</span>
           </a>
-
           <a href="idea-hub.html" class="nav-item" data-page="idea-hub">
             <i data-lucide="lightbulb" class="nav-icon"></i>
             <span>Idea Hub</span>
           </a>
-
           <a href="marketplace.html" class="nav-item" data-page="marketplace">
             <i data-lucide="shopping-bag" class="nav-icon"></i>
             <span>Marketplace</span>
           </a>
-
           <a href="messages.html" class="nav-item" data-page="messages">
             <i data-lucide="message-square" class="nav-icon"></i>
             <span>Messages</span>
           </a>
-
           <a href="document-logistics.html" class="nav-item" data-page="document-logistics">
             <i data-lucide="file-text" class="nav-icon"></i>
             <span>Requests</span>
           </a>
-
           <a href="profile.html" class="nav-item" data-page="profile">
             <i data-lucide="user" class="nav-icon"></i>
             <span>Profile</span>
           </a>
         </div>
 
-        <!-- Capsule Controls -->
+        <!-- Utility Controls -->
         <div class="capsule-actions">
           <button id="theme-toggle-btn" class="util-btn" title="Toggle Theme" aria-label="Toggle Theme">
             <i data-lucide="sun" class="nav-icon"></i>
           </button>
-          <a href="/screens/01-auth/login.html" class="util-btn logout" title="Sign Out" aria-label="Sign Out">
+          <a href="/screens/01-auth/auth.html" class="util-btn logout" title="Sign Out" aria-label="Sign Out">
             <i data-lucide="log-out" class="nav-icon"></i>
           </a>
         </div>
@@ -100,86 +89,137 @@
           <p id="student-meta-subtitle">State Board of Technical Education & Training Official Records</p>
         </div>
         <div class="top-bar-actions">
-          <button class="neu-btn neu-btn-primary" id="sync-results-btn">
-            <svg id="sync-btn-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+          <button class="btn-primary-action" id="sync-results-btn">
+            <i data-lucide="refresh-cw" id="sync-btn-icon"></i>
             <span id="sync-btn-label">Sync Live SBTET Marks</span>
           </button>
         </div>
       </header>
 
       <!-- Student Identity Profile Card (SBTET Connect Style) -->
-      <section class="neu-card student-profile-bar">
+      <section class="neumorphic-card student-profile-bar">
         <div class="profile-avatar-wrap">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <i data-lucide="user-check"></i>
         </div>
         <div class="profile-info-content">
           <h2 id="student-display-name">Loading Student Record...</h2>
           <span class="profile-pin-tag" id="student-display-pin">--</span>
         </div>
         <div class="profile-meta-pills">
-          <span class="neu-badge neu-badge-primary">Scheme: <strong id="student-display-scheme">--</strong></span>
-          <span class="neu-badge neu-badge-primary">Branch: <strong id="student-display-branch">--</strong></span>
+          <span class="neu-badge neu-badge-primary">Scheme: <strong id="student-display-scheme">C-24</strong></span>
+          <span class="neu-badge neu-badge-primary">Branch: <strong id="student-display-branch">CS</strong></span>
           <span class="neu-badge neu-badge-success" id="gateway-status-badge">Direct SBTET Cloud Gateway</span>
         </div>
       </section>
 
-      <!-- Overall Performance Overview (3-Card Neumorphic Grid) -->
-      <section class="grid-cols-3 performance-metrics-grid">
+      <!-- 3-Column Results Summary Row -->
+      <section class="results-kpi-grid">
         
-        <!-- CGPA Metric Card -->
-        <div class="neu-card stat-metric-card">
-          <div class="stat-label">Cumulative GPA (CGPA)</div>
-          <div class="stat-value" id="res-cgpa">--</div>
-          <div class="stat-footer" id="res-scheme-footer">Scheme: Official Records</div>
+        <!-- 1. Cumulative GPA (CGPA) -->
+        <div class="neumorphic-card kpi-card">
+          <div class="kpi-card-header">
+            <span class="kpi-label">Cumulative GPA (CGPA)</span>
+            <div class="kpi-icon-pill"><i data-lucide="award"></i></div>
+          </div>
+          <div class="kpi-val font-mono" id="res-cgpa">8.36</div>
+          <span class="kpi-subtext" id="res-scheme-footer">Scheme: C24 Regular</span>
         </div>
 
-        <!-- Credits Secured Card -->
-        <div class="neu-card stat-metric-card">
-          <div class="stat-label">Total Credits Secured</div>
-          <div class="stat-value" id="res-credits">-- / --</div>
-          <div class="stat-footer" id="res-sem-footer">Academic Progress</div>
+        <!-- 2. Total Credits Secured -->
+        <div class="neumorphic-card kpi-card">
+          <div class="kpi-card-header">
+            <span class="kpi-label">Total Credits Secured</span>
+            <div class="kpi-icon-pill"><i data-lucide="check-circle-2"></i></div>
+          </div>
+          <div class="kpi-val font-mono" id="res-credits">80 / 80</div>
+          <span class="kpi-subtext" id="res-sem-footer">Latest Exam: 4SEM Cleared</span>
         </div>
 
-        <!-- Active Backlogs Card -->
-        <div class="neu-card stat-metric-card">
-          <div class="stat-label">Active Backlogs</div>
-          <div class="stat-value" id="res-backlogs">--</div>
-          <div class="stat-footer" id="res-promotion-footer">Promotion Status</div>
+        <!-- 3. Active Backlogs -->
+        <div class="neumorphic-card kpi-card">
+          <div class="kpi-card-header">
+            <span class="kpi-label">Active Backlogs</span>
+            <div class="kpi-icon-pill"><i data-lucide="shield-check"></i></div>
+          </div>
+          <div class="kpi-val font-mono" id="res-backlogs">0</div>
+          <span class="kpi-subtext" id="res-promotion-footer">Status: Promoted with Distinction</span>
         </div>
 
       </section>
 
       <!-- Marksheet Table Container with Semester Selection Tabs -->
-      <section class="neu-card marksheet-card">
-        <div class="section-header">
-          <div>
-            <h2 class="section-title" id="semester-heading">Semester IV Subject Breakdown</h2>
-            <p class="section-subtitle" id="semester-subheading">Exam Session: Official SBTET Verified Marks</p>
+      <section class="neumorphic-card subject-breakdown-card">
+        
+        <!-- Header Toolbar with Tab Buttons & Status -->
+        <div class="table-toolbar-header">
+          <div class="table-title-meta">
+            <h3 class="section-title" id="semester-heading">Semester IV Subject Breakdown</h3>
+            <p class="section-subtitle" id="semester-subheading">Exam Session: APR-2026 • SBTET Official Record</p>
           </div>
-          <div class="semester-tab-bar" id="semester-tab-bar">
-            <!-- Dynamically populated semester buttons -->
+
+          <div class="toolbar-controls-group">
+            <!-- Semester Switcher Pills -->
+            <div class="semester-pill-group" id="semester-tab-bar">
+              <button type="button" class="sem-btn" data-sem="1SEM">1st Sem</button>
+              <button type="button" class="sem-btn" data-sem="2SEM">2nd Sem</button>
+              <button type="button" class="sem-btn" data-sem="3SEM">3rd Sem</button>
+              <button type="button" class="sem-btn active" data-sem="4SEM">4th Sem</button>
+            </div>
+
+            <!-- Clearance Status Badge -->
+            <div class="clearance-badge-success" id="res-status-badge">
+              <i data-lucide="check"></i>
+              <span>PASS - ALL CLEARED</span>
+            </div>
           </div>
-          <span class="neu-badge neu-badge-success" id="res-status-badge">PASS - ALL CLEARED</span>
         </div>
 
-        <div class="table-responsive">
-          <table class="neu-table" id="results-table">
+        <!-- Polished Subject Table -->
+        <div class="table-responsive-wrapper">
+          <table class="neumorphic-data-table" id="results-table">
             <thead>
               <tr>
-                <th>SUBJECT CODE</th>
-                <th>SUBJECT TITLE</th>
-                <th>INTERNAL (40)</th>
-                <th>END SEM (60)</th>
-                <th>TOTAL (100)</th>
-                <th>GRADE</th>
-                <th>STATUS</th>
+                <th>Subject Code</th>
+                <th>Subject Title</th>
+                <th class="text-center">Internal (40)</th>
+                <th class="text-center">End Sem (60)</th>
+                <th class="text-center">Total (100)</th>
+                <th class="text-center">Grade</th>
+                <th class="text-center">Status</th>
               </tr>
             </thead>
             <tbody id="results-tbody">
-              <!-- Dynamically populated -->
+              <tr>
+                <td class="font-mono font-bold">SC-401</td>
+                <td class="font-semibold">Advanced Engineering Mathematics</td>
+                <td class="text-center font-mono">20</td>
+                <td class="text-center font-mono">32.5</td>
+                <td class="text-center font-mono font-bold">76</td>
+                <td class="text-center"><span class="grade-pill grade-a">A</span></td>
+                <td class="text-center"><span class="status-pill status-pass">PASS</span></td>
+              </tr>
+              <tr>
+                <td class="font-mono font-bold">CS-402</td>
+                <td class="font-semibold">Java Programming</td>
+                <td class="text-center font-mono">20</td>
+                <td class="text-center font-mono">32.0</td>
+                <td class="text-center font-mono font-bold">81</td>
+                <td class="text-center"><span class="grade-pill grade-a">A</span></td>
+                <td class="text-center"><span class="status-pill status-pass">PASS</span></td>
+              </tr>
+              <tr>
+                <td class="font-mono font-bold">CS-403</td>
+                <td class="font-semibold">Python Programming</td>
+                <td class="text-center font-mono">20</td>
+                <td class="text-center font-mono">37.5</td>
+                <td class="text-center font-mono font-bold">87</td>
+                <td class="text-center"><span class="grade-pill grade-aplus">A+</span></td>
+                <td class="text-center"><span class="status-pill status-pass">PASS</span></td>
+              </tr>
             </tbody>
           </table>
         </div>
+
       </section>
 
     </main>

@@ -33,7 +33,7 @@ const ATTENDANCE_STATE = {
       { day: 4, status: 'A' }, { day: 5, status: 'A' }, { day: 6, status: 'A' },
       { day: 7, status: 'A' }, { day: 8, status: 'P' }, { day: 9, status: 'A' },
       { day: 10, status: 'A' }, { day: 11, status: 'A' }, { day: 12, status: 'A' },
-      { day: 13, status: 'A' }, { day: 14, status: 'A' }, { day: 15, status: 'A' },
+      { day: 13, status: 'A' }, { day: 14, status: 'A' }, { day: 15, status: 'H' },
       { day: 16, status: 'A' }, { day: 17, status: 'A' }, { day: 18, status: 'A' },
       { day: 19, status: 'A' }, { day: 20, status: 'A' }, { day: 21, status: 'A' },
       { day: 22, status: 'A' }, { day: 23, status: 'A' }, { day: 24, status: 'A' },
