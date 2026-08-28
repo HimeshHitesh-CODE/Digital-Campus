@@ -3,20 +3,95 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Student Dashboard | Samskruti Digital Campus (Code: 259)</title>
+  <title>Student Dashboard | Campus Connect (Code: 259)</title>
   
   <!-- Base & Neumorphic Styles -->
   <link rel="stylesheet" href="../../css/reset.css" />
-  <link rel="stylesheet" href="../../css/variables.css" />
-  <link rel="stylesheet" href="../../css/neumorphic.css" />
-  <link rel="stylesheet" href="../../css/dock.css" />
+  <link rel="stylesheet" href="../../css/neumorphic-core.css" />
+  <link rel="stylesheet" href="../../css/top-nav.css" />
   <link rel="stylesheet" href="../../css/animations.css" />
-  <link rel="stylesheet" href="../../css/theme.css" />
-  <link rel="stylesheet" href="../../css/global.css" />
   <link rel="stylesheet" href="./dashboard.css" />
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
 </head>
-<body>
-  <div class="app-layout">
+<body class="student-portal-body">
+  <div class="portal-viewport-wrapper">
+    
+    <!-- 1. UNIVERSAL TOP FLOATING CAPSULE NAVIGATION -->
+    <header class="top-nav-capsule-container">
+      <nav class="capsule-nav" aria-label="Campus Connect Navigation">
+        
+        <!-- Brand / Institution Emblem -->
+        <a href="dashboard.html" class="capsule-brand" title="Campus Connect">
+          <div class="brand-emblem-badge">
+            <img 
+              src="/assets/images/samskruti-logo-blue.png" 
+              alt="Campus Connect Logo" 
+              class="brand-logo-img"
+            />
+          </div>
+          <span class="brand-title">CAMPUS <span class="accent-text">CONNECT</span></span>
+        </a>
+
+        <div class="nav-divider"></div>
+
+        <!-- Working Navigation Links -->
+        <div class="capsule-menu-items">
+          <a href="dashboard.html" class="nav-item active" data-page="dashboard">
+            <i data-lucide="layout-dashboard" class="nav-icon"></i>
+            <span>Dashboard</span>
+          </a>
+          
+          <a href="attendance.html" class="nav-item" data-page="attendance">
+            <i data-lucide="calendar-check" class="nav-icon"></i>
+            <span>Attendance</span>
+          </a>
+
+          <a href="results.html" class="nav-item" data-page="results">
+            <i data-lucide="graduation-cap" class="nav-icon"></i>
+            <span>Results</span>
+          </a>
+
+          <a href="idea-hub.html" class="nav-item" data-page="idea-hub">
+            <i data-lucide="lightbulb" class="nav-icon"></i>
+            <span>Idea Hub</span>
+          </a>
+
+          <a href="marketplace.html" class="nav-item" data-page="marketplace">
+            <i data-lucide="shopping-bag" class="nav-icon"></i>
+            <span>Marketplace</span>
+          </a>
+
+          <a href="messages.html" class="nav-item" data-page="messages">
+            <i data-lucide="message-square" class="nav-icon"></i>
+            <span>Messages</span>
+          </a>
+
+          <a href="document-logistics.html" class="nav-item" data-page="document-logistics">
+            <i data-lucide="file-text" class="nav-icon"></i>
+            <span>Requests</span>
+          </a>
+
+          <a href="profile.html" class="nav-item" data-page="profile">
+            <i data-lucide="user" class="nav-icon"></i>
+            <span>Profile</span>
+          </a>
+        </div>
+
+        <!-- Capsule Controls -->
+        <div class="capsule-actions">
+          <button id="theme-toggle-btn" class="util-btn" title="Toggle Theme" aria-label="Toggle Theme">
+            <i data-lucide="sun" class="nav-icon"></i>
+          </button>
+          <a href="/screens/01-auth/login.html" class="util-btn logout" title="Sign Out" aria-label="Sign Out">
+            <i data-lucide="log-out" class="nav-icon"></i>
+          </a>
+        </div>
+
+      </nav>
+    </header>
+
     <main class="main-content">
       
       <!-- Top Navigation & Profile Bar -->
@@ -36,7 +111,7 @@
         </div>
       </header>
 
-      <!-- 1. Hero Presentation Section (Matching Image) -->
+      <!-- 1. Hero Presentation Section -->
       <section class="hero-section neu-card">
         <div class="hero-content">
           <div class="hero-badge-row">
@@ -50,25 +125,25 @@
           </p>
           <div class="hero-cta-group">
             <a href="./attendance.html" class="neu-btn neu-btn-primary hero-btn">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              <i data-lucide="calendar-check" class="w-4 h-4"></i>
               Attendance Portal
             </a>
             <a href="./results.html" class="neu-btn hero-btn">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
+              <i data-lucide="graduation-cap" class="w-4 h-4"></i>
               SBTET Results
             </a>
           </div>
         </div>
       </section>
 
-      <!-- 2. Institutional Overview Stats Grid (Matching Image) -->
+      <!-- 2. Institutional Overview Stats Grid -->
       <section class="stats-overview-grid">
         <div class="neu-card stat-box" onclick="window.location.href='./results.html'" style="cursor: pointer;">
           <span class="stat-number">259</span>
           <span class="stat-label">Official College Code</span>
           <p class="stat-desc">SBTET & JNTUH Recognized Institution</p>
         </div>
-        <div class="neu-card stat-box" onclick="window.location.href='./academics.html'" style="cursor: pointer;">
+        <div class="neu-card stat-box" onclick="window.location.href='./attendance.html'" style="cursor: pointer;">
           <span class="stat-number">8+</span>
           <span class="stat-label">Engineering & Diploma Branches</span>
           <p class="stat-desc">Specializations in AI, CSE, AIML, EC, EE, MECH, CIV</p>
@@ -80,7 +155,7 @@
         </div>
       </section>
 
-      <!-- 3. Unified Digital Campus Architecture (Matching Image) -->
+      <!-- 3. Unified Digital Campus Architecture -->
       <section class="platform-features-section">
         <div class="section-heading-center">
           <h2 class="section-main-title">Unified Digital Campus Architecture</h2>
@@ -92,25 +167,25 @@
           <!-- Feature Card 1: Attendance -->
           <div class="neu-card feature-card" onclick="window.location.href='./attendance.html'" style="cursor: pointer;">
             <div class="feature-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <i data-lucide="calendar-check"></i>
             </div>
             <h3>Live SBTET Attendance Tracking</h3>
             <p>Real-time synchronization with SBTET biometric servers, daily period logs, and automated 75% condonation alert meters.</p>
           </div>
 
           <!-- Feature Card 2: Documents -->
-          <div class="neu-card feature-card" onclick="window.location.href='./doc-request.html'" style="cursor: pointer;">
+          <div class="neu-card feature-card" onclick="window.location.href='./document-logistics.html'" style="cursor: pointer;">
             <div class="feature-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              <i data-lucide="file-text"></i>
             </div>
             <h3>Physical Document Handover Logistics</h3>
             <p>Digitized requests for Bonafide, Custodian, and NOC certificates with HOD approval workflows and 6-digit counter pickup OTPs.</p>
           </div>
 
           <!-- Feature Card 3: Surplus Market -->
-          <div class="neu-card feature-card" onclick="window.location.href='./surplus-market.html'" style="cursor: pointer;">
+          <div class="neu-card feature-card" onclick="window.location.href='./marketplace.html'" style="cursor: pointer;">
             <div class="feature-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/></svg>
+              <i data-lucide="shopping-bag"></i>
             </div>
             <h3>Student Surplus Resale Hub</h3>
             <p>Campus-exclusive verified peer marketplace to buy and sell engineering drafters, lab coats, textbooks, and calculators safely.</p>
@@ -119,7 +194,7 @@
           <!-- Feature Card 4: Results & Backlogs -->
           <div class="neu-card feature-card" onclick="window.location.href='./results.html'" style="cursor: pointer;">
             <div class="feature-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26c1.81-1.27 3-3.36 3-5.74a7 7 0 0 0-7-7z"/></svg>
+              <i data-lucide="graduation-cap"></i>
             </div>
             <h3>SBTET Grade Sheets & Backlog Tracker</h3>
             <p>Institutional results engine with instant SGPA/CGPA calculations, backlog status, and verified academic transcripts.</p>
@@ -128,7 +203,7 @@
         </div>
       </section>
 
-      <!-- 4. Academic Disciplines & Branches (Matching Image) -->
+      <!-- 4. Academic Disciplines & Branches -->
       <section class="departments-section neu-card">
         <div class="section-header">
           <h2 class="section-title">Academic Disciplines & Branches (Code: 259)</h2>
@@ -195,11 +270,11 @@
         </div>
       </section>
 
-      <!-- 5. Official Circulars & Examination Announcements (Matching Image) -->
+      <!-- 5. Official Circulars & Examination Announcements -->
       <section class="notices-section neu-card">
         <div class="section-header">
           <h2 class="section-title">Official Circulars & Examination Announcements</h2>
-          <a href="./academics.html" class="neu-btn" style="font-size: 0.82rem; padding: 6px 16px;">View All in Portal →</a>
+          <a href="./results.html" class="neu-btn" style="font-size: 0.82rem; padding: 6px 16px;">View All in Portal →</a>
         </div>
         <div class="circulars-list">
           
@@ -228,6 +303,7 @@
   </div>
 
   <!-- Screen Scripts -->
+  <script type="module" src="../../js/top-nav.js"></script>
   <script type="module" src="./dashboard.js"></script>
 </body>
 </html>

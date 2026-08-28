@@ -7,16 +7,89 @@
 
   <!-- Neumorphic Base Styles -->
   <link rel="stylesheet" href="../../css/reset.css" />
-  <link rel="stylesheet" href="../../css/variables.css" />
-  <link rel="stylesheet" href="../../css/neumorphic.css" />
-  <link rel="stylesheet" href="../../css/dock.css" />
+  <link rel="stylesheet" href="../../css/neumorphic-core.css" />
+  <link rel="stylesheet" href="../../css/top-nav.css" />
   <link rel="stylesheet" href="../../css/animations.css" />
-  <link rel="stylesheet" href="../../css/theme.css" />
-  <link rel="stylesheet" href="../../css/global.css" />
   <link rel="stylesheet" href="./idea-hub.css" />
+  <script src="https://unpkg.com/lucide@latest"></script>
 </head>
-<body>
-  <div class="app-layout">
+<body class="student-portal-body">
+  <div class="portal-viewport-wrapper">
+    
+    <!-- 1. UNIVERSAL TOP FLOATING CAPSULE NAVIGATION -->
+    <header class="top-nav-capsule-container">
+      <nav class="capsule-nav" aria-label="Campus Connect Navigation">
+        
+        <!-- Brand / Institution Emblem -->
+        <a href="dashboard.html" class="capsule-brand" title="Campus Connect">
+          <div class="brand-emblem-badge">
+            <img 
+              src="/assets/images/samskruti-logo-blue.png" 
+              alt="Campus Connect Logo" 
+              class="brand-logo-img"
+            />
+          </div>
+          <span class="brand-title">CAMPUS <span class="accent-text">CONNECT</span></span>
+        </a>
+
+        <div class="nav-divider"></div>
+
+        <!-- Working Navigation Links -->
+        <div class="capsule-menu-items">
+          <a href="dashboard.html" class="nav-item" data-page="dashboard">
+            <i data-lucide="layout-dashboard" class="nav-icon"></i>
+            <span>Dashboard</span>
+          </a>
+          
+          <a href="attendance.html" class="nav-item" data-page="attendance">
+            <i data-lucide="calendar-check" class="nav-icon"></i>
+            <span>Attendance</span>
+          </a>
+
+          <a href="results.html" class="nav-item" data-page="results">
+            <i data-lucide="graduation-cap" class="nav-icon"></i>
+            <span>Results</span>
+          </a>
+
+          <a href="idea-hub.html" class="nav-item active" data-page="idea-hub">
+            <i data-lucide="lightbulb" class="nav-icon"></i>
+            <span>Idea Hub</span>
+          </a>
+
+          <a href="marketplace.html" class="nav-item" data-page="marketplace">
+            <i data-lucide="shopping-bag" class="nav-icon"></i>
+            <span>Marketplace</span>
+          </a>
+
+          <a href="messages.html" class="nav-item" data-page="messages">
+            <i data-lucide="message-square" class="nav-icon"></i>
+            <span>Messages</span>
+          </a>
+
+          <a href="document-logistics.html" class="nav-item" data-page="document-logistics">
+            <i data-lucide="file-text" class="nav-icon"></i>
+            <span>Requests</span>
+          </a>
+
+          <a href="profile.html" class="nav-item" data-page="profile">
+            <i data-lucide="user" class="nav-icon"></i>
+            <span>Profile</span>
+          </a>
+        </div>
+
+        <!-- Capsule Controls -->
+        <div class="capsule-actions">
+          <button id="theme-toggle-btn" class="util-btn" title="Toggle Theme" aria-label="Toggle Theme">
+            <i data-lucide="sun" class="nav-icon"></i>
+          </button>
+          <a href="/screens/01-auth/login.html" class="util-btn logout" title="Sign Out" aria-label="Sign Out">
+            <i data-lucide="log-out" class="nav-icon"></i>
+          </a>
+        </div>
+
+      </nav>
+    </header>
+
     <main class="main-content">
       
       <!-- Top Bar Header -->
@@ -258,6 +331,7 @@
     </div>
   </div>
 
+  <script type="module" src="../../js/top-nav.js"></script>
   <script type="module" src="./idea-hub.js"></script>
 </body>
 </html>

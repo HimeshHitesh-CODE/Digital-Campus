@@ -2,16 +2,182 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta http-equiv="refresh" content="0; url=./doc-request.html" />
-  <title>Redirecting to Document Logistics...</title>
-  <script>
-    window.location.replace('./doc-request.html');
-  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Document Logistics & Requests | Campus Connect (Code: 259)</title>
+  
+  <link rel="stylesheet" href="../../css/reset.css" />
+  <link rel="stylesheet" href="../../css/neumorphic-core.css" />
+  <link rel="stylesheet" href="../../css/top-nav.css" />
+  <link rel="stylesheet" href="../../css/animations.css" />
+  <link rel="stylesheet" href="./doc-request.css" />
+  
+  <script src="https://unpkg.com/lucide@latest"></script>
 </head>
-<body style="background: #E8ECF2; display: flex; align-items: center; justify-content: center; height: 100vh; font-family: system-ui, sans-serif; color: #4A5568;">
-  <div style="text-align: center;">
-    <h2>Samskruti Digital Campus</h2>
-    <p>Redirecting to Document Logistics...</p>
+<body class="student-portal-body">
+  <div class="portal-viewport-wrapper">
+    
+    <!-- 1. UNIVERSAL TOP FLOATING CAPSULE NAVIGATION -->
+    <header class="top-nav-capsule-container">
+      <nav class="capsule-nav" aria-label="Campus Connect Navigation">
+        
+        <!-- Brand / Institution Emblem -->
+        <a href="dashboard.html" class="capsule-brand" title="Campus Connect">
+          <div class="brand-emblem-badge">
+            <img 
+              src="/assets/images/samskruti-logo-blue.png" 
+              alt="Campus Connect Logo" 
+              class="brand-logo-img"
+            />
+          </div>
+          <span class="brand-title">CAMPUS <span class="accent-text">CONNECT</span></span>
+        </a>
+
+        <div class="nav-divider"></div>
+
+        <!-- Working Navigation Links -->
+        <div class="capsule-menu-items">
+          <a href="dashboard.html" class="nav-item" data-page="dashboard">
+            <i data-lucide="layout-dashboard" class="nav-icon"></i>
+            <span>Dashboard</span>
+          </a>
+          
+          <a href="attendance.html" class="nav-item" data-page="attendance">
+            <i data-lucide="calendar-check" class="nav-icon"></i>
+            <span>Attendance</span>
+          </a>
+
+          <a href="results.html" class="nav-item" data-page="results">
+            <i data-lucide="graduation-cap" class="nav-icon"></i>
+            <span>Results</span>
+          </a>
+
+          <a href="idea-hub.html" class="nav-item" data-page="idea-hub">
+            <i data-lucide="lightbulb" class="nav-icon"></i>
+            <span>Idea Hub</span>
+          </a>
+
+          <a href="marketplace.html" class="nav-item" data-page="marketplace">
+            <i data-lucide="shopping-bag" class="nav-icon"></i>
+            <span>Marketplace</span>
+          </a>
+
+          <a href="messages.html" class="nav-item" data-page="messages">
+            <i data-lucide="message-square" class="nav-icon"></i>
+            <span>Messages</span>
+          </a>
+
+          <a href="document-logistics.html" class="nav-item active" data-page="document-logistics">
+            <i data-lucide="file-text" class="nav-icon"></i>
+            <span>Requests</span>
+          </a>
+
+          <a href="profile.html" class="nav-item" data-page="profile">
+            <i data-lucide="user" class="nav-icon"></i>
+            <span>Profile</span>
+          </a>
+        </div>
+
+        <!-- Capsule Controls -->
+        <div class="capsule-actions">
+          <button id="theme-toggle-btn" class="util-btn" title="Toggle Theme" aria-label="Toggle Theme">
+            <i data-lucide="sun" class="nav-icon"></i>
+          </button>
+          <a href="/screens/01-auth/login.html" class="util-btn logout" title="Sign Out" aria-label="Sign Out">
+            <i data-lucide="log-out" class="nav-icon"></i>
+          </a>
+        </div>
+
+      </nav>
+    </header>
+
+    <main class="main-content">
+      
+      <header class="top-bar">
+        <div class="welcome-text">
+          <h1>Document Logistics & Counter Pickup</h1>
+          <p id="doc-student-meta">Samskruti College (Code: 259) • Direct HOD Approval & Counter OTP Verification</p>
+        </div>
+        <div class="top-bar-actions">
+          <button class="neu-btn" id="refresh-docs-btn">
+            <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+            Refresh Status
+          </button>
+        </div>
+      </header>
+
+      <div class="grid-dashboard">
+        
+        <!-- Left: Raise New Document Request -->
+        <div class="neu-card">
+          <div class="section-header">
+            <h2 class="section-title">New Certificate Request</h2>
+          </div>
+
+          <form id="doc-request-form" class="doc-form">
+            <div class="neu-input-group">
+              <label class="neu-input-label" for="doc-type">Document Type</label>
+              <select class="neu-input" id="doc-type" required>
+                <option value="BONAFIDE">Bonafide Certificate (Scholarship / Bank)</option>
+                <option value="CUSTODIAN">Custodian Certificate (Originals Verification)</option>
+                <option value="NO_OBJECTION">No Objection Certificate (NOC for Internship)</option>
+                <option value="TRANSCRIPT">Official Academic Transcript</option>
+                <option value="CUSTOM">Custom Document Request</option>
+              </select>
+            </div>
+
+            <!-- Expandable Custom Document Fields -->
+            <div id="custom-doc-fields" style="display: none;" class="custom-fields-panel">
+              <div class="neu-input-group">
+                <label class="neu-input-label" for="custom-doc-title">Custom Document Title</label>
+                <input type="text" class="neu-input" id="custom-doc-title" placeholder="Specific Certificate / Document Name" />
+              </div>
+
+              <div class="neu-input-group">
+                <label class="neu-input-label" for="custom-doc-format">Required Format & Medium</label>
+                <select class="neu-input" id="custom-doc-format">
+                  <option value="Official College Letterhead with Seal">Official College Letterhead with Seal</option>
+                  <option value="Printed Certificate on Stamped Bond">Printed Certificate on Stamped Bond</option>
+                  <option value="Digital Verified PDF Copy">Digital Verified PDF Copy</option>
+                  <option value="HOD Attested Copy">HOD Attested Copy</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="neu-input-group">
+              <label class="neu-input-label" for="doc-purpose">Purpose of Request</label>
+              <textarea class="neu-input" id="doc-purpose" rows="3" placeholder="State reason (State Post-Matric Scholarship / Passport Office / Internship Clearance)" required></textarea>
+            </div>
+
+            <div class="neu-input-group">
+              <label class="neu-input-label" for="doc-copies">Copies Needed</label>
+              <input type="number" class="neu-input" id="doc-copies" min="1" max="5" value="1" required />
+            </div>
+
+            <button type="submit" class="neu-btn neu-btn-primary" id="doc-submit-btn" style="margin-top: 10px;">
+              Submit to Department HOD for Approval
+            </button>
+          </form>
+        </div>
+
+        <!-- Right: Active Requests & Pickup OTP Cards -->
+        <div class="side-column">
+          <div class="neu-card">
+            <div class="section-header">
+              <h2 class="section-title">Active Requests Queue</h2>
+            </div>
+            
+            <div class="active-doc-list" id="active-doc-list">
+              <!-- Dynamically populated states: Approved with OTP, Declined with reason, Pending, No requests -->
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </main>
   </div>
+
+  <script type="module" src="../../js/top-nav.js"></script>
+  <script type="module" src="./doc-request.js"></script>
 </body>
 </html>

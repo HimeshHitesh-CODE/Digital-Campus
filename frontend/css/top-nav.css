@@ -1,0 +1,181 @@
+/* ==========================================================================
+   UNIVERSAL TOP CAPSULE NAVIGATION (CAMPUS CONNECT)
+   Pure Neumorphic Depth, Tactile Soft Shadows, Inset Highlighting
+   ========================================================================== */
+
+:root {
+  --nav-bg: rgba(12, 19, 34, 0.88);
+  --nav-surface-raised: #131d31;
+  --nav-surface-active: #18253d;
+  --nav-border: 1px solid rgba(255, 255, 255, 0.08);
+  --nav-border-active: 1px solid rgba(59, 130, 246, 0.45);
+  --nav-text-main: #f8fafc;
+  --nav-text-muted: #94a3b8;
+  --nav-brand-blue: #3b82f6;
+  --nav-shadow: 
+    0 12px 30px rgba(0, 0, 0, 0.5),
+    inset 0 1px 1px rgba(255, 255, 255, 0.08);
+}
+
+/* Global Centered Shell (No Left Sidebar Offset) */
+.portal-viewport-wrapper,
+.main-content-viewport,
+.app-shell,
+.app-layout {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 1.25rem 2rem 3rem 2rem;
+  box-sizing: border-box;
+}
+
+/* Floating Capsule Container */
+.top-nav-capsule-container {
+  position: sticky;
+  top: 1.25rem;
+  z-index: 120;
+  width: 100%;
+  margin-bottom: 2rem;
+}
+
+.capsule-nav {
+  height: 66px;
+  background: var(--nav-bg);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-radius: 9999px;
+  border: var(--nav-border);
+  box-shadow: var(--nav-shadow);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.25rem;
+  box-sizing: border-box;
+}
+
+/* Brand Emblem */
+.capsule-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+  color: var(--nav-text-main);
+  flex-shrink: 0;
+}
+
+.brand-emblem-badge {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--nav-surface-raised);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  box-sizing: border-box;
+  box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.5), inset -2px -2px 5px rgba(255, 255, 255, 0.05);
+}
+
+.brand-logo-img {
+  width: 100%;
+  height: 100%;
+  max-width: 26px;
+  max-height: 26px;
+  object-fit: contain;
+  display: block;
+}
+
+.brand-title {
+  font-size: 0.88rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: #f8fafc;
+}
+
+.brand-title .accent-text {
+  color: var(--nav-brand-blue);
+  font-weight: 500;
+}
+
+.nav-divider {
+  width: 1px;
+  height: 26px;
+  background: rgba(255, 255, 255, 0.08);
+  margin: 0 0.5rem;
+}
+
+/* Navigation Links */
+.capsule-menu-items {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex: 1;
+  justify-content: center;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.95rem;
+  border-radius: 9999px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--nav-text-muted);
+  text-decoration: none;
+  background: transparent;
+  border: 1px solid transparent;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+}
+
+.nav-icon {
+  width: 16px;
+  height: 16px;
+  stroke-width: 2px;
+}
+
+.nav-item:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.nav-item.active {
+  color: #ffffff;
+  background: var(--nav-surface-active);
+  border: var(--nav-border-active);
+  box-shadow: 
+    0 4px 12px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+/* Utility Action Buttons */
+.capsule-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.util-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--nav-surface-raised);
+  border: var(--nav-border);
+  color: var(--nav-text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+.util-btn:hover {
+  color: #ffffff;
+  transform: translateY(-1px);
+  border-color: rgba(255, 255, 255, 0.15);
+}
