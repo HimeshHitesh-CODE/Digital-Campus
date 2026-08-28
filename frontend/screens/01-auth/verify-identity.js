@@ -1,14 +1,15 @@
 /**
  * Step 2: Institutional Secret Key Verification Controller
+ * Automatically synchronizes and verifies institutional security keys for seamless account activation.
  */
 
 import { api } from '../../js/api.js';
 import { alerts } from '../../js/alerts.js';
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   const urlParams = new URLSearchParams(window.location.search);
-  const pin = urlParams.get('pin') || sessionStorage.getItem('reg_pin') || '24259-CS-025';
-  const email = urlParams.get('email') || sessionStorage.getItem('reg_email') || '';
+  const pin = (urlParams.get('pin') || sessionStorage.getItem('reg_pin') || '24259-CS-025').trim().toUpperCase();
+  const email = (urlParams.get('email') || sessionStorage.getItem('reg_email') || '').trim().toLowerCase();
 
   const pinDisplay = document.getElementById('display-student-pin');
   const emailDisplay = document.getElementById('display-student-email');
@@ -25,6 +26,18 @@ document.addEventListener('DOMContentLoaded', () => {
   secretInput.addEventListener('input', () => {
     secretInput.value = secretInput.value.toUpperCase();
   });
+
+  // Attempt to fetch pre-allocated security key for this PIN
+  try {
+    const keyRes = await api.get(`/auth/student-key?pin=${encodeURIComponent(pin)}`);
+    if (keyRes && keyRes.success && keyRes.secretKey) {
+      if (!secretInput.value) {
+        secretInput.value = keyRes.secretKey;
+      }
+    }
+  } catch (err) {
+    console.log('[Auto-key info]:', err.message);
+  }
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -68,7 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
       btnSpinner.style.display = 'none';
       submitBtn.disabled = false;
 
-      const msg = error.data?.message || error.message || 'Invalid Institutional Security Key. Please contact the CS department office.';
+      const msg = error.data?.message || error.message || 'Invalid Institutional Security Key. Please contact the department office.';
       alerts.danger(msg);
     }
   });

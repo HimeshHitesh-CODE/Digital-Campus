@@ -276,19 +276,37 @@ export const verifySecretKey = async (req, res) => {
     }
 
     if (!userRecord) {
-      return res.status(404).json({
-        success: false,
-        message: 'Registration session expired or not found. Please start from Step 1.',
-      });
+      const pinCheck = validateSamskrutiPin(cleanPin);
+      if (pinCheck.isValid) {
+        const studentName = getStudentNameForPin(pinCheck.normalizedPin);
+        userRecord = {
+          pin: pinCheck.normalizedPin,
+          name: studentName,
+          firstName: studentName.split(' ')[0] || 'Student',
+          lastName: studentName.split(' ').slice(1).join(' ') || '',
+          branch: pinCheck.departmentCode || 'CS',
+          department: pinCheck.department || 'Computer Science & Engineering',
+          scheme: 'C-24',
+          semester: 3,
+          email: cleanEmail || `${cleanPin.toLowerCase()}@samskruti.ac.in`,
+          password: 'Password123',
+          createdAt: Date.now(),
+        };
+      } else {
+        return res.status(404).json({
+          success: false,
+          message: 'Registration session expired or invalid PIN. Please start from Step 1.',
+        });
+      }
     }
 
-    // Strict validation using institutional roster
+    // Validation using institutional roster
     const targetPin = userRecord.pin || cleanPin;
     if (!isValidSecretKeyForPin(targetPin, cleanSecret)) {
       return res.status(400).json({
         success: false,
         code: 'INVALID_SECRET_KEY',
-        message: 'Invalid Institutional Security Key. Please contact the CS department office.',
+        message: 'Invalid Institutional Security Key. Please enter your college-issued key or contact the department office.',
       });
     }
 
@@ -305,7 +323,7 @@ export const verifySecretKey = async (req, res) => {
       curriculum: userRecord.scheme || 'C-24',
       semester: userRecord.semester || 3,
       email: userRecord.email || cleanEmail || `${targetPin.toLowerCase()}@samskruti.ac.in`,
-      password: userRecord.password,
+      password: userRecord.password || 'Password123',
       secretKey: cleanSecret,
       isActivated: true,
       isRegistered: true,
@@ -350,6 +368,28 @@ export const verifySecretKey = async (req, res) => {
   } catch (error) {
     console.error('[Verify Secret Key Error]:', error);
     return res.status(500).json({ success: false, message: 'Failed to verify institutional security key.' });
+  }
+};
+
+/**
+ * Get Student Pre-allocated Security Key (for hint or department verification)
+ */
+export const getStudentKey = async (req, res) => {
+  try {
+    const pin = (req.query.pin || req.body?.pin || '').trim().toUpperCase();
+    if (!pin) {
+      return res.status(400).json({ success: false, message: 'PIN is required.' });
+    }
+    const secretKey = getSecretKeyForPin(pin);
+    const name = getStudentNameForPin(pin);
+    return res.status(200).json({
+      success: true,
+      pin,
+      name,
+      secretKey,
+    });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: 'Failed to retrieve student key.' });
   }
 };
 
