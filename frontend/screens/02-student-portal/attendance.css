@@ -1,180 +1,15 @@
 /* ==========================================================================
    CAMPUS CONNECT - ATTENDANCE INTELLIGENCE STYLESHEET
-   Pure Tactile Neumorphism (Zero Neon Glows), Midnight Base, 7-Col Matrix
+   Dual Light/Dark Neumorphism, 7-Column Calendar, Tactile 120Hz Micro-Interactions
    ========================================================================== */
-
-/* Base Canvas & System Reset */
-*, *::before, *::after {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body.student-portal-body {
-  background: var(--bg-base, #0a0f1d);
-  background-image: radial-gradient(circle at 50% 0%, #111c35 0%, #070b14 75%);
-  background-attachment: fixed;
-  color: var(--text-main, #f8fafc);
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  min-height: 100vh;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
 
 .font-mono {
   font-family: 'JetBrains Mono', 'Fira Code', monospace;
   font-variant-numeric: tabular-nums;
 }
 
-.portal-viewport-wrapper {
-  max-width: 1520px;
-  margin: 0 auto;
-  padding: 1.25rem 2rem 3rem 2rem;
-}
-
 /* ==========================================================================
-   1. TOP FLOATING CAPSULE NAVIGATION
-   ========================================================================== */
-.top-nav-capsule-container {
-  position: sticky;
-  top: 1rem;
-  z-index: 100;
-  margin-bottom: 2rem;
-}
-
-.capsule-nav {
-  height: 68px;
-  background: rgba(15, 23, 42, 0.9);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-radius: var(--radius-pill, 9999px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 
-    0 12px 32px rgba(0, 0, 0, 0.5),
-    inset 0 1px 1px rgba(255, 255, 255, 0.08);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 1.25rem;
-  transition: border-color var(--transition-fast, 0.2s ease);
-}
-
-.capsule-brand {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.brand-emblem-badge {
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  background: var(--surface-raised, #141f36);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 
-    inset 2px 2px 5px rgba(0, 0, 0, 0.6),
-    inset -2px -2px 4px rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 6px;
-}
-
-.brand-logo-img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-
-.brand-title {
-  font-weight: 800;
-  font-size: 0.85rem;
-  letter-spacing: 0.06em;
-  color: #f8fafc;
-}
-
-.brand-title .accent-text {
-  color: var(--accent-blue, #3b82f6);
-  font-weight: 500;
-}
-
-.nav-divider {
-  width: 1px;
-  height: 28px;
-  background: rgba(255, 255, 255, 0.08);
-  margin: 0 0.5rem;
-}
-
-.capsule-menu-items {
-  display: flex;
-  align-items: center;
-  gap: 0.35rem;
-}
-
-.nav-item {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.55rem 0.95rem;
-  border-radius: var(--radius-pill, 9999px);
-  font-size: 0.82rem;
-  font-weight: 600;
-  color: var(--text-secondary, #94a3b8);
-  text-decoration: none;
-  transition: all 0.2s ease;
-}
-
-.nav-item i,
-.nav-item svg {
-  width: 17px;
-  height: 17px;
-}
-
-.nav-item:hover {
-  color: var(--text-main, #f8fafc);
-  background: rgba(255, 255, 255, 0.04);
-}
-
-.nav-item.active {
-  color: #ffffff;
-  background: var(--surface-raised, #141f36);
-  box-shadow: 
-    0 4px 12px rgba(0, 0, 0, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(59, 130, 246, 0.35);
-}
-
-.capsule-actions {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.util-btn {
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  background: var(--surface-raised, #141f36);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  color: var(--text-secondary, #94a3b8);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  text-decoration: none;
-  box-shadow: 
-    inset 1px 1px 3px rgba(0, 0, 0, 0.5),
-    inset -1px -1px 2px rgba(255, 255, 255, 0.04);
-}
-
-.util-btn:hover {
-  color: var(--text-main, #f8fafc);
-  transform: translateY(-1px);
-}
-
-/* ==========================================================================
-   2. PAGE HEADER & SYNC
+   1. PAGE HEADER & SYNC CONTROLLER
    ========================================================================== */
 .page-header-row {
   display: flex;
@@ -187,12 +22,12 @@ body.student-portal-body {
   font-size: 1.5rem;
   font-weight: 800;
   letter-spacing: -0.02em;
-  color: var(--text-main, #f8fafc);
+  color: var(--text-primary);
 }
 
 .page-subtitle {
   font-size: 0.82rem;
-  color: var(--text-secondary, #94a3b8);
+  color: var(--text-secondary);
   margin-top: 0.2rem;
 }
 
@@ -207,14 +42,14 @@ body.student-portal-body {
   align-items: center;
   gap: 0.5rem;
   font-size: 0.78rem;
-  color: var(--text-muted, #64748b);
+  color: var(--text-muted);
 }
 
 .sync-ping {
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: var(--state-success, #10b981);
+  background: var(--brand-green);
 }
 
 .btn-neumorphic-sync {
@@ -222,40 +57,35 @@ body.student-portal-body {
   align-items: center;
   gap: 0.5rem;
   padding: 0.65rem 1.25rem;
-  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: var(--radius-md, 14px);
-  color: #ffffff;
+  background: linear-gradient(135deg, var(--brand-blue) 0%, var(--brand-blue-hover) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 0.85rem;
+  color: #ffffff !important;
   font-size: 0.82rem;
   font-weight: 700;
   cursor: pointer;
-  box-shadow: 
-    0 6px 16px rgba(0, 0, 0, 0.4),
-    inset 0 1px 1px rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 14px var(--brand-blue-glow);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .btn-neumorphic-sync:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.55);
+  box-shadow: 0 8px 20px var(--brand-blue-glow);
 }
 
 /* ==========================================================================
-   3. STUDENT IDENTITY BAR
+   2. STUDENT IDENTITY BAR
    ========================================================================== */
 .identity-card-neumorphic {
-  background: var(--surface-card, #0f172a);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: var(--radius-lg, 20px);
+  background: var(--surface-card);
+  border: var(--border-subtle);
+  border-radius: 1.25rem;
   padding: 1rem 1.5rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 1.5rem;
-  box-shadow: 
-    8px 8px 18px rgba(0, 0, 0, 0.55),
-    -6px -6px 14px rgba(255, 255, 255, 0.035),
-    inset 1px 1px 1px rgba(255, 255, 255, 0.08);
+  box-shadow: var(--shadow-neumorphic-card);
 }
 
 .identity-profile-cell {
@@ -267,28 +97,26 @@ body.student-portal-body {
 .avatar-hexagon-wrapper {
   width: 46px;
   height: 46px;
-  border-radius: var(--radius-md, 14px);
-  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  border-radius: 0.85rem;
+  background: linear-gradient(135deg, var(--brand-blue), var(--brand-blue-hover));
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 800;
   font-size: 0.95rem;
   color: #ffffff;
-  box-shadow: 
-    0 4px 10px rgba(0, 0, 0, 0.4),
-    inset 0 1px 1px rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 10px var(--brand-blue-glow);
 }
 
 .student-name {
   font-size: 1.05rem;
   font-weight: 800;
-  color: var(--text-main, #f8fafc);
+  color: var(--text-primary);
 }
 
 .student-pin-badge {
   font-size: 0.76rem;
-  color: var(--accent-blue, #3b82f6);
+  color: var(--brand-blue);
   font-weight: 600;
 }
 
@@ -299,30 +127,28 @@ body.student-portal-body {
 }
 
 .info-chip {
-  background: var(--surface-raised, #141f36);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: var(--surface-raised);
+  border: var(--border-subtle);
   padding: 0.35rem 0.75rem;
-  border-radius: var(--radius-sm, 8px);
+  border-radius: 0.5rem;
   font-size: 0.75rem;
   display: flex;
   gap: 0.35rem;
-  box-shadow: 
-    inset 2px 2px 4px rgba(0, 0, 0, 0.5),
-    inset -1px -1px 2px rgba(255, 255, 255, 0.03);
+  box-shadow: var(--shadow-neumorphic-inset);
 }
 
-.chip-k { color: var(--text-muted, #64748b); }
-.chip-v { color: var(--text-main, #f8fafc); font-weight: 600; }
+.chip-k { color: var(--text-muted); }
+.chip-v { color: var(--text-primary); font-weight: 600; }
 
 .gateway-live-pill {
   display: flex;
   align-items: center;
   gap: 0.4rem;
   padding: 0.35rem 0.75rem;
-  border-radius: var(--radius-sm, 8px);
-  background: rgba(16, 185, 129, 0.1);
+  border-radius: 0.5rem;
+  background: rgba(16, 185, 129, 0.12);
   border: 1px solid rgba(16, 185, 129, 0.25);
-  color: var(--state-success, #10b981);
+  color: var(--brand-green);
   font-size: 0.75rem;
   font-weight: 700;
 }
@@ -330,7 +156,7 @@ body.student-portal-body {
 .live-icon { width: 14px; height: 14px; }
 
 /* ==========================================================================
-   4. HERO INTELLIGENCE GRID
+   3. HERO INTELLIGENCE GRID
    ========================================================================== */
 .hero-intelligence-grid {
   display: grid;
@@ -340,14 +166,11 @@ body.student-portal-body {
 }
 
 .hero-card {
-  background: var(--surface-card, #0f172a);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: var(--radius-lg, 20px);
+  background: var(--surface-card);
+  border: var(--border-subtle);
+  border-radius: 1.25rem;
   padding: 1.5rem;
-  box-shadow: 
-    8px 8px 18px rgba(0, 0, 0, 0.55),
-    -6px -6px 14px rgba(255, 255, 255, 0.035),
-    inset 1px 1px 1px rgba(255, 255, 255, 0.08);
+  box-shadow: var(--shadow-neumorphic-card);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -363,40 +186,40 @@ body.student-portal-body {
 .card-title {
   font-size: 0.92rem;
   font-weight: 700;
-  color: var(--text-main, #f8fafc);
+  color: var(--text-primary);
 }
 
 .risk-pill-danger {
   background: rgba(239, 68, 68, 0.12);
   border: 1px solid rgba(239, 68, 68, 0.3);
-  color: var(--state-danger, #ef4444);
+  color: var(--state-danger);
   font-size: 0.72rem;
   font-weight: 800;
   padding: 0.25rem 0.6rem;
-  border-radius: var(--radius-pill, 9999px);
+  border-radius: 9999px;
 }
 
 .risk-pill-warning {
   background: rgba(245, 158, 11, 0.12);
   border: 1px solid rgba(245, 158, 11, 0.3);
-  color: var(--state-warning, #f59e0b);
+  color: var(--state-warning);
   font-size: 0.72rem;
   font-weight: 800;
   padding: 0.25rem 0.6rem;
-  border-radius: var(--radius-pill, 9999px);
+  border-radius: 9999px;
 }
 
 .risk-pill-success {
   background: rgba(16, 185, 129, 0.12);
   border: 1px solid rgba(16, 185, 129, 0.3);
-  color: var(--state-success, #10b981);
+  color: var(--brand-green);
   font-size: 0.72rem;
   font-weight: 800;
   padding: 0.25rem 0.6rem;
-  border-radius: var(--radius-pill, 9999px);
+  border-radius: 9999px;
 }
 
-/* Radial Gauge Styling (Pure Neumorphic Inset Ring) */
+/* Radial Gauge Styling */
 .radial-gauge-container {
   position: relative;
   width: 190px;
@@ -412,7 +235,7 @@ body.student-portal-body {
 
 .gauge-track {
   fill: none;
-  stroke: var(--surface-raised, #141f36);
+  stroke: var(--surface-raised);
   stroke-width: 14;
 }
 
@@ -426,7 +249,7 @@ body.student-portal-body {
 }
 
 .danger-stroke { 
-  stroke: #ef4444; 
+  stroke: var(--state-danger); 
 }
 
 .gauge-readout-centered {
@@ -442,14 +265,14 @@ body.student-portal-body {
   font-size: 2.1rem;
   font-weight: 900;
   letter-spacing: -0.03em;
-  color: var(--text-main, #f8fafc);
+  color: var(--text-primary);
 }
 
 .gauge-sub {
   font-size: 0.68rem;
   font-weight: 800;
   letter-spacing: 0.08em;
-  color: var(--text-muted, #64748b);
+  color: var(--text-muted);
 }
 
 .gauge-footer-metrics {
@@ -457,7 +280,7 @@ body.student-portal-body {
   align-items: center;
   justify-content: space-around;
   padding-top: 1rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-top: var(--border-subtle);
 }
 
 .footer-stat {
@@ -466,12 +289,12 @@ body.student-portal-body {
   align-items: center;
 }
 
-.stat-lbl { font-size: 0.68rem; color: var(--text-muted, #64748b); margin-bottom: 0.2rem; }
-.stat-val { font-size: 0.88rem; font-weight: 700; color: var(--text-main, #f8fafc); }
-.stat-separator { width: 1px; height: 24px; background: rgba(255, 255, 255, 0.06); }
-.text-danger { color: var(--state-danger, #ef4444); }
-.text-warning { color: var(--state-warning, #f59e0b); }
-.text-success { color: var(--state-success, #10b981); }
+.stat-lbl { font-size: 0.68rem; color: var(--text-muted); margin-bottom: 0.2rem; }
+.stat-val { font-size: 0.88rem; font-weight: 700; color: var(--text-primary); }
+.stat-separator { width: 1px; height: 24px; background: var(--border-subtle); }
+.text-danger { color: var(--state-danger); }
+.text-warning { color: var(--state-warning); }
+.text-success { color: var(--brand-green); }
 
 /* Projection Centerpiece */
 .ai-confidence-pill {
@@ -479,11 +302,11 @@ body.student-portal-body {
   align-items: center;
   gap: 0.35rem;
   font-size: 0.72rem;
-  color: var(--accent-blue, #3b82f6);
-  background: rgba(59, 130, 246, 0.08);
-  border: 1px solid rgba(59, 130, 246, 0.2);
+  color: var(--brand-blue);
+  background: rgba(37, 99, 235, 0.1);
+  border: 1px solid rgba(37, 99, 235, 0.25);
   padding: 0.25rem 0.6rem;
-  border-radius: var(--radius-pill, 9999px);
+  border-radius: 9999px;
   font-weight: 700;
 }
 
@@ -491,22 +314,22 @@ body.student-portal-body {
   display: flex;
   gap: 1rem;
   padding: 1.1rem;
-  border-radius: var(--radius-md, 14px);
+  border-radius: 0.85rem;
   margin-bottom: 1.25rem;
 }
 
 .elevated-alert-panel.danger-theme {
-  background: rgba(239, 68, 68, 0.05);
-  border: 1px solid rgba(239, 68, 68, 0.2);
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.25);
 }
 
 .alert-icon-box {
-  color: var(--state-danger, #ef4444);
+  color: var(--state-danger);
   flex-shrink: 0;
 }
 
-.alert-title { font-size: 0.86rem; font-weight: 800; color: #fca5a5; }
-.alert-desc { font-size: 0.78rem; color: #cbd5e1; margin-top: 0.2rem; line-height: 1.4; }
+.alert-title { font-size: 0.86rem; font-weight: 800; color: var(--state-danger); }
+.alert-desc { font-size: 0.78rem; color: var(--text-secondary); margin-top: 0.2rem; line-height: 1.4; }
 
 .projection-stats-row {
   display: grid;
@@ -516,44 +339,42 @@ body.student-portal-body {
 }
 
 .proj-box {
-  background: var(--surface-raised, #141f36);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: var(--radius-md, 14px);
+  background: var(--surface-raised);
+  border: var(--border-subtle);
+  border-radius: 0.85rem;
   padding: 1rem;
   display: flex;
   align-items: center;
   gap: 0.85rem;
-  box-shadow: 
-    inset 2px 2px 5px rgba(0, 0, 0, 0.4),
-    inset -1px -1px 3px rgba(255, 255, 255, 0.03);
+  box-shadow: var(--shadow-neumorphic-inset);
 }
 
 .proj-icon {
   width: 36px;
   height: 36px;
-  border-radius: var(--radius-sm, 8px);
-  background: var(--surface-card, #0f172a);
+  border-radius: 0.5rem;
+  background: var(--surface-card);
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid rgba(255, 255, 255, 0.04);
+  border: var(--border-subtle);
 }
 
-.proj-label { font-size: 0.7rem; color: var(--text-muted, #64748b); display: block; }
-.proj-value { font-size: 0.88rem; font-weight: 800; color: #f8fafc; }
+.proj-label { font-size: 0.7rem; color: var(--text-muted); display: block; }
+.proj-value { font-size: 0.88rem; font-weight: 800; color: var(--text-primary); }
 
 .sbtet-rules-accordion {
-  background: var(--surface-inset, #090e1a);
+  background: var(--surface-inset);
   padding: 0.85rem 1rem;
-  border-radius: var(--radius-md, 14px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 0.85rem;
+  border: var(--border-subtle);
 }
 
-.rules-header { font-size: 0.72rem; color: var(--text-secondary, #94a3b8); display: flex; align-items: center; gap: 0.4rem; font-weight: 700; }
-.rules-list { margin-top: 0.4rem; padding-left: 1rem; font-size: 0.72rem; color: var(--text-muted, #64748b); line-height: 1.5; }
+.rules-header { font-size: 0.72rem; color: var(--text-secondary); display: flex; align-items: center; gap: 0.4rem; font-weight: 700; }
+.rules-list { margin-top: 0.4rem; padding-left: 1rem; font-size: 0.72rem; color: var(--text-muted); line-height: 1.5; }
 
 /* ==========================================================================
-   5. TIERED KPI CARDS
+   4. TIERED KPI CARDS
    ========================================================================== */
 .kpi-cards-grid {
   display: grid;
@@ -563,14 +384,11 @@ body.student-portal-body {
 }
 
 .kpi-card {
-  background: var(--surface-card, #0f172a);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: var(--radius-lg, 20px);
+  background: var(--surface-card);
+  border: var(--border-subtle);
+  border-radius: 1.25rem;
   padding: 1.1rem;
-  box-shadow: 
-    8px 8px 18px rgba(0, 0, 0, 0.55),
-    -6px -6px 14px rgba(255, 255, 255, 0.035),
-    inset 1px 1px 1px rgba(255, 255, 255, 0.08);
+  box-shadow: var(--shadow-neumorphic-card);
   transition: transform 0.2s ease;
 }
 
@@ -583,28 +401,25 @@ body.student-portal-body {
   margin-bottom: 0.5rem;
 }
 
-.kpi-label { font-size: 0.68rem; font-weight: 800; color: var(--text-muted, #64748b); letter-spacing: 0.05em; }
-.kpi-icon-pill { color: var(--text-muted, #64748b); }
-.kpi-val { font-size: 1.8rem; font-weight: 900; letter-spacing: -0.02em; color: var(--text-main, #f8fafc); }
-.kpi-subtext { font-size: 0.7rem; color: var(--text-muted, #64748b); }
+.kpi-label { font-size: 0.68rem; font-weight: 800; color: var(--text-muted); letter-spacing: 0.05em; }
+.kpi-icon-pill { color: var(--text-muted); }
+.kpi-val { font-size: 1.8rem; font-weight: 900; letter-spacing: -0.02em; color: var(--text-primary); }
+.kpi-subtext { font-size: 0.7rem; color: var(--text-muted); }
 
-.kpi-card.success-accent { border-top: 2px solid var(--state-success, #10b981); }
-.kpi-card.danger-accent { border-top: 2px solid var(--state-danger, #ef4444); }
-.kpi-card.primary-accent { border-top: 2px solid var(--accent-blue, #3b82f6); }
+.kpi-card.success-accent { border-top: 3px solid var(--brand-green); }
+.kpi-card.danger-accent { border-top: 3px solid var(--state-danger); }
+.kpi-card.primary-accent { border-top: 3px solid var(--brand-blue); }
 
 /* ==========================================================================
-   6. CALENDAR ENGINE (AUTHENTIC 7-COLUMN MATRIX)
+   5. CALENDAR ENGINE (AUTHENTIC 7-COLUMN MATRIX)
    ========================================================================== */
 .calendar-section-card {
-  background: var(--surface-card, #0f172a);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: var(--radius-lg, 20px);
+  background: var(--surface-card);
+  border: var(--border-subtle);
+  border-radius: 1.25rem;
   padding: 1.5rem;
   margin-bottom: 1.5rem;
-  box-shadow: 
-    8px 8px 18px rgba(0, 0, 0, 0.55),
-    -6px -6px 14px rgba(255, 255, 255, 0.035),
-    inset 1px 1px 1px rgba(255, 255, 255, 0.08);
+  box-shadow: var(--shadow-neumorphic-card);
 }
 
 .calendar-header-toolbar {
@@ -614,35 +429,33 @@ body.student-portal-body {
   margin-bottom: 1.25rem;
 }
 
-.cal-sub { font-size: 0.75rem; color: var(--text-muted, #64748b); }
+.cal-sub { font-size: 0.75rem; color: var(--text-muted); }
 
 .cal-month-switch {
   display: flex;
-  background: var(--surface-inset, #090e1a);
+  background: var(--surface-inset);
   padding: 3px;
-  border-radius: var(--radius-pill, 9999px);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  box-shadow: 
-    inset 3px 3px 6px rgba(0, 0, 0, 0.6),
-    inset -2px -2px 4px rgba(255, 255, 255, 0.03);
+  border-radius: 9999px;
+  border: var(--border-subtle);
+  box-shadow: var(--shadow-neumorphic-inset);
 }
 
 .month-pill-btn {
   background: transparent;
   border: none;
   padding: 0.4rem 1rem;
-  border-radius: var(--radius-pill, 9999px);
+  border-radius: 9999px;
   font-size: 0.78rem;
   font-weight: 700;
-  color: var(--text-muted, #64748b);
+  color: var(--text-muted);
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .month-pill-btn.active {
-  background: var(--accent-blue, #3b82f6);
+  background: var(--brand-blue);
   color: #ffffff;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 2px 6px var(--brand-blue-glow);
 }
 
 .calendar-week-header {
@@ -651,9 +464,9 @@ body.student-portal-body {
   text-align: center;
   font-size: 0.72rem;
   font-weight: 800;
-  color: var(--text-muted, #64748b);
+  color: var(--text-muted);
   padding-bottom: 0.75rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: var(--border-subtle);
 }
 
 .calendar-cells-matrix {
@@ -665,25 +478,23 @@ body.student-portal-body {
 
 .cal-day-cell {
   min-height: 64px;
-  background: var(--surface-raised, #141f36);
-  border: 1px solid rgba(255, 255, 255, 0.04);
-  border-radius: var(--radius-md, 14px);
+  background: var(--surface-raised);
+  border: var(--border-subtle);
+  border-radius: 0.85rem;
   padding: 0.5rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   transition: transform 0.2s ease;
-  box-shadow: 
-    inset 1px 1px 2px rgba(255, 255, 255, 0.04),
-    inset -1px -1px 3px rgba(0, 0, 0, 0.4);
+  box-shadow: var(--shadow-neumorphic-card);
 }
 
 .cal-day-cell:hover {
   transform: translateY(-2px);
-  border-color: rgba(255, 255, 255, 0.12);
+  border-color: var(--border-highlight);
 }
 
-.day-num { font-size: 0.85rem; font-weight: 800; color: #f8fafc; }
+.day-num { font-size: 0.85rem; font-weight: 800; color: var(--text-primary); }
 
 .day-badge {
   font-size: 0.65rem;
@@ -695,32 +506,32 @@ body.student-portal-body {
 
 .day-badge.status-present {
   background: rgba(16, 185, 129, 0.12);
-  color: #10b981;
-  border: 1px solid rgba(16, 185, 129, 0.25);
+  color: var(--brand-green);
+  border: 1px solid rgba(16, 185, 129, 0.3);
 }
 
 .day-badge.status-absent {
   background: rgba(239, 68, 68, 0.12);
-  color: #ef4444;
-  border: 1px solid rgba(239, 68, 68, 0.25);
+  color: var(--state-danger);
+  border: 1px solid rgba(239, 68, 68, 0.3);
 }
 
 .day-badge.status-half {
   background: rgba(245, 158, 11, 0.12);
-  color: #f59e0b;
-  border: 1px solid rgba(245, 158, 11, 0.25);
+  color: var(--state-warning);
+  border: 1px solid rgba(245, 158, 11, 0.3);
 }
 
 .day-badge.status-holiday {
   background: rgba(139, 92, 246, 0.12);
-  color: #a78bfa;
-  border: 1px solid rgba(139, 92, 246, 0.25);
+  color: #8b5cf6;
+  border: 1px solid rgba(139, 92, 246, 0.3);
 }
 
 .day-badge.status-off {
   background: rgba(100, 116, 139, 0.12);
-  color: #94a3b8;
-  border: 1px solid rgba(100, 116, 139, 0.25);
+  color: var(--text-muted);
+  border: 1px solid rgba(100, 116, 139, 0.3);
 }
 
 .calendar-legend-bar {
@@ -730,26 +541,14 @@ body.student-portal-body {
   gap: 1.5rem;
   margin-top: 1.25rem;
   padding-top: 1rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-top: var(--border-subtle);
   font-size: 0.74rem;
-  color: var(--text-muted, #64748b);
+  color: var(--text-muted);
 }
 
 .legend-item { display: flex; align-items: center; gap: 0.4rem; }
-.dot-p { width: 8px; height: 8px; border-radius: 50%; background: #10b981; }
-.dot-a { width: 8px; height: 8px; border-radius: 50%; background: #ef4444; }
-.dot-hp { width: 8px; height: 8px; border-radius: 50%; background: #f59e0b; }
+.dot-p { width: 8px; height: 8px; border-radius: 50%; background: var(--brand-green); }
+.dot-a { width: 8px; height: 8px; border-radius: 50%; background: var(--state-danger); }
+.dot-hp { width: 8px; height: 8px; border-radius: 50%; background: var(--state-warning); }
 .dot-h { width: 8px; height: 8px; border-radius: 50%; background: #8b5cf6; }
-.dot-w { width: 8px; height: 8px; border-radius: 50%; background: #64748b; }
-
-/* Responsive Media Queries */
-@media (max-width: 1200px) {
-  .hero-intelligence-grid { grid-template-columns: 1fr; }
-  .kpi-cards-grid { grid-template-columns: repeat(3, 1fr); }
-}
-
-@media (max-width: 768px) {
-  .capsule-menu-items { display: none; }
-  .kpi-cards-grid { grid-template-columns: 1fr 1fr; }
-  .portal-viewport-wrapper { padding: 1rem; }
-}
+.dot-w { width: 8px; height: 8px; border-radius: 50%; background: var(--text-muted); }

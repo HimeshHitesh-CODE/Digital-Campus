@@ -1,0 +1,115 @@
+/* ==========================================================================
+   GLOBAL DESIGN TOKENS (LIGHT & DARK DUAL ENGINE)
+   Campus Connect - High-Contrast Precision Neumorphic Palette
+   ========================================================================== */
+
+/* 1. DARK THEME (DEFAULT DEEP OBSIDIAN & MIDNIGHT SLATE) */
+:root,
+[data-theme="dark"] {
+  --bg-app: #070b14;
+  --bg-gradient: radial-gradient(circle at 50% 0%, #111c35 0%, #070b14 80%);
+  
+  --surface-base: #0c1322;
+  --surface-card: #0f172a;
+  --surface-raised: #141f36;
+  --surface-elevated: #18253d;
+  --surface-inset: #090e1a;
+
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --text-inverse: #0f172a;
+
+  --border-subtle: 1px solid rgba(255, 255, 255, 0.07);
+  --border-highlight: 1px solid rgba(255, 255, 255, 0.14);
+  --border-active: 1px solid rgba(59, 130, 246, 0.5);
+
+  --brand-blue: #3b82f6;
+  --brand-blue-hover: #2563eb;
+  --brand-blue-glow: rgba(59, 130, 246, 0.25);
+  
+  --brand-green: #10b981;
+  --brand-green-hover: #059669;
+  --brand-green-glow: rgba(16, 185, 129, 0.25);
+
+  --shadow-neumorphic-card: 
+    10px 10px 24px rgba(0, 0, 0, 0.55),
+    -6px -6px 16px rgba(255, 255, 255, 0.03),
+    inset 0 1px 1px rgba(255, 255, 255, 0.08);
+
+  --shadow-neumorphic-inset: 
+    inset 4px 4px 8px rgba(0, 0, 0, 0.6),
+    inset -3px -3px 6px rgba(255, 255, 255, 0.04);
+
+  --shadow-capsule: 
+    0 16px 36px rgba(0, 0, 0, 0.6),
+    inset 0 1px 1px rgba(255, 255, 255, 0.1);
+
+  --state-success: #10b981;
+  --state-warning: #f59e0b;
+  --state-danger: #ef4444;
+
+  /* Backward Compatibility Mappings */
+  --bg-primary: var(--surface-card);
+  --bg-secondary: var(--surface-raised);
+  --text-main: var(--text-primary);
+  --text-light: var(--text-muted);
+  --accent-primary: var(--brand-blue);
+  --shadow-raised: var(--shadow-neumorphic-card);
+  --shadow-inset: var(--shadow-neumorphic-inset);
+}
+
+/* 2. LIGHT THEME (CLEAN SOFT CERAMIC NEUMORPHISM) */
+[data-theme="light"] {
+  --bg-app: #eaf0f7;
+  --bg-gradient: radial-gradient(circle at 50% 0%, #f4f8fc 0%, #eaf0f7 85%);
+  
+  --surface-base: #eaf0f7;
+  --surface-card: #eaf0f7;
+  --surface-raised: #f1f5fa;
+  --surface-elevated: #ffffff;
+  --surface-inset: #dfe7f1;
+
+  --text-primary: #1e293b;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  --text-inverse: #ffffff;
+
+  --border-subtle: 1px solid rgba(255, 255, 255, 0.85);
+  --border-highlight: 1px solid rgba(255, 255, 255, 1);
+  --border-active: 1px solid #2563eb;
+
+  --brand-blue: #2563eb;
+  --brand-blue-hover: #1d4ed8;
+  --brand-blue-glow: rgba(37, 99, 235, 0.2);
+  
+  --brand-green: #059669;
+  --brand-green-hover: #047857;
+  --brand-green-glow: rgba(5, 150, 105, 0.2);
+
+  --shadow-neumorphic-card: 
+    10px 10px 22px rgba(166, 180, 200, 0.5),
+    -10px -10px 22px rgba(255, 255, 255, 0.95),
+    inset 1px 1px 1px rgba(255, 255, 255, 0.8);
+
+  --shadow-neumorphic-inset: 
+    inset 3px 3px 6px rgba(166, 180, 200, 0.45),
+    inset -3px -3px 6px rgba(255, 255, 255, 0.95);
+
+  --shadow-capsule: 
+    8px 12px 28px rgba(166, 180, 200, 0.45),
+    -6px -6px 20px rgba(255, 255, 255, 0.9);
+
+  --state-success: #059669;
+  --state-warning: #d97706;
+  --state-danger: #dc2626;
+
+  /* Backward Compatibility Mappings */
+  --bg-primary: var(--surface-card);
+  --bg-secondary: var(--surface-raised);
+  --text-main: var(--text-primary);
+  --text-light: var(--text-secondary);
+  --accent-primary: var(--brand-blue);
+  --shadow-raised: var(--shadow-neumorphic-card);
+  --shadow-inset: var(--shadow-neumorphic-inset);
+}

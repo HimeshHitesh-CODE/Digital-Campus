@@ -1,0 +1,335 @@
+/* ==========================================================================
+   GLOBAL LAYOUT & VIEWPORT ARCHITECTURE
+   Campus Connect - High-Contrast Neumorphic Layout & Mobile Engine
+   ========================================================================== */
+
+/* Application Viewport Shell */
+html {
+  box-sizing: border-box;
+  scroll-behavior: smooth;
+}
+
+*, *::before, *::after {
+  box-sizing: inherit;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-app);
+  background-image: var(--bg-gradient);
+  background-attachment: fixed;
+  color: var(--text-primary);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  transition: background-color 0.35s ease, color 0.35s ease, background-image 0.35s ease;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.portal-viewport-wrapper,
+.main-content-viewport,
+.app-shell,
+.app-layout {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 1rem 1.75rem 3.5rem 1.75rem;
+  box-sizing: border-box;
+}
+
+/* Clear Margin Offset Below Sticky Nav */
+.top-nav-capsule-container {
+  position: sticky;
+  top: 1rem;
+  z-index: 150;
+  margin-bottom: 2rem;
+  width: 100%;
+}
+
+/* Neumorphic Card Base & Surface Layers */
+.neumorphic-card,
+.neu-card {
+  background: var(--surface-card);
+  border: var(--border-subtle);
+  border-radius: 1.5rem;
+  box-shadow: var(--shadow-neumorphic-card);
+  color: var(--text-primary);
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.28s ease,
+              background-color 0.35s ease;
+}
+
+/* Card Elevation on Hover */
+.neumorphic-card:hover,
+.neu-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--border-highlight);
+}
+
+/* Custom Styled Scrollbar */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-app);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--surface-raised);
+  border-radius: 9999px;
+  border: 1px solid var(--border-subtle);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--brand-blue);
+}
+
+/* ==========================================================================
+   TACTILE 120HZ MICRO-INTERACTIONS & ACTION BUTTONS
+   ========================================================================== */
+
+/* Primary Action Button */
+.btn-primary-action,
+.neu-btn-primary {
+  background: var(--brand-blue);
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 1rem;
+  padding: 0.75rem 1.35rem;
+  font-weight: 700;
+  font-size: 0.85rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  box-shadow: 0 4px 14px var(--brand-blue-glow);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+              background 0.2s ease;
+  text-decoration: none;
+}
+
+.btn-primary-action:hover,
+.neu-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px var(--brand-blue-glow);
+  background: var(--brand-blue-hover);
+}
+
+.btn-primary-action:active,
+.neu-btn-primary:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 8px var(--brand-blue-glow);
+}
+
+/* Secondary Button (Neumorphic Inset/Raised) */
+.btn-secondary-action,
+.neu-btn {
+  background: var(--surface-raised);
+  color: var(--text-primary);
+  border: var(--border-subtle);
+  border-radius: 1rem;
+  padding: 0.75rem 1.35rem;
+  font-weight: 700;
+  font-size: 0.85rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  box-shadow: var(--shadow-neumorphic-card);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  text-decoration: none;
+}
+
+.btn-secondary-action:hover,
+.neu-btn:hover {
+  transform: translateY(-2px);
+  background: var(--surface-elevated);
+  border-color: var(--brand-blue);
+  color: var(--text-primary);
+}
+
+/* Badges & Chips */
+.neu-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border: var(--border-subtle);
+}
+
+.neu-badge-primary {
+  background: rgba(37, 99, 235, 0.12);
+  color: var(--brand-blue);
+  border-color: rgba(37, 99, 235, 0.25);
+}
+
+.neu-badge-success {
+  background: rgba(16, 185, 129, 0.12);
+  color: var(--brand-green);
+  border-color: rgba(16, 185, 129, 0.25);
+}
+
+.neu-badge-warning {
+  background: rgba(245, 158, 11, 0.12);
+  color: var(--state-warning);
+  border-color: rgba(245, 158, 11, 0.25);
+}
+
+.neu-badge-danger {
+  background: rgba(239, 68, 68, 0.12);
+  color: var(--state-danger);
+  border-color: rgba(239, 68, 68, 0.25);
+}
+
+/* ==========================================================================
+   MOBILE BOTTOM NAVIGATION BAR & RESPONSIVE ENGINE
+   ========================================================================== */
+
+.mobile-bottom-nav {
+  display: none;
+}
+
+@media (max-width: 1023px) {
+  /* 1. Simplify Top Nav on Mobile */
+  .capsule-menu-items,
+  .nav-divider {
+    display: none !important;
+  }
+
+  .capsule-nav {
+    height: 58px;
+    padding: 0 1rem;
+    border-radius: 1.25rem;
+  }
+
+  /* 2. Activate Bottom Mobile Dock */
+  .mobile-bottom-nav {
+    display: flex;
+    position: fixed;
+    bottom: 0.75rem;
+    left: 0.75rem;
+    right: 0.75rem;
+    height: 62px;
+    background: var(--surface-card);
+    border: var(--border-subtle);
+    border-radius: 1.5rem;
+    box-shadow: var(--shadow-capsule);
+    z-index: 200;
+    align-items: center;
+    justify-content: space-around;
+    padding: 0 0.5rem;
+    box-sizing: border-box;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+
+  .mobile-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 0.35rem 0.65rem;
+    border-radius: 1rem;
+    transition: all 0.2s ease;
+  }
+
+  .mobile-nav-item i {
+    width: 18px;
+    height: 18px;
+  }
+
+  .mobile-nav-item.active {
+    color: var(--brand-blue);
+    background: var(--surface-inset);
+  }
+
+  /* 3. Add Bottom Padding so content never hides under the bottom nav */
+  .portal-viewport-wrapper {
+    padding-bottom: 6rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  /* 4. Multi-Column Grids Become 1-Column */
+  .metrics-summary-grid,
+  .kpi-cards-grid,
+  .hero-intelligence-grid,
+  .form-grid-row,
+  .stats-overview-grid,
+  .features-grid,
+  .profile-details-grid,
+  .grid-cols-3,
+  .performance-metrics-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+  }
+
+  /* 5. Welcome Banner Reflow */
+  .top-bar,
+  .dashboard-topbar {
+    flex-direction: column;
+    align-items: flex-start !important;
+    gap: 1rem;
+  }
+
+  .top-bar-actions,
+  .user-quick-profile {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  /* 6. Calendar Horizontal Scroll/Fit */
+  .calendar-cells-matrix,
+  .calendar-week-header {
+    gap: 3px !important;
+  }
+
+  .cal-day-cell {
+    min-height: 52px !important;
+    padding: 0.3rem !important;
+  }
+
+  .day-num {
+    font-size: 0.72rem !important;
+  }
+
+  .day-badge {
+    font-size: 0.55rem !important;
+    padding: 0.1rem 0.2rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-heading,
+  .page-title,
+  .section-title {
+    font-size: 1.25rem !important;
+    line-height: 1.35;
+  }
+
+  .hero-cta-group,
+  .hero-actions-row {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .btn-primary-action,
+  .btn-secondary-action,
+  .hero-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
