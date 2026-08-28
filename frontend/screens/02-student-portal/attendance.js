@@ -1,13 +1,14 @@
 /**
- * SBTET Attendance Dashboard Interactive Controller
- * Preserves core business calculations, dynamic gauge rendering, month toggling, and sync handlers.
+ * Campus Connect - Attendance Analytics Interactive Controller
+ * Features: Fixed 75% Target Clearance Formulas, Authentic 7-Column Biometric Calendar,
+ * Real-Time Biometric Synchronization, and Pure Neumorphic State Management.
  */
 
 import { api } from '../../js/api.js';
 import { requireAuth } from '../../js/auth-guard.js';
 import { alerts } from '../../js/alerts.js';
 
-// Validate user session (or fallback cleanly)
+// Validate user session
 const user = requireAuth(['STUDENT', 'HOD', 'HOD_CS', 'ADMIN']);
 
 // Dataset Preserving Student State from Biometric Database
@@ -15,7 +16,7 @@ const ATTENDANCE_STATE = {
   student: {
     name: user?.name || "KAKARLA RAKESH",
     pin: user?.sbtetPin || user?.rollNumber || localStorage.getItem('student_pin') || "24259-CS-039",
-    scheme: "C-24",
+    scheme: user?.curriculum || user?.scheme || "C-24",
     branch: user?.department || user?.branch || "Computer Science & Eng.",
     totalSemesterDays: 90
   },
@@ -53,16 +54,13 @@ document.addEventListener('DOMContentLoaded', () => {
   // 1. Hydrate Student Header & Identity Bar
   hydrateStudentIdentity();
 
-  // 2. Calculate & Render Primary Percentage Gauges
+  // 2. Calculate & Render Primary Percentage Gauges with Fixed Math
   calculateAndRenderHeroGauges();
 
   // 3. Render Default Calendar Month (August)
   switchCalendarMonth('august');
 
-  // 4. Initialize Target Recovery Calculator
-  recalculateTargetRequirements();
-
-  // 5. Wire up Event Listeners
+  // 4. Setup Event Listeners
   setupEventListeners();
 });
 
@@ -74,13 +72,15 @@ function hydrateStudentIdentity() {
   const pinElem = document.getElementById('student-display-pin');
   const initialsElem = document.getElementById('student-avatar-initials');
   const branchElem = document.getElementById('student-branch');
+  const schemeElem = document.getElementById('student-scheme');
   const subtitleElem = document.getElementById('student-meta-subtitle');
 
-  const { name, pin, branch } = ATTENDANCE_STATE.student;
+  const { name, pin, branch, scheme } = ATTENDANCE_STATE.student;
 
   if (nameElem) nameElem.textContent = name;
   if (pinElem) pinElem.textContent = pin;
   if (branchElem) branchElem.textContent = branch;
+  if (schemeElem) schemeElem.textContent = scheme;
   
   if (initialsElem && name) {
     const parts = name.trim().split(' ');
@@ -89,15 +89,18 @@ function hydrateStudentIdentity() {
   }
 
   if (subtitleElem) {
-    subtitleElem.textContent = `Samskruti College (259) • ${name} (PIN: ${pin}) • SBTET Live Tracking`;
+    subtitleElem.textContent = `Student Attendance Intelligence & Academic Monitoring • Samskruti (Code: 259) • ${pin}`;
   }
 }
 
 /**
- * Calculates current aggregate attendance and animates the SVG circular stroke.
+ * Calculates current aggregate attendance and accurate 75% target clearance models.
  */
 function calculateAndRenderHeroGauges() {
-  const { workingDays, presentDays, remainingDays } = ATTENDANCE_STATE.metrics;
+  const { workingDays, presentDays } = ATTENDANCE_STATE.metrics;
+  const { totalSemesterDays } = ATTENDANCE_STATE.student;
+
+  // 1. Current Attendance %
   const percentage = (presentDays / workingDays) * 100;
   
   const pctDisplay = document.getElementById('attendance-pct-display');
@@ -105,57 +108,75 @@ function calculateAndRenderHeroGauges() {
   const deficitElem = document.getElementById('clearance-deficit-val');
   const examPctElem = document.getElementById('exam-pct-val');
   const reach75Elem = document.getElementById('reach-75-target');
+  const trajectoryElem = document.getElementById('trajectory-text');
   const riskBadge = document.getElementById('risk-pill-badge');
+  const alertTitle = document.getElementById('alert-title-text');
+  const alertDesc = document.getElementById('alert-desc-text');
   
   if (pctDisplay) pctDisplay.textContent = `${percentage.toFixed(1)}%`;
 
-  // Clearance Deficit (75% threshold)
+  // 2. Accurate Fixed Math Calculations:
+  // Baseline Target for 75% across 90 total semester days = ceil(0.75 * 90) = 68 days
+  const targetPresentDays = Math.ceil(0.75 * totalSemesterDays); // 68
+  const daysNeeded = Math.max(0, targetPresentDays - presentDays); // 48
+  const remainingDays = totalSemesterDays - workingDays; // 24
+  const maxAttainable = ((presentDays + remainingDays) / totalSemesterDays) * 100; // 48.88%
+
+  // Update Clearance Deficit Display
   const deficit = percentage - 75.0;
   if (deficitElem) {
-    deficitElem.textContent = `${deficit.toFixed(1)}%`;
+    deficitElem.textContent = `${deficit > 0 ? '+' : ''}${deficit.toFixed(1)}%`;
     deficitElem.className = `stat-val font-mono ${deficit < 0 ? 'text-danger' : 'text-success'}`;
   }
 
-  // Current Exam % (calculated on total 90 semester days)
-  const examPct = (presentDays / 90) * 100;
+  // Update Current Exam %
+  const examPct = (presentDays / totalSemesterDays) * 100;
   if (examPctElem) {
     examPctElem.textContent = `${examPct.toFixed(1)}%`;
   }
 
-  // Calculate classes to reach 75%
-  // (present + x) / (working + x) = 0.75 => x = 3*working - 4*present
-  const neededFor75 = Math.max(0, Math.ceil(3 * workingDays - 4 * presentDays));
+  // Update Diagnostic Output Strings (Accurate Formulas)
   if (reach75Elem) {
-    reach75Elem.textContent = `Attend ${neededFor75} More Days`;
+    reach75Elem.textContent = `${daysNeeded} Days Total (${presentDays} Present / ${targetPresentDays} Target)`;
   }
 
-  // Risk Badge styling
+  if (trajectoryElem) {
+    trajectoryElem.textContent = `${remainingDays} Sessions Left • Max Attainable: ${maxAttainable.toFixed(1)}%`;
+  }
+
+  // Update Risk Badges and Diagnostics
   if (riskBadge) {
     if (percentage < 65) {
       riskBadge.textContent = 'Detained Risk (<65%)';
       riskBadge.className = 'risk-pill-danger';
+      if (alertTitle) alertTitle.textContent = 'Critical Detainment Alert (<65% Threshold)';
+      if (alertDesc) alertDesc.textContent = `Your current attendance is ${percentage.toFixed(1)}%. Even with 100% attendance in all remaining ${remainingDays} sessions, maximum attainable is ${maxAttainable.toFixed(1)}%. Medical condonation application and Principal clearance will be mandatory.`;
     } else if (percentage < 75) {
-      riskBadge.textContent = 'Condonation (65-74%)';
+      riskBadge.textContent = 'Condonation (65-74.9%)';
       riskBadge.className = 'risk-pill-warning';
+      if (alertTitle) alertTitle.textContent = 'Condonation Warning (65%–74.9%)';
+      if (alertDesc) alertDesc.textContent = `Your attendance is ${percentage.toFixed(1)}%. Maintain 100% presence in remaining sessions to push toward standard 75% exam clearance.`;
     } else {
-      riskBadge.textContent = 'Eligible (≥75%)';
+      riskBadge.textContent = 'Clearance Safe (≥75%)';
       riskBadge.className = 'risk-pill-success';
+      if (alertTitle) alertTitle.textContent = 'Examination Eligible (≥75%)';
+      if (alertDesc) alertDesc.textContent = `Excellent! Your attendance is ${percentage.toFixed(1)}%. You are fully cleared for Hall Ticket generation without fines.`;
     }
   }
 
   // SVG Circumference for radius 82 = 2 * PI * 82 ≈ 515.22
   const circumference = 2 * Math.PI * 82;
-  const strokeOffset = circumference - (percentage / 100) * circumference;
+  const strokeOffset = circumference - (Math.min(100, percentage) / 100) * circumference;
   
   if (progressRing) {
     setTimeout(() => {
       progressRing.style.strokeDashoffset = strokeOffset;
-    }, 200);
+    }, 150);
   }
 }
 
 /**
- * Renders the 7-column calendar matrix for the selected month.
+ * Renders the authentic 7-column calendar matrix for the selected month.
  */
 function switchCalendarMonth(monthKey) {
   // Update Tab Pills
@@ -167,56 +188,35 @@ function switchCalendarMonth(monthKey) {
   if (!grid) return;
   grid.innerHTML = '';
 
-  const days = ATTENDANCE_STATE.months[monthKey] || [];
+  const monthLogs = ATTENDANCE_STATE.months[monthKey] || [];
 
-  days.forEach(item => {
+  monthLogs.forEach(entry => {
     const cell = document.createElement('div');
     cell.className = 'cal-day-cell';
     
-    const isPresent = item.status === 'P';
-    const badgeClass = isPresent ? 'status-present' : 'status-absent';
-    const statusText = isPresent ? 'Present' : 'Absent';
+    let statusBadge = '';
+    if (entry.status === 'P' || entry.isPresent === true) {
+      statusBadge = '<span class="day-badge status-present">Present</span>';
+    } else if (entry.status === 'A' || entry.isAbsent === true) {
+      statusBadge = '<span class="day-badge status-absent">Absent</span>';
+    } else if (entry.status === 'HP') {
+      statusBadge = '<span class="day-badge status-half">Half Day</span>';
+    } else if (entry.status === 'H') {
+      statusBadge = '<span class="day-badge status-holiday">Holiday</span>';
+    } else {
+      statusBadge = '<span class="day-badge status-off">Week Off</span>';
+    }
 
     cell.innerHTML = `
-      <span class="day-num font-mono">${item.day}</span>
-      <span class="day-badge ${badgeClass}">${statusText}</span>
+      <span class="day-num font-mono">${entry.day}</span>
+      ${statusBadge}
     `;
     grid.appendChild(cell);
   });
 }
 
 /**
- * Computes classes needed to hit user-selected threshold.
- */
-function recalculateTargetRequirements() {
-  const selectElem = document.getElementById('target-pct-select');
-  if (!selectElem) return;
-
-  const targetPct = parseFloat(selectElem.value) / 100;
-  const { workingDays, presentDays } = ATTENDANCE_STATE.metrics;
-  const { totalSemesterDays } = ATTENDANCE_STATE.student;
-
-  // Formula: (Present + x) / (Working + x) = Target  =>  x = (Target * Working - Present) / (1 - Target)
-  let requiredSessions = Math.ceil((targetPct * workingDays - presentDays) / (1 - targetPct));
-  if (requiredSessions < 0) requiredSessions = 0;
-
-  const resultDisplay = document.getElementById('calc-required-classes');
-  const noteDisplay = document.getElementById('calc-feasibility-note');
-
-  if (resultDisplay) resultDisplay.textContent = `${requiredSessions} Classes`;
-
-  const remainingDays = totalSemesterDays - workingDays;
-  if (noteDisplay) {
-    if (requiredSessions > remainingDays) {
-      noteDisplay.innerHTML = `<span class="text-danger">Mathematically Impossible</span>: Only ${remainingDays} sessions remain in this semester.`;
-    } else {
-      noteDisplay.innerHTML = `Requires attending all next ${requiredSessions} consecutive classes without missing.`;
-    }
-  }
-}
-
-/**
- * Triggers live re-synchronization with visual feedback.
+ * Triggers live biometric re-synchronization with feedback.
  */
 function triggerAttendanceSync() {
   const spinner = document.getElementById('sync-icon-spinner');
@@ -227,10 +227,10 @@ function triggerAttendanceSync() {
   if (spinner) spinner.classList.add('animate-spin');
 
   if (window.alerts) {
-    alerts.info(`Connecting to Telangana SBTET Biometric Gateway for PIN ${ATTENDANCE_STATE.student.pin}...`);
+    alerts.info(`Connecting to SBTET Biometric Gateway for PIN ${ATTENDANCE_STATE.student.pin}...`);
   }
 
-  // Attempt real sync from backend
+  // Real backend sync call with fallback
   api.post('/attendance/sync', { pin: ATTENDANCE_STATE.student.pin, force: true })
     .then(res => {
       if (res && res.success && res.data) {
@@ -240,7 +240,7 @@ function triggerAttendanceSync() {
       }
     })
     .catch(err => {
-      console.log('[SBTET Gateway Fallback to Local Biometric Cache]:', err.message);
+      console.log('[SBTET Biometric Fallback]:', err.message);
     })
     .finally(() => {
       setTimeout(() => {
@@ -248,11 +248,10 @@ function triggerAttendanceSync() {
         if (syncBtn) syncBtn.disabled = false;
         if (timestamp) timestamp.textContent = `Today, ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
         calculateAndRenderHeroGauges();
-        recalculateTargetRequirements();
         if (window.alerts) {
           alerts.success('Biometric attendance log synchronized with Telangana SBTET gateway.');
         }
-      }, 900);
+      }, 850);
     });
 }
 
@@ -272,12 +271,8 @@ function setupEventListeners() {
     });
   });
 
-  // Target Calculator Select
-  const calcSelect = document.getElementById('target-pct-select');
-  calcSelect?.addEventListener('change', recalculateTargetRequirements);
-
   // Theme Toggle Button
-  const themeBtn = document.getElementById('theme-switch-btn');
+  const themeBtn = document.getElementById('theme-toggle-btn');
   themeBtn?.addEventListener('click', () => {
     if (window.alerts) {
       alerts.info('Theme toggle active.');

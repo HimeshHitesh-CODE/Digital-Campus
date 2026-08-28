@@ -1,0 +1,73 @@
+/* ==========================================================================
+   PURE NEUMORPHIC CORE ARCHITECTURE (ZERO NEON GLOWS)
+   Multi-tier soft ambient shadows, tactile inset recesses, and physical highlights
+   ========================================================================== */
+
+:root {
+  --bg-base: #0a0f1d;
+  --bg-radial: radial-gradient(circle at 50% 0%, #111c35 0%, #070b14 75%);
+  --surface-card: #0f172a;
+  --surface-raised: #141f36;
+  --surface-elevated: #18253d;
+  --surface-inset: #090e1a;
+  
+  /* Subtle Physical Elevation */
+  --shadow-raised: 
+    8px 8px 18px rgba(0, 0, 0, 0.55),
+    -6px -6px 14px rgba(255, 255, 255, 0.035),
+    inset 1px 1px 1px rgba(255, 255, 255, 0.08);
+  
+  /* Tactile Inset Depth */
+  --shadow-inset: 
+    inset 4px 4px 8px rgba(0, 0, 0, 0.65),
+    inset -3px -3px 6px rgba(255, 255, 255, 0.04);
+
+  --shadow-card: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.08);
+  --shadow-capsule: 0 12px 32px rgba(0, 0, 0, 0.45), 0 2px 6px rgba(255, 255, 255, 0.04) inset;
+
+  --border-subtle: 1px solid rgba(255, 255, 255, 0.06);
+  --border-active: 1px solid rgba(59, 130, 246, 0.4);
+
+  --text-main: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --accent-blue: #3b82f6;
+
+  --state-success: #10b981;
+  --state-warning: #f59e0b;
+  --state-danger: #ef4444;
+  --state-neutral: #64748b;
+
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-pill: 9999px;
+  --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-fast: 0.18s var(--ease-spring);
+  --transition-normal: 0.28s var(--ease-spring);
+}
+
+/* Base Card Reset & Surface Layering */
+.neu-card,
+.identity-card-neumorphic,
+.hero-card,
+.kpi-card,
+.calendar-section-card,
+.analytics-card {
+  background: var(--surface-card);
+  border: var(--border-subtle);
+  border-radius: 1.25rem;
+  box-shadow: var(--shadow-raised);
+}
+
+.info-chip,
+.proj-box,
+.cal-month-switch {
+  background: var(--surface-raised);
+  border: var(--border-subtle);
+  border-radius: 0.65rem;
+  padding: 0.4rem 0.8rem;
+  box-shadow: var(--shadow-inset);
+  font-size: 0.76rem;
+}

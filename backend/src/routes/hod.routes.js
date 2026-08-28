@@ -23,7 +23,7 @@ import {
   documentRequests
 } from '../controllers/documentController.js';
 
-import { csStudentMasterRoster } from '../data/studentRoster.js';
+import { masterStudentRoster, csStudentMasterRoster } from '../data/studentRoster.js';
 
 const router = Router();
 
@@ -365,16 +365,27 @@ router.post('/documents/reject', (req, res) => {
 });
 
 /**
- * 9. Anti-Spoofing Security Keys Roster (180 Students)
+ * 9. Anti-Spoofing Security Keys Roster (Multi-Branch & Multi-Year)
  * Endpoint: GET /api/hod/security-roster
  */
 router.get('/security-roster', (req, res) => {
   const query = (req.query.search || '').trim().toLowerCase();
-  let list = Array.from(csStudentMasterRoster.values());
+  const branch = (req.query.branch || '').trim().toUpperCase();
+  const year = req.query.year ? parseInt(req.query.year, 10) : null;
+  
+  let list = Array.from(masterStudentRoster.values());
+
+  if (branch) {
+    list = list.filter(s => s.branch === branch);
+  }
+  if (year) {
+    list = list.filter(s => s.year === year);
+  }
 
   if (query) {
     list = list.filter(s => 
       s.pin.toLowerCase().includes(query) || 
+      (s.name && s.name.toLowerCase().includes(query)) ||
       s.secretKey.toLowerCase().includes(query)
     );
   }

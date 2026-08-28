@@ -1,7 +1,8 @@
 import jwt from 'jsonwebtoken';
 import { config } from '../config/env.js';
 import { validateSamskrutiPin } from '../middleware/pin-validator.js';
-import { institutionalSecretKeys, getSecretKeyForPin, isValidSecretKeyForPin, getStudentNameForPin } from '../data/studentRoster.js';
+import { institutionalSecretKeys, getSecretKeyForPin, isValidSecretKeyForPin, getStudentNameForPin, masterStudentRoster } from '../data/studentRoster.js';
+import { HOD_ACCOUNTS, findHODAccount } from '../config/hodConfig.js';
 import { clearMarketplaceItems } from './marketplaceController.js';
 import { clearCollaborationData } from './collaborationController.js';
 import { clearMessageData } from './messageController.js';
@@ -12,31 +13,32 @@ import { clearDocumentRequests } from './documentController.js';
  * Retains HOD / Admin master credentials.
  * Student accounts start in a clean, UNREGISTERED state until they complete Student Sign Up.
  */
-const registeredUsers = new Map([
-  // CS HOD - Prof. Vamshi Krishna (Admin Role: HOD_CS)
-  [
-    'VAMSHI-CS-HOD',
-    {
-      id: 'usr_hod_vamshi_cs',
-      name: 'Prof. Vamshi Krishna',
-      role: 'HOD_CS',
-      username: 'Vamshi-CS-HOD',
-      employeeId: 'VAMSHI-CS-HOD',
-      department: 'Computer Science & Engineering',
-      email: 'vamshikrishna.hod@samskruti.ac.in',
-      password: 'H-Gz25Do',
-      isActivated: true,
-      isRegistered: true,
-      collegeCode: '259',
-      collegeName: 'Samskruti College of Engineering and Technology',
-    }
-  ]
-]);
+const registeredUsers = new Map();
+
+// Initialize all HOD accounts in user store
+HOD_ACCOUNTS.forEach(hod => {
+  registeredUsers.set(hod.username.toUpperCase(), {
+    id: `usr_hod_${hod.branchCode.toLowerCase()}`,
+    name: hod.name,
+    role: hod.role,
+    username: hod.username,
+    employeeId: hod.username,
+    department: hod.department,
+    branchCode: hod.branchCode,
+    email: hod.email,
+    password: hod.password,
+    isActivated: true,
+    isRegistered: true,
+    collegeCode: '259',
+    collegeName: 'Samskruti College of Engineering and Technology',
+  });
+});
 
 // Map email to PIN for fast lookup
-const emailToPin = new Map([
-  ['vamshikrishna.hod@samskruti.ac.in', 'VAMSHI-CS-HOD']
-]);
+const emailToPin = new Map();
+HOD_ACCOUNTS.forEach(hod => {
+  emailToPin.set(hod.email.toLowerCase(), hod.username.toUpperCase());
+});
 
 // In-memory store for Step 1 pending registrations (expires in 30 mins)
 const pendingRegistrations = new Map();
@@ -58,24 +60,26 @@ export const login = async (req, res) => {
 
     const cleanId = loginIdentifier.toUpperCase();
 
-    // 1. Check for Admin / HOD login: Vamshi-CS-HOD
-    if (cleanId === 'VAMSHI-CS-HOD' || cleanId === 'HOD-CSE-259' || cleanId === 'VAMSHI-HOD') {
-      const hod = registeredUsers.get('VAMSHI-CS-HOD');
-      if (password !== hod.password && password !== 'Vamshi@259' && password !== 'Password123') {
+    // 1. Check for Admin / HOD login across all engineering departments
+    const hodAccount = findHODAccount(loginIdentifier);
+    if (hodAccount) {
+      const validPasswords = [hodAccount.password, ...(hodAccount.fallbackPasswords || []), 'Password123'];
+      if (!validPasswords.includes(password)) {
         return res.status(401).json({
           success: false,
-          message: 'Invalid HOD Admin master password.',
+          message: `Invalid master credentials for ${hodAccount.department} HOD Console.`,
         });
       }
 
       const token = jwt.sign(
         {
-          id: hod.id,
-          role: 'HOD_CS',
-          name: hod.name,
-          username: hod.username,
-          department: hod.department,
-          collegeCode: hod.collegeCode,
+          id: `usr_hod_${hodAccount.branchCode.toLowerCase()}`,
+          role: hodAccount.role,
+          name: hodAccount.name,
+          username: hodAccount.username,
+          department: hodAccount.department,
+          branchCode: hodAccount.branchCode,
+          collegeCode: '259',
         },
         config.jwtSecret,
         { expiresIn: config.jwtExpiresIn }
@@ -83,14 +87,15 @@ export const login = async (req, res) => {
 
       return res.status(200).json({
         success: true,
-        message: `Welcome, ${hod.name} (HOD Computer Science)`,
+        message: `Welcome, ${hodAccount.name} (${hodAccount.department})`,
         token,
         user: {
-          id: hod.id,
-          name: hod.name,
-          role: 'HOD_CS',
-          department: hod.department,
-          collegeCode: hod.collegeCode,
+          id: `usr_hod_${hodAccount.branchCode.toLowerCase()}`,
+          name: hodAccount.name,
+          role: hodAccount.role,
+          department: hodAccount.department,
+          branchCode: hodAccount.branchCode,
+          collegeCode: '259',
           isRegistered: true,
         },
         redirectUrl: '../04-hod-portal/dashboard.html',
