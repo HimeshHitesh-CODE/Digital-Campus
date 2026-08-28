@@ -13,6 +13,7 @@ const explicitKeys = {
   '24259-CS-025': 'STD-XAz10F', // Karnati Himesh
   '24259-CS-031': 'STD-AB31LA', // M. Abhilash
   '24259-CS-036': 'STD-BI36ND', // Bindu S.
+  '24259-CS-037': 'STD-SA37ED', // Edamanapally Samisaac
   '24259-CS-039': 'STD-B03209', // Kakarla Rakesh
   '24259-CS-055': 'STD-HA55RS', // Harshika G.
   '24259-AI-119': 'STD-HI19TE', // Karnati Hitesh
@@ -25,6 +26,7 @@ const explicitNames = {
   '24259-CS-025': 'KARNATI HIMESH',
   '24259-CS-031': 'M. ABHILASH',
   '24259-CS-036': 'BINDU S.',
+  '24259-CS-037': 'EDAMANAPALLY SAMISAAC',
   '24259-CS-039': 'KAKARLA RAKESH',
   '24259-CS-055': 'HARSHIKA G.',
   '24259-AI-119': 'KARNATI HITESH',

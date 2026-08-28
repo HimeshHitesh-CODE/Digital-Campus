@@ -67,7 +67,7 @@ app.use(express.urlencoded({ limit: '15mb', extended: true }));
 // 3. Apply generalLimiter strictly to API routes
 app.use('/api', generalLimiter);
 
-import { getAttendance, syncSbtetAttendance, getResults, syncSbtetResults } from './controllers/academicController.js';
+import { getAttendance, syncSbtetAttendance, getResults, syncSbtetResults, getStudentProfile } from './controllers/academicController.js';
 import collaborationRoutes from './routes/collaboration.routes.js';
 import documentRoutes from './routes/document.routes.js';
 import marketRoutes from './routes/market.routes.js';
@@ -87,6 +87,9 @@ app.get('/api/attendance', getAttendance);
 app.post('/api/student/attendance/sync', syncSbtetAttendance);
 app.post('/api/v1/student/attendance/sync', syncSbtetAttendance);
 app.post('/api/attendance/sync', syncSbtetAttendance);
+app.post('/api/sbtet/sync-student', syncSbtetAttendance);
+app.get('/api/student/profile', getStudentProfile);
+app.get('/api/v1/student/profile', getStudentProfile);
 
 // Academic results routes
 app.get('/api/results', getResults);

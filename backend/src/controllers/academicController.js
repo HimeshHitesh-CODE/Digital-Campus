@@ -83,7 +83,7 @@ export const syncSBTET = async (req, res) => {
 
 export const getAttendance = async (req, res) => {
   try {
-    const pin = req.query.pin || req.user?.sbtetPin || '24259-CS-023';
+    const pin = req.query.pin || req.user?.sbtetPin || '24259-CS-037';
     const force = req.query.force === 'true';
 
     const attendance = await sbtetAttendanceService.syncStudentAttendance(pin, force);
@@ -92,6 +92,24 @@ export const getAttendance = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: 'Could not fetch live attendance from SBTET.',
+      error: error.message,
+    });
+  }
+};
+
+export const getStudentProfile = async (req, res) => {
+  try {
+    const pin = (req.query.pin || req.user?.sbtetPin || '24259-CS-037').trim().toUpperCase();
+    const attendance = await sbtetAttendanceService.syncStudentAttendance(pin, false);
+    return res.status(200).json({
+      success: true,
+      data: attendance,
+      profile: attendance,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: 'Could not fetch student profile.',
       error: error.message,
     });
   }

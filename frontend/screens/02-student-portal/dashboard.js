@@ -20,7 +20,7 @@ if (user) {
   });
 }
 
-function populateUserProfile() {
+async function populateUserProfile() {
   if (!user) return;
 
   const greetingElem = document.getElementById('user-greeting');
@@ -29,9 +29,24 @@ function populateUserProfile() {
   const initialsElem = document.getElementById('avatar-initials');
   const statusElem = document.getElementById('academic-status');
 
-  const displayName = user.name || 'Student';
-  const pin = user.sbtetPin || user.rollNumber || '';
+  let displayName = user.name || '';
+  const pin = user.sbtetPin || user.rollNumber || localStorage.getItem('student_pin') || '';
   const dept = user.department || 'Computer Science & Engineering';
+
+  if (!displayName || displayName.includes('Roll #') || displayName.toLowerCase() === 'student') {
+    try {
+      const res = await api.get(`/student/profile?pin=${encodeURIComponent(pin)}`);
+      if (res && res.success && res.data?.name) {
+        displayName = res.data.name;
+        user.name = displayName;
+        localStorage.setItem('dc_user', JSON.stringify(user));
+      }
+    } catch (e) {
+      console.warn('[Dashboard Profile Hydration Fallback]');
+    }
+  }
+
+  if (!displayName) displayName = 'Student';
 
   if (greetingElem) greetingElem.textContent = `Welcome back, ${displayName}`;
   if (profileNameElem) profileNameElem.textContent = displayName;
@@ -41,7 +56,7 @@ function populateUserProfile() {
   }
 
   if (initialsElem) {
-    const parts = displayName.split(' ');
+    const parts = displayName.trim().split(' ').filter(Boolean);
     initialsElem.textContent = parts.length > 1
       ? `${parts[0][0]}${parts[1][0]}`.toUpperCase()
       : displayName.substring(0, 2).toUpperCase();
