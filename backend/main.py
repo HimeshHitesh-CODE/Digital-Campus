@@ -36,6 +36,7 @@ from database import (
     SessionLocal,
     get_db,
     StudentDB,
+    BacklogRecordDB,
     RosterKeyDB,
     MarketplaceItemDB,
     MessageDB,
@@ -1000,8 +1001,8 @@ async def run_180_student_sync_background():
         eligible_count = 0
         synced_count = 0
 
-        # Sync in batches of 5 concurrent workers
-        batch_size = 5
+        # Sync in batches of 15 concurrent workers
+        batch_size = 15
         for i in range(0, total, batch_size):
             batch = pins[i:i + batch_size]
             tasks = [sbtet_scraper.scrape_student_complete(pin) for pin in batch]
@@ -1057,6 +1058,25 @@ async def run_180_student_sync_background():
                             last_synced=now_ts
                         )
                         db.add(student)
+                    db.commit()
+
+                    # Persist individual backlog subject records
+                    backlog_subjects = res.get("backlog_subjects", [])
+                    db.query(BacklogRecordDB).filter(BacklogRecordDB.pin == current_pin).delete()
+                    if backlog_subjects:
+                        for subj in backlog_subjects:
+                            record = BacklogRecordDB(
+                                student_id=student.id,
+                                pin=current_pin,
+                                semester=str(subj.get("semester", "")),
+                                subject_code=str(subj.get("code", "")),
+                                subject_title=str(subj.get("name", "")),
+                                internal_marks=str(subj.get("internal", "")),
+                                external_marks=str(subj.get("external", "")),
+                                total_marks=str(subj.get("total", "")),
+                                grade=str(subj.get("grade", "F"))
+                            )
+                            db.add(record)
                     db.commit()
 
                 # Update progress tracker
@@ -1171,10 +1191,25 @@ def get_hod_dashboard_stats(db: Session = Depends(get_db)):
 @app.get("/api/hod/students")
 def get_hod_roster(db: Session = Depends(get_db)):
     """
-    Returns clean, searchable roster of all 180 department students with live data.
+    Returns clean, searchable roster of all 180 department students with live data,
+    including nested backlog_details array for modal rendering.
     """
     db_students = db.query(StudentDB).filter(StudentDB.role == "STUDENT").all()
     student_map = {s.pin.upper(): s for s in db_students}
+
+    # Pre-load all backlog records in a single query for performance
+    all_backlogs = db.query(BacklogRecordDB).all()
+    backlog_map = {}
+    for b in all_backlogs:
+        backlog_map.setdefault(b.pin.upper(), []).append({
+            "sem": b.semester or "",
+            "code": b.subject_code or "",
+            "title": b.subject_title or "",
+            "internal": b.internal_marks or "",
+            "external": b.external_marks or "",
+            "total": b.total_marks or "",
+            "grade": b.grade or "F"
+        })
 
     roster = []
     for i in range(1, 181):
@@ -1191,6 +1226,7 @@ def get_hod_roster(db: Session = Depends(get_db)):
 
         cgpa_val = float(user.cgpa) if user and user.cgpa is not None else 0.0
         backlogs_val = int(user.backlogs) if user and hasattr(user, 'backlogs') and user.backlogs is not None else (int(user.backlogs_count) if user and user.backlogs_count is not None else 0)
+        backlog_details = backlog_map.get(pin, [])
 
         roster.append({
             "pin": pin,
@@ -1203,6 +1239,7 @@ def get_hod_roster(db: Session = Depends(get_db)):
             "cgpa": cgpa_val,
             "backlogs": backlogs_val,
             "backlogs_count": backlogs_val,
+            "backlog_details": backlog_details,
             "attendance": {
                 "workingDays": user.working_days if user else 88,
                 "daysPresent": user.present_days if user else 0,
@@ -1276,6 +1313,35 @@ async def sync_single_student_endpoint(req: SingleStudentSyncRequest, db: Sessio
         db.add(student)
     db.commit()
 
+    # Persist individual backlog subject records
+    backlog_subjects = res.get("backlog_subjects", [])
+    db.query(BacklogRecordDB).filter(BacklogRecordDB.pin == clean_pin).delete()
+    backlog_details = []
+    if backlog_subjects:
+        for subj in backlog_subjects:
+            record = BacklogRecordDB(
+                student_id=student.id,
+                pin=clean_pin,
+                semester=str(subj.get("semester", "")),
+                subject_code=str(subj.get("code", "")),
+                subject_title=str(subj.get("name", "")),
+                internal_marks=str(subj.get("internal", "")),
+                external_marks=str(subj.get("external", "")),
+                total_marks=str(subj.get("total", "")),
+                grade=str(subj.get("grade", "F"))
+            )
+            db.add(record)
+            backlog_details.append({
+                "sem": record.semester,
+                "code": record.subject_code,
+                "title": record.subject_title,
+                "internal": record.internal_marks,
+                "external": record.external_marks,
+                "total": record.total_marks,
+                "grade": record.grade
+            })
+    db.commit()
+
     student_data = {
         "pin": clean_pin,
         "name": student.name,
@@ -1286,6 +1352,7 @@ async def sync_single_student_endpoint(req: SingleStudentSyncRequest, db: Sessio
         "cgpa": cgpa_val,
         "backlogs": backlogs_val,
         "backlogs_count": backlogs_val,
+        "backlog_details": backlog_details,
         "attendance": {
             "workingDays": student.working_days,
             "daysPresent": student.present_days,
@@ -1399,11 +1466,23 @@ async def hod_sync_stream(background_tasks: BackgroundTasks):
                         if curr.current_pin:
                             st_rec = db_s.query(StudentDB).filter(StudentDB.pin == curr.current_pin).first()
                             if st_rec:
+                                # Fetch backlog details for this student
+                                bl_records = db_s.query(BacklogRecordDB).filter(BacklogRecordDB.pin == curr.current_pin).all()
+                                bl_details = [{
+                                    "sem": b.semester or "",
+                                    "code": b.subject_code or "",
+                                    "title": b.subject_title or "",
+                                    "internal": b.internal_marks or "",
+                                    "external": b.external_marks or "",
+                                    "total": b.total_marks or "",
+                                    "grade": b.grade or "F"
+                                } for b in bl_records]
                                 st = {
                                     "pin": st_rec.pin,
                                     "name": st_rec.name,
                                     "cgpa": float(st_rec.cgpa) if st_rec.cgpa else 0.0,
                                     "backlogs": st_rec.backlogs if hasattr(st_rec, 'backlogs') and st_rec.backlogs is not None else (st_rec.backlogs_count or 0),
+                                    "backlog_details": bl_details,
                                     "attendance": {
                                         "workingDays": st_rec.working_days,
                                         "daysPresent": st_rec.present_days,

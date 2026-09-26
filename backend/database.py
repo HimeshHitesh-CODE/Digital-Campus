@@ -9,7 +9,8 @@ from sqlalchemy import (
     Float,
     Boolean,
     Text,
-    DateTime
+    DateTime,
+    ForeignKey
 )
 from sqlalchemy.orm import declarative_base, sessionmaker
 
@@ -68,6 +69,23 @@ class StudentDB(Base):
     # Online Presence
     is_online = Column(Boolean, default=False)
     last_seen = Column(String(40), nullable=True)
+    created_at = Column(String(40), default=lambda: datetime.utcnow().isoformat())
+
+# --- 2b. BACKLOG RECORDS TABLE (One-to-Many with Students) ---
+class BacklogRecordDB(Base):
+    """Individual backlog subject details linked to a student."""
+    __tablename__ = "backlog_records"
+
+    id = Column(Integer, primary_key=True, index=True)
+    student_id = Column(Integer, ForeignKey("students.id"), nullable=False, index=True)
+    pin = Column(String(30), index=True, nullable=False)
+    semester = Column(String(20), nullable=True)
+    subject_code = Column(String(30), nullable=True)
+    subject_title = Column(String(200), nullable=True)
+    internal_marks = Column(String(10), nullable=True)
+    external_marks = Column(String(10), nullable=True)
+    total_marks = Column(String(10), nullable=True)
+    grade = Column(String(10), nullable=True)
     created_at = Column(String(40), default=lambda: datetime.utcnow().isoformat())
 
 # --- 3. MARKETPLACE ITEMS TABLE ---
