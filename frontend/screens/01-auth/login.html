@@ -1,285 +1,755 @@
-<!-- Synced with auth.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Authentication Portal | Samskruti College of Engineering & Technology (Code: 259)</title>
-
-  <!-- Base Styles -->
-  <link rel="stylesheet" href="../../css/reset.css" />
-  <link rel="stylesheet" href="../../css/variables.css" />
-  <link rel="stylesheet" href="../../css/neumorphic.css" />
-  <link rel="stylesheet" href="../../css/global.css" />
-  <link rel="stylesheet" href="./auth.css" />
-  <script src="../../js/theme-engine.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; background-color: #f1f5f9; }
+    .mono-font { font-family: 'JetBrains Mono', monospace; }
+    /* Neumorphic soft elevation */
+    .neo-shadow {
+      box-shadow: 14px 14px 28px #d1d9e6, -14px -14px 28px #ffffff;
+    }
+    .neo-inset {
+      box-shadow: inset 2px 2px 4px rgba(166, 180, 200, 0.4), inset -2px -2px 4px rgba(255, 255, 255, 0.9);
+    }
+  </style>
 </head>
-<body class="auth-page-wrapper">
-  <div class="auth-card" id="auth-main-card" data-active-tab="onboarding">
+<body class="min-h-screen flex items-center justify-center p-4 bg-slate-100">
+
+  <div class="bg-slate-50 w-full max-w-md rounded-[2.5rem] p-7 md:p-8 neo-shadow relative overflow-hidden border border-white">
     
-    <!-- Institutional Header with SCET Text Badge -->
-    <div class="auth-header">
-      <div class="college-logo-container">
-        <div class="college-logo-badge" title="Samskruti College of Engineering & Technology">SCET</div>
+    <!-- Institutional Branding Header -->
+    <div class="flex flex-col items-center mb-6">
+      <div class="w-14 h-14 bg-white rounded-full flex items-center justify-center text-blue-600 font-extrabold text-lg shadow-sm border border-slate-100 mb-3">
+        SCET
       </div>
-      <h1>Samskruti College of Engineering & Technology</h1>
-      <p>Unified Digital Campus • Institution Code: <strong>259</strong></p>
+      <h1 class="text-xl font-bold text-slate-800 text-center tracking-tight leading-tight">Samskruti College of Engineering &amp; Technology</h1>
+      <p class="text-xs text-slate-500 mt-1 font-medium">Unified Digital Campus • Institution Code: <strong class="text-blue-600">259</strong></p>
     </div>
 
-    <!-- Sliding Morph Pill Tab Segment -->
-    <div class="tab-pill-track" id="auth-tab-track">
-      <div class="sliding-morph-pill" id="sliding-pill"></div>
-      <button type="button" class="tab-btn active" data-tab="onboarding" data-index="0">
-        First-Time Sign-In
+    <!-- 3-Segment Sliding Navigation Tabs -->
+    <div class="flex bg-slate-200/60 p-1 rounded-full mb-6 border border-slate-200/60" id="tabsBar">
+      <button type="button" id="tabBtnSignup" class="flex-1 bg-white shadow-sm text-blue-600 text-xs md:text-sm font-semibold py-2 px-2 rounded-full transition-all text-center">
+        Student Sign Up
       </button>
-      <button type="button" class="tab-btn" data-tab="signin" data-index="1">
+      <button type="button" id="tabBtnSignin" class="flex-1 text-slate-500 hover:text-slate-700 text-xs md:text-sm font-semibold py-2 px-2 rounded-full transition-all text-center">
         Student Sign In
       </button>
-      <button type="button" class="tab-btn" data-tab="hod" data-index="2">
-        Admin / HOD Login
+      <button type="button" id="tabBtnHod" class="flex-1 text-slate-500 hover:text-slate-700 text-xs md:text-sm font-semibold py-2 px-2 rounded-full transition-all text-center">
+        Admin / HOD
       </button>
     </div>
 
-    <!-- ==========================================
-         TAB 1: FIRST-TIME SIGN-IN (PIN-FIRST ONBOARDING)
-         ========================================== -->
-    <div class="auth-tab-content active" id="tab-content-onboarding">
+    <!-- ======================================================== -->
+    <!-- TAB 1: STUDENT SIGN UP (PIN-FIRST ONBOARDING FLOW)        -->
+    <!-- ======================================================== -->
+    <div id="tabContentSignup" class="space-y-4">
       
-      <!-- STAGE 1: ONLY STUDENT PIN INPUT FIELD -->
-      <form id="pin-verify-form" class="auth-form">
-        <div class="onboarding-guide-text" style="margin-bottom: 16px; text-align: center; color: var(--text-muted); font-size: 0.88rem; line-height: 1.5;">
-          Enter your official <strong>Diploma PIN</strong> (e.g. <span style="font-family: monospace; color: #60a5fa;">24259-CS-025</span>) to verify institutional roster keys and pull live SBTET academic records.
-        </div>
-
-        <div class="form-group">
-          <label class="field-label" for="onboarding-pin">Student PIN (Roll No)</label>
-          <div class="input-container">
-            <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <rect x="3" y="4" width="18" height="16" rx="2" ry="2"/>
-              <line x1="7" y1="8" x2="17" y2="8"/>
-              <line x1="7" y1="12" x2="13" y2="12"/>
-              <circle cx="16" cy="14" r="2"/>
-            </svg>
+      <!-- STAGE 1: PIN ENTRY ONLY -->
+      <div id="step1-pin" class="space-y-4 block transition-opacity duration-300">
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1.5 ml-1">
+            Diploma PIN No (Code: 259)
+          </label>
+          <div class="relative">
+            <!-- Icon -->
+            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="4" width="18" height="16" rx="2" ry="2"/>
+                <line x1="7" y1="8" x2="17" y2="8"/>
+                <line x1="7" y1="12" x2="13" y2="12"/>
+                <circle cx="16" cy="14" r="2"/>
+              </svg>
+            </div>
             <input
               type="text"
-              id="onboarding-pin"
-              class="neumorphic-field"
-              placeholder="e.g. 24259-CS-025"
-              required
+              id="studentPin"
+              placeholder="E.g. 24259-CS-039"
+              class="w-full bg-white border border-slate-200 rounded-xl pl-10 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all font-mono uppercase tracking-wider text-slate-800"
               autocomplete="off"
-              style="text-transform: uppercase; font-family: monospace; font-size: 1.05rem; letter-spacing: 0.05em;"
             />
           </div>
-        </div>
-
-        <button type="submit" class="auth-submit-btn" id="pin-verify-btn">
-          <span id="pin-verify-btn-text">Verify PIN & Pull Official Records →</span>
-          <div class="spinner" id="pin-verify-spinner" style="display: none;"></div>
-        </button>
-      </form>
-
-      <!-- STAGE 2: ACCOUNT FINALIZATION (Revealed upon verified PIN & scrape) -->
-      <form id="finalize-account-form" class="auth-form" style="display: none;">
-        
-        <!-- Verified SBTET Identity Badge Banner -->
-        <div class="verified-identity-banner" style="background: rgba(37, 99, 235, 0.08); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 12px; padding: 14px 18px; margin-bottom: 20px;">
-          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
-            <span style="font-size: 0.72rem; font-weight: 800; color: #34d399; text-transform: uppercase; letter-spacing: 0.08em; display: inline-flex; align-items: center; gap: 4px;">
-              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#34d399" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
-              SBTET Verified Profile
-            </span>
-            <span class="mono-num" id="verified-badge-pin" style="font-size: 0.78rem; font-weight: 700; color: #93c5fd; background: rgba(30, 58, 138, 0.4); padding: 2px 8px; border-radius: 6px;">24259-CS-025</span>
+          
+          <!-- Test PIN quick picks -->
+          <div class="flex items-center gap-1.5 mt-2 ml-1">
+            <span class="text-[10px] text-slate-400 font-medium">Quick Test:</span>
+            <button type="button" onclick="fillPin('24259-CS-039')" class="text-[10px] bg-slate-200/80 hover:bg-blue-100 hover:text-blue-700 px-2 py-0.5 rounded text-slate-600 font-mono transition-colors">
+              24259-CS-039
+            </button>
+            <button type="button" onclick="fillPin('24259-CS-025')" class="text-[10px] bg-slate-200/80 hover:bg-blue-100 hover:text-blue-700 px-2 py-0.5 rounded text-slate-600 font-mono transition-colors">
+              24259-CS-025
+            </button>
           </div>
-          <div id="verified-student-name" style="font-size: 1.15rem; font-weight: 800; color: var(--text-primary); margin-bottom: 4px;">KARNATI HIMESH</div>
-          <div id="verified-student-meta" style="font-size: 0.78rem; color: var(--text-muted);">Computer Science & Engineering • Diploma C-24 • 3rd Year</div>
+          
+          <p class="text-xs text-rose-500 mt-2 ml-1 hidden" id="pinError"></p>
         </div>
 
-        <!-- Hidden scraped fields -->
-        <input type="hidden" id="final-pin" />
-        <input type="hidden" id="final-name" />
-        <input type="hidden" id="final-branch" />
-        <input type="hidden" id="final-scheme" />
-        <input type="hidden" id="final-semester" />
-        <input type="hidden" id="final-year" />
+        <button
+          type="button"
+          id="verifyPinBtn"
+          class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3.5 rounded-xl shadow-lg shadow-blue-600/30 transition-all transform hover:-translate-y-0.5 flex justify-center items-center gap-2 cursor-pointer"
+        >
+          <span id="verifyBtnLabel">Verify &amp; Fetch Profile</span>
+          <svg class="w-4 h-4 hidden animate-spin" id="loadingSpinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10" class="opacity-25" stroke="currentColor"></circle>
+            <path d="M4 12a8 8 0 018-8v8H4z" class="opacity-75" fill="currentColor"></path>
+          </svg>
+        </button>
+      </div>
 
-        <!-- Institutional Email Input -->
-        <div class="form-group">
-          <label class="field-label" for="final-email">Institutional / Personal Email</label>
-          <div class="input-container">
-            <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-              <polyline points="22,6 12,13 2,6"/>
-            </svg>
+      <!-- STAGE 2: ACCOUNT FINALIZATION (Revealed upon verified PIN) -->
+      <div id="step2-finalize" class="space-y-4 hidden opacity-0 transition-opacity duration-300">
+        
+        <!-- Live Verified Profile Display -->
+        <div class="bg-blue-50/90 border border-blue-200/80 rounded-2xl p-4 shadow-sm">
+          <div class="flex items-center gap-3 mb-2.5">
+            <div class="w-9 h-9 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold shadow-sm">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between">
+                <span class="text-[10px] text-blue-700 font-bold uppercase tracking-wider">SBTET Verified Profile</span>
+                <span id="displayPin" class="text-[11px] font-mono font-bold text-blue-800 bg-blue-100/90 px-2 py-0.5 rounded-md"></span>
+              </div>
+              <h3 class="text-sm font-bold text-slate-800 truncate" id="displayName">...</h3>
+            </div>
+          </div>
+          
+          <div class="grid grid-cols-2 gap-2 text-[11px] bg-white/70 rounded-xl p-2.5 border border-blue-100 font-medium">
+            <p class="text-slate-600">Dept: <span id="displayDept" class="text-slate-900 font-semibold block truncate">...</span></p>
+            <p class="text-slate-600">Sem: <span id="displaySem" class="text-slate-900 font-semibold block truncate">...</span></p>
+          </div>
+        </div>
+
+        <!-- Official / Personal Email -->
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1.5 ml-1">Set Official / Personal Email</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+                <path d="M22 6l-10 7L2 6"></path>
+              </svg>
+            </div>
             <input
               type="email"
-              id="final-email"
-              class="neumorphic-field"
-              placeholder="e.g. himesh.k@samskruti.ac.in"
-              required
+              id="studentEmail"
+              placeholder="e.g. student@samskruti.ac.in"
+              class="w-full bg-white border border-slate-200 rounded-xl pl-10 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all text-slate-800"
               autocomplete="email"
             />
           </div>
         </div>
 
-        <!-- Password -->
-        <div class="form-group">
-          <label class="field-label" for="final-password">Create Account Password</label>
-          <div class="input-container password-wrapper">
-            <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-            </svg>
+        <!-- Create Account Password -->
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1.5 ml-1">Create Account Password</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+              </svg>
+            </div>
             <input
               type="password"
-              id="final-password"
-              class="neumorphic-field"
-              placeholder="Min 8 characters"
-              required
+              id="studentPassword"
+              placeholder="Minimum 8 characters"
+              class="w-full bg-white border border-slate-200 rounded-xl pl-10 pr-10 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all text-slate-800"
               autocomplete="new-password"
-              minlength="8"
             />
+            <button
+              type="button"
+              onclick="togglePwdVisibility('studentPassword', this)"
+              class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 focus:outline-none cursor-pointer"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+            </button>
           </div>
         </div>
 
-        <!-- Confirm Password -->
-        <div class="form-group">
-          <label class="field-label" for="final-confirm-password">Confirm Password</label>
-          <div class="input-container password-wrapper">
-            <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-            </svg>
-            <input
-              type="password"
-              id="final-confirm-password"
-              class="neumorphic-field"
-              placeholder="Re-enter password"
-              required
-              autocomplete="new-password"
-              minlength="8"
-            />
-          </div>
-        </div>
+        <p class="text-xs text-rose-500 ml-1 hidden" id="registerError"></p>
 
-        <button type="submit" class="auth-submit-btn" id="finalize-btn">
-          <span id="finalize-btn-text">Finalize Account & Launch Dashboard →</span>
-          <div class="spinner" id="finalize-spinner" style="display: none;"></div>
+        <button
+          type="button"
+          id="completeSignUpBtn"
+          class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3.5 rounded-xl shadow-lg shadow-emerald-600/30 transition-all transform hover:-translate-y-0.5 flex justify-center items-center gap-2 cursor-pointer"
+        >
+          <span id="completeBtnLabel">Complete Registration →</span>
+          <svg class="w-4 h-4 hidden animate-spin" id="registerSpinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10" class="opacity-25" stroke="currentColor"></circle>
+            <path d="M4 12a8 8 0 018-8v8H4z" class="opacity-75" fill="currentColor"></path>
+          </svg>
         </button>
 
-        <button type="button" id="btn-back-to-pin" class="util-btn" style="width: 100%; margin-top: 10px; background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 0.82rem;">
+        <button
+          type="button"
+          id="btnBackToPin"
+          class="w-full text-slate-400 hover:text-slate-600 text-xs font-semibold py-1.5 transition-colors text-center"
+        >
           ← Use a different PIN
         </button>
-      </form>
+      </div>
 
     </div>
 
-    <!-- ==========================================
-         TAB 2: STUDENT SIGN IN (EMAIL / PIN + PASSWORD)
-         ========================================== -->
-    <div class="auth-tab-content" id="tab-content-signin">
-      <form id="signin-form" class="auth-form">
-        
-        <!-- Student PIN or Email -->
-        <div class="form-group">
-          <label class="field-label" for="signin-identity">Registered Email or PIN (Roll No)</label>
-          <div class="input-container">
-            <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-              <polyline points="22,6 12,13 2,6"/>
+    <!-- ======================================================== -->
+    <!-- TAB 2: STUDENT SIGN IN                                    -->
+    <!-- ======================================================== -->
+    <div id="tabContentSignin" class="space-y-4 hidden">
+      <div>
+        <label class="block text-xs font-semibold text-slate-600 mb-1.5 ml-1">Student PIN or Registered Email</label>
+        <div class="relative">
+          <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+              <circle cx="12" cy="7" r="4"/>
             </svg>
-            <input
-              type="text"
-              id="signin-identity"
-              class="neumorphic-field"
-              placeholder="e.g. 24259-CS-025 or name@samskruti.ac.in"
-              required
-              autocomplete="username"
-            />
           </div>
+          <input
+            type="text"
+            id="signinIdentifier"
+            placeholder="24259-CS-039 or name@example.com"
+            class="w-full bg-white border border-slate-200 rounded-xl pl-10 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all text-slate-800"
+            autocomplete="username"
+          />
         </div>
+      </div>
 
-        <!-- Password -->
-        <div class="form-group">
-          <div class="label-row" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-            <label class="field-label" for="signin-password" style="margin-bottom: 0;">Password</label>
-            <a href="./forgot-password.html" class="forgot-link" style="font-size: 0.75rem; color: #60a5fa; text-decoration: none;">Forgot Password?</a>
-          </div>
-          <div class="input-container password-wrapper">
-            <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <div>
+        <div class="flex items-center justify-between mb-1.5 ml-1 mr-1">
+          <label class="text-xs font-semibold text-slate-600">Password</label>
+          <span class="text-[11px] text-blue-600 hover:underline cursor-pointer" onclick="fillTestPassword('signinPassword')">Default: Password123</span>
+        </div>
+        <div class="relative">
+          <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
               <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
             </svg>
-            <input
-              type="password"
-              id="signin-password"
-              class="neumorphic-field"
-              placeholder="Enter account password"
-              required
-              autocomplete="current-password"
-            />
           </div>
+          <input
+            type="password"
+            id="signinPassword"
+            placeholder="Enter your password"
+            class="w-full bg-white border border-slate-200 rounded-xl pl-10 pr-10 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all text-slate-800"
+            autocomplete="current-password"
+          />
+          <button
+            type="button"
+            onclick="togglePwdVisibility('signinPassword', this)"
+            class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 focus:outline-none cursor-pointer"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+          </button>
         </div>
+      </div>
 
-        <button type="submit" class="auth-submit-btn" id="signin-submit-btn">
-          <span id="signin-btn-text">Sign In to Campus Connect →</span>
-          <div class="spinner" id="signin-btn-spinner" style="display: none;"></div>
+      <p class="text-xs text-rose-500 ml-1 hidden" id="signinError"></p>
+
+      <button
+        type="button"
+        id="studentSignInBtn"
+        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3.5 rounded-xl shadow-lg shadow-blue-600/30 transition-all transform hover:-translate-y-0.5 flex justify-center items-center gap-2 cursor-pointer"
+      >
+        <span id="signinBtnLabel">Sign In to Student Portal →</span>
+        <svg class="w-4 h-4 hidden animate-spin" id="signinSpinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10" class="opacity-25" stroke="currentColor"></circle>
+          <path d="M4 12a8 8 0 018-8v8H4z" class="opacity-75" fill="currentColor"></path>
+        </svg>
+      </button>
+
+      <p class="text-center text-xs text-slate-400">
+        New student? 
+        <button type="button" onclick="activateTab('signup')" class="text-blue-600 font-semibold hover:underline cursor-pointer">
+          Verify PIN &amp; Register
         </button>
-      </form>
+      </p>
     </div>
 
-    <!-- ==========================================
-         TAB 3: ADMIN / HOD LOGIN
-         ========================================== -->
-    <div class="auth-tab-content" id="tab-content-hod">
-      <form id="hod-form" class="auth-form">
-        
-        <div class="form-group">
-          <label class="field-label" for="hod-identifier">Official HOD / Department Identifier</label>
-          <div class="input-container">
-            <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-            </svg>
-            <input
-              type="text"
-              id="hod-identifier"
-              class="neumorphic-field"
-              placeholder="e.g. VAMSHI-CS-HOD or hod.cs@samskruti.ac.in"
-              required
-              autocomplete="username"
-              value="VAMSHI-CS-HOD"
-            />
-          </div>
-        </div>
+    <!-- ======================================================== -->
+    <!-- TAB 3: ADMIN / HOD LOGIN                                  -->
+    <!-- ======================================================== -->
+    <div id="tabContentHod" class="space-y-4 hidden">
+      <div class="bg-emerald-50 border border-emerald-200/80 rounded-xl p-3 flex items-center gap-2.5 text-xs text-emerald-800">
+        <svg class="w-4 h-4 text-emerald-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+        </svg>
+        <span>Department Head Access • Automatic 180-Student Scraper Sync</span>
+      </div>
 
-        <div class="form-group">
-          <label class="field-label" for="hod-password">Administrative Access Key</label>
-          <div class="input-container password-wrapper">
-            <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <div>
+        <label class="block text-xs font-semibold text-slate-600 mb-1.5 ml-1">Faculty / HOD ID</label>
+        <div class="relative">
+          <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+              <circle cx="8.5" cy="7" r="4"></circle>
+              <polyline points="17 11 19 13 23 9"></polyline>
+            </svg>
+          </div>
+          <input
+            type="text"
+            id="hodId"
+            value="HOD_CS"
+            placeholder="e.g. HOD_CS or VAMSHI-CS-HOD"
+            class="w-full bg-white border border-slate-200 rounded-xl pl-10 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all font-mono uppercase text-slate-800"
+            autocomplete="username"
+          />
+        </div>
+      </div>
+
+      <div>
+        <div class="flex items-center justify-between mb-1.5 ml-1 mr-1">
+          <label class="text-xs font-semibold text-slate-600">HOD Password</label>
+          <span class="text-[11px] text-emerald-600 hover:underline cursor-pointer" onclick="fillTestPassword('hodPassword')">Default: Password123</span>
+        </div>
+        <div class="relative">
+          <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
               <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
             </svg>
-            <input
-              type="password"
-              id="hod-password"
-              class="neumorphic-field"
-              placeholder="Enter HOD security key"
-              required
-              autocomplete="current-password"
-              value="Password123"
-            />
           </div>
+          <input
+            type="password"
+            id="hodPassword"
+            value="Password123"
+            placeholder="Enter HOD security key"
+            class="w-full bg-white border border-slate-200 rounded-xl pl-10 pr-10 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all text-slate-800"
+            autocomplete="current-password"
+          />
+          <button
+            type="button"
+            onclick="togglePwdVisibility('hodPassword', this)"
+            class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 focus:outline-none cursor-pointer"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+          </button>
         </div>
+      </div>
 
-        <button type="submit" class="auth-submit-btn" id="hod-submit-btn">
-          <span id="hod-btn-text">Enter HOD Executive Console →</span>
-          <div class="spinner" id="hod-btn-spinner" style="display: none;"></div>
-        </button>
-      </form>
+      <p class="text-xs text-rose-500 ml-1 hidden" id="hodError"></p>
+
+      <button
+        type="button"
+        id="hodLoginBtn"
+        class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3.5 rounded-xl shadow-lg shadow-emerald-600/30 transition-all transform hover:-translate-y-0.5 flex justify-center items-center gap-2 cursor-pointer"
+      >
+        <span id="hodBtnLabel">Sign In as Department HOD →</span>
+        <svg class="w-4 h-4 hidden animate-spin" id="hodSpinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10" class="opacity-25" stroke="currentColor"></circle>
+          <path d="M4 12a8 8 0 018-8v8H4z" class="opacity-75" fill="currentColor"></path>
+        </svg>
+      </button>
     </div>
 
   </div>
 
-  <script src="../../js/alerts.js"></script>
-  <script type="module" src="./auth.js"></script>
+  <!-- Integrated Controller Script -->
+  <script>
+    // Tab switching logic
+    const tabBtnSignup = document.getElementById('tabBtnSignup');
+    const tabBtnSignin = document.getElementById('tabBtnSignin');
+    const tabBtnHod = document.getElementById('tabBtnHod');
+
+    const tabContentSignup = document.getElementById('tabContentSignup');
+    const tabContentSignin = document.getElementById('tabContentSignin');
+    const tabContentHod = document.getElementById('tabContentHod');
+
+    function activateTab(tab) {
+      // Reset all buttons
+      [tabBtnSignup, tabBtnSignin, tabBtnHod].forEach(btn => {
+        btn.className = "flex-1 text-slate-500 hover:text-slate-700 text-xs md:text-sm font-semibold py-2 px-2 rounded-full transition-all text-center";
+      });
+
+      // Hide all contents
+      tabContentSignup.classList.add('hidden');
+      tabContentSignin.classList.add('hidden');
+      tabContentHod.classList.add('hidden');
+
+      if (tab === 'signup') {
+        tabBtnSignup.className = "flex-1 bg-white shadow-sm text-blue-600 text-xs md:text-sm font-semibold py-2 px-2 rounded-full transition-all text-center";
+        tabContentSignup.classList.remove('hidden');
+      } else if (tab === 'signin') {
+        tabBtnSignin.className = "flex-1 bg-white shadow-sm text-blue-600 text-xs md:text-sm font-semibold py-2 px-2 rounded-full transition-all text-center";
+        tabContentSignin.classList.remove('hidden');
+      } else if (tab === 'hod') {
+        tabBtnHod.className = "flex-1 bg-white shadow-sm text-emerald-600 text-xs md:text-sm font-semibold py-2 px-2 rounded-full transition-all text-center";
+        tabContentHod.classList.remove('hidden');
+      }
+    }
+
+    tabBtnSignup.addEventListener('click', () => activateTab('signup'));
+    tabBtnSignin.addEventListener('click', () => activateTab('signin'));
+    tabBtnHod.addEventListener('click', () => activateTab('hod'));
+
+    // Quick helpers
+    function fillPin(pin) {
+      document.getElementById('studentPin').value = pin;
+      document.getElementById('pinError').classList.add('hidden');
+    }
+
+    function fillTestPassword(fieldId) {
+      document.getElementById(fieldId).value = "Password123";
+    }
+
+    function togglePwdVisibility(inputId, btn) {
+      const input = document.getElementById(inputId);
+      if (input.type === 'password') {
+        input.type = 'text';
+        btn.classList.add('text-blue-600');
+      } else {
+        input.type = 'password';
+        btn.classList.remove('text-blue-600');
+      }
+    }
+
+    // State for Stage 2
+    let verifiedData = null;
+
+    // ========================================================
+    // 1. PIN VERIFICATION (POST /api/auth/verify-pin)
+    // ========================================================
+    const verifyPinBtn = document.getElementById('verifyPinBtn');
+    const studentPinInput = document.getElementById('studentPin');
+    const pinError = document.getElementById('pinError');
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    const verifyBtnLabel = document.getElementById('verifyBtnLabel');
+
+    const step1 = document.getElementById('step1-pin');
+    const step2 = document.getElementById('step2-finalize');
+
+    verifyPinBtn.addEventListener('click', async () => {
+      const pin = studentPinInput.value.trim().toUpperCase();
+      if (!pin) {
+        showError(pinError, 'Please enter your Diploma PIN No.');
+        return;
+      }
+
+      // UI Loading state
+      verifyPinBtn.disabled = true;
+      loadingSpinner.classList.remove('hidden');
+      verifyBtnLabel.textContent = "Verifying with SBTET...";
+      pinError.classList.add('hidden');
+
+      try {
+        const response = await fetch('/api/auth/verify-pin', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ pin: pin })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.detail || data.message || 'Invalid PIN or Roster Key not found.');
+        }
+
+        // Check if student already registered
+        if (data.status === 'already_registered' || data.status === 'ALREADY_REGISTERED') {
+          alert(`${data.message || 'Account already registered. Redirecting to Sign In...'}`);
+          activateTab('signin');
+          document.getElementById('signinIdentifier').value = data.pin || pin;
+          return;
+        }
+
+        // Cache verified data
+        verifiedData = data;
+        document.getElementById('displayPin').textContent = data.pin || pin;
+        document.getElementById('displayName').textContent = data.name || 'Verified Student';
+        document.getElementById('displayDept').textContent = data.department || 'Computer Science (CS)';
+        document.getElementById('displaySem').textContent = data.semester || 'Current Semester';
+
+        // Pre-fill student email if available
+        if (data.email) {
+          document.getElementById('studentEmail').value = data.email;
+        }
+
+        // Smooth transition to Step 2
+        step1.classList.add('hidden');
+        step2.classList.remove('hidden');
+        setTimeout(() => {
+          step2.classList.remove('opacity-0');
+        }, 30);
+
+      } catch (err) {
+        showError(pinError, err.message || 'Failed to verify PIN. Please try again.');
+      } finally {
+        verifyPinBtn.disabled = false;
+        loadingSpinner.classList.add('hidden');
+        verifyBtnLabel.textContent = "Verify & Fetch Profile";
+      }
+    });
+
+    // Allow Enter key on PIN input
+    studentPinInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        verifyPinBtn.click();
+      }
+    });
+
+    // Back to PIN step
+    document.getElementById('btnBackToPin').addEventListener('click', () => {
+      step2.classList.add('opacity-0');
+      setTimeout(() => {
+        step2.classList.add('hidden');
+        step1.classList.remove('hidden');
+      }, 150);
+    });
+
+    // ========================================================
+    // 2. COMPLETE REGISTRATION (POST /api/auth/register)
+    // ========================================================
+    const completeSignUpBtn = document.getElementById('completeSignUpBtn');
+    const studentEmailInput = document.getElementById('studentEmail');
+    const studentPasswordInput = document.getElementById('studentPassword');
+    const registerError = document.getElementById('registerError');
+    const registerSpinner = document.getElementById('registerSpinner');
+    const completeBtnLabel = document.getElementById('completeBtnLabel');
+
+    completeSignUpBtn.addEventListener('click', async () => {
+      const pin = verifiedData?.pin || studentPinInput.value.trim().toUpperCase();
+      const email = studentEmailInput.value.trim();
+      const password = studentPasswordInput.value;
+
+      if (!email) {
+        showError(registerError, 'Please enter your official or personal email address.');
+        return;
+      }
+      if (!password || password.length < 6) {
+        showError(registerError, 'Password must be at least 6 characters long.');
+        return;
+      }
+
+      completeSignUpBtn.disabled = true;
+      registerSpinner.classList.remove('hidden');
+      completeBtnLabel.textContent = "Creating Account...";
+      registerError.classList.add('hidden');
+
+      try {
+        const response = await fetch('/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            pin: pin,
+            email: email,
+            password: password
+          })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.detail || data.message || 'Registration failed.');
+        }
+
+        // Store session tokens & user object
+        persistSession(data, pin, email, 'STUDENT');
+
+        // Redirect to student dashboard
+        const redirectUrl = data.redirect_url || '/screens/02-student-portal/dashboard.html';
+        window.location.href = redirectUrl;
+
+      } catch (err) {
+        showError(registerError, err.message || 'Registration failed.');
+      } finally {
+        completeSignUpBtn.disabled = false;
+        registerSpinner.classList.add('hidden');
+        completeBtnLabel.textContent = "Complete Registration →";
+      }
+    });
+
+    // ========================================================
+    // 3. STUDENT SIGN IN (POST /api/auth/login)
+    // ========================================================
+    const studentSignInBtn = document.getElementById('studentSignInBtn');
+    const signinIdentifierInput = document.getElementById('signinIdentifier');
+    const signinPasswordInput = document.getElementById('signinPassword');
+    const signinError = document.getElementById('signinError');
+    const signinSpinner = document.getElementById('signinSpinner');
+    const signinBtnLabel = document.getElementById('signinBtnLabel');
+
+    studentSignInBtn.addEventListener('click', async () => {
+      const identifier = signinIdentifierInput.value.trim();
+      const password = signinPasswordInput.value;
+
+      if (!identifier) {
+        showError(signinError, 'Please enter your Student PIN or email.');
+        return;
+      }
+      if (!password) {
+        showError(signinError, 'Please enter your password.');
+        return;
+      }
+
+      studentSignInBtn.disabled = true;
+      signinSpinner.classList.remove('hidden');
+      signinBtnLabel.textContent = "Signing In...";
+      signinError.classList.add('hidden');
+
+      try {
+        const response = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            identifier: identifier,
+            password: password
+          })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.detail || data.message || 'Invalid credentials.');
+        }
+
+        // Store session tokens & user object
+        persistSession(data, data.user?.sbtetPin || identifier, data.user?.email || '', data.user?.role || 'STUDENT');
+
+        const redirectUrl = data.redirect_url || '/screens/02-student-portal/dashboard.html';
+        window.location.href = redirectUrl;
+
+      } catch (err) {
+        showError(signinError, err.message || 'Sign In failed.');
+      } finally {
+        studentSignInBtn.disabled = false;
+        signinSpinner.classList.add('hidden');
+        signinBtnLabel.textContent = "Sign In to Student Portal →";
+      }
+    });
+
+    signinPasswordInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        studentSignInBtn.click();
+      }
+    });
+
+    // ========================================================
+    // 4. HOD LOGIN (POST /api/auth/hod-login)
+    // ========================================================
+    const hodLoginBtn = document.getElementById('hodLoginBtn');
+    const hodIdInput = document.getElementById('hodId');
+    const hodPasswordInput = document.getElementById('hodPassword');
+    const hodError = document.getElementById('hodError');
+    const hodSpinner = document.getElementById('hodSpinner');
+    const hodBtnLabel = document.getElementById('hodBtnLabel');
+
+    hodLoginBtn.addEventListener('click', async () => {
+      const hodId = hodIdInput.value.trim();
+      const password = hodPasswordInput.value;
+
+      if (!hodId) {
+        showError(hodError, 'Please enter your HOD identifier.');
+        return;
+      }
+      if (!password) {
+        showError(hodError, 'Please enter the HOD password.');
+        return;
+      }
+
+      hodLoginBtn.disabled = true;
+      hodSpinner.classList.remove('hidden');
+      hodBtnLabel.textContent = "Authenticating HOD...";
+      hodError.classList.add('hidden');
+
+      try {
+        const response = await fetch('/api/auth/hod-login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            hod_id: hodId,
+            password: password
+          })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.detail || data.message || 'Invalid HOD credentials.');
+        }
+
+        // Store HOD session
+        const hodUser = data.user || {
+          pin: hodId,
+          name: "Prof. Vamshi Krishna",
+          role: "HOD_CS",
+          department: "Computer Science & Engineering",
+          collegeCode: "259"
+        };
+
+        const token = data.token || `tok_hod_${Date.now()}`;
+        localStorage.setItem('auth_token', token);
+        localStorage.setItem('dc_auth_token', token);
+        localStorage.setItem('dc_user', JSON.stringify(hodUser));
+        localStorage.setItem('user_name', hodUser.name);
+        localStorage.setItem('user_role', 'HOD');
+        localStorage.setItem('hod_id', hodId);
+
+        const redirectUrl = data.redirect_url || '/screens/04-hod-portal/hod-dashboard.html';
+        window.location.href = redirectUrl;
+
+      } catch (err) {
+        showError(hodError, err.message || 'HOD Login failed.');
+      } finally {
+        hodLoginBtn.disabled = false;
+        hodSpinner.classList.add('hidden');
+        hodBtnLabel.textContent = "Sign In as Department HOD →";
+      }
+    });
+
+    hodPasswordInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        hodLoginBtn.click();
+      }
+    });
+
+    // ========================================================
+    // Session Storage Helper
+    // ========================================================
+    function persistSession(data, pin, email, role) {
+      const token = data.token || `tok_${Date.now()}`;
+      const user = data.user || {
+        sbtetPin: pin,
+        rollNumber: pin,
+        name: data.name || verifiedData?.name || 'Student',
+        email: email,
+        department: data.department || verifiedData?.department || 'Computer Science (CS)',
+        semester: data.semester || verifiedData?.semester || '6SEM',
+        role: role || 'STUDENT',
+        collegeCode: '259'
+      };
+
+      localStorage.setItem('auth_token', token);
+      localStorage.setItem('dc_auth_token', token);
+      localStorage.setItem('student_pin', pin);
+      localStorage.setItem('dc_user', JSON.stringify(user));
+      localStorage.setItem('user_name', user.name);
+      localStorage.setItem('user_role', user.role);
+    }
+
+    function showError(elem, msg) {
+      elem.textContent = msg;
+      elem.classList.remove('hidden');
+    }
+  </script>
 </body>
 </html>

@@ -172,29 +172,38 @@ def get_online_users():
     }
 
 # ==============================================================================
+# ==============================================================================
 # 2. AUTHENTICATION & ONBOARDING (PIN-FIRST FLOW)
 # ==============================================================================
 
-class CheckPinRequest(BaseModel):
+class PinVerificationRequest(BaseModel):
     pin: str
 
-class FinalizeAccountRequest(BaseModel):
+class StudentRegistrationRequest(BaseModel):
     pin: str
     email: str
     password: str
-    name: Optional[str] = None
-    department: Optional[str] = "Computer Science & Engineering"
-    branch: Optional[str] = "CS"
-    scheme: Optional[str] = "C-24"
-    year: Optional[str] = "3rd Year"
-    semester: Optional[str] = "6SEM"
 
 class LoginRequest(BaseModel):
-    identifier: str  # Email or PIN
+    identifier: str  # Can be email or PIN
     password: str
 
+class HODLoginRequest(BaseModel):
+    hod_id: str
+    password: str
+
+# Legacy aliases for compatibility
+CheckPinRequest = PinVerificationRequest
+FinalizeAccountRequest = StudentRegistrationRequest
+
+@app.get("/login")
+def login_redirect():
+    return RedirectResponse(url="/screens/01-auth/login.html", status_code=status.HTTP_307_TEMPORARY_REDIRECT)
+
+@app.post("/api/auth/verify-pin")
+@app.post("/api/v1/auth/verify-pin")
 @app.post("/api/v1/auth/check-pin")
-async def check_pin_and_scrape(req: CheckPinRequest, db: Session = Depends(get_db)):
+async def verify_pin(req: PinVerificationRequest, db: Session = Depends(get_db)):
     """
     Step 1 & 2: Validates PIN against roster_keys and scrapes verified student
     details from sbtetconnect.app.
@@ -206,58 +215,64 @@ async def check_pin_and_scrape(req: CheckPinRequest, db: Session = Depends(get_d
     if not roster_entry:
         raise HTTPException(
             status_code=404,
-            detail=f"PIN '{clean_pin}' is not recognized in Samskruti College Master Roster (CS-001 to CS-180)."
+            detail=f"Invalid PIN or Roster Key not found. PIN '{clean_pin}' is not recognized in Samskruti Master Roster."
         )
 
     # 2. Check if student already finalized their account
     existing_student = db.query(StudentDB).filter(StudentDB.pin == clean_pin).first()
     if existing_student and existing_student.email and existing_student.password:
         return {
+            "status": "already_registered",
             "success": True,
-            "status": "ALREADY_REGISTERED",
             "message": f"Account for {existing_student.name} exists. Please enter your password to sign in.",
             "pin": clean_pin,
             "name": existing_student.name,
-            "email": existing_student.email
+            "email": existing_student.email,
+            "department": existing_student.department or "Computer Science (CS)",
+            "semester": existing_student.semester or "5th Semester (C-24)"
         }
 
-    # 3. Scrape student identity from SBTET Gateway
+    # 3. Scrape real student identity from SBTET Gateway
     scraped = await sbtet_scraper.scrape_student_onboarding(clean_pin)
 
-    student_name = scraped.get("name") if scraped.get("success") else f"Student {clean_pin}"
-    branch = scraped.get("branch", "CS")
+    student_name = scraped.get("name") if (scraped.get("success") and scraped.get("name") and scraped.get("name") != "Student") else f"Student {clean_pin}"
+    branch = scraped.get("branch", "Computer Science (CS)")
     scheme = scraped.get("scheme", "C-24")
-    semester = scraped.get("semester", "6SEM")
+    semester = scraped.get("semester", "5th Semester (C-24)")
     year = scraped.get("year", "3rd Year")
 
     return {
+        "status": "success",
         "success": True,
-        "status": "NEEDS_SETUP",
-        "message": f"Verified SBTET records for {student_name}. Please set your institutional email and password to finalize your profile.",
+        "name": student_name,
+        "department": "Computer Science (CS)" if "CS" in branch else branch,
+        "semester": semester,
         "pin": clean_pin,
-        "student": {
-            "pin": clean_pin,
-            "name": student_name,
-            "branch": branch,
-            "department": "Computer Science & Engineering" if branch == "CS" else branch,
-            "scheme": scheme,
-            "semester": semester,
-            "year": year
-        }
+        "year": year,
+        "scheme": scheme
     }
 
+@app.post("/api/auth/register")
+@app.post("/api/v1/auth/register")
 @app.post("/api/v1/auth/finalize-account")
-async def finalize_account(req: FinalizeAccountRequest, db: Session = Depends(get_db)):
+async def register_student(req: StudentRegistrationRequest, db: Session = Depends(get_db)):
     """
-    Step 3: Stores Email & Password, finalizes account, and marks roster as registered.
+    Step 2: Saves new email and password to the students table for that specific PIN.
     """
     clean_pin = req.pin.strip().upper()
     clean_email = req.email.strip().lower()
 
+    if not clean_pin or not clean_email or not req.password:
+        raise HTTPException(status_code=422, detail="PIN, email, and password are required.")
+
     # Check for email collision
     email_exists = db.query(StudentDB).filter(StudentDB.email == clean_email, StudentDB.pin != clean_pin).first()
     if email_exists:
-        raise HTTPException(status_code=400, detail="This email is already associated with another student.")
+        raise HTTPException(status_code=400, detail="This email is already associated with another student account.")
+
+    # Scrape real name if not yet populated
+    scraped = await sbtet_scraper.scrape_student_onboarding(clean_pin)
+    name = scraped.get("name") if (scraped.get("success") and scraped.get("name") and scraped.get("name") != "Student") else f"Student {clean_pin}"
 
     student = db.query(StudentDB).filter(StudentDB.pin == clean_pin).first()
     now_ts = datetime.utcnow().isoformat()
@@ -265,26 +280,21 @@ async def finalize_account(req: FinalizeAccountRequest, db: Session = Depends(ge
     if student:
         student.email = clean_email
         student.password = req.password
-        if req.name:
-            student.name = req.name
-        student.department = req.department or student.department
-        student.branch = req.branch or student.branch
-        student.scheme = req.scheme or student.scheme
-        student.year = req.year or student.year
-        student.semester = req.semester or student.semester
+        if name and student.name.startswith("Student"):
+            student.name = name
         student.last_seen = now_ts
     else:
         student = StudentDB(
             pin=clean_pin,
             roll_no=clean_pin,
-            name=req.name or f"Student {clean_pin}",
+            name=name,
             email=clean_email,
             password=req.password,
-            department=req.department or "Computer Science & Engineering",
-            branch=req.branch or "CS",
-            scheme=req.scheme or "C-24",
-            year=req.year or "3rd Year",
-            semester=req.semester or "6SEM",
+            department="Computer Science & Engineering",
+            branch="CS",
+            scheme="C-24",
+            year="3rd Year",
+            semester="5th Semester (C-24)",
             role="STUDENT",
             created_at=now_ts
         )
@@ -300,52 +310,51 @@ async def finalize_account(req: FinalizeAccountRequest, db: Session = Depends(ge
 
     token = f"tok_std_{clean_pin}_{random.randint(100000, 999999)}"
     return {
+        "status": "success",
         "success": True,
         "message": f"Welcome to Campus Connect, {student.name}! Your account is now active.",
         "token": token,
+        "redirect_url": "/screens/02-student-portal/dashboard.html",
         "user": {
             "pin": student.pin,
             "rollNumber": student.pin,
             "sbtetPin": student.pin,
             "name": student.name,
             "email": student.email,
-            "role": student.role,
+            "role": student.role or "STUDENT",
             "department": student.department,
             "collegeCode": "259"
-        },
-        "redirectUrl": "../02-student-portal/dashboard.html"
+        }
     }
 
-@app.post("/api/v1/auth/login")
 @app.post("/api/auth/login")
+@app.post("/api/v1/auth/login")
 async def login(req: LoginRequest, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
     """
-    Step 4: Standard login using Email or PIN + Password.
+    Standard login using Email or PIN + Password.
     When HOD logs in, triggers 180-student background task!
     """
     ident = req.identifier.strip()
     clean_id = ident.upper()
 
     # 1. Check for HOD Console Login
-    if clean_id in ["VAMSHI-CS-HOD", "HOD.CS@SAMSKRUTI.AC.IN", "HOD"]:
+    if clean_id in ["VAMSHI-CS-HOD", "HOD.CS@SAMSKRUTI.AC.IN", "HOD", "HOD_CS"]:
         if req.password in ["Password123", "VamshiCS@2026", "HOD@SCET259"]:
-            # TRIGGER 180-STUDENT BACKGROUND SYNC
             background_tasks.add_task(run_180_student_sync_background)
-
             token = f"tok_hod_{random.randint(100000, 999999)}"
             return {
+                "status": "success",
                 "success": True,
                 "message": "Welcome, Prof. Vamshi Krishna (Computer Science & Engineering HOD Console)",
                 "token": token,
+                "redirect_url": "/screens/04-hod-portal/hod-dashboard.html",
                 "user": {
                     "pin": "VAMSHI-CS-HOD",
                     "name": "Prof. Vamshi Krishna",
                     "role": "HOD_CS",
                     "department": "Computer Science & Engineering",
                     "collegeCode": "259"
-                },
-                "background_sync_started": True,
-                "redirectUrl": "../04-hod-portal/hod-dashboard.html"
+                }
             }
         else:
             raise HTTPException(status_code=401, detail="Invalid password for HOD Console.")
@@ -366,9 +375,11 @@ async def login(req: LoginRequest, background_tasks: BackgroundTasks, db: Sessio
 
     token = f"tok_std_{student.pin}_{random.randint(100000, 999999)}"
     return {
+        "status": "success",
         "success": True,
         "message": f"Welcome back, {student.name}!",
         "token": token,
+        "redirect_url": "/screens/02-student-portal/dashboard.html",
         "user": {
             "pin": student.pin,
             "rollNumber": student.pin,
@@ -378,9 +389,38 @@ async def login(req: LoginRequest, background_tasks: BackgroundTasks, db: Sessio
             "role": student.role or "STUDENT",
             "department": student.department,
             "collegeCode": "259"
-        },
-        "redirectUrl": "../02-student-portal/dashboard.html"
+        }
     }
+
+@app.post("/api/auth/hod-login")
+@app.post("/api/v1/auth/hod-login")
+async def hod_login(req: HODLoginRequest, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
+    """
+    HOD Dedicated Login endpoint. Triggers 180-student background sync.
+    """
+    clean_id = req.hod_id.strip().upper()
+    if clean_id in ["HOD_CS", "VAMSHI-CS-HOD", "HOD.CS@SAMSKRUTI.AC.IN", "HOD", "PROF_VAMSHI"]:
+        if req.password in ["Password123", "VamshiCS@2026", "HOD@SCET259"]:
+            background_tasks.add_task(run_180_student_sync_background)
+            token = f"tok_hod_{random.randint(100000, 999999)}"
+            return {
+                "status": "success",
+                "success": True,
+                "message": "Welcome, Prof. Vamshi Krishna (HOD Computer Science)",
+                "token": token,
+                "redirect_url": "/screens/04-hod-portal/hod-dashboard.html",
+                "user": {
+                    "pin": "VAMSHI-CS-HOD",
+                    "name": "Prof. Vamshi Krishna",
+                    "role": "HOD_CS",
+                    "department": "Computer Science & Engineering",
+                    "collegeCode": "259"
+                }
+            }
+        else:
+            raise HTTPException(status_code=401, detail="Invalid HOD password.")
+    else:
+        raise HTTPException(status_code=404, detail="HOD ID not recognized.")
 
 # ==============================================================================
 # 3. STUDENT PORTAL: ATTENDANCE, RESULTS & ACADEMICS
