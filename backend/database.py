@@ -59,8 +59,9 @@ class StudentDB(Base):
     attendance_val = Column(Float, default=0.0)
     working_days = Column(Integer, default=88)
     present_days = Column(Integer, default=0)
-    cgpa = Column(String(20), default="0.00")
+    cgpa = Column(Float, default=0.0)
     credits_earned = Column(Float, default=0.0)
+    backlogs = Column(Integer, default=0)
     backlogs_count = Column(Integer, default=0)
     last_synced = Column(String(40), nullable=True)
 

@@ -143,7 +143,7 @@ function renderStudentsTable() {
   // Filter
   const filtered = allStudents.filter(student => {
     const attPct = computeActiveAttendancePercentage(student);
-    const backlogs = student.results?.backlogCount || 0;
+    const backlogs = Number(student.backlogs != null ? student.backlogs : (student.results?.backlogCount || student.backlogs_count || 0));
 
     let matchesFilter = true;
     if (activeFilter === 'CRITICAL') matchesFilter = attPct !== null && attPct < 65;
@@ -177,12 +177,13 @@ function renderStudentsTable() {
         valB = b.attendance?.daysPresent || -1;
         break;
       case 'cgpa':
-        valA = a.results?.cgpa || -1;
-        valB = b.results?.cgpa || -1;
+        valA = Number(a.cgpa != null ? a.cgpa : (a.results?.cgpa || -1));
+        valB = Number(b.cgpa != null ? b.cgpa : (b.results?.cgpa || -1));
         break;
       case 'backlogCount':
-        valA = a.results?.backlogCount || 0;
-        valB = b.results?.backlogCount || 0;
+      case 'backlogs':
+        valA = Number(a.backlogs != null ? a.backlogs : (a.results?.backlogCount || a.backlogs_count || 0));
+        valB = Number(b.backlogs != null ? b.backlogs : (b.results?.backlogCount || b.backlogs_count || 0));
         break;
       case 'rollNumber':
       default:
@@ -210,7 +211,8 @@ function renderStudentsTable() {
   tbody.innerHTML = filtered.map(s => {
     const isSynced = s.isSynced !== false && s.attendance && s.attendance.daysPresent != null;
     const attPct = computeActiveAttendancePercentage(s);
-    const backlogs = s.results?.backlogCount || 0;
+    const backlogs = Number(s.backlogs != null ? s.backlogs : (s.results?.backlogCount || s.backlogs_count || 0));
+    const cgpa = Number(s.cgpa != null ? s.cgpa : (s.results?.cgpa || 0));
     const workingDays = s.attendance?.workingDays || 64;
     const daysPresent = s.attendance?.daysPresent || 0;
 
@@ -237,13 +239,13 @@ function renderStudentsTable() {
 
       const pctColor = isCritical ? '#f87171' : isWarning ? '#fbbf24' : '#34d399';
       pctDisplay = `<span class="mono-num" style="font-weight: 900; color: ${pctColor}; font-size: 0.95rem;">${attPct.toFixed(1)}%</span>`;
-      cgpaDisplay = `<span class="mono-num" style="font-weight: 700;">${(s.results?.cgpa || 0).toFixed(2)}</span>`;
+      cgpaDisplay = `<span class="mono-num" style="font-weight: 700; color: #f8fafc;">${cgpa.toFixed(2)}</span>`;
       
       backlogBtn = backlogs > 0
-        ? `<button type="button" class="btn-backlog-inspect" onclick="openBacklogDetailsModal('${s.pin}')" title="Click to view failed subjects">
-             <span class="badge-backlog">▲ ${backlogs} Failed</span>
+        ? `<button type="button" class="btn-backlog-inspect" onclick="openBacklogDetailsModal('${s.pin}')" title="Click to view failed subjects" style="background: none; border: none; padding: 0; cursor: pointer;">
+             <span class="status-badge-critical" style="background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4); padding: 4px 10px; border-radius: 6px; font-weight: 800; font-size: 0.78rem;">✕ ${backlogs} Backlog${backlogs > 1 ? 's' : ''}</span>
            </button>`
-        : `<span class="badge-cleared">✓ 0 Cleared</span>`;
+        : `<span class="status-badge-good" style="background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); padding: 4px 10px; border-radius: 6px; font-weight: 800; font-size: 0.78rem;">✓ 0 Cleared</span>`;
 
       syncedTime = `<span class="mono-num" style="font-size: 0.75rem; color: var(--hod-text-sub);">${s.lastSynced ? formatTime(s.lastSynced) : 'Just Now'}</span>`;
     }
@@ -402,7 +404,8 @@ function updateTableRowWithRealData(student) {
   if (!row) return;
 
   const attPct = computeActiveAttendancePercentage(student);
-  const backlogs = student.results?.backlogCount || 0;
+  const backlogs = Number(student.backlogs != null ? student.backlogs : (student.results?.backlogCount || student.backlogs_count || 0));
+  const cgpa = Number(student.cgpa != null ? student.cgpa : (student.results?.cgpa || 0));
   const workingDays = student.attendance?.workingDays || 64;
   const daysPresent = student.attendance?.daysPresent || 0;
 
@@ -433,14 +436,14 @@ function updateTableRowWithRealData(student) {
   }
 
   // 4. Update CGPA
-  row.cells[6].innerHTML = `<span class="mono-num" style="font-weight: 700;">${(student.results?.cgpa || 0).toFixed(2)}</span>`;
+  row.cells[6].innerHTML = `<span class="mono-num" style="font-weight: 700; color: #f8fafc;">${cgpa.toFixed(2)}</span>`;
 
   // 5. Update Backlogs Pill
   row.cells[7].innerHTML = backlogs > 0
-    ? `<button type="button" class="btn-backlog-inspect" onclick="openBacklogDetailsModal('${student.pin}')" title="Click to view failed subjects">
-         <span class="badge-backlog">▲ ${backlogs} Failed</span>
+    ? `<button type="button" class="btn-backlog-inspect" onclick="openBacklogDetailsModal('${student.pin}')" title="Click to view failed subjects" style="background: none; border: none; padding: 0; cursor: pointer;">
+         <span class="status-badge-critical" style="background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4); padding: 4px 10px; border-radius: 6px; font-weight: 800; font-size: 0.78rem;">✕ ${backlogs} Backlog${backlogs > 1 ? 's' : ''}</span>
        </button>`
-    : `<span class="badge-cleared">✓ 0 Cleared</span>`;
+    : `<span class="status-badge-good" style="background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); padding: 4px 10px; border-radius: 6px; font-weight: 800; font-size: 0.78rem;">✓ 0 Cleared</span>`;
 
   // 6. Update Last Synced Time
   row.cells[8].innerHTML = `<span class="mono-num" style="font-size: 0.75rem; color: var(--hod-text-sub);">${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>`;
@@ -469,7 +472,7 @@ function recalculateDepartmentSummaryStats() {
       else eligible++;
     }
 
-    const bCount = s.results?.backlogCount || s.backlogCount || (s.backlogSubjects?.length) || 0;
+    const bCount = Number(s.backlogs != null ? s.backlogs : (s.results?.backlogCount || s.backlogs_count || (s.backlogSubjects?.length) || 0));
     if (bCount > 0) {
       withBacklogs++;
       totalBacklogsCount += bCount;

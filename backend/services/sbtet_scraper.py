@@ -245,9 +245,15 @@ class SBTETScraperService:
 
         available_semesters.sort(key=lambda s: int(''.join(filter(str.isdigit, s))) if any(c.isdigit() for c in s) else 0)
 
-        cgpa_val = summary.get("CGPA", 0.0)
-        credits_gained = summary.get("CreditsGained", 0.0)
-        total_max_credits = summary.get("TotalMaxCredits", 80.0)
+        raw_cgpa = summary.get("CGPA") or summary.get("cgpa") or 0.0
+        try:
+            cgpa_val = round(float(raw_cgpa), 2)
+        except (ValueError, TypeError):
+            cgpa_val = 0.0
+
+        backlogs_count = int(len(backlogs))
+        credits_gained = float(summary.get("CreditsGained", 0.0) or 0.0)
+        total_max_credits = float(summary.get("TotalMaxCredits", 80.0) or 80.0)
         latest_sem = available_semesters[-1] if available_semesters else "Current"
 
         formatted_summary = {
@@ -255,9 +261,9 @@ class SBTETScraperService:
             "creditsRatio": f"{credits_gained} / {total_max_credits}",
             "creditsGained": credits_gained,
             "totalMaxCredits": total_max_credits,
-            "activeBacklogs": len(backlogs),
+            "activeBacklogs": backlogs_count,
             "latestSemester": latest_sem,
-            "promotionStatus": "Promoted" if len(backlogs) == 0 else f"{len(backlogs)} Backlogs"
+            "promotionStatus": "Promoted" if backlogs_count == 0 else f"{backlogs_count} Backlogs"
         }
 
         return {
@@ -270,12 +276,58 @@ class SBTETScraperService:
             "semesters": semesters_map,
             "availableSemesters": available_semesters,
             "cgpa": cgpa_val,
+            "backlogs": backlogs_count,
+            "backlogs_count": backlogs_count,
             "credits_gained": credits_gained,
             "max_credits": total_max_credits,
-            "backlogs_count": len(backlogs),
             "backlog_subjects": backlogs,
             "semester_summary": semester_summary,
             "source": "SBTET_LIVE_GATEWAY"
+        }
+
+    async def scrape_student_complete(self, pin: str, scheme: str = "C24") -> Dict[str, Any]:
+        """
+        Synchronously coordinates biometric attendance AND academic results/CGPA/backlogs
+        in parallel to ensure atomic, unified student records during 180-student auto-sync.
+        """
+        clean_pin = self._clean_pin(pin)
+        att_res, res_res = await asyncio.gather(
+            self.scrape_attendance(clean_pin),
+            self.scrape_results(clean_pin, scheme),
+            return_exceptions=True
+        )
+
+        att = att_res if (isinstance(att_res, dict) and att_res.get("success")) else {}
+        res = res_res if (isinstance(res_res, dict) and res_res.get("success")) else {}
+
+        name = att.get("name") or res.get("studentName") or f"CS Student {clean_pin}"
+        working_days = att.get("workingDays", 88)
+        present_days = att.get("presentDays", 0)
+        att_pct = att.get("attendancePercentage", 0.0)
+
+        cgpa = res.get("cgpa", 0.0)
+        backlogs = res.get("backlogs_count", 0)
+
+        return {
+            "success": bool(att or res),
+            "pin": clean_pin,
+            "name": name,
+            "branch": att.get("branch", "CS"),
+            "department": "Computer Science & Engineering",
+            "scheme": scheme,
+            "semester": att.get("semester", "6SEM"),
+            "workingDays": int(working_days),
+            "presentDays": int(present_days),
+            "attendancePercentage": float(att_pct),
+            "attendance_val": float(att_pct),
+            "attendance_pct": f"{att_pct:.2f}%",
+            "cgpa": float(cgpa),
+            "backlogs": int(backlogs),
+            "backlogs_count": int(backlogs),
+            "credits_earned": float(res.get("credits_gained", 0.0)),
+            "backlog_subjects": res.get("backlog_subjects", []),
+            "attendance": att,
+            "results": res
         }
 
 # Global Instance

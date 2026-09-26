@@ -1004,7 +1004,7 @@ async def run_180_student_sync_background():
         batch_size = 5
         for i in range(0, total, batch_size):
             batch = pins[i:i + batch_size]
-            tasks = [sbtet_scraper.scrape_attendance(pin) for pin in batch]
+            tasks = [sbtet_scraper.scrape_student_complete(pin) for pin in batch]
             results = await asyncio.gather(*tasks, return_exceptions=True)
 
             for idx, res in enumerate(results):
@@ -1012,22 +1012,29 @@ async def run_180_student_sync_background():
                 synced_count += 1
 
                 if isinstance(res, dict) and res.get("success"):
-                    pct_val = res.get("attendancePercentage", 0.0)
+                    pct_val = float(res.get("attendancePercentage", 0.0) or 0.0)
                     total_attendance_sum += pct_val
                     if pct_val >= 75.0:
                         eligible_count += 1
 
                     student = db.query(StudentDB).filter(StudentDB.pin == current_pin).first()
                     now_ts = datetime.utcnow().isoformat()
-                    pct_str = res.get("metrics", {}).get("percentage", f"{pct_val:.2f}%")
+                    pct_str = f"{pct_val:.2f}%"
+                    cgpa_val = float(res.get("cgpa", 0.0) or 0.0)
+                    backlogs_val = int(res.get("backlogs", 0) or 0)
+                    credits_earned = float(res.get("credits_earned", 0.0) or 0.0)
 
                     if student:
                         if res.get("name") and res["name"] != "Student":
                             student.name = res["name"]
                         student.attendance_pct = pct_str
                         student.attendance_val = pct_val
-                        student.working_days = res.get("workingDays", 88)
-                        student.present_days = res.get("presentDays", 0)
+                        student.working_days = int(res.get("workingDays", 88))
+                        student.present_days = int(res.get("presentDays", 0))
+                        student.cgpa = cgpa_val
+                        student.backlogs = backlogs_val
+                        student.backlogs_count = backlogs_val
+                        student.credits_earned = credits_earned
                         student.last_synced = now_ts
                     else:
                         student = StudentDB(
@@ -1041,8 +1048,12 @@ async def run_180_student_sync_background():
                             role="STUDENT",
                             attendance_pct=pct_str,
                             attendance_val=pct_val,
-                            working_days=res.get("workingDays", 88),
-                            present_days=res.get("presentDays", 0),
+                            working_days=int(res.get("workingDays", 88)),
+                            present_days=int(res.get("presentDays", 0)),
+                            cgpa=cgpa_val,
+                            backlogs=backlogs_val,
+                            backlogs_count=backlogs_val,
+                            credits_earned=credits_earned,
                             last_synced=now_ts
                         )
                         db.add(student)
@@ -1060,7 +1071,9 @@ async def run_180_student_sync_background():
                     "synced": synced_count,
                     "total": total,
                     "percent": percent,
-                    "current_pin": current_pin
+                    "current_pin": current_pin,
+                    "cgpa": float(res.get("cgpa", 0.0)) if (isinstance(res, dict) and res.get("success")) else 0.0,
+                    "backlogs": int(res.get("backlogs", 0)) if (isinstance(res, dict) and res.get("success")) else 0
                 })
 
             await asyncio.sleep(0.05)
@@ -1176,6 +1189,9 @@ def get_hod_roster(db: Session = Depends(get_db)):
         if att_pct is not None:
             status_badge = "ELIGIBLE" if att_pct >= 75.0 else ("CONDONATION" if att_pct >= 65.0 else "CRITICAL")
 
+        cgpa_val = float(user.cgpa) if user and user.cgpa is not None else 0.0
+        backlogs_val = int(user.backlogs) if user and hasattr(user, 'backlogs') and user.backlogs is not None else (int(user.backlogs_count) if user and user.backlogs_count is not None else 0)
+
         roster.append({
             "pin": pin,
             "rollNumber": i,
@@ -1184,6 +1200,9 @@ def get_hod_roster(db: Session = Depends(get_db)):
             "scheme": "C-24",
             "semester": 6,
             "isSynced": (att_pct is not None),
+            "cgpa": cgpa_val,
+            "backlogs": backlogs_val,
+            "backlogs_count": backlogs_val,
             "attendance": {
                 "workingDays": user.working_days if user else 88,
                 "daysPresent": user.present_days if user else 0,
@@ -1191,14 +1210,97 @@ def get_hod_roster(db: Session = Depends(get_db)):
                 "status": status_badge
             } if att_pct is not None else None,
             "results": {
-                "cgpa": float(user.cgpa) if user and user.cgpa else 0.0,
-                "backlogCount": user.backlogs_count if user else 0
+                "cgpa": cgpa_val,
+                "backlogCount": backlogs_val,
+                "backlogs": backlogs_val
             },
             "lastSynced": user.last_synced if user else None,
             "isOnline": ws_manager.is_user_online(pin)
         })
 
     return {"success": True, "students": roster, "total": len(roster)}
+
+class SingleStudentSyncRequest(BaseModel):
+    pin: str
+
+@app.post("/api/v1/hod/sync-student")
+@app.post("/api/hod/sync-student")
+async def sync_single_student_endpoint(req: SingleStudentSyncRequest, db: Session = Depends(get_db)):
+    """
+    Synchronously fetches live attendance & academic results (CGPA, backlogs)
+    for a single student and updates the database immediately.
+    """
+    clean_pin = req.pin.strip().upper()
+    res = await sbtet_scraper.scrape_student_complete(clean_pin)
+
+    now_ts = datetime.utcnow().isoformat()
+    pct_val = float(res.get("attendancePercentage", 0.0) or 0.0)
+    pct_str = f"{pct_val:.2f}%"
+    cgpa_val = float(res.get("cgpa", 0.0) or 0.0)
+    backlogs_val = int(res.get("backlogs", 0) or 0)
+    credits_earned = float(res.get("credits_earned", 0.0) or 0.0)
+
+    student = db.query(StudentDB).filter(StudentDB.pin == clean_pin).first()
+    if student:
+        if res.get("name") and res["name"] != "Student":
+            student.name = res["name"]
+        student.attendance_pct = pct_str
+        student.attendance_val = pct_val
+        student.working_days = int(res.get("workingDays", 88))
+        student.present_days = int(res.get("presentDays", 0))
+        student.cgpa = cgpa_val
+        student.backlogs = backlogs_val
+        student.backlogs_count = backlogs_val
+        student.credits_earned = credits_earned
+        student.last_synced = now_ts
+    else:
+        student = StudentDB(
+            pin=clean_pin,
+            roll_no=clean_pin,
+            name=res.get("name") or f"CS Student {clean_pin}",
+            password="Password123",
+            department="Computer Science & Engineering",
+            branch="CS",
+            scheme="C-24",
+            role="STUDENT",
+            attendance_pct=pct_str,
+            attendance_val=pct_val,
+            working_days=int(res.get("workingDays", 88)),
+            present_days=int(res.get("presentDays", 0)),
+            cgpa=cgpa_val,
+            backlogs=backlogs_val,
+            backlogs_count=backlogs_val,
+            credits_earned=credits_earned,
+            last_synced=now_ts
+        )
+        db.add(student)
+    db.commit()
+
+    student_data = {
+        "pin": clean_pin,
+        "name": student.name,
+        "branch": "Computer Science & Engineering",
+        "scheme": "C-24",
+        "semester": 6,
+        "isSynced": True,
+        "cgpa": cgpa_val,
+        "backlogs": backlogs_val,
+        "backlogs_count": backlogs_val,
+        "attendance": {
+            "workingDays": student.working_days,
+            "daysPresent": student.present_days,
+            "percentage": pct_val,
+            "status": "ELIGIBLE" if pct_val >= 75.0 else ("CONDONATION" if pct_val >= 65.0 else "CRITICAL")
+        },
+        "results": {
+            "cgpa": cgpa_val,
+            "backlogCount": backlogs_val,
+            "backlogs": backlogs_val
+        },
+        "lastSynced": now_ts
+    }
+
+    return {"success": True, "student": student_data}
 
 @app.get("/api/v1/hod/requests")
 def get_hod_live_requests(db: Session = Depends(get_db)):
@@ -1300,6 +1402,8 @@ async def hod_sync_stream(background_tasks: BackgroundTasks):
                                 st = {
                                     "pin": st_rec.pin,
                                     "name": st_rec.name,
+                                    "cgpa": float(st_rec.cgpa) if st_rec.cgpa else 0.0,
+                                    "backlogs": st_rec.backlogs if hasattr(st_rec, 'backlogs') and st_rec.backlogs is not None else (st_rec.backlogs_count or 0),
                                     "attendance": {
                                         "workingDays": st_rec.working_days,
                                         "daysPresent": st_rec.present_days,
@@ -1307,7 +1411,8 @@ async def hod_sync_stream(background_tasks: BackgroundTasks):
                                     },
                                     "results": {
                                         "cgpa": float(st_rec.cgpa) if st_rec.cgpa else 0.0,
-                                        "backlogCount": st_rec.backlogs_count or 0
+                                        "backlogCount": st_rec.backlogs if hasattr(st_rec, 'backlogs') and st_rec.backlogs is not None else (st_rec.backlogs_count or 0),
+                                        "backlogs": st_rec.backlogs if hasattr(st_rec, 'backlogs') and st_rec.backlogs is not None else (st_rec.backlogs_count or 0)
                                     }
                                 }
                         yield f"data: {json.dumps({'type': 'PROGRESS', 'completed': curr.synced_count, 'total': curr.total_students, 'percent': pct, 'pin': curr.current_pin, 'student': st})}\n\n"
