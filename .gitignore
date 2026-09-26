@@ -9,3 +9,14 @@ yarn-debug.log*
 yarn-error.log*
 .system_generated/
 *.metadata.json
+
+# Python & SQLite
+backend/venv/
+venv/
+*.db
+campus.db
+backend/campus.db
+__pycache__/
+backend/__pycache__/
+*.py[cod]
+*$py.class
