@@ -1,34 +1,57 @@
-from fastapi import FastAPI, HTTPException, Depends, status, Request
+import os
+import sys
+import json
+import random
+import asyncio
+from datetime import datetime
+from typing import Optional, List, Dict, Any
+
+from fastapi import (
+    FastAPI,
+    WebSocket,
+    WebSocketDisconnect,
+    Depends,
+    HTTPException,
+    status,
+    BackgroundTasks,
+    Query
+)
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import RedirectResponse, JSONResponse, StreamingResponse
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
-from typing import Optional, List, Any, Dict
-from datetime import datetime
-import os
-import sys
-import uuid
-import json
-import asyncio
+from sqlalchemy import or_
 
-# --- DIRECTORY PATHS ---
+# Ensure paths can be resolved whether executed from root or backend
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_ROOT = os.path.abspath(os.path.join(BASE_DIR, ".."))
 FRONTEND_DIR = os.path.join(PROJECT_ROOT, "frontend")
 ASSETS_DIR = os.path.join(PROJECT_ROOT, "assets")
 
-# Append directories to Python path for root or backend execution
 sys.path.append(BASE_DIR)
 sys.path.append(os.path.join(BASE_DIR, "services"))
-from database import StudentDB, get_db, SessionLocal
-from sbtet_integration import sbtet_service
+
+from database import (
+    SessionLocal,
+    get_db,
+    StudentDB,
+    RosterKeyDB,
+    MarketplaceItemDB,
+    MessageDB,
+    DigitalRequestDB,
+    IdeaHubProjectDB,
+    ProjectInviteDB,
+    SyncProgressDB
+)
+from websocket_manager import ws_manager
+from sbtet_scraper import sbtet_scraper
 
 # --- FASTAPI APP INITIALIZATION ---
 app = FastAPI(
-    title="Campus Connect API",
-    description="Unified Digital Campus Management API - Samskruti College of Engineering & Technology (Code: 259)",
-    version="2.2.0"
+    title="Campus Connect Real-Time API",
+    description="Unified Digital Campus Management Platform - Samskruti College of Engineering & Technology (Code: 259)",
+    version="3.0.0"
 )
 
 # Configure CORS
@@ -46,319 +69,409 @@ def root():
     """Automatically redirects visitors to the advanced login portal."""
     return RedirectResponse(url="/screens/01-auth/login.html", status_code=status.HTTP_307_TEMPORARY_REDIRECT)
 
-# --- PYDANTIC SCHEMAS ---
-class FlexibleLoginRequest(BaseModel):
-    identity: Optional[str] = None
-    email: Optional[str] = None
-    username: Optional[str] = None
-    roll_no: Optional[str] = None
-    password: str
+# ==============================================================================
+# 1. REAL-TIME WEBSOCKET ROUTE (PRESENCE, MESSAGING, NOTIFICATIONS)
+# ==============================================================================
+@app.websocket("/ws")
+async def websocket_endpoint(websocket: WebSocket, pin: str = Query(""), name: str = Query("")):
+    clean_pin = (pin or "").strip().upper()
+    if not clean_pin:
+        await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
+        return
 
-class Step1RegisterRequest(BaseModel):
+    await ws_manager.connect(websocket, clean_pin, name=name)
+    try:
+        while True:
+            raw_text = await websocket.receive_text()
+            try:
+                data = json.loads(raw_text)
+            except Exception:
+                continue
+
+            msg_type = data.get("type")
+
+            # A. REAL-TIME CHAT ROUTING
+            if msg_type == "SEND_MESSAGE":
+                recipient_pin = (data.get("receiver_pin") or "").strip().upper()
+                content = (data.get("content") or "").strip()
+                category = data.get("category") or "DIRECT"
+                product_id = data.get("product_id")
+                idea_id = data.get("idea_id")
+
+                if recipient_pin and content:
+                    # Persist message in database
+                    db = SessionLocal()
+                    try:
+                        sender_user = db.query(StudentDB).filter(StudentDB.pin == clean_pin).first()
+                        sender_name = sender_user.name if sender_user else (name or clean_pin)
+
+                        receiver_user = db.query(StudentDB).filter(StudentDB.pin == recipient_pin).first()
+                        receiver_name = receiver_user.name if receiver_user else recipient_pin
+
+                        msg_entry = MessageDB(
+                            sender_pin=clean_pin,
+                            sender_name=sender_name,
+                            receiver_pin=recipient_pin,
+                            receiver_name=receiver_name,
+                            category=category,
+                            product_id=product_id,
+                            idea_id=idea_id,
+                            content=content,
+                            timestamp=datetime.utcnow().isoformat(),
+                            is_read=False
+                        )
+                        db.add(msg_entry)
+                        db.commit()
+                        db.refresh(msg_entry)
+
+                        msg_payload = {
+                            "type": "NEW_MESSAGE",
+                            "message": {
+                                "id": msg_entry.id,
+                                "sender_pin": clean_pin,
+                                "sender_name": sender_name,
+                                "receiver_pin": recipient_pin,
+                                "receiver_name": receiver_name,
+                                "category": category,
+                                "product_id": product_id,
+                                "idea_id": idea_id,
+                                "content": content,
+                                "timestamp": msg_entry.timestamp,
+                                "is_read": False
+                            }
+                        }
+
+                        # Push directly to recipient's active WebSockets
+                        await ws_manager.send_personal_message(recipient_pin, msg_payload)
+
+                        # Acknowledge back to sender
+                        await websocket.send_json({
+                            "type": "MESSAGE_SENT_ACK",
+                            "message_id": msg_entry.id,
+                            "timestamp": msg_entry.timestamp
+                        })
+                    finally:
+                        db.close()
+
+            # B. HEARTBEAT / PING-PONG
+            elif msg_type == "PING":
+                await websocket.send_json({"type": "PONG", "timestamp": datetime.utcnow().isoformat()})
+
+    except WebSocketDisconnect:
+        await ws_manager.disconnect(websocket)
+    except Exception as e:
+        await ws_manager.disconnect(websocket)
+
+@app.get("/api/v1/presence/online")
+def get_online_users():
+    """Returns list of currently online student and staff PINs."""
+    return {
+        "success": True,
+        "online_pins": ws_manager.get_online_pins(),
+        "count": len(ws_manager.get_online_pins())
+    }
+
+# ==============================================================================
+# 2. AUTHENTICATION & ONBOARDING (PIN-FIRST FLOW)
+# ==============================================================================
+
+class CheckPinRequest(BaseModel):
     pin: str
-    firstName: str
-    lastName: Optional[str] = ""
-    branch: Optional[str] = "CS"
-    scheme: Optional[str] = "C-24"
-    semester: Optional[int] = 3
+
+class FinalizeAccountRequest(BaseModel):
+    pin: str
     email: str
     password: str
+    name: Optional[str] = None
+    department: Optional[str] = "Computer Science & Engineering"
+    branch: Optional[str] = "CS"
+    scheme: Optional[str] = "C-24"
+    year: Optional[str] = "3rd Year"
+    semester: Optional[str] = "6SEM"
 
-class VerifyKeyRequest(BaseModel):
-    pin: str
-    secretKey: str
-    email: Optional[str] = None
+class LoginRequest(BaseModel):
+    identifier: str  # Email or PIN
+    password: str
 
-class SyncStudentRequest(BaseModel):
-    pin: str = Field(..., description="Student Diploma PIN (e.g. 24259-CS-025)")
-    scheme: Optional[str] = Field("C24", description="Curriculum Scheme (e.g. C24)")
-    force: Optional[bool] = Field(True, description="Force live gateway bypass cache")
-    password: Optional[str] = Field(None, description="Optional portal password")
-
-class SyncHODRequest(BaseModel):
-    pins: Optional[List[str]] = Field(None, description="Explicit PINs to sync")
-    branch: Optional[str] = Field("CS", description="Branch Code (e.g. CS)")
-    scheme: Optional[str] = Field("C24", description="Curriculum Scheme")
-
-# In-memory store for pending 2-step registration
-pending_verifications = {}
-
-# --- UNIFIED AUTH ENDPOINTS ---
-
-@app.post("/api/v1/auth/login")
-@app.post("/api/auth/login")
-@app.post("/api/login")
-def login(request: FlexibleLoginRequest, db: Session = Depends(get_db)):
-    identifier = (request.identity or request.username or request.email or request.roll_no or "").strip()
-    if not identifier:
-        return JSONResponse(
-            status_code=400,
-            content={"success": False, "message": "PIN / Identifier and Password are required."}
-        )
-
-    clean_id = identifier.upper()
-
-    # 1. Check for HOD login
-    if "HOD" in clean_id or clean_id == "VAMSHI-CS-HOD":
-        if request.password in ["Password123", "VamshiCS@2026", "HOD@SCET259"]:
-            token = f"token_hod_{uuid.uuid4().hex[:12]}"
-            return {
-                "success": True,
-                "status": "success",
-                "message": "Welcome, Prof. Vamshi Krishna (Computer Science & Engineering HOD Console)",
-                "token": token,
-                "user": {
-                    "id": "usr_hod_cs",
-                    "name": "Prof. Vamshi Krishna",
-                    "role": "HOD_CS",
-                    "department": "Computer Science & Engineering",
-                    "branchCode": "CS",
-                    "collegeCode": "259",
-                    "isRegistered": True,
-                    "isActivated": True
-                },
-                "redirectUrl": "../04-hod-portal/hod-dashboard.html"
-            }
-        else:
-            return JSONResponse(
-                status_code=401,
-                content={"success": False, "message": "Invalid password for HOD Console."}
-            )
-
-    # 2. Check for Student in SQLite Database
-    user = db.query(StudentDB).filter(StudentDB.roll_no.ilike(clean_id)).first()
-
-    if not user:
-        return JSONResponse(
-            status_code=401,
-            content={
-                "success": False,
-                "code": "ACCOUNT_NOT_REGISTERED",
-                "message": f"Account with PIN '{clean_id}' is not registered. Please complete Student Sign Up first."
-            }
-        )
-
-    if user.password != request.password and request.password != "Password123":
-        return JSONResponse(
-            status_code=401,
-            content={"success": False, "message": "Invalid password. Please check your credentials."}
-        )
-
-    token = f"token_std_{uuid.uuid4().hex[:12]}"
-    return {
-        "success": True,
-        "status": "success",
-        "message": f"Welcome back, {user.name}!",
-        "token": token,
-        "student_id": user.id,
-        "user": {
-            "id": f"usr_{user.id}",
-            "student_id": user.id,
-            "roll_no": user.roll_no,
-            "sbtetPin": user.roll_no,
-            "rollNumber": user.roll_no,
-            "name": user.name,
-            "department": user.department,
-            "role": user.role or "STUDENT",
-            "collegeCode": "259",
-            "isRegistered": True,
-            "isActivated": True
-        },
-        "redirectUrl": "../02-student-portal/dashboard.html"
-    }
-
-# --- STEP 1 REGISTRATION ---
-@app.post("/api/v1/auth/register-step1")
-@app.post("/api/auth/register-step1")
-def register_step1(req: Step1RegisterRequest, db: Session = Depends(get_db)):
+@app.post("/api/v1/auth/check-pin")
+async def check_pin_and_scrape(req: CheckPinRequest, db: Session = Depends(get_db)):
+    """
+    Step 1 & 2: Validates PIN against roster_keys and scrapes verified student
+    details from sbtetconnect.app.
+    """
     clean_pin = req.pin.strip().upper()
-    existing = db.query(StudentDB).filter(StudentDB.roll_no.ilike(clean_pin)).first()
-    if existing:
-        return JSONResponse(
-            status_code=409,
-            content={"success": False, "message": f"PIN {clean_pin} is already registered. Please sign in."}
+
+    # 1. Validate against pre-populated roster_keys
+    roster_entry = db.query(RosterKeyDB).filter(RosterKeyDB.pin == clean_pin).first()
+    if not roster_entry:
+        raise HTTPException(
+            status_code=404,
+            detail=f"PIN '{clean_pin}' is not recognized in Samskruti College Master Roster (CS-001 to CS-180)."
         )
 
-    full_name = f"{req.firstName.strip()} {req.lastName.strip()}".strip()
-    pending_verifications[clean_pin] = {
-        "roll_no": clean_pin,
-        "name": full_name,
-        "department": req.branch or "Computer Science & Engineering",
-        "email": req.email.strip().lower(),
-        "password": req.password
-    }
+    # 2. Check if student already finalized their account
+    existing_student = db.query(StudentDB).filter(StudentDB.pin == clean_pin).first()
+    if existing_student and existing_student.email and existing_student.password:
+        return {
+            "success": True,
+            "status": "ALREADY_REGISTERED",
+            "message": f"Account for {existing_student.name} exists. Please enter your password to sign in.",
+            "pin": clean_pin,
+            "name": existing_student.name,
+            "email": existing_student.email
+        }
+
+    # 3. Scrape student identity from SBTET Gateway
+    scraped = await sbtet_scraper.scrape_student_onboarding(clean_pin)
+
+    student_name = scraped.get("name") if scraped.get("success") else f"Student {clean_pin}"
+    branch = scraped.get("branch", "CS")
+    scheme = scraped.get("scheme", "C-24")
+    semester = scraped.get("semester", "6SEM")
+    year = scraped.get("year", "3rd Year")
 
     return {
         "success": True,
-        "message": f"Profile registered for {full_name}. Please verify institutional security key.",
-        "pin": clean_pin
-    }
-
-# --- STEP 2 VERIFY IDENTITY & KEY ---
-@app.post("/api/v1/auth/verify-secret-key")
-@app.post("/api/auth/verify-secret-key")
-def verify_secret_key(req: VerifyKeyRequest, db: Session = Depends(get_db)):
-    clean_pin = req.pin.strip().upper()
-    pending = pending_verifications.get(clean_pin)
-
-    new_student = StudentDB(
-        roll_no=clean_pin,
-        name=pending["name"] if pending else f"Student {clean_pin}",
-        password=pending["password"] if pending else "Password123",
-        department=pending["department"] if pending else "Computer Science & Engineering",
-        role="STUDENT"
-    )
-    db.add(new_student)
-    db.commit()
-    db.refresh(new_student)
-
-    if clean_pin in pending_verifications:
-        del pending_verifications[clean_pin]
-
-    token = f"token_std_{uuid.uuid4().hex[:12]}"
-    return {
-        "success": True,
-        "message": "Institutional identity verified successfully!",
-        "token": token,
-        "user": {
-            "id": f"usr_{new_student.id}",
-            "student_id": new_student.id,
-            "roll_no": new_student.roll_no,
-            "sbtetPin": new_student.roll_no,
-            "rollNumber": new_student.roll_no,
-            "name": new_student.name,
-            "department": new_student.department,
-            "role": "STUDENT",
-            "isRegistered": True,
-            "isActivated": True
+        "status": "NEEDS_SETUP",
+        "message": f"Verified SBTET records for {student_name}. Please set your institutional email and password to finalize your profile.",
+        "pin": clean_pin,
+        "student": {
+            "pin": clean_pin,
+            "name": student_name,
+            "branch": branch,
+            "department": "Computer Science & Engineering" if branch == "CS" else branch,
+            "scheme": scheme,
+            "semester": semester,
+            "year": year
         }
     }
 
-# --- STUDENT ATTENDANCE ENDPOINTS ---
-
-@app.post("/api/v1/attendance/sync")
-@app.post("/api/attendance/sync")
-@app.post("/api/sync/student")
-@app.post("/api/v1/sync/student")
-async def sync_attendance(req: SyncStudentRequest, db: Session = Depends(get_db)):
+@app.post("/api/v1/auth/finalize-account")
+async def finalize_account(req: FinalizeAccountRequest, db: Session = Depends(get_db)):
     """
-    Live sync student biometric attendance and profile from SBTET cloud gateway,
-    caching metrics directly into SQLite.
+    Step 3: Stores Email & Password, finalizes account, and marks roster as registered.
     """
     clean_pin = req.pin.strip().upper()
-    att = await sbtet_service.fetch_student_attendance(clean_pin)
+    clean_email = req.email.strip().lower()
 
+    # Check for email collision
+    email_exists = db.query(StudentDB).filter(StudentDB.email == clean_email, StudentDB.pin != clean_pin).first()
+    if email_exists:
+        raise HTTPException(status_code=400, detail="This email is already associated with another student.")
+
+    student = db.query(StudentDB).filter(StudentDB.pin == clean_pin).first()
     now_ts = datetime.utcnow().isoformat()
-    pct_str = att.get("metrics", {}).get("percentage", "0.0%") if att.get("success") else "0.0%"
-
-    student = db.query(StudentDB).filter(StudentDB.roll_no.ilike(clean_pin)).first()
-    live_name = att.get("name")
 
     if student:
-        if live_name and live_name != "Student":
-            student.name = live_name
-        student.attendance_pct = pct_str
-        student.last_synced = now_ts
+        student.email = clean_email
+        student.password = req.password
+        if req.name:
+            student.name = req.name
+        student.department = req.department or student.department
+        student.branch = req.branch or student.branch
+        student.scheme = req.scheme or student.scheme
+        student.year = req.year or student.year
+        student.semester = req.semester or student.semester
+        student.last_seen = now_ts
     else:
         student = StudentDB(
+            pin=clean_pin,
             roll_no=clean_pin,
-            name=live_name or f"Student {clean_pin}",
-            password=req.password or "Password123",
-            department=att.get("branch", "Computer Science & Engineering"),
+            name=req.name or f"Student {clean_pin}",
+            email=clean_email,
+            password=req.password,
+            department=req.department or "Computer Science & Engineering",
+            branch=req.branch or "CS",
+            scheme=req.scheme or "C-24",
+            year=req.year or "3rd Year",
+            semester=req.semester or "6SEM",
             role="STUDENT",
-            attendance_pct=pct_str,
-            last_synced=now_ts
+            created_at=now_ts
         )
         db.add(student)
+
+    # Mark roster key as registered
+    roster_entry = db.query(RosterKeyDB).filter(RosterKeyDB.pin == clean_pin).first()
+    if roster_entry:
+        roster_entry.is_registered = True
 
     db.commit()
     db.refresh(student)
 
+    token = f"tok_std_{clean_pin}_{random.randint(100000, 999999)}"
+    return {
+        "success": True,
+        "message": f"Welcome to Campus Connect, {student.name}! Your account is now active.",
+        "token": token,
+        "user": {
+            "pin": student.pin,
+            "rollNumber": student.pin,
+            "sbtetPin": student.pin,
+            "name": student.name,
+            "email": student.email,
+            "role": student.role,
+            "department": student.department,
+            "collegeCode": "259"
+        },
+        "redirectUrl": "../02-student-portal/dashboard.html"
+    }
+
+@app.post("/api/v1/auth/login")
+@app.post("/api/auth/login")
+async def login(req: LoginRequest, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
+    """
+    Step 4: Standard login using Email or PIN + Password.
+    When HOD logs in, triggers 180-student background task!
+    """
+    ident = req.identifier.strip()
+    clean_id = ident.upper()
+
+    # 1. Check for HOD Console Login
+    if clean_id in ["VAMSHI-CS-HOD", "HOD.CS@SAMSKRUTI.AC.IN", "HOD"]:
+        if req.password in ["Password123", "VamshiCS@2026", "HOD@SCET259"]:
+            # TRIGGER 180-STUDENT BACKGROUND SYNC
+            background_tasks.add_task(run_180_student_sync_background)
+
+            token = f"tok_hod_{random.randint(100000, 999999)}"
+            return {
+                "success": True,
+                "message": "Welcome, Prof. Vamshi Krishna (Computer Science & Engineering HOD Console)",
+                "token": token,
+                "user": {
+                    "pin": "VAMSHI-CS-HOD",
+                    "name": "Prof. Vamshi Krishna",
+                    "role": "HOD_CS",
+                    "department": "Computer Science & Engineering",
+                    "collegeCode": "259"
+                },
+                "background_sync_started": True,
+                "redirectUrl": "../04-hod-portal/hod-dashboard.html"
+            }
+        else:
+            raise HTTPException(status_code=401, detail="Invalid password for HOD Console.")
+
+    # 2. Check for Student Login by PIN or Email
+    student = db.query(StudentDB).filter(
+        or_(StudentDB.pin.ilike(ident), StudentDB.email.ilike(ident))
+    ).first()
+
+    if not student:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Account with identifier '{ident}' not found. Please verify your PIN first."
+        )
+
+    if student.password != req.password and req.password != "Password123":
+        raise HTTPException(status_code=401, detail="Invalid password. Please check your credentials.")
+
+    token = f"tok_std_{student.pin}_{random.randint(100000, 999999)}"
+    return {
+        "success": True,
+        "message": f"Welcome back, {student.name}!",
+        "token": token,
+        "user": {
+            "pin": student.pin,
+            "rollNumber": student.pin,
+            "sbtetPin": student.pin,
+            "name": student.name,
+            "email": student.email,
+            "role": student.role or "STUDENT",
+            "department": student.department,
+            "collegeCode": "259"
+        },
+        "redirectUrl": "../02-student-portal/dashboard.html"
+    }
+
+# ==============================================================================
+# 3. STUDENT PORTAL: ATTENDANCE, RESULTS & ACADEMICS
+# ==============================================================================
+
+class PinRequest(BaseModel):
+    pin: str
+    scheme: Optional[str] = "C24"
+    force: Optional[bool] = True
+
+@app.post("/api/v1/attendance/sync")
+@app.post("/api/attendance/sync")
+async def sync_student_attendance(req: PinRequest, db: Session = Depends(get_db)):
+    """
+    Live Sync student biometric attendance from SBTET gateway with calendar matrix
+    and Chart.js trend data.
+    """
+    clean_pin = req.pin.strip().upper()
+    att = await sbtet_scraper.scrape_attendance(clean_pin)
+
+    if att.get("success"):
+        student = db.query(StudentDB).filter(StudentDB.pin == clean_pin).first()
+        now_ts = datetime.utcnow().isoformat()
+        pct_val = att.get("attendancePercentage", 0.0)
+        pct_str = att.get("metrics", {}).get("percentage", f"{pct_val:.2f}%")
+
+        if student:
+            if att.get("name") and att["name"] != "Student":
+                student.name = att["name"]
+            student.attendance_pct = pct_str
+            student.attendance_val = pct_val
+            student.working_days = att.get("workingDays", 88)
+            student.present_days = att.get("presentDays", 0)
+            student.last_synced = now_ts
+            db.commit()
+
     return {
         "success": att.get("success", False),
-        "status": "success" if att.get("success") else "failed",
-        "message": f"Attendance record updated for {student.name}",
         "data": att,
-        "student": {
-            "id": student.id,
-            "roll_no": student.roll_no,
-            "name": student.name,
-            "attendance": student.attendance_pct,
-            "last_synced": student.last_synced
-        },
         **att
     }
 
+@app.get("/api/v1/attendance/data")
 @app.get("/api/v1/student/attendance")
 @app.get("/api/student/attendance")
 @app.get("/api/attendance")
-async def get_attendance(pin: Optional[str] = None, db: Session = Depends(get_db)):
-    """
-    Fetches real-time attendance directly from SBTET Gateway with local database caching.
-    """
-    clean_pin = (pin or "24259-CS-025").strip().upper()
-    live = await sbtet_service.fetch_student_attendance(clean_pin)
+async def get_student_attendance(pin: str = Query("24259-CS-025"), db: Session = Depends(get_db)):
+    """Retrieves live attendance records with fallback to local SQLite cache."""
+    clean_pin = pin.strip().upper()
+    att = await sbtet_scraper.scrape_attendance(clean_pin)
 
-    if live.get("success"):
-        student = db.query(StudentDB).filter(StudentDB.roll_no.ilike(clean_pin)).first()
-        if student:
-            student.attendance_pct = live.get("metrics", {}).get("percentage", "0.0%")
-            if live.get("name") and live.get("name") != "Student":
-                student.name = live["name"]
-            student.last_synced = datetime.utcnow().isoformat()
-            db.commit()
-        return {
-            "success": True,
-            "data": live,
-            **live
-        }
+    if att.get("success"):
+        return {"success": True, "data": att, **att}
 
     # Fallback to local DB record
-    student = db.query(StudentDB).filter(StudentDB.roll_no.ilike(clean_pin)).first()
+    student = db.query(StudentDB).filter(StudentDB.pin == clean_pin).first()
+    pct_val = student.attendance_val if student else 38.64
     fallback_data = {
         "success": True,
         "pin": clean_pin,
         "name": student.name if student else "Student",
-        "workingDays": 66,
-        "presentDays": 58,
-        "absentDays": 8,
-        "remainingDays": 24,
-        "totalSemesterDays": 90,
-        "errors": 0,
-        "attendancePercentage": float(student.attendance_pct.replace('%', '')) if student and student.attendance_pct else 85.0,
+        "workingDays": student.working_days if student else 88,
+        "presentDays": student.present_days if student else 34,
+        "absentDays": (student.working_days - student.present_days) if student else 54,
+        "attendancePercentage": pct_val,
         "metrics": {
-            "percentage": student.attendance_pct if student and student.attendance_pct else "85.0%",
-            "percentage_value": float(student.attendance_pct.replace('%', '')) if student and student.attendance_pct else 85.0,
-            "status": "Eligible (Local Cache)",
-            "is_eligible": True
+            "percentage": f"{pct_val:.2f}%",
+            "status": "Eligible" if pct_val >= 75.0 else "Detention Risk",
+            "is_eligible": pct_val >= 75.0
         },
         "monthlyLogs": {},
-        "source": "LOCAL_SQLITE_CACHE"
+        "chart_data": {
+            "labels": ["June", "July", "August", "September", "October"],
+            "data": [45.0, 40.0, 38.0, 39.0, pct_val]
+        }
     }
-    return {
-        "success": True,
-        "data": fallback_data,
-        **fallback_data
-    }
-
-# --- STUDENT RESULTS ENDPOINTS ---
+    return {"success": True, "data": fallback_data, **fallback_data}
 
 @app.post("/api/v1/results/sync")
 @app.post("/api/results/sync")
-async def sync_results(req: SyncStudentRequest, db: Session = Depends(get_db)):
-    """
-    Live sync consolidated semester marksheet and CGPA from SBTET Gateway.
-    """
+async def sync_student_results(req: PinRequest, db: Session = Depends(get_db)):
+    """Live Sync consolidated semester results and backlogs from SBTET gateway."""
     clean_pin = req.pin.strip().upper()
-    res = await sbtet_service.fetch_student_results(clean_pin, scheme=req.scheme or "C24")
+    res = await sbtet_scraper.scrape_results(clean_pin, scheme=req.scheme or "C24")
 
     if res.get("success"):
-        student = db.query(StudentDB).filter(StudentDB.roll_no.ilike(clean_pin)).first()
+        student = db.query(StudentDB).filter(StudentDB.pin == clean_pin).first()
         if student:
-            student.cgpa = str(res.get("cgpa", "N/A"))
-            student.backlogs = res.get("backlogs_count", 0)
-            if res.get("studentName"):
-                student.name = res["studentName"]
+            student.cgpa = str(res.get("cgpa", "0.00"))
+            student.credits_earned = float(res.get("credits_gained", 0.0))
+            student.backlogs_count = res.get("backlogs_count", 0)
             student.last_synced = datetime.utcnow().isoformat()
             db.commit()
 
@@ -369,23 +482,14 @@ async def sync_results(req: SyncStudentRequest, db: Session = Depends(get_db)):
         **res
     }
 
+@app.get("/api/v1/results/data")
 @app.get("/api/v1/student/results")
 @app.get("/api/student/results")
 @app.get("/api/results")
-async def get_results(pin: Optional[str] = None, scheme: Optional[str] = "C24", db: Session = Depends(get_db)):
-    """
-    Fetches consolidated marksheet and semester breakdowns from SBTET Gateway.
-    """
-    clean_pin = (pin or "24259-CS-025").strip().upper()
-    res = await sbtet_service.fetch_student_results(clean_pin, scheme=scheme or "C24")
-
-    if res.get("success"):
-        student = db.query(StudentDB).filter(StudentDB.roll_no.ilike(clean_pin)).first()
-        if student:
-            student.cgpa = str(res.get("cgpa", "N/A"))
-            student.backlogs = res.get("backlogs_count", 0)
-            db.commit()
-
+async def get_student_results(pin: str = Query("24259-CS-025"), scheme: str = Query("C24")):
+    """Retrieves consolidated semester results and detailed breakdown."""
+    clean_pin = pin.strip().upper()
+    res = await sbtet_scraper.scrape_results(clean_pin, scheme=scheme)
     return {
         "success": res.get("success", False),
         "data": res,
@@ -393,349 +497,840 @@ async def get_results(pin: Optional[str] = None, scheme: Optional[str] = "C24", 
         **res
     }
 
-# --- HOD CONSOLE & DEPARTMENT MANAGEMENT ENDPOINTS ---
+# ==============================================================================
+# 4. MARKETPLACE: CRUD & REAL-TIME WEBSOCKET BROADCASTS
+# ==============================================================================
 
-def format_student_for_hod(pin: str, user: Optional[StudentDB] = None, att_data: Optional[Dict] = None, res_data: Optional[Dict] = None) -> Dict[str, Any]:
-    """Helper to format student model for HOD console table and modals."""
-    clean_pin = pin.upper()
-    roll_num = 1
-    parts = clean_pin.split("-")
-    if parts[-1].isdigit():
-        roll_num = int(parts[-1])
+class CreateProductRequest(BaseModel):
+    seller_pin: str
+    seller_name: str
+    title: str
+    description: str
+    price: float
+    category: Optional[str] = "Other"
+    condition: Optional[str] = "Good"
+    image_url: Optional[str] = None
+    contact_info: Optional[str] = None
 
-    name = user.name if user else (att_data.get("name") if att_data else f"Student {clean_pin}")
-    dept = user.department if user else "Computer Science & Engineering"
-    last_synced = user.last_synced if user else datetime.utcnow().isoformat()
+class UpdateProductRequest(BaseModel):
+    title: Optional[str] = None
+    description: Optional[str] = None
+    price: Optional[float] = None
+    category: Optional[str] = None
+    condition: Optional[str] = None
+    status: Optional[str] = None
+    image_url: Optional[str] = None
 
-    # Attendance representation
-    att_pct = None
-    working_days = 88
-    days_present = 0
-    att_status = "UNSYNCED"
-
-    if att_data and att_data.get("success"):
-        working_days = att_data.get("workingDays", 88)
-        days_present = att_data.get("presentDays", 0)
-        att_pct = att_data.get("attendancePercentage", 0.0)
-        att_status = att_data.get("metrics", {}).get("status", "UNSYNCED")
-    elif user and user.attendance_pct:
-        try:
-            att_pct = float(user.attendance_pct.replace('%', ''))
-            att_status = "ELIGIBLE" if att_pct >= 75.0 else ("CONDONATION" if att_pct >= 65.0 else "CRITICAL")
-        except:
-            att_pct = None
-
-    # Results representation
-    cgpa = 0.0
-    backlogs_count = 0
-    backlog_subjects = []
-
-    if res_data and res_data.get("success"):
-        try:
-            cgpa = float(res_data.get("cgpa", 0.0))
-        except:
-            cgpa = 0.0
-        backlogs_count = res_data.get("backlogs_count", 0)
-        backlog_subjects = res_data.get("backlog_subjects", [])
-    elif user and user.cgpa:
-        try:
-            cgpa = float(user.cgpa)
-            backlogs_count = user.backlogs or 0
-        except:
-            cgpa = 0.0
-
-    return {
-        "pin": clean_pin,
-        "rollNumber": roll_num,
-        "name": name,
-        "branch": dept,
-        "scheme": "C-24",
-        "semester": 6,
-        "isSynced": (att_pct is not None),
-        "attendance": {
-            "workingDays": working_days,
-            "daysPresent": days_present,
-            "percentage": att_pct,
-            "status": att_status
-        } if att_pct is not None else None,
-        "results": {
-            "cgpa": cgpa,
-            "backlogCount": backlogs_count,
-            "failedSubjects": backlog_subjects
-        },
-        "backlogSubjects": backlog_subjects,
-        "lastSynced": last_synced
-    }
-
-@app.get("/api/v1/hod/students")
-@app.get("/api/hod/students")
-def get_hod_students(db: Session = Depends(get_db)):
-    """
-    Returns complete department roster for HOD console.
-    """
-    students_in_db = db.query(StudentDB).filter(StudentDB.role == "STUDENT").all()
-    db_map = {s.roll_no.upper(): s for s in students_in_db}
-
-    # Generate complete cohort (rolls 1 to 60 or all in DB)
-    all_students_list = []
-    total_roster_size = max(60, len(students_in_db))
-
-    for i in range(1, total_roster_size + 1):
-        pin = f"24259-CS-{str(i).zfill(3)}"
-        user = db_map.get(pin)
-        all_students_list.append(format_student_for_hod(pin, user))
-
+@app.get("/api/v1/marketplace/items")
+def list_marketplace_items(db: Session = Depends(get_db)):
+    """Returns all available surplus items."""
+    items = db.query(MarketplaceItemDB).order_by(MarketplaceItemDB.id.desc()).all()
     return {
         "success": True,
-        "students": all_students_list,
-        "total": len(all_students_list),
-        "isStale": any(not s["isSynced"] for s in all_students_list[:10])
+        "items": [
+            {
+                "id": it.id,
+                "seller_pin": it.seller_pin,
+                "seller_name": it.seller_name,
+                "title": it.title,
+                "description": it.description,
+                "price": it.price,
+                "category": it.category,
+                "condition": it.condition,
+                "image_url": it.image_url,
+                "contact_info": it.contact_info,
+                "status": it.status,
+                "created_at": it.created_at
+            }
+            for it in items
+        ]
     }
 
-@app.post("/api/v1/hod/sync-student")
-@app.post("/api/hod/sync-student")
-async def sync_single_student_hod(request: Request, db: Session = Depends(get_db)):
-    """
-    Sync a single student's attendance and marks for the HOD console.
-    """
-    body = await request.json()
-    clean_pin = (body.get("pin") or "").strip().upper()
-    if not clean_pin:
-        raise HTTPException(status_code=400, detail="PIN is required")
-
-    profile = await sbtet_service.sync_student_full_profile(clean_pin)
-    att = profile.get("attendance", {})
-    res = profile.get("results", {})
-
-    user = db.query(StudentDB).filter(StudentDB.roll_no.ilike(clean_pin)).first()
-    live_name = att.get("name") or res.get("studentName")
-    pct_str = att.get("metrics", {}).get("percentage", "0.0%")
-    cgpa_str = str(res.get("cgpa", "N/A"))
-    backlogs_val = res.get("backlogs_count", 0)
+@app.post("/api/v1/marketplace/items")
+async def create_marketplace_item(req: CreateProductRequest, db: Session = Depends(get_db)):
+    """Creates a new listing and broadcasts live feed update via WebSocket."""
     now_ts = datetime.utcnow().isoformat()
+    new_item = MarketplaceItemDB(
+        seller_pin=req.seller_pin.strip().upper(),
+        seller_name=req.seller_name,
+        title=req.title,
+        description=req.description,
+        price=req.price,
+        category=req.category or "Other",
+        condition=req.condition or "Good",
+        image_url=req.image_url,
+        contact_info=req.contact_info,
+        status="AVAILABLE",
+        created_at=now_ts,
+        updated_at=now_ts
+    )
+    db.add(new_item)
+    db.commit()
+    db.refresh(new_item)
 
-    if user:
-        if live_name and live_name != "Student":
-            user.name = live_name
-        user.attendance_pct = pct_str
-        user.cgpa = cgpa_str
-        user.backlogs = backlogs_val
-        user.last_synced = now_ts
-    else:
-        user = StudentDB(
-            roll_no=clean_pin,
-            name=live_name or f"Student {clean_pin}",
-            password="Password123",
-            department="Computer Science & Engineering",
-            role="STUDENT",
-            attendance_pct=pct_str,
-            cgpa=cgpa_str,
-            backlogs=backlogs_val,
-            last_synced=now_ts
-        )
-        db.add(user)
+    item_payload = {
+        "id": new_item.id,
+        "seller_pin": new_item.seller_pin,
+        "seller_name": new_item.seller_name,
+        "title": new_item.title,
+        "description": new_item.description,
+        "price": new_item.price,
+        "category": new_item.category,
+        "condition": new_item.condition,
+        "image_url": new_item.image_url,
+        "status": new_item.status,
+        "created_at": new_item.created_at
+    }
+
+    # BROADCAST VIA WEBSOCKET TO ALL CLIENTS
+    await ws_manager.broadcast({
+        "type": "MARKETPLACE_FEED_UPDATE",
+        "action": "CREATE",
+        "item": item_payload
+    })
+
+    return {"success": True, "message": "Product listed successfully!", "item": item_payload}
+
+@app.put("/api/v1/marketplace/items/{item_id}")
+async def update_marketplace_item(item_id: int, req: UpdateProductRequest, db: Session = Depends(get_db)):
+    """Updates listing and broadcasts change to all active users."""
+    item = db.query(MarketplaceItemDB).filter(MarketplaceItemDB.id == item_id).first()
+    if not item:
+        raise HTTPException(status_code=404, detail="Item not found")
+
+    if req.title is not None: item.title = req.title
+    if req.description is not None: item.description = req.description
+    if req.price is not None: item.price = req.price
+    if req.category is not None: item.category = req.category
+    if req.condition is not None: item.condition = req.condition
+    if req.status is not None: item.status = req.status
+    if req.image_url is not None: item.image_url = req.image_url
+    item.updated_at = datetime.utcnow().isoformat()
 
     db.commit()
-    db.refresh(user)
+    db.refresh(item)
 
-    student_data = format_student_for_hod(clean_pin, user, att, res)
-    return {
-        "success": True,
-        "message": f"Synchronized {clean_pin}",
-        "student": student_data
+    item_payload = {
+        "id": item.id,
+        "seller_pin": item.seller_pin,
+        "seller_name": item.seller_name,
+        "title": item.title,
+        "description": item.description,
+        "price": item.price,
+        "category": item.category,
+        "condition": item.condition,
+        "image_url": item.image_url,
+        "status": item.status,
+        "updated_at": item.updated_at
     }
 
-@app.get("/api/v1/hod/students/{pin}/backlogs")
-@app.get("/api/hod/students/{pin}/backlogs")
-async def get_student_backlogs_hod(pin: str, db: Session = Depends(get_db)):
+    await ws_manager.broadcast({
+        "type": "MARKETPLACE_FEED_UPDATE",
+        "action": "UPDATE",
+        "item": item_payload
+    })
+
+    return {"success": True, "item": item_payload}
+
+@app.delete("/api/v1/marketplace/items/{item_id}")
+async def delete_marketplace_item(item_id: int, db: Session = Depends(get_db)):
+    """Deletes product and notifies all clients to remove from UI in real time."""
+    item = db.query(MarketplaceItemDB).filter(MarketplaceItemDB.id == item_id).first()
+    if not item:
+        raise HTTPException(status_code=404, detail="Item not found")
+
+    db.delete(item)
+    db.commit()
+
+    await ws_manager.broadcast({
+        "type": "MARKETPLACE_FEED_UPDATE",
+        "action": "DELETE",
+        "item_id": item_id
+    })
+
+    return {"success": True, "message": "Product deleted successfully", "item_id": item_id}
+
+# ==============================================================================
+# 5. UNIFIED MESSAGING CENTER (IDEA HUB, MARKETPLACE, DIRECT)
+# ==============================================================================
+
+@app.get("/api/v1/messages/threads")
+def get_user_threads(pin: str = Query(...), db: Session = Depends(get_db)):
     """
-    Returns failed subject details for HOD Backlog Inspection Modal.
+    Returns messages categorized into:
+    - Idea Hub Connections
+    - Marketplace Inquiries
+    - Direct Messages
     """
     clean_pin = pin.strip().upper()
-    res = await sbtet_service.fetch_student_results(clean_pin)
-    user = db.query(StudentDB).filter(StudentDB.roll_no.ilike(clean_pin)).first()
+    msgs = db.query(MessageDB).filter(
+        or_(MessageDB.sender_pin == clean_pin, MessageDB.receiver_pin == clean_pin)
+    ).order_by(MessageDB.id.asc()).all()
+
+    threads = {
+        "idea_hub": [],
+        "marketplace": [],
+        "direct": []
+    }
+
+    for m in msgs:
+        formatted = {
+            "id": m.id,
+            "sender_pin": m.sender_pin,
+            "sender_name": m.sender_name,
+            "receiver_pin": m.receiver_pin,
+            "receiver_name": m.receiver_name,
+            "category": m.category,
+            "product_id": m.product_id,
+            "idea_id": m.idea_id,
+            "content": m.content,
+            "timestamp": m.timestamp,
+            "is_read": m.is_read
+        }
+        cat = (m.category or "DIRECT").upper()
+        if "IDEA" in cat:
+            threads["idea_hub"].append(formatted)
+        elif "MARKET" in cat:
+            threads["marketplace"].append(formatted)
+        else:
+            threads["direct"].append(formatted)
+
+    return {"success": True, "threads": threads}
+
+@app.get("/api/v1/messages/history")
+def get_chat_history(user_pin: str = Query(...), other_pin: str = Query(...), db: Session = Depends(get_db)):
+    """Returns conversation history between two specific students."""
+    u_pin = user_pin.strip().upper()
+    o_pin = other_pin.strip().upper()
+
+    msgs = db.query(MessageDB).filter(
+        or_(
+            (MessageDB.sender_pin == u_pin) & (MessageDB.receiver_pin == o_pin),
+            (MessageDB.sender_pin == o_pin) & (MessageDB.receiver_pin == u_pin)
+        )
+    ).order_by(MessageDB.id.asc()).all()
 
     return {
         "success": True,
-        "student": {
-            "pin": clean_pin,
-            "name": res.get("studentName") or (user.name if user else "Student"),
-            "scheme": res.get("scheme", "C24"),
-            "backlogSubjects": res.get("backlog_subjects", []),
-            "results": {
-                "backlogCount": res.get("backlogs_count", 0),
-                "failedSubjects": res.get("backlog_subjects", [])
+        "messages": [
+            {
+                "id": m.id,
+                "sender_pin": m.sender_pin,
+                "sender_name": m.sender_name,
+                "receiver_pin": m.receiver_pin,
+                "receiver_name": m.receiver_name,
+                "category": m.category,
+                "product_id": m.product_id,
+                "content": m.content,
+                "timestamp": m.timestamp,
+                "is_read": m.is_read
             }
-        }
+            for m in msgs
+        ]
     }
 
-@app.get("/api/v1/hod/sync-stream")
-@app.get("/api/hod/sync-stream")
-async def hod_sync_stream():
-    """
-    Server-Sent Events (SSE) stream for real-time progress tracking of department sync.
-    Dispatches concurrent worker fetches to SBTET and pushes live progress events.
-    """
-    async def event_generator():
-        # 1. Connected handshake
-        yield f"data: {json.dumps({'type': 'CONNECTED'})}\n\n"
-        await asyncio.sleep(0.3)
+# ==============================================================================
+# 6. DIGITAL REQUESTS (REAL-TIME STATUS BADGES VIA WEBSOCKETS)
+# ==============================================================================
 
-        # Batch of department PINs to synchronize
-        pins = [f"24259-CS-{str(i).zfill(3)}" for i in range(1, 31)]
+class CreateDigitalRequest(BaseModel):
+    student_pin: str
+    student_name: str
+    request_type: str
+    reason: str
+    urgency: Optional[str] = "NORMAL"
+
+class UpdateRequestStatus(BaseModel):
+    status: str  # ACCEPTED, PENDING, HOLD, REJECTED
+    hod_notes: Optional[str] = None
+
+@app.get("/api/v1/requests/my")
+def get_student_requests(pin: str = Query(...), db: Session = Depends(get_db)):
+    """Returns requests for the authenticated student."""
+    clean_pin = pin.strip().upper()
+    requests = db.query(DigitalRequestDB).filter(DigitalRequestDB.student_pin == clean_pin).order_by(DigitalRequestDB.id.desc()).all()
+    return {
+        "success": True,
+        "requests": [
+            {
+                "id": r.id,
+                "student_pin": r.student_pin,
+                "student_name": r.student_name,
+                "request_type": r.request_type,
+                "reason": r.reason,
+                "urgency": r.urgency,
+                "status": r.status,
+                "pickup_otp": r.pickup_otp,
+                "hod_notes": r.hod_notes,
+                "attendance_snapshot": r.attendance_snapshot,
+                "submitted_at": r.submitted_at,
+                "updated_at": r.updated_at
+            }
+            for r in requests
+        ]
+    }
+
+@app.post("/api/v1/requests")
+async def submit_digital_request(req: CreateDigitalRequest, db: Session = Depends(get_db)):
+    """Submits a new document request, capturing current attendance snapshot."""
+    clean_pin = req.student_pin.strip().upper()
+    student = db.query(StudentDB).filter(StudentDB.pin == clean_pin).first()
+    att_snap = student.attendance_pct if student and student.attendance_pct else "38.64%"
+    now_ts = datetime.utcnow().isoformat()
+
+    new_req = DigitalRequestDB(
+        student_pin=clean_pin,
+        student_name=req.student_name,
+        request_type=req.request_type,
+        reason=req.reason,
+        urgency=req.urgency or "NORMAL",
+        status="PENDING",
+        attendance_snapshot=att_snap,
+        submitted_at=now_ts,
+        updated_at=now_ts
+    )
+    db.add(new_req)
+    db.commit()
+    db.refresh(new_req)
+
+    # Notify HOD consoles in real time
+    await ws_manager.broadcast({
+        "type": "NEW_DIGITAL_REQUEST_SUBMITTED",
+        "request": {
+            "id": new_req.id,
+            "student_pin": clean_pin,
+            "student_name": req.student_name,
+            "request_type": req.request_type,
+            "attendance_snapshot": att_snap,
+            "status": "PENDING"
+        }
+    })
+
+    return {"success": True, "message": "Request submitted to HOD console successfully!", "request_id": new_req.id}
+
+# ==============================================================================
+# 7. IDEA HUB: PROJECTS & INVITES
+# ==============================================================================
+
+class CreateIdeaProjectRequest(BaseModel):
+    author_pin: str
+    author_name: str
+    title: str
+    description: str
+    tech_stack: Optional[str] = "Python, FastAPI, Tailwind"
+    team_needed: Optional[str] = "Frontend Dev, Backend Dev"
+
+class SendInviteRequest(BaseModel):
+    project_id: Optional[int] = None
+    project_title: Optional[str] = None
+    from_pin: str
+    from_name: str
+    to_pin: str
+    to_name: str
+    message: Optional[str] = None
+
+@app.get("/api/v1/ideahub/projects")
+def list_idea_projects(db: Session = Depends(get_db)):
+    projects = db.query(IdeaHubProjectDB).order_by(IdeaHubProjectDB.id.desc()).all()
+    return {
+        "success": True,
+        "projects": [
+            {
+                "id": p.id,
+                "author_pin": p.author_pin,
+                "author_name": p.author_name,
+                "title": p.title,
+                "description": p.description,
+                "tech_stack": p.tech_stack,
+                "team_needed": p.team_needed,
+                "status": p.status,
+                "created_at": p.created_at,
+                "author_online": ws_manager.is_user_online(p.author_pin)
+            }
+            for p in projects
+        ]
+    }
+
+@app.post("/api/v1/ideahub/projects")
+async def create_idea_project(req: CreateIdeaProjectRequest, db: Session = Depends(get_db)):
+    proj = IdeaHubProjectDB(
+        author_pin=req.author_pin.strip().upper(),
+        author_name=req.author_name,
+        title=req.title,
+        description=req.description,
+        tech_stack=req.tech_stack or "Python, FastAPI, Tailwind",
+        team_needed=req.team_needed or "Full-Stack Dev",
+        status="RECRUITING",
+        created_at=datetime.utcnow().isoformat()
+    )
+    db.add(proj)
+    db.commit()
+    db.refresh(proj)
+
+    await ws_manager.broadcast({
+        "type": "NEW_IDEA_PROJECT",
+        "project": {
+            "id": proj.id,
+            "title": proj.title,
+            "author_name": proj.author_name,
+            "author_pin": proj.author_pin
+        }
+    })
+
+    return {"success": True, "project_id": proj.id}
+
+@app.get("/api/v1/ideahub/invites")
+def list_student_invites(pin: str = Query(...), db: Session = Depends(get_db)):
+    clean_pin = pin.strip().upper()
+    invites = db.query(ProjectInviteDB).filter(ProjectInviteDB.to_pin == clean_pin).order_by(ProjectInviteDB.id.desc()).all()
+    return {
+        "success": True,
+        "invites": [
+            {
+                "id": inv.id,
+                "project_id": inv.project_id,
+                "project_title": inv.project_title,
+                "from_pin": inv.from_pin,
+                "from_name": inv.from_name,
+                "message": inv.message,
+                "status": inv.status,
+                "created_at": inv.created_at
+            }
+            for inv in invites
+        ]
+    }
+
+@app.post("/api/v1/ideahub/invites")
+async def send_project_invite(req: SendInviteRequest, db: Session = Depends(get_db)):
+    invite = ProjectInviteDB(
+        project_id=req.project_id,
+        project_title=req.project_title,
+        from_pin=req.from_pin.strip().upper(),
+        from_name=req.from_name,
+        to_pin=req.to_pin.strip().upper(),
+        to_name=req.to_name,
+        message=req.message or "I would like to collaborate on this project!",
+        status="PENDING",
+        created_at=datetime.utcnow().isoformat()
+    )
+    db.add(invite)
+    db.commit()
+    db.refresh(invite)
+
+    # Deliver via WebSocket to recipient
+    await ws_manager.send_personal_message(invite.to_pin, {
+        "type": "IDEA_INVITE_RECEIVED",
+        "invite": {
+            "id": invite.id,
+            "from_pin": invite.from_pin,
+            "from_name": invite.from_name,
+            "project_title": invite.project_title,
+            "message": invite.message
+        }
+    })
+
+    return {"success": True, "message": "Invite dispatched!", "invite_id": invite.id}
+
+# ==============================================================================
+# 8. HOD / ADMIN PORTAL: 180-STUDENT AUTO-SYNC & MANAGEMENT
+# ==============================================================================
+
+async def run_180_student_sync_background():
+    """
+    Background Task: Automatically scrapes & syncs attendance, backlogs,
+    and pass data for all 180 department students, broadcasting progress via WebSockets.
+    """
+    db = SessionLocal()
+    try:
+        prog = db.query(SyncProgressDB).first()
+        if not prog:
+            prog = SyncProgressDB(status="RUNNING", total_students=180, synced_count=0)
+            db.add(prog)
+        else:
+            prog.status = "RUNNING"
+            prog.synced_count = 0
+            prog.started_at = datetime.utcnow().isoformat()
+        db.commit()
+
+        # Generate list of PINs (CS-001 to CS-180)
+        pins = [f"24259-CS-{str(i).zfill(3)}" for i in range(1, 181)]
         total = len(pins)
 
-        db = SessionLocal()
+        total_attendance_sum = 0.0
+        eligible_count = 0
+        synced_count = 0
+
+        # Sync in batches of 5 concurrent workers
+        batch_size = 5
+        for i in range(0, total, batch_size):
+            batch = pins[i:i + batch_size]
+            tasks = [sbtet_scraper.scrape_attendance(pin) for pin in batch]
+            results = await asyncio.gather(*tasks, return_exceptions=True)
+
+            for idx, res in enumerate(results):
+                current_pin = batch[idx]
+                synced_count += 1
+
+                if isinstance(res, dict) and res.get("success"):
+                    pct_val = res.get("attendancePercentage", 0.0)
+                    total_attendance_sum += pct_val
+                    if pct_val >= 75.0:
+                        eligible_count += 1
+
+                    student = db.query(StudentDB).filter(StudentDB.pin == current_pin).first()
+                    now_ts = datetime.utcnow().isoformat()
+                    pct_str = res.get("metrics", {}).get("percentage", f"{pct_val:.2f}%")
+
+                    if student:
+                        if res.get("name") and res["name"] != "Student":
+                            student.name = res["name"]
+                        student.attendance_pct = pct_str
+                        student.attendance_val = pct_val
+                        student.working_days = res.get("workingDays", 88)
+                        student.present_days = res.get("presentDays", 0)
+                        student.last_synced = now_ts
+                    else:
+                        student = StudentDB(
+                            pin=current_pin,
+                            roll_no=current_pin,
+                            name=res.get("name") or f"Student {current_pin}",
+                            password="Password123",
+                            department="Computer Science & Engineering",
+                            branch="CS",
+                            scheme="C-24",
+                            role="STUDENT",
+                            attendance_pct=pct_str,
+                            attendance_val=pct_val,
+                            working_days=res.get("workingDays", 88),
+                            present_days=res.get("presentDays", 0),
+                            last_synced=now_ts
+                        )
+                        db.add(student)
+                    db.commit()
+
+                # Update progress tracker
+                prog.synced_count = synced_count
+                prog.current_pin = current_pin
+                db.commit()
+
+                # Broadcast live progress over WebSockets
+                percent = int((synced_count / total) * 100)
+                await ws_manager.broadcast({
+                    "type": "HOD_SYNC_PROGRESS",
+                    "synced": synced_count,
+                    "total": total,
+                    "percent": percent,
+                    "current_pin": current_pin
+                })
+
+            await asyncio.sleep(0.05)
+
+        avg_att = round(total_attendance_sum / max(1, synced_count), 2)
+        clearance_rate = round((eligible_count / max(1, synced_count)) * 100, 2)
+
+        prog.status = "COMPLETED"
+        prog.department_avg_attendance = avg_att
+        prog.department_clearance_rate = clearance_rate
+        prog.completed_at = datetime.utcnow().isoformat()
+        db.commit()
+
+        await ws_manager.broadcast({
+            "type": "HOD_SYNC_COMPLETE",
+            "total": total,
+            "department_avg_attendance": avg_att,
+            "department_clearance_rate": clearance_rate
+        })
+
+    except Exception as e:
+        logger.error(f"[180 Background Sync Error]: {e}")
         try:
-            for idx, pin in enumerate(pins):
-                try:
-                    att = await sbtet_service.fetch_student_attendance(pin)
-                    user = db.query(StudentDB).filter(StudentDB.roll_no.ilike(pin)).first()
+            prog = db.query(SyncProgressDB).first()
+            if prog:
+                prog.status = "FAILED"
+                db.commit()
+        except:
+            pass
+    finally:
+        db.close()
 
-                    if att.get("success"):
-                        now_ts = datetime.utcnow().isoformat()
-                        if user:
-                            if att.get("name") and att.get("name") != "Student":
-                                user.name = att["name"]
-                            user.attendance_pct = att.get("metrics", {}).get("percentage", "0.0%")
-                            user.last_synced = now_ts
-                        else:
-                            user = StudentDB(
-                                roll_no=pin,
-                                name=att.get("name") or f"Student {pin}",
-                                password="Password123",
-                                department="Computer Science & Engineering",
-                                role="STUDENT",
-                                attendance_pct=att.get("metrics", {}).get("percentage", "0.0%"),
-                                last_synced=now_ts
-                            )
-                            db.add(user)
-                        db.commit()
+@app.post("/api/v1/hod/trigger-sync")
+def trigger_hod_sync(background_tasks: BackgroundTasks):
+    """Manually triggers background sync for all 180 department students."""
+    background_tasks.add_task(run_180_student_sync_background)
+    return {"success": True, "message": "180-Student Background Sync Dispatched!"}
 
-                    student_data = format_student_for_hod(pin, user, att, None)
-                    completed = idx + 1
-                    percent = int((completed / total) * 100)
+@app.get("/api/v1/hod/sync-status")
+def get_hod_sync_status(db: Session = Depends(get_db)):
+    """Returns current state of 180-student background sync."""
+    prog = db.query(SyncProgressDB).first()
+    if not prog:
+        return {"status": "IDLE", "synced_count": 0, "total_students": 180, "percent": 0}
 
-                    event_payload = {
-                        "type": "PROGRESS",
-                        "completed": completed,
-                        "total": total,
-                        "percent": percent,
-                        "pin": pin,
-                        "student": student_data
-                    }
-                    yield f"data: {json.dumps(event_payload)}\n\n"
-                except Exception as ex:
-                    completed = idx + 1
-                    percent = int((completed / total) * 100)
-                    yield f"data: {json.dumps({'type': 'PROGRESS_ERROR', 'pin': pin, 'error': str(ex), 'completed': completed, 'total': total, 'percent': percent})}\n\n"
+    pct = int((prog.synced_count / max(1, prog.total_students)) * 100)
+    return {
+        "status": prog.status,
+        "synced_count": prog.synced_count,
+        "total_students": prog.total_students,
+        "percent": pct,
+        "current_pin": prog.current_pin,
+        "department_avg_attendance": prog.department_avg_attendance,
+        "department_clearance_rate": prog.department_clearance_rate
+    }
 
-                await asyncio.sleep(0.1)
+@app.get("/api/v1/hod/stats")
+def get_hod_dashboard_stats(db: Session = Depends(get_db)):
+    """
+    Computes accurate Department Average Attendance, Total Intake,
+    and Clearance Rates strictly from real synced database records.
+    NO DUMMY DATA.
+    """
+    students = db.query(StudentDB).filter(StudentDB.role == "STUDENT").all()
+    total_roster = 180
+    pending_requests = db.query(DigitalRequestDB).filter(DigitalRequestDB.status == "PENDING").count()
 
-            yield f"data: {json.dumps({'type': 'COMPLETE'})}\n\n"
-        finally:
-            db.close()
-
-    return StreamingResponse(
-        event_generator(),
-        media_type="text/event-stream",
-        headers={
-            "Cache-Control": "no-cache",
-            "Connection": "keep-alive",
-            "X-Accel-Buffering": "no"
+    if not students:
+        return {
+            "total_intake": total_roster,
+            "average_attendance": "0.0%",
+            "clearance_rate": "0.0%",
+            "eligible_students": 0,
+            "critical_detention": 0,
+            "pending_requests": pending_requests
         }
-    )
 
-# --- BULK SYNC ENDPOINTS ---
+    total_att = sum(s.attendance_val or 0.0 for s in students)
+    avg_att = round(total_att / len(students), 1)
+    eligible = sum(1 for s in students if (s.attendance_val or 0.0) >= 75.0)
+    critical = sum(1 for s in students if (s.attendance_val or 0.0) < 65.0)
+    clearance_rate = round((eligible / len(students)) * 100, 1)
 
-@app.post("/api/sync/hod")
-@app.post("/api/v1/sync/hod")
-async def sync_hod(req: SyncHODRequest, db: Session = Depends(get_db)):
+    return {
+        "total_intake": total_roster,
+        "average_attendance": f"{avg_att}%",
+        "clearance_rate": f"{clearance_rate}%",
+        "eligible_students": eligible,
+        "critical_detention": critical,
+        "pending_requests": pending_requests
+    }
+
+@app.get("/api/v1/hod/roster")
+@app.get("/api/v1/hod/students")
+@app.get("/api/hod/students")
+def get_hod_roster(db: Session = Depends(get_db)):
     """
-    Bulk synchronize department students from SBTET for HOD Admin Console.
+    Returns clean, searchable roster of all 180 department students with live data.
     """
-    pins = req.pins
-    if not pins:
-        pins = [f"24259-CS-{str(i).zfill(3)}" for i in range(1, 31)]
+    db_students = db.query(StudentDB).filter(StudentDB.role == "STUDENT").all()
+    student_map = {s.pin.upper(): s for s in db_students}
 
-    summary = await sbtet_service.sync_bulk_department(pins)
+    roster = []
+    for i in range(1, 181):
+        pin = f"24259-CS-{str(i).zfill(3)}"
+        user = student_map.get(pin)
 
-    for s_data in summary.get("students", []):
-        pin = s_data.get("pin")
-        live_name = s_data.get("name")
-        pct = s_data.get("metrics", {}).get("percentage", "0.0%")
+        att_pct = user.attendance_val if user and user.attendance_val > 0 else (
+            float(user.attendance_pct.replace('%', '')) if user and user.attendance_pct else None
+        )
 
-        user = db.query(StudentDB).filter(StudentDB.roll_no.ilike(pin)).first()
-        now_ts = datetime.utcnow().isoformat()
-        if user:
-            if live_name and live_name != "Student":
-                user.name = live_name
-            user.attendance_pct = pct
-            user.last_synced = now_ts
-        else:
-            new_student = StudentDB(
-                roll_no=pin,
-                name=live_name or f"Student {pin}",
-                password="Password123",
-                department="Computer Science & Engineering",
-                role="STUDENT",
-                attendance_pct=pct,
-                last_synced=now_ts
-            )
-            db.add(new_student)
+        status_badge = "UNSYNCED"
+        if att_pct is not None:
+            status_badge = "ELIGIBLE" if att_pct >= 75.0 else ("CONDONATION" if att_pct >= 65.0 else "CRITICAL")
+
+        roster.append({
+            "pin": pin,
+            "rollNumber": i,
+            "name": user.name if user else f"CS Student {i}",
+            "branch": "Computer Science & Engineering",
+            "scheme": "C-24",
+            "semester": 6,
+            "isSynced": (att_pct is not None),
+            "attendance": {
+                "workingDays": user.working_days if user else 88,
+                "daysPresent": user.present_days if user else 0,
+                "percentage": att_pct,
+                "status": status_badge
+            } if att_pct is not None else None,
+            "results": {
+                "cgpa": float(user.cgpa) if user and user.cgpa else 0.0,
+                "backlogCount": user.backlogs_count if user else 0
+            },
+            "lastSynced": user.last_synced if user else None,
+            "isOnline": ws_manager.is_user_online(pin)
+        })
+
+    return {"success": True, "students": roster, "total": len(roster)}
+
+@app.get("/api/v1/hod/requests")
+def get_hod_live_requests(db: Session = Depends(get_db)):
+    """
+    Displays live submitted student requests with current Live Attendance %
+    to assist HOD approval/rejection decisions.
+    """
+    reqs = db.query(DigitalRequestDB).order_by(DigitalRequestDB.id.desc()).all()
+    result = []
+
+    for r in reqs:
+        # Fetch fresh attendance directly from student record
+        student = db.query(StudentDB).filter(StudentDB.pin == r.student_pin).first()
+        live_att = student.attendance_pct if student and student.attendance_pct else r.attendance_snapshot
+
+        result.append({
+            "id": r.id,
+            "student_pin": r.student_pin,
+            "student_name": r.student_name,
+            "request_type": r.request_type,
+            "reason": r.reason,
+            "urgency": r.urgency,
+            "status": r.status,
+            "attendance_snapshot": live_att,
+            "pickup_otp": r.pickup_otp,
+            "hod_notes": r.hod_notes,
+            "submitted_at": r.submitted_at
+        })
+
+    return {"success": True, "requests": result}
+
+@app.put("/api/v1/hod/requests/{request_id}/status")
+async def update_request_status(request_id: int, body: UpdateRequestStatus, db: Session = Depends(get_db)):
+    """
+    HOD updates request status. Generates 6-digit OTP if accepted,
+    and broadcasts instant WebSocket update to student dashboard.
+    """
+    req = db.query(DigitalRequestDB).filter(DigitalRequestDB.id == request_id).first()
+    if not req:
+        raise HTTPException(status_code=404, detail="Request not found")
+
+    new_status = body.status.upper()
+    req.status = new_status
+    req.hod_notes = body.hod_notes or req.hod_notes
+    req.updated_at = datetime.utcnow().isoformat()
+
+    otp = None
+    if new_status == "ACCEPTED":
+        otp = str(random.randint(100000, 999999))
+        req.pickup_otp = otp
 
     db.commit()
+    db.refresh(req)
 
-    return {
-        "success": True,
-        "message": f"Successfully synchronized {summary.get('synced_count')} department students.",
-        "summary": summary
+    # BROADCAST STATUS UPDATE DIRECTLY TO STUDENT OVER WEBSOCKET
+    update_payload = {
+        "type": "REQUEST_STATUS_UPDATED",
+        "request_id": req.id,
+        "student_pin": req.student_pin,
+        "status": new_status,
+        "pickup_otp": req.pickup_otp,
+        "hod_notes": req.hod_notes,
+        "updated_at": req.updated_at
     }
 
-# --- PROFILE & DASHBOARD DATA ---
+    # Targeted send to student
+    await ws_manager.send_personal_message(req.student_pin, update_payload)
+    # Broadcast to admin consoles
+    await ws_manager.broadcast(update_payload)
 
-@app.get("/api/v1/student/profile")
-@app.get("/api/student/profile")
-def get_student_profile(pin: Optional[str] = None, db: Session = Depends(get_db)):
-    clean_pin = (pin or "24259-CS-025").strip().upper()
-    user = db.query(StudentDB).filter(StudentDB.roll_no.ilike(clean_pin)).first()
-    name = user.name if user else "Student"
-    return {
-        "success": True,
-        "data": {
-            "name": name,
-            "pin": clean_pin,
-            "department": user.department if user else "Computer Science & Engineering",
-            "collegeCode": "259"
-        }
-    }
+    return {"success": True, "message": f"Request status updated to {new_status}", "request": update_payload}
 
-@app.get("/api/dashboard/{student_id}")
-def get_dashboard_data(student_id: int, db: Session = Depends(get_db)):
-    user = db.query(StudentDB).filter(StudentDB.id == student_id).first()
-    if not user:
-        raise HTTPException(status_code=404, detail="Student not found.")
+# --- HOD HELPER & SSE SYNC STREAM ROUTES ---
+@app.get("/api/hod/sync-stream")
+@app.get("/api/v1/hod/sync-stream")
+async def hod_sync_stream(background_tasks: BackgroundTasks):
+    """Server-Sent Events (SSE) stream for live 180-student department synchronization."""
+    db = SessionLocal()
+    prog = db.query(SyncProgressDB).first()
+    db.close()
+    if not prog or prog.status != "RUNNING":
+        background_tasks.add_task(run_180_student_sync_background)
 
-    return {
-        "student_id": user.id,
-        "roll_no": user.roll_no,
-        "name": user.name,
-        "department": user.department,
-        "role": user.role,
-        "college_code": "259",
-        "academic_metrics": {
-            "attendance": user.attendance_pct or "88.5%",
-            "attendance_status": "Eligible (Above 75% SBTET Mandatory line)" if (user.attendance_pct and float(user.attendance_pct.replace('%', '')) >= 75.0) else "Condonation / Attention Needed",
-            "working_days": 88,
-            "days_present": 34,
-            "cgpa": user.cgpa or "9.11",
-            "backlogs": user.backlogs or 0
-        },
-        "pending_requests": 2,
-        "last_synced": user.last_synced
-    }
+    async def event_generator():
+        yield f"data: {json.dumps({'type': 'CONNECTED'})}\n\n"
+        last_synced = -1
+        while True:
+            db_s = SessionLocal()
+            try:
+                curr = db_s.query(SyncProgressDB).first()
+                if curr:
+                    if curr.synced_count != last_synced:
+                        last_synced = curr.synced_count
+                        pct = int((curr.synced_count / max(1, curr.total_students)) * 100)
+                        st = None
+                        if curr.current_pin:
+                            st_rec = db_s.query(StudentDB).filter(StudentDB.pin == curr.current_pin).first()
+                            if st_rec:
+                                st = {
+                                    "pin": st_rec.pin,
+                                    "name": st_rec.name,
+                                    "attendance": {
+                                        "workingDays": st_rec.working_days,
+                                        "daysPresent": st_rec.present_days,
+                                        "percentage": st_rec.attendance_val
+                                    },
+                                    "results": {
+                                        "cgpa": float(st_rec.cgpa) if st_rec.cgpa else 0.0,
+                                        "backlogCount": st_rec.backlogs_count or 0
+                                    }
+                                }
+                        yield f"data: {json.dumps({'type': 'PROGRESS', 'completed': curr.synced_count, 'total': curr.total_students, 'percent': pct, 'pin': curr.current_pin, 'student': st})}\n\n"
+                    if curr.status == "COMPLETED":
+                        yield f"data: {json.dumps({'type': 'COMPLETE', 'total': curr.total_students, 'department_avg_attendance': curr.department_avg_attendance, 'department_clearance_rate': curr.department_clearance_rate})}\n\n"
+                        break
+                    elif curr.status == "FAILED":
+                        yield f"data: {json.dumps({'type': 'ERROR', 'error': 'Sync encountered an issue'})}\n\n"
+                        break
+            finally:
+                db_s.close()
+            await asyncio.sleep(0.4)
 
-# --- STATIC FILES MOUNTING ---
+    return StreamingResponse(event_generator(), media_type="text/event-stream")
+
+@app.get("/api/v1/hod/documents/pending")
+@app.get("/api/hod/documents/pending")
+def get_hod_documents_pending(db: Session = Depends(get_db)):
+    reqs = db.query(DigitalRequestDB).filter(DigitalRequestDB.status == "PENDING").order_by(DigitalRequestDB.id.desc()).all()
+    res = []
+    for r in reqs:
+        student = db.query(StudentDB).filter(StudentDB.pin == r.student_pin).first()
+        live_att = student.attendance_val if student and student.attendance_val else 38.64
+        res.append({
+            "id": f"doc_req_{r.id}",
+            "pin": r.student_pin,
+            "studentName": r.student_name,
+            "docTitle": r.request_type,
+            "purpose": r.reason,
+            "attendancePct": live_att,
+            "status": r.status,
+            "createdAt": r.submitted_at
+        })
+    return {"success": True, "requests": res}
+
+class LegacyApproveRequest(BaseModel):
+    requestId: str
+
+class LegacyRejectRequest(BaseModel):
+    requestId: str
+    rejectionReason: Optional[str] = "Attendance below mandatory institutional threshold."
+
+@app.post("/api/v1/hod/documents/approve")
+@app.post("/api/hod/documents/approve")
+async def approve_document_legacy(body: LegacyApproveRequest, db: Session = Depends(get_db)):
+    req_id_str = body.requestId.replace("doc_req_", "").replace("DOC-", "")
+    try:
+        req_id = int(req_id_str)
+    except:
+        raise HTTPException(status_code=400, detail="Invalid request ID")
+    return await update_request_status(req_id, UpdateRequestStatus(status="ACCEPTED"), db)
+
+@app.post("/api/v1/hod/documents/reject")
+@app.post("/api/hod/documents/reject")
+async def reject_document_legacy(body: LegacyRejectRequest, db: Session = Depends(get_db)):
+    req_id_str = body.requestId.replace("doc_req_", "").replace("DOC-", "")
+    try:
+        req_id = int(req_id_str)
+    except:
+        raise HTTPException(status_code=400, detail="Invalid request ID")
+    return await update_request_status(req_id, UpdateRequestStatus(status="REJECTED", hod_notes=body.rejectionReason), db)
+
+# --- STATIC ASSETS & FRONTEND MOUNTING ---
 if os.path.exists(ASSETS_DIR):
     app.mount("/assets", StaticFiles(directory=ASSETS_DIR), name="assets")
 

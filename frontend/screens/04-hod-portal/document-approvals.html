@@ -199,30 +199,50 @@
     import { requireAuth } from '../../js/auth-guard.js';
     import { renderDock } from '../../js/dock.js';
     import { alerts } from '../../js/alerts.js';
+    import { wsClient } from '../../js/ws.js';
 
     requireAuth(['HOD', 'HOD_CS', 'ADMIN', 'FACULTY']);
     renderDock('document-approvals.html', 'HOD');
 
+    let allDocs = [];
     let pendingDocs = [];
     let selectedDoc = null;
-    let approvedCount = 14;
-    let rejectedCount = 2;
+    let approvedCount = 0;
+    let rejectedCount = 0;
 
     document.addEventListener('DOMContentLoaded', () => {
+      setupRealtimeWebSocket();
       loadPendingDocuments();
       setupModalListeners();
     });
 
+    function setupRealtimeWebSocket() {
+      wsClient.connect('HOD_CS_CONSOLE', 'Prof. Vamshi Krishna');
+
+      wsClient.on('NEW_DIGITAL_REQUEST_SUBMITTED', (data) => {
+        alerts.info('Incoming Application', `${data.request?.student_name} submitted ${data.request?.request_type}.`);
+        loadPendingDocuments();
+      });
+
+      wsClient.on('REQUEST_STATUS_UPDATED', () => {
+        loadPendingDocuments();
+      });
+    }
+
     async function loadPendingDocuments() {
       try {
-        const res = await api.get('/hod/documents/pending');
+        const res = await api.get('/hod/requests');
         if (res && res.success && Array.isArray(res.requests)) {
-          pendingDocs = res.requests;
+          allDocs = res.requests;
+          pendingDocs = allDocs.filter(d => (d.status || '').toUpperCase() === 'PENDING');
+          approvedCount = allDocs.filter(d => (d.status || '').toUpperCase() === 'ACCEPTED' || (d.status || '').toUpperCase() === 'APPROVED').length;
+          rejectedCount = allDocs.filter(d => (d.status || '').toUpperCase() === 'REJECTED').length;
         } else {
-          pendingDocs = getFallbackDocs();
+          pendingDocs = [];
         }
-      } catch {
-        pendingDocs = getFallbackDocs();
+      } catch (err) {
+        console.error('Failed to load requests:', err);
+        pendingDocs = [];
       }
 
       renderDocQueueTable();
@@ -245,21 +265,24 @@
       }
 
       tbody.innerHTML = pendingDocs.map(doc => {
-        const attPct = doc.attendancePct !== undefined ? doc.attendancePct : 78.5;
+        const attStr = doc.attendance_snapshot || '38.64%';
+        const attPct = parseFloat(attStr.replace('%', '')) || 0;
         const isCritical = attPct < 65;
         const attBadge = isCritical
           ? `<span class="neu-badge metric-ruby-glow">${attPct.toFixed(1)}% (Critical)</span>`
           : `<span class="neu-badge metric-emerald-glow">${attPct.toFixed(1)}% (Eligible)</span>`;
 
+        const submittedDate = doc.submitted_at ? new Date(doc.submitted_at).toLocaleDateString() : 'Today';
+
         return `
           <tr id="row-${doc.id}">
-            <td><code style="color: #93c5fd; font-weight: 700;">#${escapeHtml(doc.id.replace('doc_req_', 'DOC-'))}</code></td>
-            <td><strong style="color: #93c5fd; font-family: monospace;">${escapeHtml(doc.pin)}</strong></td>
-            <td><div style="font-weight: 700; color: var(--hod-text-main);">${escapeHtml(doc.studentName)}</div></td>
-            <td><strong>${escapeHtml(doc.docTitle || doc.docType)}</strong></td>
-            <td><span style="font-size: 0.8rem; color: var(--hod-text-muted);">${escapeHtml(doc.purpose)}</span></td>
+            <td><code style="color: #93c5fd; font-weight: 700;">#DOC-${doc.id}</code></td>
+            <td><strong style="color: #93c5fd; font-family: monospace;">${escapeHtml(doc.student_pin || doc.pin)}</strong></td>
+            <td><div style="font-weight: 700; color: var(--hod-text-main);">${escapeHtml(doc.student_name || doc.studentName)}</div></td>
+            <td><strong>${escapeHtml(doc.request_type || doc.docTitle)}</strong></td>
+            <td><span style="font-size: 0.8rem; color: var(--hod-text-muted);">${escapeHtml(doc.reason || doc.purpose)}</span></td>
             <td>${attBadge}</td>
-            <td><span style="font-size: 0.75rem; color: var(--hod-text-sub);">${new Date(doc.createdAt).toLocaleDateString()}</span></td>
+            <td><span style="font-size: 0.75rem; color: var(--hod-text-sub);">${submittedDate}</span></td>
             <td>
               <button class="neu-btn-primary btn-review-doc" data-id="${doc.id}" style="font-size: 0.78rem; padding: 6px 14px; border-radius: 6px; cursor: pointer;">
                 Review →
@@ -272,7 +295,7 @@
       tbody.querySelectorAll('.btn-review-doc').forEach(btn => {
         btn.addEventListener('click', () => {
           const docId = btn.getAttribute('data-id');
-          const doc = pendingDocs.find(d => d.id === docId);
+          const doc = pendingDocs.find(d => String(d.id) === String(docId));
           if (doc) openReviewModal(doc);
         });
       });
@@ -280,13 +303,14 @@
 
     function openReviewModal(doc) {
       selectedDoc = doc;
-      document.getElementById('modal-req-id').textContent = `Req ID: #${doc.id.replace('doc_req_', 'DOC-')}`;
-      document.getElementById('modal-student-name').textContent = doc.studentName;
-      document.getElementById('modal-student-pin').textContent = doc.pin;
-      document.getElementById('modal-doc-title').textContent = doc.docTitle || doc.docType;
-      document.getElementById('modal-doc-purpose').textContent = doc.purpose;
+      document.getElementById('modal-req-id').textContent = `Req ID: #DOC-${doc.id}`;
+      document.getElementById('modal-student-name').textContent = doc.student_name || doc.studentName;
+      document.getElementById('modal-student-pin').textContent = doc.student_pin || doc.pin;
+      document.getElementById('modal-doc-title').textContent = doc.request_type || doc.docTitle;
+      document.getElementById('modal-doc-purpose').textContent = doc.reason || doc.purpose;
 
-      const attPct = doc.attendancePct !== undefined ? doc.attendancePct : 78.5;
+      const attStr = doc.attendance_snapshot || '38.64%';
+      const attPct = parseFloat(attStr.replace('%', '')) || 0;
       const isCritical = attPct < 65;
       document.getElementById('modal-attendance-pct').innerHTML = isCritical
         ? `<span class="neu-badge metric-ruby-glow">${attPct.toFixed(1)}% (Below 65% Mandatory Threshold)</span>`
@@ -313,22 +337,18 @@
         const targetDoc = selectedDoc;
 
         try {
-          const res = await api.request('/hod/documents/approve', {
-            method: 'POST',
-            body: { requestId: targetDoc.id }
+          const res = await api.put(`/hod/requests/${targetDoc.id}/status`, {
+            status: 'ACCEPTED'
           });
 
-          const otp = res?.otp || `${Math.floor(100 + Math.random() * 900)} ${Math.floor(100 + Math.random() * 900)}`;
-          alerts.success('Certificate Signed & Approved', `Pickup OTP [${otp}] generated and routed to Admin Printing Counter #2 for ${targetDoc.pin}.`);
-        } catch {
-          alerts.success('Certificate Approved', `Digital approval registered for ${targetDoc.pin}.`);
+          const otp = res?.request?.pickup_otp || 'VERIFIED';
+          alerts.success('Certificate Signed & Approved', `Pickup OTP [${otp}] generated and dispatched in real time to ${targetDoc.student_pin || targetDoc.pin}.`);
+        } catch (err) {
+          alerts.error('Approval Error', err.message || 'Could not approve request.');
         }
 
-        pendingDocs = pendingDocs.filter(d => d.id !== targetDoc.id);
-        approvedCount++;
-        renderDocQueueTable();
-        updateKPICounters();
         closeModal();
+        await loadPendingDocuments();
       });
 
       // Reject Flow
@@ -347,18 +367,17 @@
         const targetDoc = selectedDoc;
 
         try {
-          await api.request('/hod/documents/reject', {
-            method: 'POST',
-            body: { requestId: targetDoc.id, rejectionReason: reason }
+          await api.put(`/hod/requests/${targetDoc.id}/status`, {
+            status: 'REJECTED',
+            hod_notes: reason
           });
-        } catch {}
+          alerts.error('Request Rejected', `Rejection notice dispatched to ${targetDoc.student_pin || targetDoc.pin}: "${reason}"`);
+        } catch (err) {
+          alerts.error('Action Failed', err.message || 'Could not reject request.');
+        }
 
-        alerts.error('Request Rejected', `Rejection notice dispatched to ${targetDoc.pin}: "${reason}"`);
-        pendingDocs = pendingDocs.filter(d => d.id !== targetDoc.id);
-        rejectedCount++;
-        renderDocQueueTable();
-        updateKPICounters();
         closeModal();
+        await loadPendingDocuments();
       });
     }
 
@@ -368,14 +387,6 @@
       document.getElementById('kpi-approved-count').textContent = approvedCount;
       document.getElementById('kpi-rejected-count').textContent = rejectedCount;
       document.getElementById('badge-queue-count').textContent = `${pCount} Pending Requests`;
-    }
-
-    function getFallbackDocs() {
-      return [
-        { id: 'doc_req_101', pin: '24259-CS-025', studentName: 'K. Himesh', docTitle: 'Bonafide Certificate', purpose: 'State E-Pass Scholarship Application', attendancePct: 88.5, createdAt: '2026-08-21T09:30:00.000Z' },
-        { id: 'doc_req_102', pin: '24259-CS-039', studentName: 'Kakarla Rakesh', docTitle: 'Industrial Internship NOC', purpose: 'Summer Cloud AI Industry Internship at CyberCity', attendancePct: 26.6, createdAt: '2026-08-22T14:15:00.000Z' },
-        { id: 'doc_req_103', pin: '24259-CS-023', studentName: 'P. Shankum', docTitle: 'Custodian Certificate', purpose: 'Passport Office Police Verification', attendancePct: 78.4, createdAt: '2026-08-23T11:00:00.000Z' }
-      ];
     }
 
     function escapeHtml(str) {

@@ -5,8 +5,13 @@
 
 // 1. Immediate Execution (Zero Flash of Incorrect Theme)
 (function initCampusTheme() {
-  const savedTheme = localStorage.getItem('smsk_theme') || localStorage.getItem('dc_theme') || 'dark';
+  const savedTheme = localStorage.getItem('theme') || localStorage.getItem('smsk_theme') || localStorage.getItem('dc_theme') || 'dark';
   document.documentElement.setAttribute('data-theme', savedTheme);
+  if (savedTheme === 'dark') {
+    document.documentElement.classList.add('dark');
+  } else {
+    document.documentElement.classList.remove('dark');
+  }
 })();
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -40,6 +45,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const targetTheme = activeTheme === 'dark' ? 'light' : 'dark';
 
       document.documentElement.setAttribute('data-theme', targetTheme);
+      document.documentElement.classList.toggle('dark', targetTheme === 'dark');
+      localStorage.setItem('theme', targetTheme);
       localStorage.setItem('smsk_theme', targetTheme);
       localStorage.setItem('dc_theme', targetTheme);
       updateThemeIcons(targetTheme);

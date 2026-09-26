@@ -1,12 +1,16 @@
 /**
  * Samskruti Digital Campus Unified Messaging Controller
- * Handles conversation discovery, marketplace & collaboration handovers, and real-time chatting.
+ * Real-time messaging powered by FastAPI WebSockets with auto-filtering tabs:
+ * - Idea Hub Connections
+ * - Marketplace Inquiries
+ * - Direct Messages
  */
 
 import { api } from '../../js/api.js';
 import { requireAuth } from '../../js/auth-guard.js';
 import { renderDock } from '../../js/dock.js';
 import { alerts } from '../../js/alerts.js';
+import { wsClient } from '../../js/ws.js';
 
 // Verify student/HOD authentication
 const user = requireAuth(['STUDENT', 'HOD', 'HOD_CS', 'ADMIN', 'FACULTY']);
@@ -18,103 +22,140 @@ if (user) {
 }
 
 // State
-let allThreads = [];
-let activeThread = null;
+let allConversations = []; // Array of conversation thread summaries
+let activeConversation = null; // Currently selected conversation object
 let activeFilter = 'ALL';
 let searchQuery = '';
-let messagePollingTimer = null;
+
+const myPin = (user.sbtetPin || user.rollNumber || user.pin || '24259-CS-025').trim().toUpperCase();
+const myName = user.name || 'Student';
 
 document.addEventListener('DOMContentLoaded', () => {
   setupUserHeader();
   setupFilterTabs();
   setupSearch();
   setupComposer();
+  setupRealtimeWebSocket();
   
   initMessagingWithUrlParams();
 });
 
 function setupUserHeader() {
-  const pin = user.sbtetPin || user.rollNumber || '24259-XX-XXX';
   const subElem = document.getElementById('messages-subtitle');
   if (subElem) {
-    subElem.textContent = `Samskruti College (259) • ${user.name || 'Student'} (PIN: ${pin}) • Real-Time Messenger`;
+    subElem.textContent = `Samskruti College (259) • ${myName} (PIN: ${myPin}) • Real-Time Unified Messenger`;
   }
 }
 
 /**
- * Handle URL Parameter Direct Handovers:
- * 1. messages.html?chatWith={sellerPin}&item={itemId}
- * 2. messages.html?chatWith={peerPin}&collabId={collabId}
- * 3. messages.html?threadId={threadId}
+ * 0. REAL-TIME WEBSOCKET SUBSCRIPTION
  */
-async function initMessagingWithUrlParams() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const chatWith = urlParams.get('chatWith');
-  const itemId = urlParams.get('item');
-  const collabId = urlParams.get('collabId');
-  const directThreadId = urlParams.get('threadId');
+function setupRealtimeWebSocket() {
+  wsClient.connect(myPin, myName);
 
-  // First load all user threads
-  await loadThreads();
+  wsClient.on('NEW_MESSAGE', (payload) => {
+    if (!payload?.message) return;
+    const msg = payload.message;
 
-  if (chatWith) {
-    const isMarket = !!itemId;
-    const itemTitle = urlParams.get('title') || (isMarket ? 'Marketplace Listing' : 'Project Collaboration');
-    const itemPrice = urlParams.get('price') || '';
+    const senderPin = (msg.sender_pin || '').toUpperCase();
+    const receiverPin = (msg.receiver_pin || '').toUpperCase();
+    const otherPin = senderPin === myPin ? receiverPin : senderPin;
 
-    try {
-      const res = await api.request('/messages/thread', {
-        method: 'POST',
-        body: {
-          senderPin: user.sbtetPin || user.rollNumber,
-          senderName: user.name,
-          senderBranch: user.department,
-          peerPin: chatWith,
-          peerName: urlParams.get('peerName') || 'Campus Student',
-          type: isMarket ? 'MARKET' : 'COLLAB',
-          contextTitle: itemTitle,
-          itemId,
-          collabId,
-          price: itemPrice
-        }
+    // Check if this message belongs to the open chat
+    if (activeConversation && activeConversation.peerPin === otherPin) {
+      appendMessageBubble({
+        isMine: senderPin === myPin,
+        senderPin: msg.sender_pin,
+        text: msg.content,
+        time: formatMessageTime(msg.timestamp)
       });
-
-      if (res && res.success && res.thread) {
-        await loadThreads();
-        selectThread(res.thread);
-        return;
-      }
-    } catch (err) {
-      console.warn('[Handover Error]:', err);
+    } else {
+      // Background alert
+      alerts.info(
+        `New Message from ${msg.sender_name || otherPin}`,
+        msg.content.substring(0, 60) + (msg.content.length > 60 ? '...' : '')
+      );
     }
-  } else if (directThreadId) {
-    const found = allThreads.find(t => t.id === directThreadId);
-    if (found) {
-      selectThread(found);
-      return;
-    }
-  }
 
-  // If there are threads and none selected, auto-select first
-  if (allThreads.length > 0 && !activeThread) {
-    selectThread(allThreads[0]);
+    // Refresh or update thread list
+    updateThreadPreview(otherPin, msg);
+  });
+}
+
+function updateThreadPreview(otherPin, msg) {
+  const existing = allConversations.find(c => c.peerPin === otherPin);
+  if (existing) {
+    existing.lastMessage = msg.content;
+    existing.timestamp = msg.timestamp || new Date().toISOString();
+    existing.lastTime = formatMessageTime(existing.timestamp);
+    if (!activeConversation || activeConversation.peerPin !== otherPin) {
+      existing.unread = true;
+    }
+    // Move to top of conversations list
+    allConversations = [existing, ...allConversations.filter(c => c.peerPin !== otherPin)];
+    renderThreadsList();
+  } else {
+    // Reload full threads
+    loadThreads();
   }
 }
 
 /**
- * 1. LOAD CONVERSATION THREADS
+ * 1. LOAD THREADS FROM BACKEND API
  */
 async function loadThreads() {
-  const pin = (user.sbtetPin || user.rollNumber || '').trim().toUpperCase();
   try {
-    const res = await api.get('/messages/threads', { pin });
-    if (res && res.success && Array.isArray(res.threads)) {
-      allThreads = res.threads;
-    } else {
-      allThreads = [];
+    const res = await api.get('/messages/threads', { pin: myPin });
+    if (res && res.success && res.threads) {
+      const threadsObj = res.threads;
+      const combined = [];
+
+      // Combine categorized messages into peer threads
+      const allMsgs = [
+        ...(threadsObj.idea_hub || []).map(m => ({ ...m, category: 'IDEA_HUB' })),
+        ...(threadsObj.marketplace || []).map(m => ({ ...m, category: 'MARKETPLACE' })),
+        ...(threadsObj.direct || []).map(m => ({ ...m, category: 'DIRECT' }))
+      ];
+
+      // Sort chronological
+      allMsgs.sort((a, b) => (a.id || 0) - (b.id || 0));
+
+      // Group by peer
+      const peerMap = new Map();
+      for (const m of allMsgs) {
+        const sender = (m.sender_pin || '').toUpperCase();
+        const receiver = (m.receiver_pin || '').toUpperCase();
+        const otherPin = sender === myPin ? receiver : sender;
+        const otherName = sender === myPin ? (m.receiver_name || otherPin) : (m.sender_name || otherPin);
+
+        if (!peerMap.has(otherPin)) {
+          peerMap.set(otherPin, {
+            peerPin: otherPin,
+            peerName: otherName,
+            category: m.category || 'DIRECT',
+            productId: m.product_id,
+            ideaId: m.idea_id,
+            lastMessage: m.content,
+            timestamp: m.timestamp,
+            lastTime: formatMessageTime(m.timestamp),
+            unread: !m.is_read && sender !== myPin
+          });
+        } else {
+          const entry = peerMap.get(otherPin);
+          entry.lastMessage = m.content;
+          entry.timestamp = m.timestamp;
+          entry.lastTime = formatMessageTime(m.timestamp);
+          if (m.category) entry.category = m.category;
+          if (m.product_id) entry.productId = m.product_id;
+          if (!m.is_read && sender !== myPin) entry.unread = true;
+        }
+      }
+
+      allConversations = Array.from(peerMap.values()).reverse();
     }
-  } catch {
-    allThreads = [];
+  } catch (err) {
+    console.error('Failed to load threads:', err);
+    allConversations = [];
   }
 
   renderThreadsList();
@@ -124,59 +165,76 @@ function renderThreadsList() {
   const container = document.getElementById('threads-container');
   if (!container) return;
 
-  const filtered = allThreads.filter(t => {
-    const matchesFilter = activeFilter === 'ALL' || t.type === activeFilter;
-    const peerName = t.peer?.name || '';
-    const title = t.context?.title || '';
-    const lastMsg = t.lastMessage || '';
-    const query = searchQuery.toLowerCase();
+  const filtered = allConversations.filter(c => {
+    const cat = (c.category || 'DIRECT').toUpperCase();
+    const filter = activeFilter.toUpperCase();
 
-    const matchesSearch = !query ||
-      peerName.toLowerCase().includes(query) ||
-      title.toLowerCase().includes(query) ||
-      lastMsg.toLowerCase().includes(query);
+    let matchesFilter = false;
+    if (filter === 'ALL') {
+      matchesFilter = true;
+    } else if (filter === 'IDEA_HUB' && (cat.includes('IDEA') || cat.includes('COLLAB'))) {
+      matchesFilter = true;
+    } else if (filter === 'MARKETPLACE' && (cat.includes('MARKET') || cat.includes('PRODUCT'))) {
+      matchesFilter = true;
+    } else if (filter === 'DIRECT' && cat === 'DIRECT') {
+      matchesFilter = true;
+    }
+
+    const q = searchQuery.toLowerCase();
+    const matchesSearch = !q ||
+      c.peerName.toLowerCase().includes(q) ||
+      c.peerPin.toLowerCase().includes(q) ||
+      (c.lastMessage && c.lastMessage.toLowerCase().includes(q));
 
     return matchesFilter && matchesSearch;
   });
 
   if (filtered.length === 0) {
     container.innerHTML = `
-      <div style="text-align: center; color: var(--text-muted); font-size: 0.82rem; padding: 24px 12px; font-style: italic;">
-        No conversation threads found. Connect via Idea Hub or Marketplace to start chatting!
+      <div style="text-align: center; color: var(--text-muted); font-size: 0.85rem; padding: 32px 14px; font-style: italic;">
+        No conversations found under this tab.
       </div>
     `;
     return;
   }
 
-  container.innerHTML = filtered.map(thread => {
-    const isSelected = activeThread && activeThread.id === thread.id;
-    const peerName = thread.peer?.name || 'Campus Student';
-    const initials = peerName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
-    const isCollab = thread.type === 'COLLAB';
-    const tagClass = isCollab ? 'badge-collab' : 'badge-market';
-    const tagLabel = isCollab ? `💡 ${thread.context?.title || 'Idea Collab'}` : `🛍️ ${thread.context?.title || 'Market Item'}`;
+  container.innerHTML = filtered.map(conv => {
+    const isSelected = activeConversation && activeConversation.peerPin === conv.peerPin;
+    const initials = (conv.peerName || 'CS').split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+    
+    const cat = (conv.category || 'DIRECT').toUpperCase();
+    let tagClass = 'badge-direct';
+    let tagLabel = '💬 Direct Message';
+
+    if (cat.includes('IDEA') || cat.includes('COLLAB')) {
+      tagClass = 'badge-collab';
+      tagLabel = '💡 Idea Hub';
+    } else if (cat.includes('MARKET')) {
+      tagClass = 'badge-market';
+      tagLabel = '🛍️ Marketplace';
+    }
 
     return `
-      <div class="thread-card ${isSelected ? 'active' : ''}" data-thread-id="${thread.id}">
-        <div class="thread-avatar">${escapeHtml(initials)}</div>
-        <div class="thread-info">
-          <div class="thread-top-row">
-            <span class="thread-peer-name">${escapeHtml(peerName)}</span>
-            <span class="thread-time">${escapeHtml(thread.lastTime || '')}</span>
+      <div class="thread-card ${isSelected ? 'active' : ''}" data-peer-pin="${conv.peerPin}">
+        <div class="thread-avatar" style="font-weight: 800; font-size: 0.85rem;">${escapeHtml(initials)}</div>
+        <div class="thread-info" style="flex: 1; min-width: 0;">
+          <div class="thread-top-row" style="display: flex; justify-content: space-between; align-items: baseline;">
+            <span class="thread-peer-name" style="font-weight: 700; font-size: 0.92rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${escapeHtml(conv.peerName)}</span>
+            <span class="thread-time" style="font-size: 0.72rem; color: var(--text-muted);">${escapeHtml(conv.lastTime || '')}</span>
           </div>
-          <span class="thread-context-badge ${tagClass}">${escapeHtml(tagLabel)}</span>
-          <div class="thread-snippet">${escapeHtml(thread.lastMessage || 'Click to view messages...')}</div>
+          <span class="thread-context-badge ${tagClass}" style="display: inline-block; font-size: 0.68rem; padding: 1px 6px; border-radius: 4px; margin: 3px 0;">${escapeHtml(tagLabel)}</span>
+          <div class="thread-snippet" style="font-size: 0.8rem; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${escapeHtml(conv.lastMessage || 'Start conversation...')}</div>
         </div>
-        ${thread.unread ? `<span class="unread-dot"></span>` : ''}
+        ${conv.unread ? `<span class="unread-dot" style="width: 8px; height: 8px; border-radius: 50%; background: #3b82f6; display: inline-block;"></span>` : ''}
       </div>
     `;
   }).join('');
 
   container.querySelectorAll('.thread-card').forEach(card => {
     card.addEventListener('click', () => {
-      const threadId = card.getAttribute('data-thread-id');
-      const thread = allThreads.find(t => t.id === threadId);
-      if (thread) selectThread(thread);
+      const pin = card.getAttribute('data-peer-pin');
+      const conv = allConversations.find(c => c.peerPin === pin);
+      if (conv) selectConversation(conv);
     });
   });
 }
@@ -187,7 +245,7 @@ function setupFilterTabs() {
     btn.addEventListener('click', () => {
       btns.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-      activeFilter = btn.getAttribute('data-filter');
+      activeFilter = btn.getAttribute('data-filter') || 'ALL';
       renderThreadsList();
     });
   });
@@ -202,10 +260,11 @@ function setupSearch() {
 }
 
 /**
- * 2. SELECT & LOAD ACTIVE THREAD
+ * 2. SELECT & LOAD ACTIVE CONVERSATION
  */
-async function selectThread(thread) {
-  activeThread = thread;
+async function selectConversation(conv) {
+  activeConversation = conv;
+  conv.unread = false;
   renderThreadsList();
 
   const emptyView = document.getElementById('empty-chat-view');
@@ -213,12 +272,8 @@ async function selectThread(thread) {
   if (emptyView) emptyView.style.display = 'none';
   if (liveView) liveView.style.display = 'flex';
 
-  // Render header
-  const peerName = thread.peer?.name || 'Campus Student';
-  const peerPin = thread.peer?.pin || '';
-  const initials = peerName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
-  const isCollab = thread.type === 'COLLAB';
-
+  // Render chat header
+  const initials = (conv.peerName || 'CS').split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
   const avatarElem = document.getElementById('active-peer-avatar');
   const nameElem = document.getElementById('active-peer-name');
   const subElem = document.getElementById('active-peer-sub');
@@ -226,109 +281,192 @@ async function selectThread(thread) {
   const badgeText = document.getElementById('context-badge-text');
 
   if (avatarElem) avatarElem.textContent = initials;
-  if (nameElem) nameElem.textContent = peerName;
-  if (subElem) subElem.textContent = `PIN: ${peerPin} • ${thread.peer?.branch || 'Student'}`;
-  if (badgeIcon) badgeIcon.textContent = isCollab ? '💡' : '🛍️';
-  if (badgeText) badgeText.textContent = isCollab
-    ? `Collab: ${thread.context?.title || 'Project'}`
-    : `Listing: ${thread.context?.title || 'Item'}${thread.context?.price ? ` (₹${thread.context.price})` : ''}`;
+  if (nameElem) nameElem.textContent = conv.peerName;
+  if (subElem) subElem.textContent = `PIN: ${conv.peerPin}`;
 
-  await loadMessagesForActiveThread();
+  const cat = (conv.category || 'DIRECT').toUpperCase();
+  if (badgeIcon && badgeText) {
+    if (cat.includes('IDEA')) {
+      badgeIcon.textContent = '💡';
+      badgeText.textContent = `Idea Hub Collaboration`;
+    } else if (cat.includes('MARKET')) {
+      badgeIcon.textContent = '🛍️';
+      badgeText.textContent = conv.contextTitle ? `Market: ${conv.contextTitle}` : `Marketplace Exchange`;
+    } else {
+      badgeIcon.textContent = '💬';
+      badgeText.textContent = `Direct Message`;
+    }
+  }
 
-  // Start polling
-  if (messagePollingTimer) clearInterval(messagePollingTimer);
-  messagePollingTimer = setInterval(() => loadMessagesForActiveThread(true), 3000);
+  await loadConversationHistory(conv.peerPin);
+
+  // Focus input
+  document.getElementById('chat-composer-input')?.focus();
 }
 
-async function loadMessagesForActiveThread(silent = false) {
-  if (!activeThread) return;
-
+async function loadConversationHistory(otherPin) {
   const container = document.getElementById('active-messages-stream');
   if (!container) return;
 
+  container.innerHTML = `<div style="text-align: center; padding: 24px; color: var(--text-muted); font-size: 0.85rem;">Loading chat history...</div>`;
+
   try {
-    const res = await api.get(`/messages/thread/${activeThread.id}`);
+    const res = await api.get('/messages/history', { user_pin: myPin, other_pin: otherPin });
     if (res && res.success && Array.isArray(res.messages)) {
-      renderMessages(res.messages);
+      if (res.messages.length === 0) {
+        container.innerHTML = `
+          <div style="text-align: center; padding: 36px 16px; color: var(--text-muted); font-size: 0.85rem;">
+            No messages exchanged yet. Send a message below to connect!
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = res.messages.map(m => {
+        const isMine = (m.sender_pin || '').toUpperCase() === myPin;
+        return `
+          <div class="msg-bubble ${isMine ? 'mine' : 'peer'}" style="margin: 6px 0; max-width: 75%; ${isMine ? 'margin-left: auto; text-align: right;' : 'margin-right: auto; text-align: left;'}">
+            <div style="padding: 10px 14px; border-radius: 12px; background: ${isMine ? 'var(--primary-color, #4f46e5)' : 'var(--bg-secondary, #e2e8f0)'}; color: ${isMine ? '#ffffff' : 'var(--text-main)'}; font-size: 0.88rem; box-shadow: var(--shadow-subtle);">
+              ${escapeHtml(m.content)}
+            </div>
+            <div class="msg-meta" style="font-size: 0.7rem; color: var(--text-muted); margin-top: 3px; padding: 0 4px;">
+              ${escapeHtml(formatMessageTime(m.timestamp))}
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      container.scrollTop = container.scrollHeight;
     }
   } catch (err) {
-    if (!silent) console.warn('[Load Messages Error]:', err);
+    container.innerHTML = `<div style="text-align: center; color: #ef4444; padding: 20px;">Could not load messages: ${err.message}</div>`;
   }
 }
 
-function renderMessages(messages) {
+function appendMessageBubble({ isMine, text, time }) {
   const container = document.getElementById('active-messages-stream');
   if (!container) return;
 
-  const myPin = (user.sbtetPin || user.rollNumber || '').trim().toUpperCase();
+  const bubble = document.createElement('div');
+  bubble.className = `msg-bubble ${isMine ? 'mine' : 'peer'}`;
+  bubble.style.cssText = `margin: 6px 0; max-width: 75%; ${isMine ? 'margin-left: auto; text-align: right;' : 'margin-right: auto; text-align: left;'}`;
+  bubble.innerHTML = `
+    <div style="padding: 10px 14px; border-radius: 12px; background: ${isMine ? 'var(--primary-color, #4f46e5)' : 'var(--bg-secondary, #e2e8f0)'}; color: ${isMine ? '#ffffff' : 'var(--text-main)'}; font-size: 0.88rem; box-shadow: var(--shadow-subtle);">
+      ${escapeHtml(text)}
+    </div>
+    <div class="msg-meta" style="font-size: 0.7rem; color: var(--text-muted); margin-top: 3px; padding: 0 4px;">
+      ${escapeHtml(time)}
+    </div>
+  `;
 
-  container.innerHTML = messages.map(msg => {
-    if (msg.isSystem || msg.senderPin === 'SYSTEM') {
-      return `
-        <div class="msg-bubble system">
-          <span>${escapeHtml(msg.text)}</span>
-        </div>
-      `;
-    }
-
-    const isMine = (msg.senderPin || '').trim().toUpperCase() === myPin;
-    return `
-      <div class="msg-bubble ${isMine ? 'mine' : 'peer'}">
-        <div>${escapeHtml(msg.text)}</div>
-        <div class="msg-meta">${escapeHtml(msg.time || '')}</div>
-      </div>
-    `;
-  }).join('');
-
+  container.appendChild(bubble);
   container.scrollTop = container.scrollHeight;
 }
 
 /**
- * 3. MESSAGE COMPOSER & SENDING
+ * 3. COMPOSER & SEND MESSAGE
  */
 function setupComposer() {
   const form = document.getElementById('chat-composer-form');
   const input = document.getElementById('chat-composer-input');
 
-  form?.addEventListener('submit', async (e) => {
+  form?.addEventListener('submit', (e) => {
     e.preventDefault();
 
     const text = input.value.trim();
-    if (!text || !activeThread) return;
+    if (!text || !activeConversation) return;
 
     input.value = '';
-    const myPin = (user.sbtetPin || user.rollNumber || '').trim().toUpperCase();
-    const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const nowTs = new Date().toISOString();
+    const timeFormatted = formatMessageTime(nowTs);
 
     // Optimistic UI append
-    const stream = document.getElementById('active-messages-stream');
-    if (stream) {
-      const bubble = document.createElement('div');
-      bubble.className = 'msg-bubble mine';
-      bubble.innerHTML = `
-        <div>${escapeHtml(text)}</div>
-        <div class="msg-meta">${timeStr}</div>
-      `;
-      stream.appendChild(bubble);
-      stream.scrollTop = stream.scrollHeight;
+    appendMessageBubble({
+      isMine: true,
+      text,
+      time: timeFormatted
+    });
+
+    // Send directly over WebSocket
+    const sent = wsClient.send({
+      type: 'SEND_MESSAGE',
+      receiver_pin: activeConversation.peerPin,
+      content: text,
+      category: activeConversation.category || 'DIRECT',
+      product_id: activeConversation.productId,
+      idea_id: activeConversation.ideaId
+    });
+
+    // Update conversation state preview
+    activeConversation.lastMessage = text;
+    activeConversation.timestamp = nowTs;
+    activeConversation.lastTime = timeFormatted;
+    renderThreadsList();
+  });
+}
+
+/**
+ * 4. URL PARAMETERS HANDOVER
+ */
+async function initMessagingWithUrlParams() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const tab = urlParams.get('tab');
+  const chatWith = urlParams.get('chatWith');
+  const peerName = urlParams.get('peerName') || chatWith || 'Campus Peer';
+  const itemId = urlParams.get('item');
+  const itemTitle = urlParams.get('title') || '';
+  const itemPrice = urlParams.get('price') || '';
+
+  // Select tab if provided
+  if (tab) {
+    activeFilter = tab.toUpperCase();
+    const btn = document.querySelector(`#thread-filter-bar button[data-filter="${activeFilter}"]`);
+    if (btn) {
+      document.querySelectorAll('#thread-filter-bar button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+  }
+
+  await loadThreads();
+
+  if (chatWith) {
+    const cleanPeerPin = chatWith.trim().toUpperCase();
+    let conv = allConversations.find(c => c.peerPin === cleanPeerPin);
+
+    if (!conv) {
+      // Create fresh conversation object
+      conv = {
+        peerPin: cleanPeerPin,
+        peerName: peerName,
+        category: (tab && tab.toUpperCase().includes('MARKET')) || itemId ? 'MARKETPLACE' : ((tab && tab.toUpperCase().includes('IDEA')) ? 'IDEA_HUB' : 'DIRECT'),
+        productId: itemId ? parseInt(itemId, 10) : null,
+        contextTitle: itemTitle ? `${itemTitle}${itemPrice ? ` (₹${itemPrice})` : ''}` : null,
+        lastMessage: 'Starting conversation...',
+        timestamp: new Date().toISOString(),
+        lastTime: 'Just now',
+        unread: false
+      };
+      allConversations.unshift(conv);
+      renderThreadsList();
+    } else {
+      if (itemId) conv.productId = parseInt(itemId, 10);
+      if (itemTitle) conv.contextTitle = `${itemTitle}${itemPrice ? ` (₹${itemPrice})` : ''}`;
     }
 
-    try {
-      await api.request('/messages/send', {
-        method: 'POST',
-        body: {
-          threadId: activeThread.id,
-          senderPin: myPin,
-          senderName: user.name || 'Student',
-          text
-        }
-      });
-      // Refresh thread preview
-      loadThreads();
-    } catch (err) {
-      alerts.error('Failed to send', 'Please check your connection.');
-    }
-  });
+    selectConversation(conv);
+  } else if (allConversations.length > 0 && !activeConversation) {
+    selectConversation(allConversations[0]);
+  }
+}
+
+function formatMessageTime(ts) {
+  if (!ts) return '';
+  try {
+    const d = new Date(ts);
+    return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  } catch {
+    return '';
+  }
 }
 
 function escapeHtml(str) {

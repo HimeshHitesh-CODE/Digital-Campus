@@ -140,6 +140,9 @@ async function triggerAttendanceSync(showToasts = true) {
     // Render Metrics
     renderAttendanceMetrics(data);
 
+    // Render Chart.js visual trend graph
+    renderAttendanceTrendChart(data.chart_data);
+
     // Save logs and render calendar
     if (data.monthlyLogs || data.monthlyCalendars) {
       window.ACTIVE_MONTHLY_LOGS = data.monthlyLogs || data.monthlyCalendars;
@@ -158,12 +161,89 @@ async function triggerAttendanceSync(showToasts = true) {
   } catch (err) {
     console.warn('[Attendance Sync Gateway fallback]:', err.message);
     renderAttendanceMetrics(DEFAULT_ATTENDANCE_DATA);
+    renderAttendanceTrendChart();
     window.ACTIVE_MONTHLY_LOGS = getDefaultMonthLogs();
     renderActiveCalendarMonth();
   } finally {
     if (syncBtn) syncBtn.disabled = false;
     if (syncIcon) syncIcon.classList.remove('animate-spin');
   }
+}
+
+let attendanceChartInstance = null;
+
+/**
+ * Renders interactive Chart.js trend graph of attendance vs 75% line
+ */
+function renderAttendanceTrendChart(chartData) {
+  const canvas = document.getElementById('attendanceTrendChart');
+  if (!canvas || !window.Chart) return;
+
+  const labels = chartData?.labels || ['June', 'July', 'August', 'September', 'October'];
+  const values = chartData?.data || [45.0, 40.0, 38.0, 39.0, 38.6];
+  const targetLine = labels.map(() => 75);
+
+  if (attendanceChartInstance) {
+    attendanceChartInstance.destroy();
+  }
+
+  attendanceChartInstance = new Chart(canvas, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: 'Attendance %',
+          data: values,
+          borderColor: '#38bdf8',
+          backgroundColor: 'rgba(56, 189, 248, 0.12)',
+          borderWidth: 3,
+          fill: true,
+          tension: 0.35,
+          pointBackgroundColor: '#0284c7',
+          pointBorderColor: '#ffffff',
+          pointHoverRadius: 6,
+          pointRadius: 4
+        },
+        {
+          label: '75% Mandatory Line',
+          data: targetLine,
+          borderColor: '#fbbf24',
+          borderWidth: 2,
+          borderDash: [6, 6],
+          pointRadius: 0,
+          fill: false
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        y: {
+          min: 0,
+          max: 100,
+          grid: { color: 'rgba(255, 255, 255, 0.05)' },
+          ticks: {
+            color: '#94a3b8',
+            callback: (v) => `${v}%`
+          }
+        },
+        x: {
+          grid: { color: 'rgba(255, 255, 255, 0.05)' },
+          ticks: { color: '#94a3b8' }
+        }
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: (ctx) => `${ctx.dataset.label}: ${ctx.parsed.y}%`
+          }
+        }
+      }
+    }
+  });
 }
 
 /**

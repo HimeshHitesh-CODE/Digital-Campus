@@ -9,8 +9,9 @@
   <link rel="stylesheet" href="../../css/global-layout.css" />
   <link rel="stylesheet" href="../../css/top-nav.css" />
   <link rel="stylesheet" href="attendance.css" />
-  <!-- Lucide Icons & Theme Engine -->
+  <!-- Lucide Icons, Chart.js & Theme Engine -->
   <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="../../js/theme-engine.js"></script>
 </head>
 <body class="student-portal-body">
@@ -96,6 +97,23 @@
             <i data-lucide="refresh-cw" id="sync-icon-spinner"></i>
             <span>Re-sync Latest</span>
           </button>
+        </div>
+      </section>
+
+      <!-- 3. ATTENDANCE TRENDS GRAPH (CHART.JS) -->
+      <section class="chart-section-card" style="margin-bottom: 24px; padding: 22px; border-radius: 16px; background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.08); backdrop-filter: blur(12px);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
+          <div>
+            <h3 style="font-size: 1.15rem; font-weight: 800; color: #f8fafc; margin: 0 0 4px 0;">Semester Attendance Trajectory & Trends</h3>
+            <span style="font-size: 0.8rem; color: #94a3b8;">Monthly biometric presence plotted against the 75% SBTET mandatory eligibility threshold</span>
+          </div>
+          <div style="display: flex; gap: 14px; font-size: 0.78rem; font-weight: 700;">
+            <span style="display: inline-flex; align-items: center; gap: 6px; color: #38bdf8;"><span style="width: 10px; height: 10px; background: #38bdf8; border-radius: 2px;"></span> Monthly %</span>
+            <span style="display: inline-flex; align-items: center; gap: 6px; color: #fbbf24;"><span style="width: 14px; height: 2px; background: #fbbf24;"></span> 75% Target Line</span>
+          </div>
+        </div>
+        <div style="height: 240px; position: relative;">
+          <canvas id="attendanceTrendChart"></canvas>
         </div>
       </section>
 
