@@ -1369,6 +1369,121 @@ async def sync_single_student_endpoint(req: SingleStudentSyncRequest, db: Sessio
 
     return {"success": True, "student": student_data}
 
+@app.get("/api/v1/hod/students/{pin}/backlogs")
+@app.get("/api/hod/students/{pin}/backlogs")
+async def get_student_backlogs_endpoint(pin: str, db: Session = Depends(get_db)):
+    """
+    Returns individual backlog subject details for a student.
+    If not yet cached in the database, automatically performs an on-demand sync.
+    """
+    clean_pin = pin.strip().upper()
+    student = db.query(StudentDB).filter(StudentDB.pin == clean_pin).first()
+    records = db.query(BacklogRecordDB).filter(BacklogRecordDB.pin == clean_pin).all()
+
+    # If no records exist, fetch live data on-demand
+    if not records:
+        res = await sbtet_scraper.scrape_student_complete(clean_pin)
+        if res.get("success"):
+            now_ts = datetime.utcnow().isoformat()
+            pct_val = float(res.get("attendancePercentage", 0.0) or 0.0)
+            cgpa_val = float(res.get("cgpa", 0.0) or 0.0)
+            backlogs_val = int(res.get("backlogs", 0) or 0)
+            credits_earned = float(res.get("credits_earned", 0.0) or 0.0)
+
+            if student:
+                if res.get("name") and res["name"] != "Student":
+                    student.name = res["name"]
+                student.attendance_pct = f"{pct_val:.2f}%"
+                student.attendance_val = pct_val
+                student.working_days = int(res.get("workingDays", 88))
+                student.present_days = int(res.get("presentDays", 0))
+                student.cgpa = cgpa_val
+                student.backlogs = backlogs_val
+                student.backlogs_count = backlogs_val
+                student.credits_earned = credits_earned
+                student.last_synced = now_ts
+            else:
+                student = StudentDB(
+                    pin=clean_pin,
+                    roll_no=clean_pin,
+                    name=res.get("name") or f"CS Student {clean_pin}",
+                    password="Password123",
+                    department="Computer Science & Engineering",
+                    branch="CS",
+                    scheme="C-24",
+                    role="STUDENT",
+                    attendance_pct=f"{pct_val:.2f}%",
+                    attendance_val=pct_val,
+                    working_days=int(res.get("workingDays", 88)),
+                    present_days=int(res.get("presentDays", 0)),
+                    cgpa=cgpa_val,
+                    backlogs=backlogs_val,
+                    backlogs_count=backlogs_val,
+                    credits_earned=credits_earned,
+                    last_synced=now_ts
+                )
+                db.add(student)
+            db.commit()
+
+            # Persist records
+            backlog_subjects = res.get("backlog_subjects", [])
+            db.query(BacklogRecordDB).filter(BacklogRecordDB.pin == clean_pin).delete()
+            for subj in backlog_subjects:
+                rec = BacklogRecordDB(
+                    student_id=student.id,
+                    pin=clean_pin,
+                    semester=str(subj.get("semester", "")),
+                    subject_code=str(subj.get("code", "")),
+                    subject_title=str(subj.get("name", "")),
+                    internal_marks=str(subj.get("internal", "")),
+                    external_marks=str(subj.get("external", "")),
+                    total_marks=str(subj.get("total", "")),
+                    grade=str(subj.get("grade", "F"))
+                )
+                db.add(rec)
+            db.commit()
+            records = db.query(BacklogRecordDB).filter(BacklogRecordDB.pin == clean_pin).all()
+
+    backlog_details = [{
+        "sem": r.semester or "",
+        "code": r.subject_code or "",
+        "title": r.subject_title or "",
+        "internal": r.internal_marks or "",
+        "external": r.external_marks or "",
+        "total": r.total_marks or "",
+        "grade": r.grade or "F"
+    } for r in records]
+
+    # Legacy format compatibility
+    backlog_subjects = [{
+        "semester": r.semester or "",
+        "code": r.subject_code or "",
+        "name": r.subject_title or "",
+        "internalMarks": r.internal_marks or "",
+        "externalMarks": r.external_marks or "",
+        "totalMarks": r.total_marks or "",
+        "grade": r.grade or "F"
+    } for r in records]
+
+    student_dict = {
+        "pin": clean_pin,
+        "name": student.name if student else clean_pin,
+        "scheme": student.scheme if student else "C-24",
+        "cgpa": float(student.cgpa) if student and student.cgpa else 0.0,
+        "backlogs": len(backlog_details),
+        "backlogCount": len(backlog_details),
+        "backlogs_count": len(backlog_details),
+        "backlog_details": backlog_details,
+        "backlogSubjects": backlog_subjects,
+        "results": {
+            "cgpa": float(student.cgpa) if student and student.cgpa else 0.0,
+            "backlogCount": len(backlog_details),
+            "failedSubjects": backlog_subjects
+        }
+    }
+
+    return {"success": True, "student": student_dict}
+
 @app.get("/api/v1/hod/requests")
 def get_hod_live_requests(db: Session = Depends(get_db)):
     """

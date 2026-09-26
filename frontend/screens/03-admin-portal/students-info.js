@@ -509,10 +509,11 @@ async function openBacklogDetailsModal(pin) {
 
   if (!modal) return;
 
-  // 1. Locate student record from memory or fetch fallback
+  // 1. Locate student record from memory
   let student = allStudents.find(s => s.pin === pin);
 
-  if (!student || !student.backlogSubjects || student.backlogSubjects.length === 0) {
+  // 2. If no backlog_details cached, fetch from dedicated backlogs endpoint
+  if (!student || !student.backlog_details || student.backlog_details.length === 0) {
     try {
       const res = await api.get(`/hod/students/${pin}/backlogs`);
       if (res && res.success && res.student) {
@@ -525,37 +526,40 @@ async function openBacklogDetailsModal(pin) {
     }
   }
 
-  const backlogCount = student?.results?.backlogCount || student?.backlogCount || student?.backlogSubjects?.length || 0;
+  const backlogCount = student?.backlogs || student?.backlogs_count || student?.results?.backlogCount || 0;
+  const details = student?.backlog_details || [];
 
-  // 2. Hydrate Header Info
+  // 3. Hydrate Header Info
   if (nameEl) nameEl.textContent = student?.name || 'Student Name';
   if (pinEl) pinEl.textContent = student?.pin || pin;
   if (schemeEl) schemeEl.textContent = `${student?.scheme || 'C-24'} Computer Science`;
-  if (summaryEl) summaryEl.textContent = `${backlogCount} Active Backlog${backlogCount !== 1 ? 's' : ''}`;
+  if (summaryEl) {
+    summaryEl.textContent = `${backlogCount} Active Backlog${backlogCount !== 1 ? 's' : ''}`;
+    summaryEl.style.color = backlogCount > 0 ? '#fb7185' : '#4ade80';
+  }
 
-  // 3. Render Subject Rows
+  // 4. Render Subject Rows
   if (tableBody) {
     tableBody.innerHTML = '';
-    const subjects = student?.backlogSubjects || student?.results?.failedSubjects || [];
 
-    if (subjects.length === 0) {
+    if (details.length === 0) {
       if (emptyState) emptyState.style.display = 'block';
     } else {
       if (emptyState) emptyState.style.display = 'none';
-      subjects.forEach(sub => {
+      details.forEach(sub => {
         const row = document.createElement('tr');
         row.style.borderBottom = '1px solid rgba(255, 255, 255, 0.04)';
-        const totalMarks = sub.totalMarks ?? sub.total ?? (Number(sub.internalMarks || sub.internal || 0) + Number(sub.externalMarks || sub.external || 0));
-        const isLowMarks = totalMarks < 35;
+        const totalMarks = sub.total || (Number(sub.internal || 0) + Number(sub.external || 0));
+        const isLowMarks = Number(totalMarks) < 35;
         row.innerHTML = `
-          <td style="padding: 10px; font-weight: 600; color: #94a3b8;">${escapeHtml(sub.semester || '1SEM')}</td>
-          <td style="padding: 10px; font-family: monospace; font-weight: bold; color: #38bdf8;">${escapeHtml(sub.code || sub.subjectCode || 'CS-101')}</td>
-          <td style="padding: 10px; font-weight: 500; color: #f1f5f9;">${escapeHtml(sub.name || sub.subjectName || 'Core Subject')}</td>
-          <td style="padding: 10px; text-align: center; font-family: monospace; color: #cbd5e1;">${sub.internalMarks ?? sub.internal ?? '--'}</td>
-          <td style="padding: 10px; text-align: center; font-family: monospace; color: #cbd5e1;">${sub.externalMarks ?? sub.external ?? '--'}</td>
-          <td style="padding: 10px; text-align: center; font-family: monospace; font-weight: bold; color: ${isLowMarks ? '#fb7185' : '#f1f5f9'};">${totalMarks ?? '--'}</td>
+          <td style="padding: 10px; font-weight: 600; color: #94a3b8;">${escapeHtml(sub.sem || '--')}</td>
+          <td style="padding: 10px; font-family: monospace; font-weight: bold; color: #38bdf8;">${escapeHtml(sub.code || '--')}</td>
+          <td style="padding: 10px; font-weight: 500; color: #f1f5f9;">${escapeHtml(sub.title || '--')}</td>
+          <td style="padding: 10px; text-align: center; font-family: monospace; color: #cbd5e1;">${escapeHtml(sub.internal || '--')}</td>
+          <td style="padding: 10px; text-align: center; font-family: monospace; color: #cbd5e1;">${escapeHtml(sub.external || '--')}</td>
+          <td style="padding: 10px; text-align: center; font-family: monospace; font-weight: bold; color: ${isLowMarks ? '#fb7185' : '#f1f5f9'};">${escapeHtml(String(totalMarks) || '--')}</td>
           <td style="padding: 10px; text-align: center;">
-            <span style="padding: 2px 8px; border-radius: 4px; background: rgba(244, 63, 94, 0.15); color: #fb7185; font-weight: 800; font-size: 0.72rem; border: 1px solid rgba(244, 63, 94, 0.25);">F</span>
+            <span style="padding: 2px 8px; border-radius: 4px; background: rgba(244, 63, 94, 0.15); color: #fb7185; font-weight: 800; font-size: 0.72rem; border: 1px solid rgba(244, 63, 94, 0.25);">${escapeHtml(sub.grade || 'F')}</span>
           </td>
         `;
         tableBody.appendChild(row);
@@ -563,7 +567,7 @@ async function openBacklogDetailsModal(pin) {
     }
   }
 
-  // 4. Reveal Modal with smooth animation
+  // 5. Reveal Modal with smooth animation
   modal.classList.remove('hidden');
   modal.classList.add('flex');
   modal.style.display = 'flex';
