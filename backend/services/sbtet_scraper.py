@@ -9,22 +9,44 @@ logger = logging.getLogger("sbtet_scraper")
 class SBTETScraperService:
     """
     SBTET Scraper and Live Data Bridge for sbtetconnect.app.
-    Supports high-speed direct gateway extraction and Playwright automation
-    for onboarding, biometric attendance, and semester marksheets.
+    Supports high-speed multi-gateway failover and retry logic for onboarding,
+    biometric attendance, and consolidated marksheet/backlogs across semesters.
     """
 
-    PRIMARY_API_URL = "https://0r1gmpo9bh.execute-api.ap-south-2.amazonaws.com"
+    GATEWAY_URLS = [
+        "https://0r1gmpo9bh.execute-api.ap-south-2.amazonaws.com",
+        "https://sbtet-api-pgmbqcchaq-em.a.run.app",
+        "https://sbtet-api-486808583305.asia-south2.run.app"
+    ]
+
     COMMON_HEADERS = {
         "x-sbtet-connect-app": "true",
         "x-api-key": "d1d519447c6f0839a6f4995ac579f7e1",
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
     }
 
-    def __init__(self, timeout: float = 15.0):
+    def __init__(self, timeout: float = 12.0):
         self.timeout = timeout
 
     def _clean_pin(self, pin: str) -> str:
         return pin.strip().upper()
+
+    async def _fetch_with_failover(self, client: httpx.AsyncClient, path: str) -> Optional[httpx.Response]:
+        """
+        Attempts to fetch an endpoint through the primary gateway.
+        If it fails, times out, or returns 5xx/429, cascades to fallback gateways.
+        """
+        for gw in self.GATEWAY_URLS:
+            url = f"{gw}{path}"
+            try:
+                res = await client.get(url, headers=self.COMMON_HEADERS)
+                if res.status_code in [200, 404]:
+                    return res
+                logger.warning(f"[Gateway Failover] {gw} returned HTTP {res.status_code}, trying next gateway...")
+            except (httpx.TimeoutException, httpx.RequestError) as e:
+                logger.warning(f"[Gateway Failover] {gw} failed ({type(e).__name__}), trying next gateway...")
+                continue
+        return None
 
     async def scrape_student_onboarding(self, pin: str) -> Dict[str, Any]:
         """
@@ -32,14 +54,14 @@ class SBTETScraperService:
         during the PIN-first onboarding registration flow.
         """
         clean_pin = self._clean_pin(pin)
-        url = f"{self.PRIMARY_API_URL}/api/attendance?pin={clean_pin}"
+        path = f"/api/attendance?pin={clean_pin}"
 
         async with httpx.AsyncClient(timeout=self.timeout) as client:
             try:
-                res = await client.get(url, headers=self.COMMON_HEADERS)
-                if res.status_code == 404:
+                res = await self._fetch_with_failover(client, path)
+                if not res or res.status_code == 404:
                     return {"success": False, "error": f"PIN {clean_pin} not found on SBTET portal."}
-                res.raise_for_status()
+                
                 data = res.json().get("data", {})
                 table = data.get("Table", [])
                 if not table:
@@ -75,17 +97,18 @@ class SBTETScraperService:
     async def scrape_attendance(self, pin: str) -> Dict[str, Any]:
         """
         Scrapes live biometric attendance, working days, present days,
-        monthly matrices, and trend data.
+        monthly matrices, and trend data with gateway failover.
         """
         clean_pin = self._clean_pin(pin)
-        url = f"{self.PRIMARY_API_URL}/api/attendance?pin={clean_pin}"
+        path = f"/api/attendance?pin={clean_pin}"
 
         async with httpx.AsyncClient(timeout=self.timeout) as client:
             try:
-                res = await client.get(url, headers=self.COMMON_HEADERS)
+                res = await self._fetch_with_failover(client, path)
+                if not res:
+                    return {"success": False, "pin": clean_pin, "error": "Gateway unavailable"}
                 if res.status_code == 404:
                     return {"success": False, "pin": clean_pin, "error": "PIN not found"}
-                res.raise_for_status()
                 raw = res.json().get("data", {})
             except Exception as e:
                 return {"success": False, "pin": clean_pin, "error": str(e)}
@@ -108,8 +131,6 @@ class SBTETScraperService:
 
         table1 = raw.get("Table1", [])
         monthly_logs_map: Dict[str, List[Dict[str, Any]]] = {}
-
-        # Monthly trends for Chart.js
         month_present_counts: Dict[str, int] = {}
         month_working_counts: Dict[str, int] = {}
 
@@ -138,7 +159,6 @@ class SBTETScraperService:
                     "absent": is_a
                 })
 
-        # Build Chart.js trend dataset
         months_ordered = ["june", "july", "august", "september", "october"]
         chart_labels = []
         chart_attendance_pcts = []
@@ -151,10 +171,13 @@ class SBTETScraperService:
                 m_pct = round((p_count / w_count) * 100, 1) if w_count > 0 else 0.0
                 chart_attendance_pcts.append(m_pct)
 
+        raw_name = summary.get("Name")
+        student_name = raw_name.strip() if raw_name else None
+
         return {
             "success": True,
             "pin": clean_pin,
-            "name": summary.get("Name", "Student"),
+            "name": student_name,
             "college_code": summary.get("CollegeCode", "259"),
             "branch": summary.get("BranchCode", "CS"),
             "scheme": summary.get("Scheme", "C24"),
@@ -186,17 +209,18 @@ class SBTETScraperService:
     async def scrape_results(self, pin: str, scheme: str = "C24") -> Dict[str, Any]:
         """
         Scrapes live consolidated semester marksheet, CGPA, total credits,
-        and backlogs breakdown.
+        and backlogs breakdown across all historical semesters (1SEM to 6SEM).
         """
         clean_pin = self._clean_pin(pin)
-        url = f"{self.PRIMARY_API_URL}/api/consolidated?pin={clean_pin}&scheme={scheme}"
+        path = f"/api/consolidated?pin={clean_pin}&scheme={scheme}"
 
         async with httpx.AsyncClient(timeout=self.timeout) as client:
             try:
-                res = await client.get(url, headers=self.COMMON_HEADERS)
+                res = await self._fetch_with_failover(client, path)
+                if not res:
+                    return {"success": False, "pin": clean_pin, "error": "Gateway unavailable"}
                 if res.status_code == 404:
                     return {"success": False, "pin": clean_pin, "error": "No marksheet found"}
-                res.raise_for_status()
                 raw = res.json()
             except Exception as e:
                 return {"success": False, "pin": clean_pin, "error": str(e)}
@@ -219,10 +243,13 @@ class SBTETScraperService:
                 }
                 available_semesters.append(sem_key)
 
-            is_pass = sub.get("ExamStatus") == "P" or sub.get("Result") != "FAILED"
-            grade = sub.get("HybridGrade") or sub.get("Grade") or ("P" if is_pass else "F")
-            if grade in ["F", "AB"] or not is_pass:
-                is_pass = False
+            # Strict Backlog & Pass Calculation
+            exam_status = (sub.get("ExamStatus") or "").strip().upper()
+            grade = (sub.get("HybridGrade") or sub.get("Grade") or "").strip().upper()
+            is_pass = (exam_status == "P") and (grade not in ["F", "AB", "FAIL", ""])
+
+            if not is_pass:
+                grade = grade if grade in ["F", "AB"] else "F"
                 status_str = "FAIL"
             else:
                 status_str = "PASS"
@@ -230,10 +257,10 @@ class SBTETScraperService:
             sub_dict = {
                 "code": sub.get("Subject_Code") or sub.get("SubjectCode") or "",
                 "name": sub.get("SubjectName") or "",
-                "internal": sub.get("InternalMarks") or "0",
-                "external": sub.get("EndExamMarks") or "0",
-                "total": sub.get("SubjectTotal") or 0,
-                "grade": grade,
+                "internal": str(sub.get("InternalMarks") or "0"),
+                "external": str(sub.get("EndExamMarks") or "0"),
+                "total": str(sub.get("SubjectTotal") or "0"),
+                "grade": grade or "F",
                 "status": status_str,
                 "credits": sub.get("MaxCredits") or sub.get("CreditsGained") or 0,
                 "semester": sem_key
@@ -266,9 +293,12 @@ class SBTETScraperService:
             "promotionStatus": "Promoted" if backlogs_count == 0 else f"{backlogs_count} Backlogs"
         }
 
+        raw_student_name = student_info.get("Name")
+        student_name = raw_student_name.strip() if raw_student_name else None
+
         return {
             "success": True,
-            "studentName": student_info.get("Name") or "",
+            "studentName": student_name,
             "pin": clean_pin,
             "scheme": scheme,
             "branch": student_info.get("Branch_Code") or "CS",
@@ -300,9 +330,10 @@ class SBTETScraperService:
         att = att_res if (isinstance(att_res, dict) and att_res.get("success")) else {}
         res = res_res if (isinstance(res_res, dict) and res_res.get("success")) else {}
 
-        name = att.get("name") or res.get("studentName") or f"CS Student {clean_pin}"
-        working_days = att.get("workingDays", 88)
-        present_days = att.get("presentDays", 0)
+        # Resolve real student name without forcing placeholder
+        name = att.get("name") or res.get("studentName") or None
+        working_days = att.get("workingDays") or 88
+        present_days = att.get("presentDays") or 0
         att_pct = att.get("attendancePercentage", 0.0)
 
         cgpa = res.get("cgpa", 0.0)
@@ -310,6 +341,8 @@ class SBTETScraperService:
 
         return {
             "success": bool(att or res),
+            "has_attendance": bool(att),
+            "has_results": bool(res),
             "pin": clean_pin,
             "name": name,
             "branch": att.get("branch", "CS"),
@@ -318,12 +351,12 @@ class SBTETScraperService:
             "semester": att.get("semester", "6SEM"),
             "workingDays": int(working_days),
             "presentDays": int(present_days),
-            "attendancePercentage": float(att_pct),
-            "attendance_val": float(att_pct),
-            "attendance_pct": f"{att_pct:.2f}%",
-            "cgpa": float(cgpa),
-            "backlogs": int(backlogs),
-            "backlogs_count": int(backlogs),
+            "attendancePercentage": float(att_pct or 0.0),
+            "attendance_val": float(att_pct or 0.0),
+            "attendance_pct": f"{float(att_pct or 0.0):.2f}%",
+            "cgpa": float(cgpa or 0.0),
+            "backlogs": int(backlogs or 0),
+            "backlogs_count": int(backlogs or 0),
             "credits_earned": float(res.get("credits_gained", 0.0)),
             "backlog_subjects": res.get("backlog_subjects", []),
             "attendance": att,

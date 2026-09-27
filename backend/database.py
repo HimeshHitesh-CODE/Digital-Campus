@@ -1,5 +1,6 @@
 import os
 import re
+import json
 from datetime import datetime
 from sqlalchemy import (
     create_engine,
@@ -321,15 +322,58 @@ def seed_database():
             }
         ]
 
+        # Seed default accounts (Staff & key profiles)
         for acc in default_accounts:
             existing = db.query(StudentDB).filter(StudentDB.pin == acc["pin"]).first()
             if not existing:
                 student = StudentDB(**acc)
                 db.add(student)
-                # Mark roster entry as registered
                 roster_rec = db.query(RosterKeyDB).filter(RosterKeyDB.pin == acc["pin"]).first()
                 if roster_rec:
                     roster_rec.is_registered = True
+        db.commit()
+
+        # Seed & heal all 180 Diploma CS students with their verified institutional full names
+        names_file = os.path.join(BASE_DIR, "all_180_student_names.json")
+        master_names = {}
+        if os.path.exists(names_file):
+            try:
+                with open(names_file, "r", encoding="utf-8") as nf:
+                    master_names = json.load(nf)
+            except Exception as e:
+                print(f"[Seed Warning] Could not load all_180_student_names.json: {e}")
+
+        for i in range(1, 181):
+            pin = f"24259-CS-{str(i).zfill(3)}"
+            verified_name = master_names.get(pin, f"CS Student {pin[-3:]}")
+
+            st = db.query(StudentDB).filter(StudentDB.pin == pin).first()
+            if not st:
+                new_st = StudentDB(
+                    pin=pin,
+                    roll_no=pin,
+                    name=verified_name,
+                    password="Password123",
+                    department="Computer Science & Engineering",
+                    branch="CS",
+                    scheme="C-24",
+                    year="3rd Year",
+                    semester="6SEM",
+                    role="STUDENT",
+                    attendance_pct="0.0%",
+                    attendance_val=0.0,
+                    working_days=88,
+                    present_days=0,
+                    cgpa=0.0,
+                    credits_earned=0.0,
+                    backlogs=0,
+                    backlogs_count=0
+                )
+                db.add(new_st)
+            else:
+                # If current name is placeholder, heal it immediately
+                if not st.name or st.name.startswith("CS Student") or st.name.startswith("Student"):
+                    st.name = verified_name
         db.commit()
 
         # 3. Pre-seed Starter Marketplace Listings

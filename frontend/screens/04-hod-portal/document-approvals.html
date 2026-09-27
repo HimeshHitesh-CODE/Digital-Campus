@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="../../css/variables.css" />
   <link rel="stylesheet" href="../../css/neumorphic.css" />
   <link rel="stylesheet" href="../../css/dock.css" />
+  <link rel="stylesheet" href="../../css/top-nav.css" />
   <link rel="stylesheet" href="../../css/animations.css" />
   <link rel="stylesheet" href="../../css/theme.css" />
   <link rel="stylesheet" href="../../css/global.css" />
@@ -167,9 +168,12 @@
         </div>
 
         <!-- Optional Rejection Reason Input (Visible on Click Reject) -->
-        <div id="rejection-input-wrap" style="display: none; flex-direction: column; gap: 8px; margin-top: 10px; background: rgba(239, 68, 68, 0.08); padding: 14px; border-radius: 10px; border: 1px solid rgba(239, 68, 68, 0.3);">
+        <div id="rejection-input-wrap" style="display: none; flex-direction: column; gap: 10px; margin-top: 14px; background: rgba(239, 68, 68, 0.08); padding: 16px; border-radius: 12px; border: 1px solid rgba(239, 68, 68, 0.35);">
           <label style="font-size: 0.8rem; font-weight: 700; color: #f87171;">Reason for Rejection (Required):</label>
           <input type="text" id="rejection-reason-input" class="neu-input" placeholder="e.g. Attendance is 26.6% (below 65% threshold)" style="font-size: 0.85rem;" />
+          <button type="button" id="btn-confirm-send-rejection" class="neu-btn neu-btn-danger" style="background: rgba(239, 68, 68, 0.25); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.45); font-weight: 800; font-size: 0.85rem; padding: 10px 18px; border-radius: 8px; cursor: pointer; align-self: flex-start;">
+            Confirm Rejection & Send Notice ✕
+          </button>
         </div>
       </div>
 
@@ -351,19 +355,21 @@
         await loadPendingDocuments();
       });
 
-      // Reject Flow
-      document.getElementById('btn-trigger-reject')?.addEventListener('click', async () => {
-        if (!selectedDoc) return;
+      // 1. Reveal Rejection Reason Input
+      document.getElementById('btn-trigger-reject')?.addEventListener('click', () => {
         const rejectWrap = document.getElementById('rejection-input-wrap');
         const reasonInput = document.getElementById('rejection-reason-input');
-
-        if (rejectWrap.style.display === 'none') {
+        if (rejectWrap) {
           rejectWrap.style.display = 'flex';
-          reasonInput.focus();
-          return;
+          reasonInput?.focus();
         }
+      });
 
-        const reason = reasonInput.value.trim() || 'Attendance below mandatory institutional threshold or incomplete credentials.';
+      // 2. Confirm Rejection & Send Notice
+      document.getElementById('btn-confirm-send-rejection')?.addEventListener('click', async () => {
+        if (!selectedDoc) return;
+        const reasonInput = document.getElementById('rejection-reason-input');
+        const reason = reasonInput?.value.trim() || 'Attendance below mandatory institutional threshold or incomplete credentials.';
         const targetDoc = selectedDoc;
 
         try {

@@ -153,3 +153,24 @@
   transform: translateY(-1px);
   border-color: var(--brand-blue);
 }
+
+/* Strict Emblem and Logo Sizing Constraints */
+.brand-logo-img, img.brand-logo-img, .brand-emblem-badge img {
+  width: 32px !important;
+  height: 32px !important;
+  max-width: 32px !important;
+  max-height: 32px !important;
+  object-fit: contain !important;
+  display: block !important;
+}
+.brand-emblem-badge {
+  width: 42px !important;
+  height: 42px !important;
+  min-width: 42px !important;
+  min-height: 42px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  overflow: hidden !important;
+  border-radius: 50% !important;
+}

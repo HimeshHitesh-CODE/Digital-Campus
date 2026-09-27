@@ -34,6 +34,12 @@ function setupEventListeners() {
   // CSV Export Button
   document.getElementById('btn-export-csv')?.addEventListener('click', exportDepartmentCSV);
 
+  // Attendance PDF Export Button
+  document.getElementById('btn-export-attendance-pdf')?.addEventListener('click', generateAttendancePDF);
+
+  // Backlogs Dossier PDF Export Button
+  document.getElementById('btn-export-backlogs-pdf')?.addEventListener('click', generateBacklogsDossierPDF);
+
   // Search Input
   document.getElementById('student-search-input')?.addEventListener('input', (e) => {
     searchQuery = e.target.value.trim().toLowerCase();
@@ -671,6 +677,380 @@ function exportDepartmentCSV() {
   document.body.removeChild(link);
 
   alerts.success('CSV Exported', 'Department metrics downloaded successfully.');
+}
+
+/**
+ * 10. GENERATE ALL 180 ATTENDANCE REPORT (PDF)
+ */
+function generateAttendancePDF() {
+  if (!window.jspdf || !window.jspdf.jsPDF) {
+    alerts.error('PDF Library Error', 'jsPDF is not loaded. Please verify your internet connection.');
+    return;
+  }
+  if (!allStudents || allStudents.length === 0) {
+    alerts.warning('No data to export.');
+    return;
+  }
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({
+    orientation: 'portrait',
+    unit: 'pt',
+    format: 'a4'
+  });
+
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const pageHeight = doc.internal.pageSize.getHeight();
+
+  // Summary Metrics Computation
+  let eligibleCount = 0;
+  let condonationCount = 0;
+  let detentionCount = 0;
+
+  allStudents.forEach(s => {
+    const attPct = computeActiveAttendancePercentage(s);
+    if (attPct !== null) {
+      if (attPct >= 75.0) eligibleCount++;
+      else if (attPct >= 65.0) condonationCount++;
+      else detentionCount++;
+    }
+  });
+
+  const avgAttendance = document.getElementById('stat-avg-attendance')?.textContent || '38.64%';
+  const generatedDate = new Date().toLocaleDateString('en-IN', {
+    day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
+  });
+
+  // Table rows
+  const tableData = allStudents.map((s, idx) => {
+    const attPct = computeActiveAttendancePercentage(s);
+    const elapsed = s.attendance?.workingDays || 88;
+    const present = s.attendance?.daysPresent || 0;
+    const pctStr = attPct !== null ? `${attPct.toFixed(2)}%` : '--%';
+    
+    let statusText = 'UNSYNCED';
+    if (attPct !== null) {
+      if (attPct >= 75.0) statusText = 'ELIGIBLE';
+      else if (attPct >= 65.0) statusText = 'CONDONATION';
+      else statusText = 'DETENTION RISK';
+    }
+
+    return [
+      idx + 1,
+      s.pin,
+      s.name || `Student ${s.pin}`,
+      elapsed,
+      present,
+      pctStr,
+      statusText
+    ];
+  });
+
+  doc.autoTable({
+    head: [['S.No', 'Diploma PIN', 'Student Name', 'Elapsed', 'Present', 'Attendance %', 'Status']],
+    body: tableData,
+    startY: 125,
+    margin: { top: 125, bottom: 85, left: 36, right: 36 },
+    theme: 'grid',
+    styles: {
+      font: 'helvetica',
+      fontSize: 8,
+      cellPadding: 4,
+      valign: 'middle',
+      lineColor: [220, 225, 230],
+      lineWidth: 0.5
+    },
+    headStyles: {
+      fillColor: [15, 23, 42],
+      textColor: [248, 250, 252],
+      fontSize: 8.5,
+      fontStyle: 'bold',
+      halign: 'center'
+    },
+    columnStyles: {
+      0: { halign: 'center', cellWidth: 32 },
+      1: { halign: 'center', cellWidth: 80, fontStyle: 'bold' },
+      2: { halign: 'left', cellWidth: 175 },
+      3: { halign: 'center', cellWidth: 48 },
+      4: { halign: 'center', cellWidth: 48 },
+      5: { halign: 'center', cellWidth: 68, fontStyle: 'bold' },
+      6: { halign: 'center', cellWidth: 72, fontStyle: 'bold' }
+    },
+    didParseCell: function(data) {
+      if (data.section === 'body' && data.column.index === 6) {
+        const val = data.cell.raw;
+        if (val === 'ELIGIBLE') {
+          data.cell.styles.textColor = [16, 185, 129];
+        } else if (val === 'CONDONATION') {
+          data.cell.styles.textColor = [217, 119, 6];
+        } else if (val === 'DETENTION RISK') {
+          data.cell.styles.textColor = [225, 29, 72];
+        }
+      }
+    },
+    didDrawPage: function(data) {
+      // Header Banner
+      doc.setFillColor(15, 23, 42);
+      doc.rect(0, 0, pageWidth, 5, 'F');
+
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(12);
+      doc.setTextColor(15, 23, 42);
+      doc.text('SAMSKRUTI COLLEGE OF ENGINEERING & TECHNOLOGY', pageWidth / 2, 28, { align: 'center' });
+
+      doc.setFontSize(9);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(71, 85, 105);
+      doc.text('(Approved by AICTE, Affiliated to SBTET Telangana • College Code: 259)', pageWidth / 2, 42, { align: 'center' });
+
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(10);
+      doc.setTextColor(2, 132, 199);
+      doc.text('DEPARTMENT OF COMPUTER SCIENCE & ENGINEERING • BIOMETRIC ATTENDANCE DOSSIER', pageWidth / 2, 58, { align: 'center' });
+
+      // Sub-bar info
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(7.5);
+      doc.setTextColor(100, 116, 139);
+      doc.text(`Scheme: C-24 | Semester: 6SEM | Batch: 2024-2027 | Report Generated: ${generatedDate}`, 36, 74);
+      doc.text(`Institutional Portal: digital-campus.samskruti.ac.in`, pageWidth - 36, 74, { align: 'right' });
+
+      // KPI Metric Ribbon
+      doc.setDrawColor(226, 232, 240);
+      doc.setFillColor(248, 250, 252);
+      doc.roundedRect(36, 82, pageWidth - 72, 32, 4, 4, 'FD');
+
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(8);
+      doc.setTextColor(30, 41, 59);
+
+      const colW = (pageWidth - 72) / 4;
+      doc.text(`Total CS Intake: 180`, 36 + (colW * 0.5), 102, { align: 'center' });
+      doc.text(`Dept Average Att: ${avgAttendance}`, 36 + (colW * 1.5), 102, { align: 'center' });
+      doc.setTextColor(16, 185, 129);
+      doc.text(`Eligible (≥75%): ${eligibleCount}`, 36 + (colW * 2.5), 102, { align: 'center' });
+      doc.setTextColor(225, 29, 72);
+      doc.text(`Detention Alert (<65%): ${detentionCount}`, 36 + (colW * 3.5), 102, { align: 'center' });
+
+      // Footer
+      const totalPages = doc.internal.getNumberOfPages();
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(7.5);
+      doc.setTextColor(148, 163, 184);
+      doc.text(`Confidential • Samskruti College of Engineering & Technology (259) • Page ${data.pageNumber} of ${totalPages}`, 36, pageHeight - 24);
+      doc.text(`Official SBTET Telangana Biometric Verification Portal`, pageWidth - 36, pageHeight - 24, { align: 'right' });
+    }
+  });
+
+  // Final Page Verification & Signature Block
+  const finalY = doc.lastAutoTable.finalY + 30;
+  if (finalY < pageHeight - 90) {
+    doc.setFont('helvetica', 'italic');
+    doc.setFontSize(8);
+    doc.setTextColor(100, 116, 139);
+    doc.text('Certified that the biometric attendance records above represent the verified SBTET status for the Diploma C-24 CS batch.', 36, finalY);
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(9);
+    doc.setTextColor(15, 23, 42);
+    doc.text('_________________________________', pageWidth - 220, finalY + 40);
+    doc.text('Dr. J. Vamshi Krishna', pageWidth - 220, finalY + 54);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.setTextColor(71, 85, 105);
+    doc.text('Head of Department, Computer Science & Engg.', pageWidth - 220, finalY + 66);
+    doc.text('Samskruti College of Engineering & Technology', pageWidth - 220, finalY + 77);
+  }
+
+  doc.save(`Samskruti_CS_Attendance_Status_Report_180_${new Date().toISOString().slice(0, 10)}.pdf`);
+  alerts.success('PDF Generated', 'All 180 Students Attendance Report exported successfully.');
+}
+
+/**
+ * 11. GENERATE BACKLOGS-ONLY DOSSIER (PDF)
+ */
+function generateBacklogsDossierPDF() {
+  if (!window.jspdf || !window.jspdf.jsPDF) {
+    alerts.error('PDF Library Error', 'jsPDF is not loaded. Please verify your internet connection.');
+    return;
+  }
+
+  // Filter students with backlogs
+  const studentsWithBacklogs = allStudents.filter(s => {
+    const bCount = Number(s.backlogs != null ? s.backlogs : (s.results?.backlogCount || s.backlogs_count || 0));
+    const hasDetails = Array.isArray(s.backlog_details) && s.backlog_details.length > 0;
+    return bCount > 0 || hasDetails;
+  });
+
+  if (studentsWithBacklogs.length === 0) {
+    alerts.info('No Backlogs', 'All students currently cleared! No active backlogs in the department.');
+    return;
+  }
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({
+    orientation: 'landscape',
+    unit: 'pt',
+    format: 'a4'
+  });
+
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const pageHeight = doc.internal.pageSize.getHeight();
+
+  let totalBacklogSubjectsCount = 0;
+  const tableRows = [];
+
+  studentsWithBacklogs.forEach(s => {
+    const details = s.backlog_details || [];
+    const cgpaVal = (s.cgpa != null ? Number(s.cgpa) : Number(s.results?.cgpa || 0)).toFixed(2);
+
+    if (details.length > 0) {
+      details.forEach((sub, sIdx) => {
+        totalBacklogSubjectsCount++;
+        const totalMarks = sub.total || (Number(sub.internal || 0) + Number(sub.external || 0));
+        tableRows.push([
+          tableRows.length + 1,
+          sIdx === 0 ? s.pin : '',
+          sIdx === 0 ? (s.name || `Student ${s.pin}`) : '',
+          sIdx === 0 ? cgpaVal : '',
+          sub.sem || '1SEM',
+          sub.code || '--',
+          sub.title || 'Core Subject',
+          sub.internal || '--',
+          sub.external || '--',
+          totalMarks || '--',
+          sub.grade || 'F'
+        ]);
+      });
+    } else {
+      const bCount = Number(s.backlogs != null ? s.backlogs : (s.results?.backlogCount || s.backlogs_count || 1));
+      totalBacklogSubjectsCount += bCount;
+      tableRows.push([
+        tableRows.length + 1,
+        s.pin,
+        s.name || `Student ${s.pin}`,
+        cgpaVal,
+        'Various',
+        '--',
+        `${bCount} Active Failed Subject(s) [Pending Detailed Breakdown]`,
+        '--',
+        '--',
+        '--',
+        'F'
+      ]);
+    }
+  });
+
+  const generatedDate = new Date().toLocaleDateString('en-IN', {
+    day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
+  });
+
+  doc.autoTable({
+    head: [['S.No', 'Diploma PIN', 'Student Name', 'CGPA', 'Sem', 'Sub Code', 'Subject Title', 'Int', 'Ext', 'Total', 'Grade']],
+    body: tableRows,
+    startY: 110,
+    margin: { top: 110, bottom: 70, left: 36, right: 36 },
+    theme: 'grid',
+    styles: {
+      font: 'helvetica',
+      fontSize: 8,
+      cellPadding: 3.5,
+      valign: 'middle',
+      lineColor: [220, 225, 230],
+      lineWidth: 0.5
+    },
+    headStyles: {
+      fillColor: [15, 23, 42],
+      textColor: [248, 250, 252],
+      fontSize: 8.5,
+      fontStyle: 'bold',
+      halign: 'center'
+    },
+    columnStyles: {
+      0: { halign: 'center', cellWidth: 32 },
+      1: { halign: 'center', cellWidth: 78, fontStyle: 'bold' },
+      2: { halign: 'left', cellWidth: 160 },
+      3: { halign: 'center', cellWidth: 45, fontStyle: 'bold' },
+      4: { halign: 'center', cellWidth: 42 },
+      5: { halign: 'center', cellWidth: 62, fontStyle: 'bold' },
+      6: { halign: 'left', cellWidth: 195 },
+      7: { halign: 'center', cellWidth: 36 },
+      8: { halign: 'center', cellWidth: 36 },
+      9: { halign: 'center', cellWidth: 42, fontStyle: 'bold' },
+      10: { halign: 'center', cellWidth: 40, fontStyle: 'bold' }
+    },
+    didParseCell: function(data) {
+      if (data.section === 'body' && data.column.index === 10) {
+        data.cell.styles.textColor = [225, 29, 72];
+      }
+    },
+    didDrawPage: function(data) {
+      // Header Banner
+      doc.setFillColor(15, 23, 42);
+      doc.rect(0, 0, pageWidth, 5, 'F');
+
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(12);
+      doc.setTextColor(15, 23, 42);
+      doc.text('SAMSKRUTI COLLEGE OF ENGINEERING & TECHNOLOGY', pageWidth / 2, 26, { align: 'center' });
+
+      doc.setFontSize(9);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(71, 85, 105);
+      doc.text('(Approved by AICTE, Affiliated to SBTET Telangana • College Code: 259)', pageWidth / 2, 38, { align: 'center' });
+
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(10);
+      doc.setTextColor(225, 29, 72);
+      doc.text('DEPARTMENT OF COMPUTER SCIENCE & ENGINEERING • OFFICIAL BACKLOGS INSPECTION DOSSIER', pageWidth / 2, 52, { align: 'center' });
+
+      // KPI Ribbon
+      doc.setDrawColor(254, 205, 211);
+      doc.setFillColor(255, 241, 242);
+      doc.roundedRect(36, 62, pageWidth - 72, 30, 4, 4, 'FD');
+
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(8.5);
+      doc.setTextColor(190, 18, 60);
+
+      const colW = (pageWidth - 72) / 3;
+      doc.text(`Total Students with Active Backlogs: ${studentsWithBacklogs.length}`, 36 + (colW * 0.5), 81, { align: 'center' });
+      doc.text(`Cumulative Failed Subjects: ${totalBacklogSubjectsCount}`, 36 + (colW * 1.5), 81, { align: 'center' });
+      doc.setTextColor(71, 85, 105);
+      doc.text(`Report Generated: ${generatedDate}`, 36 + (colW * 2.5), 81, { align: 'center' });
+
+      // Footer
+      const totalPages = doc.internal.getNumberOfPages();
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(7.5);
+      doc.setTextColor(148, 163, 184);
+      doc.text(`Confidential Academic Audit • Samskruti College of Engineering & Technology (259) • Page ${data.pageNumber} of ${totalPages}`, 36, pageHeight - 20);
+      doc.text(`Official SBTET Telangana Remedial Audit Record`, pageWidth - 36, pageHeight - 20, { align: 'right' });
+    }
+  });
+
+  // Final Page Verification & Signature Block
+  const finalY = doc.lastAutoTable.finalY + 25;
+  if (finalY < pageHeight - 80) {
+    doc.setFont('helvetica', 'italic');
+    doc.setFontSize(8);
+    doc.setTextColor(100, 116, 139);
+    doc.text('Official Academic Audit: This document serves as the verified departmental record of student backlogs for remedial instruction and special exam clearance.', 36, finalY);
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(9);
+    doc.setTextColor(15, 23, 42);
+    doc.text('_________________________________', pageWidth - 220, finalY + 36);
+    doc.text('Dr. J. Vamshi Krishna', pageWidth - 220, finalY + 48);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.setTextColor(71, 85, 105);
+    doc.text('Head of Department, Computer Science & Engg.', pageWidth - 220, finalY + 59);
+    doc.text('Samskruti College of Engineering & Technology', pageWidth - 220, finalY + 70);
+  }
+
+  doc.save(`Samskruti_CS_Backlogs_Inspection_Dossier_${new Date().toISOString().slice(0, 10)}.pdf`);
+  alerts.success('PDF Generated', 'Official Backlogs Dossier exported successfully.');
 }
 
 function generateFallbackDepartmentStudents() {

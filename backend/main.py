@@ -1001,24 +1001,25 @@ async def run_180_student_sync_background():
         eligible_count = 0
         synced_count = 0
 
-        # Sync in batches of 15 concurrent workers
-        batch_size = 15
+        # Sync in batches of 7 concurrent workers with 40ms stagger
+        batch_size = 7
         for i in range(0, total, batch_size):
             batch = pins[i:i + batch_size]
-            tasks = [sbtet_scraper.scrape_student_complete(pin) for pin in batch]
+            tasks = []
+            for pin in batch:
+                tasks.append(sbtet_scraper.scrape_student_complete(pin))
+                await asyncio.sleep(0.040)  # 40ms stagger to prevent AWS Gateway rate drops
+
             results = await asyncio.gather(*tasks, return_exceptions=True)
 
             for idx, res in enumerate(results):
                 current_pin = batch[idx]
                 synced_count += 1
 
+                student = db.query(StudentDB).filter(StudentDB.pin == current_pin).first()
+
                 if isinstance(res, dict) and res.get("success"):
                     pct_val = float(res.get("attendancePercentage", 0.0) or 0.0)
-                    total_attendance_sum += pct_val
-                    if pct_val >= 75.0:
-                        eligible_count += 1
-
-                    student = db.query(StudentDB).filter(StudentDB.pin == current_pin).first()
                     now_ts = datetime.utcnow().isoformat()
                     pct_str = f"{pct_val:.2f}%"
                     cgpa_val = float(res.get("cgpa", 0.0) or 0.0)
@@ -1026,16 +1027,25 @@ async def run_180_student_sync_background():
                     credits_earned = float(res.get("credits_earned", 0.0) or 0.0)
 
                     if student:
-                        if res.get("name") and res["name"] != "Student":
-                            student.name = res["name"]
-                        student.attendance_pct = pct_str
-                        student.attendance_val = pct_val
-                        student.working_days = int(res.get("workingDays", 88))
-                        student.present_days = int(res.get("presentDays", 0))
-                        student.cgpa = cgpa_val
-                        student.backlogs = backlogs_val
-                        student.backlogs_count = backlogs_val
-                        student.credits_earned = credits_earned
+                        real_name = res.get("name")
+                        if real_name and not real_name.startswith("CS Student") and not real_name.startswith("Student"):
+                            student.name = real_name
+
+                        # NEVER overwrite cached valid attendance with 0.00%
+                        if pct_val > 0.0 or (student.attendance_val or 0.0) == 0.0:
+                            student.attendance_pct = pct_str
+                            student.attendance_val = pct_val
+                            student.working_days = int(res.get("workingDays") or student.working_days or 88)
+                            student.present_days = int(res.get("presentDays") or student.present_days or 0)
+
+                        if cgpa_val > 0.0 or (student.cgpa or 0.0) == 0.0:
+                            student.cgpa = cgpa_val
+
+                        if res.get("has_results") or backlogs_val > 0 or (student.backlogs or 0) == 0:
+                            student.backlogs = backlogs_val
+                            student.backlogs_count = backlogs_val
+                            student.credits_earned = credits_earned
+
                         student.last_synced = now_ts
                     else:
                         student = StudentDB(
@@ -1060,10 +1070,10 @@ async def run_180_student_sync_background():
                         db.add(student)
                     db.commit()
 
-                    # Persist individual backlog subject records
+                    # Persist individual backlog subject records if results succeeded
                     backlog_subjects = res.get("backlog_subjects", [])
-                    db.query(BacklogRecordDB).filter(BacklogRecordDB.pin == current_pin).delete()
-                    if backlog_subjects:
+                    if res.get("has_results") or backlog_subjects:
+                        db.query(BacklogRecordDB).filter(BacklogRecordDB.pin == current_pin).delete()
                         for subj in backlog_subjects:
                             record = BacklogRecordDB(
                                 student_id=student.id,
@@ -1077,7 +1087,13 @@ async def run_180_student_sync_background():
                                 grade=str(subj.get("grade", "F"))
                             )
                             db.add(record)
-                    db.commit()
+                        db.commit()
+
+                # Calculate department stats from current persistent values
+                curr_att = float(student.attendance_val or 0.0) if student else 0.0
+                total_attendance_sum += curr_att
+                if curr_att >= 75.0:
+                    eligible_count += 1
 
                 # Update progress tracker
                 prog.synced_count = synced_count
@@ -1279,16 +1295,24 @@ async def sync_single_student_endpoint(req: SingleStudentSyncRequest, db: Sessio
 
     student = db.query(StudentDB).filter(StudentDB.pin == clean_pin).first()
     if student:
-        if res.get("name") and res["name"] != "Student":
-            student.name = res["name"]
-        student.attendance_pct = pct_str
-        student.attendance_val = pct_val
-        student.working_days = int(res.get("workingDays", 88))
-        student.present_days = int(res.get("presentDays", 0))
-        student.cgpa = cgpa_val
-        student.backlogs = backlogs_val
-        student.backlogs_count = backlogs_val
-        student.credits_earned = credits_earned
+        real_name = res.get("name")
+        if real_name and not real_name.startswith("CS Student") and not real_name.startswith("Student"):
+            student.name = real_name
+
+        if pct_val > 0.0 or (student.attendance_val or 0.0) == 0.0:
+            student.attendance_pct = pct_str
+            student.attendance_val = pct_val
+            student.working_days = int(res.get("workingDays") or student.working_days or 88)
+            student.present_days = int(res.get("presentDays") or student.present_days or 0)
+
+        if cgpa_val > 0.0 or (student.cgpa or 0.0) == 0.0:
+            student.cgpa = cgpa_val
+
+        if res.get("has_results") or backlogs_val > 0 or (student.backlogs or 0) == 0:
+            student.backlogs = backlogs_val
+            student.backlogs_count = backlogs_val
+            student.credits_earned = credits_earned
+
         student.last_synced = now_ts
     else:
         student = StudentDB(
@@ -1515,6 +1539,7 @@ def get_hod_live_requests(db: Session = Depends(get_db)):
     return {"success": True, "requests": result}
 
 @app.put("/api/v1/hod/requests/{request_id}/status")
+@app.put("/api/hod/requests/{request_id}/status")
 async def update_request_status(request_id: int, body: UpdateRequestStatus, db: Session = Depends(get_db)):
     """
     HOD updates request status. Generates 6-digit OTP if accepted,
