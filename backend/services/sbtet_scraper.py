@@ -122,6 +122,9 @@ class SBTETScraperService:
         days_present = float(summary.get("NumberOfDaysPresent") or 0)
         percentage = float(summary.get("Percentage") or summary.get("TotalPercentage") or 0)
 
+        if working_days <= 0:
+            return {"success": False, "pin": clean_pin, "error": "Invalid working days"}
+
         if percentage == 0 and working_days > 0 and days_present > 0:
             percentage = round((days_present / working_days) * 100, 2)
 
@@ -230,6 +233,9 @@ class SBTETScraperService:
         semester_summary = raw.get("semesterSummary", [])
         student_info = raw.get("student", {})
 
+        if not summary and not subjects:
+            return {"success": False, "pin": clean_pin, "error": "No marksheet data found from gateway"}
+
         semesters_map: Dict[str, Any] = {}
         available_semesters: List[str] = []
         backlogs: List[Dict[str, Any]] = []
@@ -327,8 +333,11 @@ class SBTETScraperService:
             return_exceptions=True
         )
 
-        att = att_res if (isinstance(att_res, dict) and att_res.get("success")) else {}
-        res = res_res if (isinstance(res_res, dict) and res_res.get("success")) else {}
+        att_success = isinstance(att_res, dict) and att_res.get("success") is True and att_res.get("workingDays", 0) > 0
+        res_success = isinstance(res_res, dict) and res_res.get("success") is True
+
+        att = att_res if att_success else {}
+        res = res_res if res_success else {}
 
         # Resolve real student name without forcing placeholder
         name = att.get("name") or res.get("studentName") or None
@@ -340,15 +349,17 @@ class SBTETScraperService:
         backlogs = res.get("backlogs_count", 0)
 
         return {
-            "success": bool(att or res),
-            "has_attendance": bool(att),
-            "has_results": bool(res),
+            "success": bool(att_success or res_success),
+            "attendance_success": att_success,
+            "results_success": res_success,
+            "has_attendance": att_success,
+            "has_results": res_success,
             "pin": clean_pin,
             "name": name,
-            "branch": att.get("branch", "CS"),
+            "branch": att.get("branch") or res.get("branch") or "CS",
             "department": "Computer Science & Engineering",
             "scheme": scheme,
-            "semester": att.get("semester", "6SEM"),
+            "semester": att.get("semester") or "6SEM",
             "workingDays": int(working_days),
             "presentDays": int(present_days),
             "attendancePercentage": float(att_pct or 0.0),

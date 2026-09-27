@@ -5,8 +5,10 @@
 /* Layout Shell */
 .app-layout,
 .app-container {
-  display: flex;
+  display: flex !important;
+  flex-direction: column !important;
   min-height: 100vh;
+  width: 100%;
   background-color: #eaf0f7;
   padding: 1.25rem;
   box-sizing: border-box;

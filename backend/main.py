@@ -1001,14 +1001,14 @@ async def run_180_student_sync_background():
         eligible_count = 0
         synced_count = 0
 
-        # Sync in batches of 7 concurrent workers with 40ms stagger
-        batch_size = 7
+        # Sync in batches of 6 concurrent workers with 60ms stagger
+        batch_size = 6
         for i in range(0, total, batch_size):
             batch = pins[i:i + batch_size]
             tasks = []
             for pin in batch:
                 tasks.append(sbtet_scraper.scrape_student_complete(pin))
-                await asyncio.sleep(0.040)  # 40ms stagger to prevent AWS Gateway rate drops
+                await asyncio.sleep(0.060)  # 60ms stagger to prevent AWS Gateway rate drops
 
             results = await asyncio.gather(*tasks, return_exceptions=True)
 
@@ -1019,75 +1019,90 @@ async def run_180_student_sync_background():
                 student = db.query(StudentDB).filter(StudentDB.pin == current_pin).first()
 
                 if isinstance(res, dict) and res.get("success"):
-                    pct_val = float(res.get("attendancePercentage", 0.0) or 0.0)
                     now_ts = datetime.utcnow().isoformat()
-                    pct_str = f"{pct_val:.2f}%"
-                    cgpa_val = float(res.get("cgpa", 0.0) or 0.0)
-                    backlogs_val = int(res.get("backlogs", 0) or 0)
-                    credits_earned = float(res.get("credits_earned", 0.0) or 0.0)
+                    real_name = res.get("name")
+                    att_ok = res.get("attendance_success") is True and res.get("workingDays", 0) > 0
+                    res_ok = res.get("results_success") is True
 
                     if student:
-                        real_name = res.get("name")
                         if real_name and not real_name.startswith("CS Student") and not real_name.startswith("Student"):
                             student.name = real_name
 
-                        # NEVER overwrite cached valid attendance with 0.00%
-                        if pct_val > 0.0 or (student.attendance_val or 0.0) == 0.0:
-                            student.attendance_pct = pct_str
+                        # ATOMIC ATTENDANCE UPDATE: Only touch attendance if attendance fetch succeeded
+                        if att_ok:
+                            pct_val = float(res.get("attendancePercentage", 0.0) or 0.0)
+                            student.attendance_pct = f"{pct_val:.2f}%"
                             student.attendance_val = pct_val
-                            student.working_days = int(res.get("workingDays") or student.working_days or 88)
-                            student.present_days = int(res.get("presentDays") or student.present_days or 0)
+                            student.working_days = int(res.get("workingDays") or 88)
+                            student.present_days = int(res.get("presentDays") or 0)
 
-                        if cgpa_val > 0.0 or (student.cgpa or 0.0) == 0.0:
-                            student.cgpa = cgpa_val
+                        # ATOMIC RESULTS UPDATE: Only touch CGPA and backlogs if results fetch succeeded
+                        if res_ok:
+                            student.cgpa = float(res.get("cgpa", 0.0) or 0.0)
+                            b_count = int(res.get("backlogs", 0) or 0)
+                            student.backlogs = b_count
+                            student.backlogs_count = b_count
+                            student.credits_earned = float(res.get("credits_earned", 0.0) or 0.0)
 
-                        if res.get("has_results") or backlogs_val > 0 or (student.backlogs or 0) == 0:
-                            student.backlogs = backlogs_val
-                            student.backlogs_count = backlogs_val
-                            student.credits_earned = credits_earned
+                            # Persist individual backlog subject records
+                            backlog_subjects = res.get("backlog_subjects", [])
+                            db.query(BacklogRecordDB).filter(BacklogRecordDB.pin == current_pin).delete()
+                            for subj in backlog_subjects:
+                                record = BacklogRecordDB(
+                                    student_id=student.id,
+                                    pin=current_pin,
+                                    semester=str(subj.get("semester", "")),
+                                    subject_code=str(subj.get("code", "")),
+                                    subject_title=str(subj.get("name", "")),
+                                    internal_marks=str(subj.get("internal", "")),
+                                    external_marks=str(subj.get("external", "")),
+                                    total_marks=str(subj.get("total", "")),
+                                    grade=str(subj.get("grade", "F"))
+                                )
+                                db.add(record)
 
                         student.last_synced = now_ts
                     else:
+                        pct_val = float(res.get("attendancePercentage", 0.0) or 0.0) if att_ok else 0.0
+                        cgpa_val = float(res.get("cgpa", 0.0) or 0.0) if res_ok else 0.0
+                        b_count = int(res.get("backlogs", 0) or 0) if res_ok else 0
                         student = StudentDB(
                             pin=current_pin,
                             roll_no=current_pin,
-                            name=res.get("name") or f"Student {current_pin}",
+                            name=real_name or f"CS Student {current_pin.split('-')[-1]}",
                             password="Password123",
                             department="Computer Science & Engineering",
                             branch="CS",
                             scheme="C-24",
                             role="STUDENT",
-                            attendance_pct=pct_str,
-                            attendance_val=pct_val,
-                            working_days=int(res.get("workingDays", 88)),
-                            present_days=int(res.get("presentDays", 0)),
-                            cgpa=cgpa_val,
-                            backlogs=backlogs_val,
-                            backlogs_count=backlogs_val,
-                            credits_earned=credits_earned,
+                            attendance_pct=f"{pct_val:.2f}%" if att_ok else "0.0%",
+                            attendance_val=pct_val if att_ok else 0.0,
+                            working_days=int(res.get("workingDays", 88)) if att_ok else 88,
+                            present_days=int(res.get("presentDays", 0)) if att_ok else 0,
+                            cgpa=cgpa_val if res_ok else 0.0,
+                            backlogs=b_count if res_ok else 0,
+                            backlogs_count=b_count if res_ok else 0,
+                            credits_earned=float(res.get("credits_earned", 0.0)) if res_ok else 0.0,
                             last_synced=now_ts
                         )
                         db.add(student)
-                    db.commit()
-
-                    # Persist individual backlog subject records if results succeeded
-                    backlog_subjects = res.get("backlog_subjects", [])
-                    if res.get("has_results") or backlog_subjects:
-                        db.query(BacklogRecordDB).filter(BacklogRecordDB.pin == current_pin).delete()
-                        for subj in backlog_subjects:
-                            record = BacklogRecordDB(
-                                student_id=student.id,
-                                pin=current_pin,
-                                semester=str(subj.get("semester", "")),
-                                subject_code=str(subj.get("code", "")),
-                                subject_title=str(subj.get("name", "")),
-                                internal_marks=str(subj.get("internal", "")),
-                                external_marks=str(subj.get("external", "")),
-                                total_marks=str(subj.get("total", "")),
-                                grade=str(subj.get("grade", "F"))
-                            )
-                            db.add(record)
                         db.commit()
+                        if res_ok:
+                            backlog_subjects = res.get("backlog_subjects", [])
+                            for subj in backlog_subjects:
+                                record = BacklogRecordDB(
+                                    student_id=student.id,
+                                    pin=current_pin,
+                                    semester=str(subj.get("semester", "")),
+                                    subject_code=str(subj.get("code", "")),
+                                    subject_title=str(subj.get("name", "")),
+                                    internal_marks=str(subj.get("internal", "")),
+                                    external_marks=str(subj.get("external", "")),
+                                    total_marks=str(subj.get("total", "")),
+                                    grade=str(subj.get("grade", "F"))
+                                )
+                                db.add(record)
+                    db.commit()
 
                 # Calculate department stats from current persistent values
                 curr_att = float(student.attendance_val or 0.0) if student else 0.0
@@ -1287,84 +1302,104 @@ async def sync_single_student_endpoint(req: SingleStudentSyncRequest, db: Sessio
     res = await sbtet_scraper.scrape_student_complete(clean_pin)
 
     now_ts = datetime.utcnow().isoformat()
-    pct_val = float(res.get("attendancePercentage", 0.0) or 0.0)
-    pct_str = f"{pct_val:.2f}%"
-    cgpa_val = float(res.get("cgpa", 0.0) or 0.0)
-    backlogs_val = int(res.get("backlogs", 0) or 0)
-    credits_earned = float(res.get("credits_earned", 0.0) or 0.0)
+    att_ok = res.get("attendance_success") is True and res.get("workingDays", 0) > 0
+    res_ok = res.get("results_success") is True
+    real_name = res.get("name")
 
     student = db.query(StudentDB).filter(StudentDB.pin == clean_pin).first()
     if student:
-        real_name = res.get("name")
         if real_name and not real_name.startswith("CS Student") and not real_name.startswith("Student"):
             student.name = real_name
 
-        if pct_val > 0.0 or (student.attendance_val or 0.0) == 0.0:
-            student.attendance_pct = pct_str
+        # ATOMIC ATTENDANCE UPDATE
+        if att_ok:
+            pct_val = float(res.get("attendancePercentage", 0.0) or 0.0)
+            student.attendance_pct = f"{pct_val:.2f}%"
             student.attendance_val = pct_val
-            student.working_days = int(res.get("workingDays") or student.working_days or 88)
-            student.present_days = int(res.get("presentDays") or student.present_days or 0)
+            student.working_days = int(res.get("workingDays") or 88)
+            student.present_days = int(res.get("presentDays") or 0)
 
-        if cgpa_val > 0.0 or (student.cgpa or 0.0) == 0.0:
-            student.cgpa = cgpa_val
+        # ATOMIC RESULTS UPDATE
+        if res_ok:
+            student.cgpa = float(res.get("cgpa", 0.0) or 0.0)
+            b_count = int(res.get("backlogs", 0) or 0)
+            student.backlogs = b_count
+            student.backlogs_count = b_count
+            student.credits_earned = float(res.get("credits_earned", 0.0) or 0.0)
 
-        if res.get("has_results") or backlogs_val > 0 or (student.backlogs or 0) == 0:
-            student.backlogs = backlogs_val
-            student.backlogs_count = backlogs_val
-            student.credits_earned = credits_earned
+            backlog_subjects = res.get("backlog_subjects", [])
+            db.query(BacklogRecordDB).filter(BacklogRecordDB.pin == clean_pin).delete()
+            for subj in backlog_subjects:
+                record = BacklogRecordDB(
+                    student_id=student.id,
+                    pin=clean_pin,
+                    semester=str(subj.get("semester", "")),
+                    subject_code=str(subj.get("code", "")),
+                    subject_title=str(subj.get("name", "")),
+                    internal_marks=str(subj.get("internal", "")),
+                    external_marks=str(subj.get("external", "")),
+                    total_marks=str(subj.get("total", "")),
+                    grade=str(subj.get("grade", "F"))
+                )
+                db.add(record)
 
         student.last_synced = now_ts
     else:
+        pct_val = float(res.get("attendancePercentage", 0.0) or 0.0) if att_ok else 0.0
+        cgpa_val = float(res.get("cgpa", 0.0) or 0.0) if res_ok else 0.0
+        b_count = int(res.get("backlogs", 0) or 0) if res_ok else 0
         student = StudentDB(
             pin=clean_pin,
             roll_no=clean_pin,
-            name=res.get("name") or f"CS Student {clean_pin}",
+            name=real_name or f"CS Student {clean_pin.split('-')[-1]}",
             password="Password123",
             department="Computer Science & Engineering",
             branch="CS",
             scheme="C-24",
             role="STUDENT",
-            attendance_pct=pct_str,
-            attendance_val=pct_val,
-            working_days=int(res.get("workingDays", 88)),
-            present_days=int(res.get("presentDays", 0)),
-            cgpa=cgpa_val,
-            backlogs=backlogs_val,
-            backlogs_count=backlogs_val,
-            credits_earned=credits_earned,
+            attendance_pct=f"{pct_val:.2f}%" if att_ok else "0.0%",
+            attendance_val=pct_val if att_ok else 0.0,
+            working_days=int(res.get("workingDays", 88)) if att_ok else 88,
+            present_days=int(res.get("presentDays", 0)) if att_ok else 0,
+            cgpa=cgpa_val if res_ok else 0.0,
+            backlogs=b_count if res_ok else 0,
+            backlogs_count=b_count if res_ok else 0,
+            credits_earned=float(res.get("credits_earned", 0.0)) if res_ok else 0.0,
             last_synced=now_ts
         )
         db.add(student)
+        db.commit()
+        if res_ok:
+            backlog_subjects = res.get("backlog_subjects", [])
+            for subj in backlog_subjects:
+                record = BacklogRecordDB(
+                    student_id=student.id,
+                    pin=clean_pin,
+                    semester=str(subj.get("semester", "")),
+                    subject_code=str(subj.get("code", "")),
+                    subject_title=str(subj.get("name", "")),
+                    internal_marks=str(subj.get("internal", "")),
+                    external_marks=str(subj.get("external", "")),
+                    total_marks=str(subj.get("total", "")),
+                    grade=str(subj.get("grade", "F"))
+                )
+                db.add(record)
     db.commit()
 
-    # Persist individual backlog subject records
-    backlog_subjects = res.get("backlog_subjects", [])
-    db.query(BacklogRecordDB).filter(BacklogRecordDB.pin == clean_pin).delete()
-    backlog_details = []
-    if backlog_subjects:
-        for subj in backlog_subjects:
-            record = BacklogRecordDB(
-                student_id=student.id,
-                pin=clean_pin,
-                semester=str(subj.get("semester", "")),
-                subject_code=str(subj.get("code", "")),
-                subject_title=str(subj.get("name", "")),
-                internal_marks=str(subj.get("internal", "")),
-                external_marks=str(subj.get("external", "")),
-                total_marks=str(subj.get("total", "")),
-                grade=str(subj.get("grade", "F"))
-            )
-            db.add(record)
-            backlog_details.append({
-                "sem": record.semester,
-                "code": record.subject_code,
-                "title": record.subject_title,
-                "internal": record.internal_marks,
-                "external": record.external_marks,
-                "total": record.total_marks,
-                "grade": record.grade
-            })
-    db.commit()
+    all_b = db.query(BacklogRecordDB).filter(BacklogRecordDB.pin == clean_pin).all()
+    backlog_details = [{
+        "sem": b.semester or "",
+        "code": b.subject_code or "",
+        "title": b.subject_title or "",
+        "internal": b.internal_marks or "",
+        "external": b.external_marks or "",
+        "total": b.total_marks or "",
+        "grade": b.grade or "F"
+    } for b in all_b]
+
+    cur_pct = student.attendance_val if student and student.attendance_val is not None else 0.0
+    cur_cgpa = float(student.cgpa) if student and student.cgpa is not None else 0.0
+    cur_backlogs = len(backlog_details)
 
     student_data = {
         "pin": clean_pin,
@@ -1373,20 +1408,20 @@ async def sync_single_student_endpoint(req: SingleStudentSyncRequest, db: Sessio
         "scheme": "C-24",
         "semester": 6,
         "isSynced": True,
-        "cgpa": cgpa_val,
-        "backlogs": backlogs_val,
-        "backlogs_count": backlogs_val,
+        "cgpa": cur_cgpa,
+        "backlogs": cur_backlogs,
+        "backlogs_count": cur_backlogs,
         "backlog_details": backlog_details,
         "attendance": {
             "workingDays": student.working_days,
             "daysPresent": student.present_days,
-            "percentage": pct_val,
-            "status": "ELIGIBLE" if pct_val >= 75.0 else ("CONDONATION" if pct_val >= 65.0 else "CRITICAL")
+            "percentage": cur_pct,
+            "status": "ELIGIBLE" if cur_pct >= 75.0 else ("CONDONATION" if cur_pct >= 65.0 else "CRITICAL")
         },
         "results": {
-            "cgpa": cgpa_val,
-            "backlogCount": backlogs_val,
-            "backlogs": backlogs_val
+            "cgpa": cur_cgpa,
+            "backlogCount": cur_backlogs,
+            "backlogs": cur_backlogs
         },
         "lastSynced": now_ts
     }
@@ -1409,63 +1444,70 @@ async def get_student_backlogs_endpoint(pin: str, db: Session = Depends(get_db))
         res = await sbtet_scraper.scrape_student_complete(clean_pin)
         if res.get("success"):
             now_ts = datetime.utcnow().isoformat()
-            pct_val = float(res.get("attendancePercentage", 0.0) or 0.0)
-            cgpa_val = float(res.get("cgpa", 0.0) or 0.0)
-            backlogs_val = int(res.get("backlogs", 0) or 0)
-            credits_earned = float(res.get("credits_earned", 0.0) or 0.0)
+            att_ok = res.get("attendance_success") is True and res.get("workingDays", 0) > 0
+            res_ok = res.get("results_success") is True
+            real_name = res.get("name")
 
             if student:
-                if res.get("name") and res["name"] != "Student":
-                    student.name = res["name"]
-                student.attendance_pct = f"{pct_val:.2f}%"
-                student.attendance_val = pct_val
-                student.working_days = int(res.get("workingDays", 88))
-                student.present_days = int(res.get("presentDays", 0))
-                student.cgpa = cgpa_val
-                student.backlogs = backlogs_val
-                student.backlogs_count = backlogs_val
-                student.credits_earned = credits_earned
+                if real_name and not real_name.startswith("CS Student") and not real_name.startswith("Student"):
+                    student.name = real_name
+                if att_ok:
+                    pct_val = float(res.get("attendancePercentage", 0.0) or 0.0)
+                    student.attendance_pct = f"{pct_val:.2f}%"
+                    student.attendance_val = pct_val
+                    student.working_days = int(res.get("workingDays") or 88)
+                    student.present_days = int(res.get("presentDays") or 0)
+                if res_ok:
+                    student.cgpa = float(res.get("cgpa", 0.0) or 0.0)
+                    b_count = int(res.get("backlogs", 0) or 0)
+                    student.backlogs = b_count
+                    student.backlogs_count = b_count
+                    student.credits_earned = float(res.get("credits_earned", 0.0) or 0.0)
                 student.last_synced = now_ts
             else:
+                pct_val = float(res.get("attendancePercentage", 0.0) or 0.0) if att_ok else 0.0
+                cgpa_val = float(res.get("cgpa", 0.0) or 0.0) if res_ok else 0.0
+                b_count = int(res.get("backlogs", 0) or 0) if res_ok else 0
                 student = StudentDB(
                     pin=clean_pin,
                     roll_no=clean_pin,
-                    name=res.get("name") or f"CS Student {clean_pin}",
+                    name=real_name or f"CS Student {clean_pin.split('-')[-1]}",
                     password="Password123",
                     department="Computer Science & Engineering",
                     branch="CS",
                     scheme="C-24",
                     role="STUDENT",
-                    attendance_pct=f"{pct_val:.2f}%",
-                    attendance_val=pct_val,
-                    working_days=int(res.get("workingDays", 88)),
-                    present_days=int(res.get("presentDays", 0)),
-                    cgpa=cgpa_val,
-                    backlogs=backlogs_val,
-                    backlogs_count=backlogs_val,
-                    credits_earned=credits_earned,
+                    attendance_pct=f"{pct_val:.2f}%" if att_ok else "0.0%",
+                    attendance_val=pct_val if att_ok else 0.0,
+                    working_days=int(res.get("workingDays", 88)) if att_ok else 88,
+                    present_days=int(res.get("presentDays", 0)) if att_ok else 0,
+                    cgpa=cgpa_val if res_ok else 0.0,
+                    backlogs=b_count if res_ok else 0,
+                    backlogs_count=b_count if res_ok else 0,
+                    credits_earned=float(res.get("credits_earned", 0.0)) if res_ok else 0.0,
                     last_synced=now_ts
                 )
                 db.add(student)
             db.commit()
 
-            # Persist records
-            backlog_subjects = res.get("backlog_subjects", [])
-            db.query(BacklogRecordDB).filter(BacklogRecordDB.pin == clean_pin).delete()
-            for subj in backlog_subjects:
-                rec = BacklogRecordDB(
-                    student_id=student.id,
-                    pin=clean_pin,
-                    semester=str(subj.get("semester", "")),
-                    subject_code=str(subj.get("code", "")),
-                    subject_title=str(subj.get("name", "")),
-                    internal_marks=str(subj.get("internal", "")),
-                    external_marks=str(subj.get("external", "")),
-                    total_marks=str(subj.get("total", "")),
-                    grade=str(subj.get("grade", "F"))
-                )
-                db.add(rec)
-            db.commit()
+            # Persist records only if results fetch succeeded
+            if res_ok:
+                backlog_subjects = res.get("backlog_subjects", [])
+                db.query(BacklogRecordDB).filter(BacklogRecordDB.pin == clean_pin).delete()
+                for subj in backlog_subjects:
+                    rec = BacklogRecordDB(
+                        student_id=student.id,
+                        pin=clean_pin,
+                        semester=str(subj.get("semester", "")),
+                        subject_code=str(subj.get("code", "")),
+                        subject_title=str(subj.get("name", "")),
+                        internal_marks=str(subj.get("internal", "")),
+                        external_marks=str(subj.get("external", "")),
+                        total_marks=str(subj.get("total", "")),
+                        grade=str(subj.get("grade", "F"))
+                    )
+                    db.add(rec)
+                db.commit()
             records = db.query(BacklogRecordDB).filter(BacklogRecordDB.pin == clean_pin).all()
 
     backlog_details = [{
