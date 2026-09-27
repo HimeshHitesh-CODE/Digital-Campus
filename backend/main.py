@@ -1288,6 +1288,34 @@ def get_hod_roster(db: Session = Depends(get_db)):
 
     return {"success": True, "students": roster, "total": len(roster)}
 
+@app.get("/api/v1/hod/security-roster")
+@app.get("/api/hod/security-roster")
+def get_security_roster(db: Session = Depends(get_db)):
+    keys = db.query(RosterKeyDB).all()
+    students = db.query(StudentDB).filter(StudentDB.role == "STUDENT").all()
+    name_map = {s.pin.upper(): s.name for s in students}
+    
+    roster = []
+    for k in keys:
+        pin = k.pin.upper()
+        try:
+            roll = int(pin.split("-")[-1])
+        except:
+            roll = 1
+        name = name_map.get(pin, f"CS Student {str(roll).zfill(3)}")
+        roster.append({
+            "pin": pin,
+            "rollNumber": roll,
+            "name": name,
+            "secretKey": k.secret_key or "STD-SECRET",
+            "department": k.department or "Computer Science & Engineering",
+            "branch": k.branch or "CS",
+            "scheme": k.scheme or "C-24",
+            "is_registered": bool(k.is_registered)
+        })
+    roster.sort(key=lambda x: x["rollNumber"])
+    return {"success": True, "roster": roster, "total": len(roster)}
+
 class SingleStudentSyncRequest(BaseModel):
     pin: str
 

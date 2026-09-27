@@ -5,30 +5,36 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Anti-Spoofing Security Keys Roster (180 Students) • HOD Executive Console • Samskruti Digital Campus</title>
 
-  <!-- Stylesheets -->
+  <!-- Stylesheets Matching Document Approvals -->
   <link rel="stylesheet" href="../../css/reset.css" />
-  <link rel="stylesheet" href="../../css/theme-tokens.css" />
-  <link rel="stylesheet" href="../../css/global-layout.css" />
+  <link rel="stylesheet" href="../../css/variables.css" />
+  <link rel="stylesheet" href="../../css/neumorphic.css" />
+  <link rel="stylesheet" href="../../css/dock.css" />
   <link rel="stylesheet" href="../../css/top-nav.css" />
   <link rel="stylesheet" href="../../css/animations.css" />
   <link rel="stylesheet" href="../../css/theme.css" />
+  <link rel="stylesheet" href="../../css/global.css" />
   <link rel="stylesheet" href="../../css/hod-theme.css" />
-  <script src="../../js/theme-engine.js"></script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
 
   <style>
+    /* Absolute Layout & Logo Sizing Constraints */
     .app-layout {
       display: flex !important;
       flex-direction: column !important;
       width: 100% !important;
       min-height: 100vh !important;
     }
-    .brand-logo-img, img.brand-logo-img, .brand-emblem-badge img, header img {
-      width: 32px !important;
-      height: 32px !important;
-      max-width: 32px !important;
-      max-height: 32px !important;
+    .brand-logo-img, img.brand-logo-img, .brand-emblem-badge img, header img, nav img {
+      width: 28px !important;
+      height: 28px !important;
+      max-width: 28px !important;
+      max-height: 28px !important;
       object-fit: contain !important;
       display: block !important;
+      flex-shrink: 0 !important;
     }
     .brand-emblem-badge {
       width: 40px !important;
@@ -42,7 +48,10 @@
       display: flex !important;
       align-items: center !important;
       justify-content: center !important;
+      flex-shrink: 0 !important;
     }
+
+    /* Security Table Styling */
     .security-table {
       width: 100%;
       border-collapse: separate;
@@ -96,6 +105,52 @@
 </head>
 <body class="hod-executive">
   <div class="app-layout">
+    
+    <!-- Universal Top Navigation Capsule Dock (Identical to Document Approvals) -->
+    <header class="top-nav-capsule-container" style="position: sticky; top: 12px; z-index: 1000; width: 100%; max-width: 1400px; margin: 0 auto 20px auto; padding: 0 16px;">
+      <nav class="capsule-nav" aria-label="HOD Executive Navigation">
+        <!-- Brand Emblem -->
+        <a href="hod-dashboard.html" class="capsule-brand" style="text-decoration: none;">
+          <div class="brand-emblem-badge flex-shrink-0" title="Samskruti Institutions (259) • HOD Console" style="width: 40px !important; height: 40px !important; min-width: 40px !important; min-height: 40px !important; max-width: 40px !important; max-height: 40px !important; border-radius: 50% !important; overflow: hidden !important; display: flex !important; align-items: center !important; justify-content: center !important; flex-shrink: 0 !important;">
+            <img src="/assets/images/samskruti-logo-blue.png" alt="Campus Connect Logo" class="brand-logo-img flex-shrink-0" style="width: 28px !important; height: 28px !important; max-width: 28px !important; max-height: 28px !important; object-fit: contain !important; display: block !important; flex-shrink: 0 !important;" />
+          </div>
+          <span class="brand-title">HOD <span class="accent-text" style="color: #60a5fa;">CONSOLE</span></span>
+        </a>
+
+        <div class="nav-divider"></div>
+
+        <!-- Menu Items (Security Keys Active) -->
+        <div class="capsule-menu-items">
+          <a href="hod-dashboard.html" class="nav-item">
+            <i data-lucide="layout-dashboard"></i>
+            <span>Dashboard</span>
+          </a>
+          <a href="students-info.html" class="nav-item">
+            <i data-lucide="users"></i>
+            <span>Student Roster</span>
+          </a>
+          <a href="document-approvals.html" class="nav-item">
+            <i data-lucide="file-check"></i>
+            <span>Document Approvals</span>
+          </a>
+          <a href="security-roster.html" class="nav-item active">
+            <i data-lucide="shield-check"></i>
+            <span>Security Keys</span>
+          </a>
+        </div>
+
+        <!-- Utility Actions -->
+        <div class="capsule-actions">
+          <button type="button" id="theme-toggle-btn" class="util-btn" title="Toggle Theme" aria-label="Toggle Theme">
+            <i data-lucide="sun"></i>
+          </button>
+          <a href="/screens/01-auth/login.html" class="util-btn logout" title="Sign Out" aria-label="Sign Out" onclick="localStorage.clear(); sessionStorage.clear();">
+            <i data-lucide="log-out"></i>
+          </a>
+        </div>
+      </nav>
+    </header>
+
     <!-- Main Content Area -->
     <main class="main-content" style="margin-left: 0; width: 100%; max-width: 1600px; margin: auto; padding: 24px 28px;">
       
@@ -107,7 +162,7 @@
         </div>
 
         <div class="header-actions" style="display: flex; gap: 12px; align-items: center;">
-          <button class="neu-btn" onclick="window.print()" style="display: flex; align-items: center; gap: 6px; padding: 10px 18px; border-radius: 10px; font-weight: 700;">
+          <button class="neu-btn" onclick="window.print()" style="display: flex; align-items: center; gap: 6px; padding: 10px 18px; border-radius: 10px; font-weight: 700; cursor: pointer;">
             <span>🖨️ Print / Export Roster</span>
           </button>
           <a href="./students-info.html" class="neu-btn-primary" style="text-decoration: none; padding: 10px 18px; border-radius: 10px; font-weight: 800;">
@@ -138,7 +193,7 @@
         </div>
 
         <!-- Distinct Table View -->
-        <div class="table-scroll-wrap" style="max-height: 600px;">
+        <div class="table-scroll-wrap" style="max-height: 600px; overflow-y: auto;">
           <table class="security-table" id="master-security-table">
             <thead>
               <tr>
@@ -167,23 +222,15 @@
     import { requireAuth } from '../../js/auth-guard.js';
     import { renderDock } from '../../js/dock.js';
 
+    // Verify HOD Credentials & Initialize Navigation Dock
     requireAuth(['HOD', 'HOD_CS', 'ADMIN', 'FACULTY']);
     renderDock('security-roster.html', 'HOD');
 
-    let allRoster = [];
+    if (window.lucide) {
+      window.lucide.createIcons();
+    }
 
-    // Predefined student name mappings
-    const studentNames = {
-      '24259-CS-001': 'Gona Laxmi Narasimha Swami',
-      '24259-CS-023': 'P. Shankum',
-      '24259-CS-025': 'Karnati Himesh',
-      '24259-CS-031': 'M. Abhilash',
-      '24259-CS-036': 'Bindu S.',
-      '24259-CS-039': 'Kakarla Rakesh',
-      '24259-CS-055': 'Harshika G.',
-      '24259-AI-119': 'Karnati Hitesh',
-      '24259-AIML-019': 'Karnati Hitesh'
-    };
+    let allRoster = [];
 
     document.addEventListener('DOMContentLoaded', () => {
       loadSecurityRoster();
@@ -221,9 +268,9 @@
       }
 
       tbody.innerHTML = list.map(s => {
-        const rollNum = s.rollNumber || parseInt(s.pin.slice(-3), 10);
-        const name = s.name || studentNames[s.pin] || `CS Student ${rollNum}`;
-        const isRegistered = ['24259-CS-025', '24259-CS-039', '24259-CS-023', '24259-CS-055', '24259-CS-036'].includes(s.pin);
+        const rollNum = s.rollNumber || parseInt((s.pin || '').slice(-3), 10) || 1;
+        const name = s.name || `CS Student ${String(rollNum).padStart(3, '0')}`;
+        const isRegistered = Boolean(s.is_registered);
 
         return `
           <tr>
@@ -250,7 +297,7 @@
         const filtered = allRoster.filter(s => {
           const pin = (s.pin || '').toLowerCase();
           const key = (s.secretKey || '').toLowerCase();
-          const name = (s.name || studentNames[s.pin] || '').toLowerCase();
+          const name = (s.name || '').toLowerCase();
           return pin.includes(query) || key.includes(query) || name.includes(query);
         });
         renderRoster(filtered);
@@ -265,7 +312,7 @@
         if (pin === '24259-CS-025') key = 'STD-XAz10F';
         if (pin === '24259-CS-039') key = 'STD-B03209';
         if (pin === '24259-CS-023') key = 'STD-SH23PK';
-        return { pin, rollNumber: roll, secretKey: key, department: 'Computer Science & Engineering' };
+        return { pin, rollNumber: roll, secretKey: key, department: 'Computer Science & Engineering', is_registered: ['24259-CS-025', '24259-CS-039', '24259-CS-023'].includes(pin) };
       });
     }
 

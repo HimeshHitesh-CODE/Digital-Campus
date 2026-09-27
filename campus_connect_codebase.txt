@@ -1,6 +1,6 @@
 ================================================================================
 CAMPUS CONNECT - CONSOLIDATED CODEBASE
-Generated at: 2026-09-27T12:23:06.451680Z
+Generated at: 2026-09-27T12:44:41.461881Z
 Total Files: 138
 ================================================================================
 
@@ -2173,6 +2173,34 @@ def get_hod_roster(db: Session = Depends(get_db)):
         })
 
     return {"success": True, "students": roster, "total": len(roster)}
+
+@app.get("/api/v1/hod/security-roster")
+@app.get("/api/hod/security-roster")
+def get_security_roster(db: Session = Depends(get_db)):
+    keys = db.query(RosterKeyDB).all()
+    students = db.query(StudentDB).filter(StudentDB.role == "STUDENT").all()
+    name_map = {s.pin.upper(): s.name for s in students}
+    
+    roster = []
+    for k in keys:
+        pin = k.pin.upper()
+        try:
+            roll = int(pin.split("-")[-1])
+        except:
+            roll = 1
+        name = name_map.get(pin, f"CS Student {str(roll).zfill(3)}")
+        roster.append({
+            "pin": pin,
+            "rollNumber": roll,
+            "name": name,
+            "secretKey": k.secret_key or "STD-SECRET",
+            "department": k.department or "Computer Science & Engineering",
+            "branch": k.branch or "CS",
+            "scheme": k.scheme or "C-24",
+            "is_registered": bool(k.is_registered)
+        })
+    roster.sort(key=lambda x: x["rollNumber"])
+    return {"success": True, "roster": roster, "total": len(roster)}
 
 class SingleStudentSyncRequest(BaseModel):
     pin: str
@@ -44359,30 +44387,36 @@ function escapeHtml(str) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Anti-Spoofing Security Keys Roster (180 Students) • HOD Executive Console • Samskruti Digital Campus</title>
 
-  <!-- Stylesheets -->
+  <!-- Stylesheets Matching Document Approvals -->
   <link rel="stylesheet" href="../../css/reset.css" />
-  <link rel="stylesheet" href="../../css/theme-tokens.css" />
-  <link rel="stylesheet" href="../../css/global-layout.css" />
+  <link rel="stylesheet" href="../../css/variables.css" />
+  <link rel="stylesheet" href="../../css/neumorphic.css" />
+  <link rel="stylesheet" href="../../css/dock.css" />
   <link rel="stylesheet" href="../../css/top-nav.css" />
   <link rel="stylesheet" href="../../css/animations.css" />
   <link rel="stylesheet" href="../../css/theme.css" />
+  <link rel="stylesheet" href="../../css/global.css" />
   <link rel="stylesheet" href="../../css/hod-theme.css" />
-  <script src="../../js/theme-engine.js"></script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
 
   <style>
+    /* Absolute Layout & Logo Sizing Constraints */
     .app-layout {
       display: flex !important;
       flex-direction: column !important;
       width: 100% !important;
       min-height: 100vh !important;
     }
-    .brand-logo-img, img.brand-logo-img, .brand-emblem-badge img, header img {
-      width: 32px !important;
-      height: 32px !important;
-      max-width: 32px !important;
-      max-height: 32px !important;
+    .brand-logo-img, img.brand-logo-img, .brand-emblem-badge img, header img, nav img {
+      width: 28px !important;
+      height: 28px !important;
+      max-width: 28px !important;
+      max-height: 28px !important;
       object-fit: contain !important;
       display: block !important;
+      flex-shrink: 0 !important;
     }
     .brand-emblem-badge {
       width: 40px !important;
@@ -44396,7 +44430,10 @@ function escapeHtml(str) {
       display: flex !important;
       align-items: center !important;
       justify-content: center !important;
+      flex-shrink: 0 !important;
     }
+
+    /* Security Table Styling */
     .security-table {
       width: 100%;
       border-collapse: separate;
@@ -44450,6 +44487,52 @@ function escapeHtml(str) {
 </head>
 <body class="hod-executive">
   <div class="app-layout">
+    
+    <!-- Universal Top Navigation Capsule Dock (Identical to Document Approvals) -->
+    <header class="top-nav-capsule-container" style="position: sticky; top: 12px; z-index: 1000; width: 100%; max-width: 1400px; margin: 0 auto 20px auto; padding: 0 16px;">
+      <nav class="capsule-nav" aria-label="HOD Executive Navigation">
+        <!-- Brand Emblem -->
+        <a href="hod-dashboard.html" class="capsule-brand" style="text-decoration: none;">
+          <div class="brand-emblem-badge flex-shrink-0" title="Samskruti Institutions (259) • HOD Console" style="width: 40px !important; height: 40px !important; min-width: 40px !important; min-height: 40px !important; max-width: 40px !important; max-height: 40px !important; border-radius: 50% !important; overflow: hidden !important; display: flex !important; align-items: center !important; justify-content: center !important; flex-shrink: 0 !important;">
+            <img src="/assets/images/samskruti-logo-blue.png" alt="Campus Connect Logo" class="brand-logo-img flex-shrink-0" style="width: 28px !important; height: 28px !important; max-width: 28px !important; max-height: 28px !important; object-fit: contain !important; display: block !important; flex-shrink: 0 !important;" />
+          </div>
+          <span class="brand-title">HOD <span class="accent-text" style="color: #60a5fa;">CONSOLE</span></span>
+        </a>
+
+        <div class="nav-divider"></div>
+
+        <!-- Menu Items (Security Keys Active) -->
+        <div class="capsule-menu-items">
+          <a href="hod-dashboard.html" class="nav-item">
+            <i data-lucide="layout-dashboard"></i>
+            <span>Dashboard</span>
+          </a>
+          <a href="students-info.html" class="nav-item">
+            <i data-lucide="users"></i>
+            <span>Student Roster</span>
+          </a>
+          <a href="document-approvals.html" class="nav-item">
+            <i data-lucide="file-check"></i>
+            <span>Document Approvals</span>
+          </a>
+          <a href="security-roster.html" class="nav-item active">
+            <i data-lucide="shield-check"></i>
+            <span>Security Keys</span>
+          </a>
+        </div>
+
+        <!-- Utility Actions -->
+        <div class="capsule-actions">
+          <button type="button" id="theme-toggle-btn" class="util-btn" title="Toggle Theme" aria-label="Toggle Theme">
+            <i data-lucide="sun"></i>
+          </button>
+          <a href="/screens/01-auth/login.html" class="util-btn logout" title="Sign Out" aria-label="Sign Out" onclick="localStorage.clear(); sessionStorage.clear();">
+            <i data-lucide="log-out"></i>
+          </a>
+        </div>
+      </nav>
+    </header>
+
     <!-- Main Content Area -->
     <main class="main-content" style="margin-left: 0; width: 100%; max-width: 1600px; margin: auto; padding: 24px 28px;">
       
@@ -44461,7 +44544,7 @@ function escapeHtml(str) {
         </div>
 
         <div class="header-actions" style="display: flex; gap: 12px; align-items: center;">
-          <button class="neu-btn" onclick="window.print()" style="display: flex; align-items: center; gap: 6px; padding: 10px 18px; border-radius: 10px; font-weight: 700;">
+          <button class="neu-btn" onclick="window.print()" style="display: flex; align-items: center; gap: 6px; padding: 10px 18px; border-radius: 10px; font-weight: 700; cursor: pointer;">
             <span>🖨️ Print / Export Roster</span>
           </button>
           <a href="./students-info.html" class="neu-btn-primary" style="text-decoration: none; padding: 10px 18px; border-radius: 10px; font-weight: 800;">
@@ -44492,7 +44575,7 @@ function escapeHtml(str) {
         </div>
 
         <!-- Distinct Table View -->
-        <div class="table-scroll-wrap" style="max-height: 600px;">
+        <div class="table-scroll-wrap" style="max-height: 600px; overflow-y: auto;">
           <table class="security-table" id="master-security-table">
             <thead>
               <tr>
@@ -44521,23 +44604,15 @@ function escapeHtml(str) {
     import { requireAuth } from '../../js/auth-guard.js';
     import { renderDock } from '../../js/dock.js';
 
+    // Verify HOD Credentials & Initialize Navigation Dock
     requireAuth(['HOD', 'HOD_CS', 'ADMIN', 'FACULTY']);
     renderDock('security-roster.html', 'HOD');
 
-    let allRoster = [];
+    if (window.lucide) {
+      window.lucide.createIcons();
+    }
 
-    // Predefined student name mappings
-    const studentNames = {
-      '24259-CS-001': 'Gona Laxmi Narasimha Swami',
-      '24259-CS-023': 'P. Shankum',
-      '24259-CS-025': 'Karnati Himesh',
-      '24259-CS-031': 'M. Abhilash',
-      '24259-CS-036': 'Bindu S.',
-      '24259-CS-039': 'Kakarla Rakesh',
-      '24259-CS-055': 'Harshika G.',
-      '24259-AI-119': 'Karnati Hitesh',
-      '24259-AIML-019': 'Karnati Hitesh'
-    };
+    let allRoster = [];
 
     document.addEventListener('DOMContentLoaded', () => {
       loadSecurityRoster();
@@ -44575,9 +44650,9 @@ function escapeHtml(str) {
       }
 
       tbody.innerHTML = list.map(s => {
-        const rollNum = s.rollNumber || parseInt(s.pin.slice(-3), 10);
-        const name = s.name || studentNames[s.pin] || `CS Student ${rollNum}`;
-        const isRegistered = ['24259-CS-025', '24259-CS-039', '24259-CS-023', '24259-CS-055', '24259-CS-036'].includes(s.pin);
+        const rollNum = s.rollNumber || parseInt((s.pin || '').slice(-3), 10) || 1;
+        const name = s.name || `CS Student ${String(rollNum).padStart(3, '0')}`;
+        const isRegistered = Boolean(s.is_registered);
 
         return `
           <tr>
@@ -44604,7 +44679,7 @@ function escapeHtml(str) {
         const filtered = allRoster.filter(s => {
           const pin = (s.pin || '').toLowerCase();
           const key = (s.secretKey || '').toLowerCase();
-          const name = (s.name || studentNames[s.pin] || '').toLowerCase();
+          const name = (s.name || '').toLowerCase();
           return pin.includes(query) || key.includes(query) || name.includes(query);
         });
         renderRoster(filtered);
@@ -44619,7 +44694,7 @@ function escapeHtml(str) {
         if (pin === '24259-CS-025') key = 'STD-XAz10F';
         if (pin === '24259-CS-039') key = 'STD-B03209';
         if (pin === '24259-CS-023') key = 'STD-SH23PK';
-        return { pin, rollNumber: roll, secretKey: key, department: 'Computer Science & Engineering' };
+        return { pin, rollNumber: roll, secretKey: key, department: 'Computer Science & Engineering', is_registered: ['24259-CS-025', '24259-CS-039', '24259-CS-023'].includes(pin) };
       });
     }
 
@@ -44647,7 +44722,7 @@ function escapeHtml(str) {
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet" />
 
-  <!-- Stylesheets -->
+  <!-- Stylesheets Matching Document Approvals & Universal HOD Theme -->
   <link rel="stylesheet" href="../../css/reset.css" />
   <link rel="stylesheet" href="../../css/variables.css" />
   <link rel="stylesheet" href="../../css/neumorphic.css" />
@@ -44658,24 +44733,29 @@ function escapeHtml(str) {
   <link rel="stylesheet" href="../../css/global.css" />
   <link rel="stylesheet" href="../../css/hod-theme.css" />
 
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
   <!-- jsPDF & AutoTable for High-Quality Institutional PDF Generation -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 
   <style>
+    /* Absolute Layout & Logo Sizing Constraints */
     .app-layout {
       display: flex !important;
       flex-direction: column !important;
       width: 100% !important;
       min-height: 100vh !important;
     }
-    .brand-logo-img, img.brand-logo-img, .brand-emblem-badge img, header img {
-      width: 32px !important;
-      height: 32px !important;
-      max-width: 32px !important;
-      max-height: 32px !important;
+    .brand-logo-img, img.brand-logo-img, .brand-emblem-badge img, header img, nav img {
+      width: 28px !important;
+      height: 28px !important;
+      max-width: 28px !important;
+      max-height: 28px !important;
       object-fit: contain !important;
       display: block !important;
+      flex-shrink: 0 !important;
     }
     .brand-emblem-badge {
       width: 40px !important;
@@ -44689,6 +44769,7 @@ function escapeHtml(str) {
       display: flex !important;
       align-items: center !important;
       justify-content: center !important;
+      flex-shrink: 0 !important;
     }
     body.hod-executive {
       font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -44888,6 +44969,52 @@ function escapeHtml(str) {
 </head>
 <body class="hod-executive">
   <div class="app-layout">
+    
+    <!-- Universal Top Navigation Capsule Dock (Identical to Document Approvals) -->
+    <header class="top-nav-capsule-container" style="position: sticky; top: 12px; z-index: 1000; width: 100%; max-width: 1400px; margin: 0 auto 20px auto; padding: 0 16px;">
+      <nav class="capsule-nav" aria-label="HOD Executive Navigation">
+        <!-- Brand Emblem -->
+        <a href="hod-dashboard.html" class="capsule-brand" style="text-decoration: none;">
+          <div class="brand-emblem-badge flex-shrink-0" title="Samskruti Institutions (259) • HOD Console" style="width: 40px !important; height: 40px !important; min-width: 40px !important; min-height: 40px !important; max-width: 40px !important; max-height: 40px !important; border-radius: 50% !important; overflow: hidden !important; display: flex !important; align-items: center !important; justify-content: center !important; flex-shrink: 0 !important;">
+            <img src="/assets/images/samskruti-logo-blue.png" alt="Campus Connect Logo" class="brand-logo-img flex-shrink-0" style="width: 28px !important; height: 28px !important; max-width: 28px !important; max-height: 28px !important; object-fit: contain !important; display: block !important; flex-shrink: 0 !important;" />
+          </div>
+          <span class="brand-title">HOD <span class="accent-text" style="color: #60a5fa;">CONSOLE</span></span>
+        </a>
+
+        <div class="nav-divider"></div>
+
+        <!-- Menu Items (Student Roster Active) -->
+        <div class="capsule-menu-items">
+          <a href="hod-dashboard.html" class="nav-item">
+            <i data-lucide="layout-dashboard"></i>
+            <span>Dashboard</span>
+          </a>
+          <a href="students-info.html" class="nav-item active">
+            <i data-lucide="users"></i>
+            <span>Student Roster</span>
+          </a>
+          <a href="document-approvals.html" class="nav-item">
+            <i data-lucide="file-check"></i>
+            <span>Document Approvals</span>
+          </a>
+          <a href="security-roster.html" class="nav-item">
+            <i data-lucide="shield-check"></i>
+            <span>Security Keys</span>
+          </a>
+        </div>
+
+        <!-- Utility Actions -->
+        <div class="capsule-actions">
+          <button type="button" id="theme-toggle-btn" class="util-btn" title="Toggle Theme" aria-label="Toggle Theme">
+            <i data-lucide="sun"></i>
+          </button>
+          <a href="/screens/01-auth/login.html" class="util-btn logout" title="Sign Out" aria-label="Sign Out" onclick="localStorage.clear(); sessionStorage.clear();">
+            <i data-lucide="log-out"></i>
+          </a>
+        </div>
+      </nav>
+    </header>
+
     <!-- Main Content Area -->
     <main class="main-content" style="margin-left: 0; width: 100%; max-width: 1600px; margin: auto; padding: 24px 28px;">
       <!-- Header -->
@@ -45045,7 +45172,7 @@ function escapeHtml(str) {
           </div>
           <div>
             <h3 style="font-size: 1.15rem; font-weight: 800; margin: 0; color: var(--hod-text-main);">Live Department Batch Sync</h3>
-            <span style="font-size: 0.78rem; color: var(--hod-text-muted);">SBTET Live Gateway • 5 Concurrent Rate-Limited Workers</span>
+            <span style="font-size: 0.78rem; color: var(--hod-text-muted);">SBTET Live Gateway • 6 Concurrent Rate-Limited Workers</span>
           </div>
         </div>
         <span id="modal-top-percent" class="mono-num" style="font-size: 1.5rem; font-weight: 900; color: #60a5fa;">0%</span>
@@ -45059,7 +45186,7 @@ function escapeHtml(str) {
       <!-- Live Numeric Counter -->
       <div style="display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 700; color: var(--hod-text-main);">
         <span id="modal-sub-counter" class="mono-num">0 / 180 Students (0%)</span>
-        <span style="color: var(--hod-text-muted);">Worker Pool: 5 Active</span>
+        <span style="color: var(--hod-text-muted);">Worker Pool: 6 Active</span>
       </div>
 
       <!-- Active Sync Log Terminal -->
@@ -45147,6 +45274,11 @@ function escapeHtml(str) {
   <!-- Script Modules -->
   <script type="module" src="../../js/theme.js"></script>
   <script type="module" src="./students-info.js"></script>
+  <script>
+    if (window.lucide) {
+      window.lucide.createIcons();
+    }
+  </script>
 </body>
 </html>
 
