@@ -232,7 +232,7 @@
     import { alerts } from '../../js/alerts.js';
     import { wsClient } from '../../js/ws.js';
 
-    requireAuth(['HOD', 'HOD_CS', 'ADMIN', 'FACULTY']);
+    const currentUser = requireAuth(['HOD', 'HOD_CS', 'HOD_AIML', 'ADMIN', 'FACULTY']) || JSON.parse(localStorage.getItem('dc_user') || '{}');
     renderDock('document-approvals.html', 'HOD');
 
     let allDocs = [];
@@ -241,14 +241,22 @@
     let approvedCount = 0;
     let rejectedCount = 0;
 
-    document.addEventListener('DOMContentLoaded', () => {
+    function initApprovals() {
       setupRealtimeWebSocket();
       loadPendingDocuments();
       setupModalListeners();
-    });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initApprovals);
+    } else {
+      initApprovals();
+    }
 
     function setupRealtimeWebSocket() {
-      wsClient.connect('HOD_CS_CONSOLE', 'Prof. Vamshi Krishna');
+      const userPin = currentUser.pin || (currentUser.role === 'HOD_AIML' ? 'PADMINI-AIML-HOD' : 'HOD_CS_CONSOLE');
+      const userName = currentUser.name || (currentUser.role === 'HOD_AIML' ? 'Prof. Padmini' : 'Prof. Vamshi Krishna');
+      wsClient.connect(userPin, userName);
 
       wsClient.on('NEW_DIGITAL_REQUEST_SUBMITTED', (data) => {
         alerts.info('Incoming Application', `${data.request?.student_name} submitted ${data.request?.request_type}.`);

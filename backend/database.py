@@ -1,6 +1,7 @@
 import os
 import re
 import json
+import hashlib
 from datetime import datetime
 from sqlalchemy import (
     create_engine,
@@ -11,7 +12,9 @@ from sqlalchemy import (
     Boolean,
     Text,
     DateTime,
-    ForeignKey
+    ForeignKey,
+    text,
+    or_
 )
 from sqlalchemy.orm import declarative_base, sessionmaker
 
@@ -26,7 +29,7 @@ Base = declarative_base()
 
 # --- 1. ROSTER KEYS TABLE ---
 class RosterKeyDB(Base):
-    """Pre-populated roster registry for 180 CS diploma students."""
+    """Pre-populated roster registry for institutional diploma students across branches."""
     __tablename__ = "roster_keys"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -53,8 +56,8 @@ class StudentDB(Base):
     branch = Column(String(20), default="CS")
     scheme = Column(String(20), default="C-24")
     year = Column(String(20), default="3rd Year")
-    semester = Column(String(20), default="6SEM")
-    role = Column(String(20), default="STUDENT")  # STUDENT, HOD_CS, ADMIN
+    semester = Column(String(20), default="5th Sem")
+    role = Column(String(20), default="STUDENT")  # STUDENT, HOD_CS, HOD_AIML, ADMIN
 
     # Scraped Academic & Biometric Metrics
     attendance_pct = Column(String(20), default="0.0%")
@@ -78,7 +81,7 @@ class BacklogRecordDB(Base):
     __tablename__ = "backlog_records"
 
     id = Column(Integer, primary_key=True, index=True)
-    student_id = Column(Integer, ForeignKey("students.id"), nullable=False, index=True)
+    student_id = Column(Integer, ForeignKey("students.id"), nullable=True, index=True)
     pin = Column(String(30), index=True, nullable=False)
     semester = Column(String(20), nullable=True)
     subject_code = Column(String(30), nullable=True)
@@ -174,12 +177,13 @@ class ProjectInviteDB(Base):
     status = Column(String(20), default="PENDING")  # PENDING, ACCEPTED, DECLINED
     created_at = Column(String(40), default=lambda: datetime.utcnow().isoformat())
 
-# --- 8. HOD 180-STUDENT SYNC STATE TABLE ---
+# --- 8. MULTI-DEPARTMENT SYNC STATE TABLE ---
 class SyncProgressDB(Base):
-    """Tracks background synchronization state for all 180 department students."""
+    """Tracks background synchronization state per branch (CS, AIML)."""
     __tablename__ = "sync_progress"
 
     id = Column(Integer, primary_key=True, index=True)
+    branch = Column(String(20), default="CS", index=True)
     status = Column(String(30), default="IDLE")  # IDLE, RUNNING, COMPLETED, FAILED
     total_students = Column(Integer, default=180)
     synced_count = Column(Integer, default=0)
@@ -196,15 +200,41 @@ def get_db():
     finally:
         db.close()
 
+def generate_institutional_key(branch: str, pin: str, roll: int) -> str:
+    """Generates a deterministic institutional anti-spoofing security key."""
+    clean_pin = pin.strip().upper()
+    if clean_pin in ["24259-AIML-019", "24259-AI-119", "24259-AI-019"]:
+        return "STD-HI19TE"
+    if clean_pin == "24259-CS-025":
+        return "STD-XAz10F"
+    if clean_pin == "24259-CS-039":
+        return "STD-B03209"
+    if clean_pin == "24259-CS-023":
+        return "STD-SH23PK"
+
+    h = hashlib.sha256(f"SCET259_{branch}_{clean_pin}".encode()).hexdigest().upper()
+    if branch == "AIML":
+        return f"STD-AI{str(roll).zfill(3)}{h[0:2]}"
+    return f"STD-{str(roll).zfill(3)}{h[0:3]}"
+
 # --- SEEDING LOGIC ---
 def seed_database():
-    """Initializes tables, populates 180 roster keys, default accounts, and starter items."""
+    """Initializes tables, populates CS & AIML roster keys, staff accounts, and verified students."""
     Base.metadata.create_all(bind=engine)
+
+    # Safe SQLite schema migration for branch in sync_progress
+    try:
+        with engine.connect() as conn:
+            conn.execute(text("ALTER TABLE sync_progress ADD COLUMN branch VARCHAR(20) DEFAULT 'CS'"))
+            conn.commit()
+    except Exception:
+        pass
+
     db = SessionLocal()
     try:
-        # 1. Populate Roster Keys (All 180 Students)
-        roster_count = db.query(RosterKeyDB).count()
-        if roster_count < 180:
+        # 1A. Populate CS Roster Keys (All 180 Students)
+        cs_roster_count = db.query(RosterKeyDB).filter(RosterKeyDB.branch == "CS").count()
+        if cs_roster_count < 180:
             roster_file = os.path.abspath(os.path.join(BASE_DIR, "..", "cs_180_security_keys_roster.md"))
             parsed_roster = {}
             if os.path.exists(roster_file):
@@ -216,11 +246,10 @@ def seed_database():
                             key = parts[1]
                             parsed_roster[pin] = key
 
-            # Insert all 180 keys
             for i in range(1, 181):
                 pin = f"24259-CS-{str(i).zfill(3)}"
                 if not db.query(RosterKeyDB).filter(RosterKeyDB.pin == pin).first():
-                    key = parsed_roster.get(pin, f"STD-{pin[-3:]}X9A")
+                    key = parsed_roster.get(pin, generate_institutional_key("CS", pin, i))
                     roster_entry = RosterKeyDB(
                         pin=pin,
                         secret_key=key,
@@ -232,7 +261,34 @@ def seed_database():
                     db.add(roster_entry)
             db.commit()
 
-        # 2. Pre-seed Institutional Staff and Key Verified Students
+        # 1B. Populate AIML Roster Keys (All 127 Students for both 24259-AI and 24259-AIML)
+        aiml_roster_file = os.path.join(BASE_DIR, "all_120_aiml_roster_keys.json")
+        aiml_keys_cache = {}
+        if os.path.exists(aiml_roster_file):
+            try:
+                with open(aiml_roster_file, "r", encoding="utf-8") as arf:
+                    aiml_keys_cache = json.load(arf)
+            except Exception:
+                pass
+
+        for i in range(1, 128):
+            for p_prefix in ["24259-AI-", "24259-AIML-"]:
+                pin = f"{p_prefix}{str(i).zfill(3)}"
+                if not db.query(RosterKeyDB).filter(RosterKeyDB.pin == pin).first():
+                    cached_entry = aiml_keys_cache.get(pin, {})
+                    key = cached_entry.get("secret_key") or cached_entry.get("secretKey") or generate_institutional_key("AIML", pin, i)
+                    roster_entry = RosterKeyDB(
+                        pin=pin,
+                        secret_key=key,
+                        department="Artificial Intelligence & Machine Learning",
+                        branch="AIML",
+                        scheme="C-24",
+                        is_registered=False
+                    )
+                    db.add(roster_entry)
+        db.commit()
+
+        # 2. Pre-seed Institutional Staff (Both CSE & AIML HODs)
         default_accounts = [
             {
                 "pin": "VAMSHI-CS-HOD",
@@ -243,10 +299,26 @@ def seed_database():
                 "department": "Computer Science & Engineering",
                 "branch": "CS",
                 "scheme": "C-24",
+                "semester": "5th Sem",
                 "role": "HOD_CS",
                 "attendance_pct": "100%",
                 "attendance_val": 100.0,
-                "cgpa": "10.0"
+                "cgpa": 10.0
+            },
+            {
+                "pin": "PADMINI-AIML-HOD",
+                "roll_no": "PADMINI-AIML-HOD",
+                "name": "Prof. Padmini",
+                "email": "hod.aiml@samskruti.ac.in",
+                "password": "Password123",
+                "department": "Artificial Intelligence & Machine Learning",
+                "branch": "AIML",
+                "scheme": "C-24",
+                "semester": "5th Sem",
+                "role": "HOD_AIML",
+                "attendance_pct": "100%",
+                "attendance_val": 100.0,
+                "cgpa": 10.0
             },
             {
                 "pin": "24259-CS-025",
@@ -257,12 +329,51 @@ def seed_database():
                 "department": "Computer Science & Engineering",
                 "branch": "CS",
                 "scheme": "C-24",
+                "semester": "5th Sem",
                 "role": "STUDENT",
                 "attendance_pct": "38.64%",
                 "attendance_val": 38.64,
                 "working_days": 88,
                 "present_days": 34,
-                "cgpa": "9.11",
+                "cgpa": 9.11,
+                "credits_earned": 80.0,
+                "backlogs_count": 0
+            },
+            {
+                "pin": "24259-AI-119",
+                "roll_no": "24259-AIML-119",
+                "name": "KARNATI HITESH",
+                "email": "hitesh.k@samskruti.ac.in",
+                "password": "Password123",
+                "department": "Artificial Intelligence & Machine Learning",
+                "branch": "AIML",
+                "scheme": "C-24",
+                "semester": "5th Sem",
+                "role": "STUDENT",
+                "attendance_pct": "51.14%",
+                "attendance_val": 51.14,
+                "working_days": 88,
+                "present_days": 45,
+                "cgpa": 7.53,
+                "credits_earned": 80.0,
+                "backlogs_count": 0
+            },
+            {
+                "pin": "24259-AI-082",
+                "roll_no": "24259-AIML-082",
+                "name": "THURAI KRISHNA LOHITH",
+                "email": "lohith.t@samskruti.ac.in",
+                "password": "Password123",
+                "department": "Artificial Intelligence & Machine Learning",
+                "branch": "AIML",
+                "scheme": "C-24",
+                "semester": "5th Sem",
+                "role": "STUDENT",
+                "attendance_pct": "56.82%",
+                "attendance_val": 56.82,
+                "working_days": 88,
+                "present_days": 50,
+                "cgpa": 8.42,
                 "credits_earned": 80.0,
                 "backlogs_count": 0
             },
@@ -280,7 +391,7 @@ def seed_database():
                 "attendance_val": 27.27,
                 "working_days": 88,
                 "present_days": 24,
-                "cgpa": "8.45",
+                "cgpa": 8.45,
                 "credits_earned": 75.0,
                 "backlogs_count": 0
             },
@@ -298,7 +409,7 @@ def seed_database():
                 "attendance_val": 39.77,
                 "working_days": 88,
                 "present_days": 35,
-                "cgpa": "8.80",
+                "cgpa": 8.80,
                 "credits_earned": 80.0,
                 "backlogs_count": 0
             },
@@ -316,24 +427,40 @@ def seed_database():
                 "attendance_val": 27.27,
                 "working_days": 66,
                 "present_days": 18,
-                "cgpa": "7.90",
+                "cgpa": 7.90,
                 "credits_earned": 70.0,
                 "backlogs_count": 1
             }
         ]
 
-        # Seed default accounts (Staff & key profiles)
+        # Seed staff & key student accounts
         for acc in default_accounts:
-            existing = db.query(StudentDB).filter(StudentDB.pin == acc["pin"]).first()
+            existing = db.query(StudentDB).filter(or_(StudentDB.pin == acc["pin"], StudentDB.email == acc.get("email"))).first()
             if not existing:
                 student = StudentDB(**acc)
                 db.add(student)
                 roster_rec = db.query(RosterKeyDB).filter(RosterKeyDB.pin == acc["pin"]).first()
                 if roster_rec:
                     roster_rec.is_registered = True
+            else:
+                # Update role and details if needed
+                existing.pin = acc["pin"]
+                existing.roll_no = acc.get("roll_no", acc["pin"])
+                existing.role = acc["role"]
+                existing.name = acc["name"]
+                existing.department = acc["department"]
+                existing.branch = acc["branch"]
+                existing.scheme = acc["scheme"]
+                existing.semester = acc.get("semester", "5th Sem")
+                existing.email = acc.get("email")
+                if "attendance_val" in acc:
+                    existing.attendance_val = acc["attendance_val"]
+                    existing.attendance_pct = acc["attendance_pct"]
+                if "cgpa" in acc:
+                    existing.cgpa = acc["cgpa"]
         db.commit()
 
-        # Seed & heal all 180 Diploma CS students with their verified institutional full names
+        # 3A. Seed & heal all 180 Diploma CS students
         names_file = os.path.join(BASE_DIR, "all_180_student_names.json")
         master_names = {}
         if os.path.exists(names_file):
@@ -358,7 +485,7 @@ def seed_database():
                     branch="CS",
                     scheme="C-24",
                     year="3rd Year",
-                    semester="6SEM",
+                    semester="5th Sem",
                     role="STUDENT",
                     attendance_pct="0.0%",
                     attendance_val=0.0,
@@ -371,12 +498,113 @@ def seed_database():
                 )
                 db.add(new_st)
             else:
-                # If current name is placeholder, heal it immediately
                 if not st.name or st.name.startswith("CS Student") or st.name.startswith("Student"):
                     st.name = verified_name
+                st.semester = "5th Sem"
         db.commit()
 
-        # 3. Pre-seed Starter Marketplace Listings
+        # 3B. Seed & heal all 127 Diploma AIML students with Real SBTET Scraped Data
+        scraped_file = os.path.join(BASE_DIR, "scraped_aiml_students_127.json")
+        aiml_students_data = []
+        if os.path.exists(scraped_file):
+            try:
+                with open(scraped_file, "r", encoding="utf-8") as sf:
+                    aiml_students_data = json.load(sf)
+            except Exception as e:
+                print(f"[Seed Warning] Could not load scraped_aiml_students_127.json: {e}")
+
+        # Fallback names if scraped file unreadable
+        aiml_names_file = os.path.join(BASE_DIR, "all_120_aiml_student_names.json")
+        aiml_master_names = {}
+        if os.path.exists(aiml_names_file):
+            try:
+                with open(aiml_names_file, "r", encoding="utf-8") as anf:
+                    aiml_master_names = json.load(anf)
+            except Exception:
+                pass
+
+        # Build map by roll number
+        scraped_map = {s["roll"]: s for s in aiml_students_data}
+
+        for i in range(1, 128):
+            s_data = scraped_map.get(i, {})
+            pin_ai = s_data.get("pin_ai") or f"24259-AI-{str(i).zfill(3)}"
+            pin_aiml = s_data.get("pin_aiml") or f"24259-AIML-{str(i).zfill(3)}"
+            verified_name = s_data.get("name") or aiml_master_names.get(pin_ai) or aiml_master_names.get(pin_aiml) or f"AIML Student {str(i).zfill(3)}"
+            att_pct = float(s_data.get("percentage") or 0.0)
+            w_days = int(s_data.get("working_days") or 88)
+            p_days = int(s_data.get("present_days") or 0)
+            cgpa_val = float(s_data.get("cgpa") or 0.0)
+            cr_gained = float(s_data.get("credits_gained") or 0.0)
+            b_count = int(s_data.get("backlogs_count") or 0)
+
+            # Check if student exists under either pin_ai or pin_aiml
+            st = db.query(StudentDB).filter(or_(StudentDB.pin == pin_ai, StudentDB.pin == pin_aiml, StudentDB.roll_no == pin_ai, StudentDB.roll_no == pin_aiml)).first()
+            if not st:
+                new_st = StudentDB(
+                    pin=pin_ai,
+                    roll_no=pin_aiml,
+                    name=verified_name,
+                    password="Password123",
+                    department="Artificial Intelligence & Machine Learning",
+                    branch="AIML",
+                    scheme="C-24",
+                    year="3rd Year",
+                    semester="5th Sem",
+                    role="STUDENT",
+                    attendance_pct=f"{att_pct:.2f}%",
+                    attendance_val=att_pct,
+                    working_days=w_days,
+                    present_days=p_days,
+                    cgpa=cgpa_val,
+                    credits_earned=cr_gained,
+                    backlogs=b_count,
+                    backlogs_count=b_count
+                )
+                db.add(new_st)
+            else:
+                # Heal existing student record
+                st.pin = pin_ai
+                st.roll_no = pin_aiml
+                st.name = verified_name
+                st.branch = "AIML"
+                st.scheme = "C-24"
+                st.semester = "5th Sem"
+                st.department = "Artificial Intelligence & Machine Learning"
+                if att_pct > 0 or st.attendance_val == 0:
+                    st.attendance_pct = f"{att_pct:.2f}%"
+                    st.attendance_val = att_pct
+                    st.working_days = w_days
+                    st.present_days = p_days
+                if cgpa_val > 0 or st.cgpa == 0:
+                    st.cgpa = cgpa_val
+                    st.credits_earned = cr_gained
+                    st.backlogs = b_count
+                    st.backlogs_count = b_count
+
+            db.flush()
+            target_id = st.id if st else (new_st.id if 'new_st' in locals() and new_st else None)
+
+            # Populate Backlogs
+            if s_data.get("backlogs"):
+                for b in s_data["backlogs"]:
+                    code = b.get("code") or ""
+                    existing_b = db.query(BacklogRecordDB).filter(BacklogRecordDB.pin == pin_ai, BacklogRecordDB.subject_code == code).first()
+                    if not existing_b:
+                        db.add(BacklogRecordDB(
+                            student_id=target_id,
+                            pin=pin_ai,
+                            semester=b.get("sem") or "5th Sem",
+                            subject_code=code,
+                            subject_title=b.get("title") or "",
+                            internal_marks=str(b.get("internal") or "0"),
+                            external_marks=str(b.get("external") or "0"),
+                            total_marks=str(b.get("total") or "0"),
+                            grade=b.get("grade") or "F"
+                        ))
+        db.commit()
+
+        # 4. Pre-seed Starter Marketplace Listings
         if db.query(MarketplaceItemDB).count() == 0:
             starter_items = [
                 {
@@ -389,6 +617,18 @@ def seed_database():
                     "condition": "Like New",
                     "image_url": "../../screens/02-student-portal/assets/images/drafter.png",
                     "contact_info": "PIN: 24259-CS-025 • CSE Dept",
+                    "status": "AVAILABLE"
+                },
+                {
+                    "seller_pin": "24259-AIML-019",
+                    "seller_name": "KARNATI HITESH",
+                    "title": "AI & Deep Learning Mathematics Reference Guide",
+                    "description": "Comprehensive reference handbook for Linear Algebra, Probability, and Neural Networks for C-24 Diploma syllabus.",
+                    "price": 400.0,
+                    "category": "Book",
+                    "condition": "Like New",
+                    "image_url": "../../screens/02-student-portal/assets/images/book.png",
+                    "contact_info": "PIN: 24259-AIML-019 • AIML Dept",
                     "status": "AVAILABLE"
                 },
                 {
@@ -420,9 +660,20 @@ def seed_database():
                 db.add(MarketplaceItemDB(**item))
             db.commit()
 
-        # 4. Pre-seed Starter Digital Requests
+        # 5. Pre-seed Starter Digital Requests
         if db.query(DigitalRequestDB).count() == 0:
             starter_requests = [
+                {
+                    "student_pin": "24259-AIML-019",
+                    "student_name": "KARNATI HITESH",
+                    "request_type": "Bonafide Certificate",
+                    "reason": "AI Hackathon and State Project Grant Documentation.",
+                    "urgency": "NORMAL",
+                    "status": "PENDING",
+                    "pickup_otp": None,
+                    "hod_notes": None,
+                    "attendance_snapshot": "42.50%"
+                },
                 {
                     "student_pin": "24259-CS-025",
                     "student_name": "KARNATI HIMESH",
@@ -444,58 +695,43 @@ def seed_database():
                     "pickup_otp": None,
                     "hod_notes": None,
                     "attendance_snapshot": "27.27%"
-                },
-                {
-                    "student_pin": "24259-CS-001",
-                    "student_name": "GONA LAXMI NARASIMHA SWAMI",
-                    "request_type": "Custodian Certificate",
-                    "reason": "Verification of original 10th and SSC records for passport application.",
-                    "urgency": "URGENT",
-                    "status": "PENDING",
-                    "pickup_otp": None,
-                    "hod_notes": None,
-                    "attendance_snapshot": "39.77%"
                 }
             ]
             for req in starter_requests:
                 db.add(DigitalRequestDB(**req))
             db.commit()
 
-        # 5. Pre-seed Idea Hub Projects
-        if db.query(IdeaHubProjectDB).count() == 0:
-            starter_projects = [
-                {
-                    "author_pin": "24259-CS-025",
-                    "author_name": "KARNATI HIMESH",
-                    "title": "Smart Campus Biometric AI & Real-Time Sync",
-                    "description": "Building an automated biometric attendance bridge connecting SBTET cloud logs with edge IoT devices for Samskruti campus.",
-                    "tech_stack": "Python, FastAPI, WebSockets, Tailwind",
-                    "team_needed": "IoT Firmware Dev, UI Designer",
-                    "status": "RECRUITING"
-                },
-                {
-                    "author_pin": "24259-CS-001",
-                    "author_name": "GONA LAXMI NARASIMHA SWAMI",
-                    "title": "Campus Surplus Re-Commerce Platform",
-                    "description": "Zero-waste circular economy platform allowing senior students to pass drafters, lab equipment, and textbooks to juniors securely.",
-                    "tech_stack": "JavaScript, SQLite, WebSockets",
-                    "team_needed": "Database Engineer, Marketing Lead",
-                    "status": "IN_PROGRESS"
-                }
-            ]
-            for proj in starter_projects:
-                db.add(IdeaHubProjectDB(**proj))
+        # 6. Initialize Sync Progress records for CS and AIML
+        cs_prog = db.query(SyncProgressDB).filter(SyncProgressDB.branch == "CS").first()
+        if not cs_prog:
+            # Check legacy row without branch
+            legacy_prog = db.query(SyncProgressDB).first()
+            if legacy_prog and not legacy_prog.branch:
+                legacy_prog.branch = "CS"
+            else:
+                db.add(SyncProgressDB(
+                    branch="CS",
+                    status="IDLE",
+                    total_students=180,
+                    synced_count=0,
+                    department_avg_attendance=0.0,
+                    department_clearance_rate=0.0
+                ))
             db.commit()
 
-        # 6. Initialize Sync Progress record if missing
-        if not db.query(SyncProgressDB).first():
+        aiml_prog = db.query(SyncProgressDB).filter(SyncProgressDB.branch == "AIML").first()
+        if not aiml_prog:
             db.add(SyncProgressDB(
+                branch="AIML",
                 status="IDLE",
-                total_students=180,
-                synced_count=4,
-                department_avg_attendance=33.56,
+                total_students=127,
+                synced_count=0,
+                department_avg_attendance=0.0,
                 department_clearance_rate=0.0
             ))
+            db.commit()
+        else:
+            aiml_prog.total_students = 127
             db.commit()
 
     finally:

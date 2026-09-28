@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Anti-Spoofing Security Keys Roster (180 Students) • HOD Executive Console • Samskruti Digital Campus</title>
+  <title>Anti-Spoofing Security Keys Roster • HOD Executive Console • Samskruti Digital Campus</title>
 
   <!-- Stylesheets Matching Document Approvals -->
   <link rel="stylesheet" href="../../css/reset.css" />
@@ -49,6 +49,40 @@
       align-items: center !important;
       justify-content: center !important;
       flex-shrink: 0 !important;
+    }
+
+    /* Filter Pills */
+    .filter-btn-group {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .filter-pill {
+      padding: 7px 16px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      border-radius: 9999px;
+      border: 1px solid var(--hod-border);
+      background: var(--hod-surface-card);
+      color: var(--hod-text-muted);
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .filter-pill:hover {
+      border-color: var(--hod-border-highlight);
+      color: var(--hod-text-main);
+    }
+    .filter-pill.active {
+      background: linear-gradient(135deg, #2563eb, #3b82f6) !important;
+      color: #ffffff !important;
+      border-color: transparent !important;
+      box-shadow: var(--hod-glow-blue);
+    }
+    .filter-pill.active.aiml-active {
+      background: linear-gradient(135deg, #059669, #10b981) !important;
+      color: #ffffff !important;
+      border-color: transparent !important;
+      box-shadow: 0 0 16px rgba(16, 185, 129, 0.35) !important;
     }
 
     /* Security Table Styling */
@@ -101,6 +135,16 @@
       border: 1px solid rgba(16, 185, 129, 0.3);
       box-shadow: 0 0 12px rgba(16, 185, 129, 0.2);
     }
+    .key-badge-aiml {
+      background: rgba(16, 185, 129, 0.2);
+      color: #34d399;
+      border-color: rgba(16, 185, 129, 0.4);
+    }
+    .key-badge-cs {
+      background: rgba(59, 130, 246, 0.15);
+      color: #60a5fa;
+      border-color: rgba(59, 130, 246, 0.3);
+    }
   </style>
 </head>
 <body class="hod-executive">
@@ -114,7 +158,7 @@
           <div class="brand-emblem-badge flex-shrink-0" title="Samskruti Institutions (259) • HOD Console" style="width: 40px !important; height: 40px !important; min-width: 40px !important; min-height: 40px !important; max-width: 40px !important; max-height: 40px !important; border-radius: 50% !important; overflow: hidden !important; display: flex !important; align-items: center !important; justify-content: center !important; flex-shrink: 0 !important;">
             <img src="/assets/images/samskruti-logo-blue.png" alt="Campus Connect Logo" class="brand-logo-img flex-shrink-0" style="width: 28px !important; height: 28px !important; max-width: 28px !important; max-height: 28px !important; object-fit: contain !important; display: block !important; flex-shrink: 0 !important;" />
           </div>
-          <span class="brand-title">HOD <span class="accent-text" style="color: #60a5fa;">CONSOLE</span></span>
+          <span class="brand-title">HOD <span class="accent-text" id="brand-accent-title" style="color: #60a5fa;">CONSOLE</span></span>
         </a>
 
         <div class="nav-divider"></div>
@@ -157,8 +201,8 @@
       <!-- Top Bar -->
       <header class="content-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 26px;">
         <div class="header-titles">
-          <div class="subtitle" style="color: var(--hod-text-muted);">Samskruti College of Engineering & Technology (Code: 259) • HOD Security Console</div>
-          <h1 class="title" style="font-size: 1.75rem; font-weight: 900; color: var(--hod-text-main);">Anti-Spoofing Security Keys Roster (180 Students)</h1>
+          <div class="subtitle" id="roster-subtitle" style="color: var(--hod-text-muted);">Samskruti College of Engineering & Technology (Code: 259) • Multi-Department Security Console</div>
+          <h1 class="title" id="roster-main-title" style="font-size: 1.75rem; font-weight: 900; color: var(--hod-text-main);">Anti-Spoofing Security Keys Roster</h1>
         </div>
 
         <div class="header-actions" style="display: flex; gap: 12px; align-items: center;">
@@ -175,20 +219,26 @@
       <section class="executive-card" style="padding: 24px;">
         <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; flex-wrap: wrap; gap: 12px;">
           <div>
-            <h2 class="section-title" style="font-size: 1.15rem; font-weight: 800; color: var(--hod-text-main); margin: 0 0 4px 0;">Pre-Allocated Deterministic Security Keys (180 Total)</h2>
-            <p style="font-size: 0.8rem; color: var(--hod-text-muted); margin: 0;">Institutional zero-trust keys for multi-factor activation and account recovery.</p>
+            <h2 class="section-title" id="roster-section-title" style="font-size: 1.15rem; font-weight: 800; color: var(--hod-text-main); margin: 0 0 4px 0;">Pre-Allocated Deterministic Security Keys</h2>
+            <p style="font-size: 0.8rem; color: var(--hod-text-muted); margin: 0;">Institutional zero-trust keys for multi-factor activation and account recovery under Scheme C-24.</p>
           </div>
-          <span class="neu-badge metric-emerald-glow" id="roster-count-badge" style="font-weight: 800;">180 Keys Active</span>
+          <span class="neu-badge metric-emerald-glow" id="roster-count-badge" style="font-weight: 800;">Loading Keys...</span>
         </div>
 
-        <!-- Search Bar -->
-        <div style="margin-bottom: 18px;">
+        <!-- Department Filter Pills & Search Bar -->
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; margin-bottom: 18px;">
+          <div class="filter-btn-group" id="dept-security-tabs">
+            <button type="button" class="filter-pill" id="pill-all" data-branch="ALL">All Departments (300 Keys)</button>
+            <button type="button" class="filter-pill" id="pill-cs" data-branch="CS">CS Dept (180 Keys)</button>
+            <button type="button" class="filter-pill" id="pill-aiml" data-branch="AIML">AIML Dept (120 Keys)</button>
+          </div>
+
           <input
             type="text"
             id="search-security-input"
             class="neu-input"
-            placeholder="Search by PIN (e.g. 025 or 24259-CS-039) or Security Key (e.g. STD-B03209)..."
-            style="width: 100%; max-width: 480px; font-size: 0.85rem;"
+            placeholder="Search PIN (e.g. 24259-AIML-019), Name or Key (STD-HI19TE)..."
+            style="width: 100%; max-width: 440px; font-size: 0.85rem;"
           />
         </div>
 
@@ -199,9 +249,9 @@
               <tr>
                 <th style="width: 70px;"># Roll</th>
                 <th style="width: 180px;">Diploma PIN</th>
-                <th style="width: 220px;">Student Name</th>
-                <th style="width: 260px;">Assigned Institutional Security Key</th>
-                <th style="width: 200px;">Branch & Scheme</th>
+                <th style="width: 240px;">Student Name</th>
+                <th style="width: 250px;">Assigned Institutional Security Key</th>
+                <th style="width: 220px;">Branch & Scheme</th>
                 <th style="width: 180px;">Verification Status</th>
               </tr>
             </thead>
@@ -223,19 +273,61 @@
     import { renderDock } from '../../js/dock.js';
 
     // Verify HOD Credentials & Initialize Navigation Dock
-    requireAuth(['HOD', 'HOD_CS', 'ADMIN', 'FACULTY']);
+    const user = requireAuth(['HOD', 'HOD_CS', 'HOD_AIML', 'ADMIN', 'FACULTY']) || JSON.parse(localStorage.getItem('dc_user') || '{}');
     renderDock('security-roster.html', 'HOD');
 
     if (window.lucide) {
       window.lucide.createIcons();
     }
 
+    // Determine logged-in branch
+    const isAIML = (user.branch === 'AIML') || 
+                   (user.role === 'HOD_AIML') || 
+                   (user.pin && (user.pin.includes('AIML') || user.pin.includes('PADMINI'))) || 
+                   (user.department && user.department.includes('Artificial')) ||
+                   (localStorage.getItem('hod_branch') === 'AIML') ||
+                   (localStorage.getItem('hod_id') && localStorage.getItem('hod_id').toUpperCase().includes('PADMINI'));
+
+    let currentDeptFilter = isAIML ? 'AIML' : (user.role === 'HOD_CS' || user.branch === 'CS' ? 'CS' : 'ALL');
     let allRoster = [];
 
-    document.addEventListener('DOMContentLoaded', () => {
-      loadSecurityRoster();
+    function initSecurityRoster() {
+      setupDepartmentTabs();
       setupSearch();
-    });
+      loadSecurityRoster();
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initSecurityRoster);
+    } else {
+      initSecurityRoster();
+    }
+
+    function setupDepartmentTabs() {
+      const pills = document.querySelectorAll('#dept-security-tabs .filter-pill');
+      pills.forEach(pill => {
+        const branch = pill.getAttribute('data-branch');
+        if (branch === currentDeptFilter) {
+          pill.classList.add('active');
+          if (branch === 'AIML') pill.classList.add('aiml-active');
+        } else {
+          pill.classList.remove('active', 'aiml-active');
+        }
+
+        pill.addEventListener('click', () => {
+          pills.forEach(p => p.classList.remove('active', 'aiml-active'));
+          pill.classList.add('active');
+          if (branch === 'AIML') pill.classList.add('aiml-active');
+          currentDeptFilter = branch;
+          applyFilterAndSearch();
+        });
+      });
+
+      if (isAIML) {
+        const accent = document.getElementById('brand-accent-title');
+        if (accent) accent.style.color = '#34d399';
+      }
+    }
 
     async function loadSecurityRoster() {
       try {
@@ -245,11 +337,53 @@
         } else {
           allRoster = generateLocalRoster();
         }
-      } catch {
+      } catch (err) {
+        console.warn('[Security Roster Load Fallback]', err);
         allRoster = generateLocalRoster();
       }
 
-      renderRoster(allRoster);
+      applyFilterAndSearch();
+    }
+
+    function applyFilterAndSearch() {
+      const searchVal = (document.getElementById('search-security-input')?.value || '').trim().toLowerCase();
+      
+      const filtered = allRoster.filter(s => {
+        // Branch Filter
+        const sBranch = (s.branch || (s.pin && (s.pin.includes('AIML') || s.pin.includes('-AI-')) ? 'AIML' : 'CS')).toUpperCase();
+        if (currentDeptFilter !== 'ALL' && sBranch !== currentDeptFilter) {
+          return false;
+        }
+
+        // Search Query
+        if (!searchVal) return true;
+        const pin = (s.pin || '').toLowerCase();
+        const key = (s.secretKey || '').toLowerCase();
+        const name = (s.name || '').toLowerCase();
+        const dept = (s.department || '').toLowerCase();
+
+        return pin.includes(searchVal) || key.includes(searchVal) || name.includes(searchVal) || dept.includes(searchVal);
+      });
+
+      // Update Count Badge
+      const badge = document.getElementById('roster-count-badge');
+      if (badge) {
+        badge.textContent = `${filtered.length} Keys Active`;
+      }
+
+      // Update Section Header Subtitle
+      const sub = document.getElementById('roster-section-title');
+      if (sub) {
+        if (currentDeptFilter === 'AIML') {
+          sub.textContent = 'Pre-Allocated Deterministic Security Keys (AIML • 127 Total)';
+        } else if (currentDeptFilter === 'CS') {
+          sub.textContent = 'Pre-Allocated Deterministic Security Keys (CSE • 180 Total)';
+        } else {
+          sub.textContent = 'Pre-Allocated Deterministic Security Keys (Multi-Department • 307 Total)';
+        }
+      }
+
+      renderRoster(filtered);
     }
 
     function renderRoster(list) {
@@ -260,7 +394,7 @@
         tbody.innerHTML = `
           <tr>
             <td colspan="6" style="text-align: center; padding: 36px; color: var(--hod-text-muted); font-style: italic;">
-              No matching student security keys found.
+              No matching student security keys found in the selected department.
             </td>
           </tr>
         `;
@@ -268,17 +402,22 @@
       }
 
       tbody.innerHTML = list.map(s => {
-        const rollNum = s.rollNumber || parseInt((s.pin || '').slice(-3), 10) || 1;
-        const name = s.name || `CS Student ${String(rollNum).padStart(3, '0')}`;
+        const pin = s.pin || '';
+        const rollNum = s.rollNumber || parseInt(pin.slice(-3), 10) || 1;
+        const isAimlStudent = (s.branch === 'AIML') || pin.includes('AIML') || pin.includes('-AI-');
+        const deptTitle = isAimlStudent ? 'Artificial Intelligence & Machine Learning (C-24)' : 'Computer Science & Engineering (C-24)';
+        const defaultName = isAimlStudent ? `AIML Student ${String(rollNum).padStart(3, '0')}` : `CS Student ${String(rollNum).padStart(3, '0')}`;
+        const name = s.name || defaultName;
         const isRegistered = Boolean(s.is_registered);
+        const keyClass = isAimlStudent ? 'key-badge key-badge-aiml' : 'key-badge key-badge-cs';
 
         return `
           <tr>
             <td><strong style="color: var(--hod-text-muted); font-family: monospace;">#${String(rollNum).padStart(3, '0')}</strong></td>
-            <td><strong class="mono-code" style="color: #93c5fd;">${escapeHtml(s.pin)}</strong></td>
+            <td><strong class="mono-code" style="color: ${isAimlStudent ? '#34d399' : '#93c5fd'};">${escapeHtml(pin)}</strong></td>
             <td><div style="font-weight: 700; color: var(--hod-text-main);">${escapeHtml(name)}</div></td>
-            <td><span class="key-badge">🔑 ${escapeHtml(s.secretKey)}</span></td>
-            <td><span style="font-size: 0.8rem; color: var(--hod-text-muted);">Computer Science (C-24)</span></td>
+            <td><span class="${keyClass}">🔑 ${escapeHtml(s.secretKey || 'STD-SECRET')}</span></td>
+            <td><span style="font-size: 0.8rem; color: var(--hod-text-muted);">${escapeHtml(deptTitle)}</span></td>
             <td>
               ${isRegistered
                 ? `<span class="neu-badge metric-emerald-glow">VERIFIED & ACTIVE</span>`
@@ -292,28 +431,43 @@
 
     function setupSearch() {
       const input = document.getElementById('search-security-input');
-      input?.addEventListener('input', (e) => {
-        const query = e.target.value.trim().toLowerCase();
-        const filtered = allRoster.filter(s => {
-          const pin = (s.pin || '').toLowerCase();
-          const key = (s.secretKey || '').toLowerCase();
-          const name = (s.name || '').toLowerCase();
-          return pin.includes(query) || key.includes(query) || name.includes(query);
-        });
-        renderRoster(filtered);
+      input?.addEventListener('input', () => {
+        applyFilterAndSearch();
       });
     }
 
     function generateLocalRoster() {
-      return Array.from({ length: 180 }, (_, i) => {
+      const cs = Array.from({ length: 180 }, (_, i) => {
         const roll = i + 1;
         const pin = `24259-CS-${String(roll).padStart(3, '0')}`;
-        let key = `STD-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
-        if (pin === '24259-CS-025') key = 'STD-XAz10F';
-        if (pin === '24259-CS-039') key = 'STD-B03209';
-        if (pin === '24259-CS-023') key = 'STD-SH23PK';
-        return { pin, rollNumber: roll, secretKey: key, department: 'Computer Science & Engineering', is_registered: ['24259-CS-025', '24259-CS-039', '24259-CS-023'].includes(pin) };
+        return {
+          pin,
+          rollNumber: roll,
+          name: `CS Student ${String(roll).padStart(3, '0')}`,
+          secretKey: `STD-CS${String(roll).padStart(3, '0')}X`,
+          department: 'Computer Science & Engineering',
+          branch: 'CS',
+          scheme: 'C-24',
+          is_registered: [23, 25, 39].includes(roll)
+        };
       });
+
+      const aiml = Array.from({ length: 127 }, (_, i) => {
+        const roll = i + 1;
+        const pin = `24259-AI-${String(roll).padStart(3, '0')}`;
+        return {
+          pin,
+          rollNumber: roll,
+          name: roll === 119 ? 'KARNATI HITESH' : (roll === 82 ? 'THURAI KRISHNA LOHITH' : `AIML Student ${String(roll).padStart(3, '0')}`),
+          secretKey: roll === 119 ? 'STD-HI19TE' : `STD-AI${String(roll).padStart(3, '0')}X`,
+          department: 'Artificial Intelligence & Machine Learning',
+          branch: 'AIML',
+          scheme: 'C-24',
+          is_registered: [19, 82, 119].includes(roll)
+        };
+      });
+
+      return [...cs, ...aiml];
     }
 
     function escapeHtml(str) {

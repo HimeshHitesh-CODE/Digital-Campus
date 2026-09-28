@@ -9,7 +9,7 @@ import { renderDock } from '../../js/dock.js';
 import { alerts } from '../../js/alerts.js';
 
 // Verify HOD Authentication & Render Dock
-requireAuth(['HOD', 'HOD_CS', 'ADMIN', 'FACULTY']);
+requireAuth(['HOD', 'HOD_CS', 'HOD_AIML', 'ADMIN', 'FACULTY']);
 renderDock('fee-payments.html', 'HOD');
 
 // State

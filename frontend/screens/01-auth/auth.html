@@ -687,12 +687,27 @@
           throw new Error(data.detail || data.message || 'Invalid HOD credentials.');
         }
 
-        // Store HOD session
+        // 1. Purge old student/HOD cached data to prevent bleed-through
+        localStorage.removeItem('student_pin');
+        localStorage.removeItem('user_role');
+        localStorage.removeItem('dc_user');
+        localStorage.removeItem('user_name');
+        localStorage.removeItem('auth_token');
+        localStorage.removeItem('dc_auth_token');
+        localStorage.removeItem('hod_branch');
+        localStorage.removeItem('hod_id');
+        sessionStorage.clear();
+
+        // 2. Resolve HOD user object accurately
+        const isAiml = hodId.toUpperCase().includes('AIML') || (data.user && (data.user.role === 'HOD_AIML' || data.user.branch === 'AIML'));
         const hodUser = data.user || {
           pin: hodId,
-          name: "Prof. Vamshi Krishna",
-          role: "HOD_CS",
-          department: "Computer Science & Engineering",
+          name: isAiml ? "Prof. Padmini" : "Dr. J. Vamshi Krishna",
+          role: isAiml ? "HOD_AIML" : "HOD_CS",
+          department: isAiml ? "Artificial Intelligence & Machine Learning" : "Computer Science & Engineering",
+          branch: isAiml ? "AIML" : "CS",
+          scheme: "C-24",
+          total_intake: isAiml ? 127 : 180,
           collegeCode: "259"
         };
 
@@ -701,11 +716,12 @@
         localStorage.setItem('dc_auth_token', token);
         localStorage.setItem('dc_user', JSON.stringify(hodUser));
         localStorage.setItem('user_name', hodUser.name);
-        localStorage.setItem('user_role', 'HOD');
+        localStorage.setItem('user_role', hodUser.role);
+        localStorage.setItem('hod_branch', hodUser.branch || (isAiml ? 'AIML' : 'CS'));
         localStorage.setItem('hod_id', hodId);
 
         const redirectUrl = data.redirect_url || '/screens/04-hod-portal/hod-dashboard.html';
-        window.location.href = redirectUrl;
+        window.location.replace(redirectUrl);
 
       } catch (err) {
         showError(hodError, err.message || 'HOD Login failed.');
@@ -734,7 +750,7 @@
         name: data.name || verifiedData?.name || 'Student',
         email: email,
         department: data.department || verifiedData?.department || 'Computer Science (CS)',
-        semester: data.semester || verifiedData?.semester || '6SEM',
+        semester: data.semester || verifiedData?.semester || '5th Sem',
         role: role || 'STUDENT',
         collegeCode: '259'
       };

@@ -1,0 +1,4616 @@
+[
+  {
+    "roll": 1,
+    "pin_ai": "24259-AI-001",
+    "pin_aiml": "24259-AIML-001",
+    "name": "AMANCHA RASAGNA",
+    "working_days": 88,
+    "present_days": 38,
+    "percentage": 43.18,
+    "cgpa": 7.91,
+    "credits_gained": 77.5,
+    "total_max_credits": 80.0,
+    "backlogs_count": 1,
+    "backlogs": [
+      {
+        "sem": "4SEM",
+        "code": "CS-402",
+        "title": "Java Programming",
+        "internal": "20",
+        "external": "12.5",
+        "total": "55",
+        "grade": "F"
+      }
+    ],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 2,
+    "pin_ai": "24259-AI-002",
+    "pin_aiml": "24259-AIML-002",
+    "name": "MAREDDY HEMANTH SAI",
+    "working_days": 88,
+    "present_days": 39,
+    "percentage": 44.32,
+    "cgpa": 8.3,
+    "credits_gained": 80.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 3,
+    "pin_ai": "24259-AI-003",
+    "pin_aiml": "24259-AIML-003",
+    "name": "SINGAM VIKRAM",
+    "working_days": 88,
+    "present_days": 37,
+    "percentage": 42.05,
+    "cgpa": 7.77,
+    "credits_gained": 80.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 4,
+    "pin_ai": "24259-AI-004",
+    "pin_aiml": "24259-AIML-004",
+    "name": "ANIRUDH KOMATI",
+    "working_days": 88,
+    "present_days": 34,
+    "percentage": 38.64,
+    "cgpa": 6.21,
+    "credits_gained": 81.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 5,
+    "pin_ai": "24259-AI-005",
+    "pin_aiml": "24259-AIML-005",
+    "name": "SHATHAM YESHWANTH",
+    "working_days": 88,
+    "present_days": 0,
+    "percentage": 0.0,
+    "cgpa": 4.42,
+    "credits_gained": 42.5,
+    "total_max_credits": 60.0,
+    "backlogs_count": 7,
+    "backlogs": [
+      {
+        "sem": "1SEM",
+        "code": "SC-102",
+        "title": "Basic Engineering Mathematics",
+        "internal": "16",
+        "external": "2",
+        "total": "19",
+        "grade": "F"
+      },
+      {
+        "sem": "2SEM",
+        "code": "SC-203",
+        "title": "Applied Physics",
+        "internal": "18",
+        "external": "6.5",
+        "total": "35",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "SC-103",
+        "title": "Basic Physics",
+        "internal": "18",
+        "external": "5",
+        "total": "24",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "SC-104",
+        "title": "General Engineering Chemistry",
+        "internal": "18",
+        "external": "0",
+        "total": "24",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "CS-105",
+        "title": "Computer Fundamentals & Hardware",
+        "internal": "18",
+        "external": "3.5",
+        "total": "36",
+        "grade": "F"
+      },
+      {
+        "sem": "2SEM",
+        "code": "CS-206",
+        "title": "Web Technologies",
+        "internal": "19",
+        "external": "7",
+        "total": "35",
+        "grade": "F"
+      },
+      {
+        "sem": "3SEM",
+        "code": "SC-301",
+        "title": "Applied Engineering Mathematics",
+        "internal": "16",
+        "external": "3",
+        "total": "19",
+        "grade": "F"
+      }
+    ],
+    "has_attendance": false,
+    "has_results": true
+  },
+  {
+    "roll": 6,
+    "pin_ai": "24259-AI-006",
+    "pin_aiml": "24259-AIML-006",
+    "name": "Yedla Hamsika Reddy",
+    "working_days": 88,
+    "present_days": 38,
+    "percentage": 43.18,
+    "cgpa": 8.55,
+    "credits_gained": 80.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 7,
+    "pin_ai": "24259-AI-007",
+    "pin_aiml": "24259-AIML-007",
+    "name": "GUNDARAPU VENKATA VISWAJIT",
+    "working_days": 88,
+    "present_days": 30,
+    "percentage": 34.09,
+    "cgpa": 7.1,
+    "credits_gained": 78.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 1,
+    "backlogs": [
+      {
+        "sem": "2SEM",
+        "code": "SC-202",
+        "title": "Engineering Mathematics",
+        "internal": "19",
+        "external": "6",
+        "total": "40",
+        "grade": "F"
+      }
+    ],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 8,
+    "pin_ai": "24259-AI-008",
+    "pin_aiml": "24259-AIML-008",
+    "name": "MACHARLA ROHITH",
+    "working_days": 88,
+    "present_days": 30,
+    "percentage": 34.09,
+    "cgpa": 7.61,
+    "credits_gained": 80.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 9,
+    "pin_ai": "24259-AI-009",
+    "pin_aiml": "24259-AIML-009",
+    "name": "MITTAPALLI VARSHA",
+    "working_days": 88,
+    "present_days": 50,
+    "percentage": 56.82,
+    "cgpa": 8.1,
+    "credits_gained": 80.5,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 10,
+    "pin_ai": "24259-AI-010",
+    "pin_aiml": "24259-AIML-010",
+    "name": "ITTE NIKHIL TEJA",
+    "working_days": 88,
+    "present_days": 39,
+    "percentage": 44.32,
+    "cgpa": 8.92,
+    "credits_gained": 80.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 11,
+    "pin_ai": "24259-AI-011",
+    "pin_aiml": "24259-AIML-011",
+    "name": "RAVVA ROHITH",
+    "working_days": 88,
+    "present_days": 41,
+    "percentage": 46.59,
+    "cgpa": 8.03,
+    "credits_gained": 80.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 12,
+    "pin_ai": "24259-AI-012",
+    "pin_aiml": "24259-AIML-012",
+    "name": "RAVVA RISHITH",
+    "working_days": 88,
+    "present_days": 39,
+    "percentage": 44.32,
+    "cgpa": 6.92,
+    "credits_gained": 72.5,
+    "total_max_credits": 80.0,
+    "backlogs_count": 3,
+    "backlogs": [
+      {
+        "sem": "2SEM",
+        "code": "SC-203",
+        "title": "Applied Physics",
+        "internal": "19",
+        "external": "10",
+        "total": "44",
+        "grade": "F"
+      },
+      {
+        "sem": "4SEM",
+        "code": "CS-406",
+        "title": "Operating Systems",
+        "internal": "19",
+        "external": "11",
+        "total": "57",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "CS-106",
+        "title": "Basic Electrical & Electronics Engineering",
+        "internal": "19",
+        "external": "9.5",
+        "total": "39",
+        "grade": "F"
+      }
+    ],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 13,
+    "pin_ai": "24259-AI-013",
+    "pin_aiml": "24259-AIML-013",
+    "name": "MOHD FARHAN",
+    "working_days": 88,
+    "present_days": 0,
+    "percentage": 0.0,
+    "cgpa": 4.43,
+    "credits_gained": 40.25,
+    "total_max_credits": 60.0,
+    "backlogs_count": 8,
+    "backlogs": [
+      {
+        "sem": "2SEM",
+        "code": "SC-202",
+        "title": "Engineering Mathematics",
+        "internal": "19",
+        "external": "A",
+        "total": "30",
+        "grade": "F"
+      },
+      {
+        "sem": "3SEM",
+        "code": "CS-303",
+        "title": "Data Structures Through C",
+        "internal": "17",
+        "external": "6.5",
+        "total": "30",
+        "grade": "F"
+      },
+      {
+        "sem": "2SEM",
+        "code": "SC-203",
+        "title": "Applied Physics",
+        "internal": "19",
+        "external": "A",
+        "total": "39",
+        "grade": "F"
+      },
+      {
+        "sem": "2SEM",
+        "code": "SC-204",
+        "title": "Applied Engineering Chemistry",
+        "internal": "18",
+        "external": "A",
+        "total": "24",
+        "grade": "F"
+      },
+      {
+        "sem": "2SEM",
+        "code": "CS-205",
+        "title": "Programming In C",
+        "internal": "19",
+        "external": "A",
+        "total": "34",
+        "grade": "F"
+      },
+      {
+        "sem": "2SEM",
+        "code": "CS-206",
+        "title": "Web Technologies",
+        "internal": "18",
+        "external": "A",
+        "total": "28",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "CS-106",
+        "title": "Basic Electrical & Electronics Engineering",
+        "internal": "18",
+        "external": "3",
+        "total": "24",
+        "grade": "F"
+      },
+      {
+        "sem": "3SEM",
+        "code": "SC-301",
+        "title": "Applied Engineering Mathematics",
+        "internal": "15",
+        "external": "11",
+        "total": "26",
+        "grade": "F"
+      }
+    ],
+    "has_attendance": false,
+    "has_results": true
+  },
+  {
+    "roll": 14,
+    "pin_ai": "24259-AI-014",
+    "pin_aiml": "24259-AIML-014",
+    "name": "UPPULUTI SRUTHIK",
+    "working_days": 88,
+    "present_days": 26,
+    "percentage": 29.55,
+    "cgpa": 6.56,
+    "credits_gained": 72.5,
+    "total_max_credits": 80.0,
+    "backlogs_count": 3,
+    "backlogs": [
+      {
+        "sem": "2SEM",
+        "code": "SC-202",
+        "title": "Engineering Mathematics",
+        "internal": "18",
+        "external": "3",
+        "total": "24",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "CS-106",
+        "title": "Basic Electrical & Electronics Engineering",
+        "internal": "19",
+        "external": "0.5",
+        "total": "20",
+        "grade": "F"
+      },
+      {
+        "sem": "3SEM",
+        "code": "SC-301",
+        "title": "Applied Engineering Mathematics",
+        "internal": "16",
+        "external": "2",
+        "total": "18",
+        "grade": "F"
+      }
+    ],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 15,
+    "pin_ai": "24259-AI-015",
+    "pin_aiml": "24259-AIML-015",
+    "name": "JAIN MAHADEV",
+    "working_days": 88,
+    "present_days": 34,
+    "percentage": 38.64,
+    "cgpa": 6.48,
+    "credits_gained": 75.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 2,
+    "backlogs": [
+      {
+        "sem": "4SEM",
+        "code": "CS-402",
+        "title": "Java Programming",
+        "internal": "20",
+        "external": "7.5",
+        "total": "46",
+        "grade": "F"
+      },
+      {
+        "sem": "2SEM",
+        "code": "SC-202",
+        "title": "Engineering Mathematics",
+        "internal": "19",
+        "external": "5",
+        "total": "30",
+        "grade": "F"
+      }
+    ],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 16,
+    "pin_ai": "24259-AI-016",
+    "pin_aiml": "24259-AIML-016",
+    "name": "VENKATA KARTHIK DEV",
+    "working_days": 88,
+    "present_days": 35,
+    "percentage": 39.77,
+    "cgpa": 9.42,
+    "credits_gained": 80.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 17,
+    "pin_ai": "24259-AI-017",
+    "pin_aiml": "24259-AIML-017",
+    "name": "THOUDA SAI DEEKSHITH",
+    "working_days": 88,
+    "present_days": 29,
+    "percentage": 32.95,
+    "cgpa": 7.89,
+    "credits_gained": 80.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 18,
+    "pin_ai": "24259-AI-018",
+    "pin_aiml": "24259-AIML-018",
+    "name": "ALUVALA SANJU SREE",
+    "working_days": 88,
+    "present_days": 35,
+    "percentage": 39.77,
+    "cgpa": 8.8,
+    "credits_gained": 80.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 19,
+    "pin_ai": "24259-AI-019",
+    "pin_aiml": "24259-AIML-019",
+    "name": "KANUGULA BHARATH",
+    "working_days": 88,
+    "present_days": 39,
+    "percentage": 44.32,
+    "cgpa": 7.06,
+    "credits_gained": 78.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 1,
+    "backlogs": [
+      {
+        "sem": "4SEM",
+        "code": "SC-401",
+        "title": "Advanced Engineering Mathematics",
+        "internal": "20",
+        "external": "9",
+        "total": "35",
+        "grade": "F"
+      }
+    ],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 20,
+    "pin_ai": "24259-AI-020",
+    "pin_aiml": "24259-AIML-020",
+    "name": "OBILISHETTY DATHA SAI DEERAJ",
+    "working_days": 88,
+    "present_days": 0,
+    "percentage": 0.0,
+    "cgpa": 7.38,
+    "credits_gained": 20.0,
+    "total_max_credits": 20.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": false,
+    "has_results": true
+  },
+  {
+    "roll": 21,
+    "pin_ai": "24259-AI-021",
+    "pin_aiml": "24259-AIML-021",
+    "name": "AENUGULA SHANKHUNATH",
+    "working_days": 88,
+    "present_days": 25,
+    "percentage": 28.41,
+    "cgpa": 5.73,
+    "credits_gained": 75.25,
+    "total_max_credits": 80.0,
+    "backlogs_count": 2,
+    "backlogs": [
+      {
+        "sem": "2SEM",
+        "code": "SC-202",
+        "title": "Engineering Mathematics",
+        "internal": "19",
+        "external": "4",
+        "total": "26",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "SC-102",
+        "title": "Basic Engineering Mathematics",
+        "internal": "17",
+        "external": "4",
+        "total": "34",
+        "grade": "F"
+      }
+    ],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 22,
+    "pin_ai": "24259-AI-022",
+    "pin_aiml": "24259-AIML-022",
+    "name": "MOHAMMED AFAAN",
+    "working_days": 88,
+    "present_days": 16,
+    "percentage": 18.18,
+    "cgpa": 5.77,
+    "credits_gained": 65.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 6,
+    "backlogs": [
+      {
+        "sem": "4SEM",
+        "code": "SC-401",
+        "title": "Advanced Engineering Mathematics",
+        "internal": "20",
+        "external": "0",
+        "total": "22",
+        "grade": "F"
+      },
+      {
+        "sem": "3SEM",
+        "code": "EC-302",
+        "title": "Digital Electronics",
+        "internal": "18",
+        "external": "9",
+        "total": "40",
+        "grade": "F"
+      },
+      {
+        "sem": "2SEM",
+        "code": "SC-202",
+        "title": "Engineering Mathematics",
+        "internal": "18",
+        "external": "2",
+        "total": "23",
+        "grade": "F"
+      },
+      {
+        "sem": "2SEM",
+        "code": "SC-203",
+        "title": "Applied Physics",
+        "internal": "18",
+        "external": "2",
+        "total": "29",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "SC-103",
+        "title": "Basic Physics",
+        "internal": "18",
+        "external": "0.5",
+        "total": "22",
+        "grade": "F"
+      },
+      {
+        "sem": "3SEM",
+        "code": "SC-301",
+        "title": "Applied Engineering Mathematics",
+        "internal": "15",
+        "external": "4.5",
+        "total": "25",
+        "grade": "F"
+      }
+    ],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 23,
+    "pin_ai": "24259-AI-023",
+    "pin_aiml": "24259-AIML-023",
+    "name": "JAKKU SHALINI",
+    "working_days": 88,
+    "present_days": 49,
+    "percentage": 55.68,
+    "cgpa": 9.98,
+    "credits_gained": 80.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 24,
+    "pin_ai": "24259-AI-024",
+    "pin_aiml": "24259-AIML-024",
+    "name": "VANAM AKSHITHA",
+    "working_days": 88,
+    "present_days": 46,
+    "percentage": 52.27,
+    "cgpa": 9.61,
+    "credits_gained": 80.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 25,
+    "pin_ai": "24259-AI-025",
+    "pin_aiml": "24259-AIML-025",
+    "name": "MD ZAID AHMED",
+    "working_days": 88,
+    "present_days": 35,
+    "percentage": 39.77,
+    "cgpa": 5.53,
+    "credits_gained": 70.5,
+    "total_max_credits": 80.0,
+    "backlogs_count": 4,
+    "backlogs": [
+      {
+        "sem": "2SEM",
+        "code": "SC-202",
+        "title": "Engineering Mathematics",
+        "internal": "19",
+        "external": "2",
+        "total": "23",
+        "grade": "F"
+      },
+      {
+        "sem": "3SEM",
+        "code": "CS-304",
+        "title": "Oops Through C++",
+        "internal": "17",
+        "external": "7",
+        "total": "51",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "CS-106",
+        "title": "Basic Electrical & Electronics Engineering",
+        "internal": "18",
+        "external": "1.5",
+        "total": "34",
+        "grade": "F"
+      },
+      {
+        "sem": "3SEM",
+        "code": "SC-301",
+        "title": "Applied Engineering Mathematics",
+        "internal": "17",
+        "external": "0",
+        "total": "23",
+        "grade": "F"
+      }
+    ],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 26,
+    "pin_ai": "24259-AI-026",
+    "pin_aiml": "24259-AIML-026",
+    "name": "RACHAKONDA NIKHIL",
+    "working_days": 88,
+    "present_days": 26,
+    "percentage": 29.55,
+    "cgpa": 6.81,
+    "credits_gained": 78.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 1,
+    "backlogs": [
+      {
+        "sem": "2SEM",
+        "code": "CS-205",
+        "title": "Programming In C",
+        "internal": "19",
+        "external": "12",
+        "total": "32",
+        "grade": "F"
+      }
+    ],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 27,
+    "pin_ai": "24259-AI-027",
+    "pin_aiml": "24259-AIML-027",
+    "name": "BALLA SHIVAJI",
+    "working_days": 88,
+    "present_days": 29,
+    "percentage": 32.95,
+    "cgpa": 8.14,
+    "credits_gained": 80.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 28,
+    "pin_ai": "24259-AI-028",
+    "pin_aiml": "24259-AIML-028",
+    "name": "MAMIDI SAI CHARAN",
+    "working_days": 88,
+    "present_days": 0,
+    "percentage": 0.0,
+    "cgpa": 0.63,
+    "credits_gained": 2.5,
+    "total_max_credits": 20.0,
+    "backlogs_count": 9,
+    "backlogs": [
+      {
+        "sem": "1SEM",
+        "code": "SC-102",
+        "title": "Basic Engineering Mathematics",
+        "internal": "14",
+        "external": "0",
+        "total": "15",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "SC-103",
+        "title": "Basic Physics",
+        "internal": "18",
+        "external": "0",
+        "total": "19",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "SC-104",
+        "title": "General Engineering Chemistry",
+        "internal": "19",
+        "external": "3",
+        "total": "24",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "CS-105",
+        "title": "Computer Fundamentals & Hardware",
+        "internal": "13",
+        "external": "1",
+        "total": "16",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "CS-106",
+        "title": "Basic Electrical & Electronics Engineering",
+        "internal": "18",
+        "external": "1",
+        "total": "19",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "ME-107",
+        "title": "Engineering Drawing-I",
+        "internal": "15",
+        "external": "AB",
+        "total": "34",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "CS-108",
+        "title": "Computer Hardware & Maintenance Lab",
+        "internal": "18",
+        "external": "AB",
+        "total": "36",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "SC-109",
+        "title": "Basic Science Lab",
+        "internal": "15",
+        "external": "AB",
+        "total": "43",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "CS-110",
+        "title": "Computer Fundamentals Lab",
+        "internal": "13",
+        "external": "AB",
+        "total": "28",
+        "grade": "F"
+      }
+    ],
+    "has_attendance": false,
+    "has_results": true
+  },
+  {
+    "roll": 29,
+    "pin_ai": "24259-AI-029",
+    "pin_aiml": "24259-AIML-029",
+    "name": "BARLA NAVYA",
+    "working_days": 88,
+    "present_days": 41,
+    "percentage": 46.59,
+    "cgpa": 7.1,
+    "credits_gained": 78.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 1,
+    "backlogs": [
+      {
+        "sem": "2SEM",
+        "code": "SC-202",
+        "title": "Engineering Mathematics",
+        "internal": "18",
+        "external": "12",
+        "total": "41",
+        "grade": "F"
+      }
+    ],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 30,
+    "pin_ai": "24259-AI-030",
+    "pin_aiml": "24259-AIML-030",
+    "name": "P HARIKRISHNA",
+    "working_days": 88,
+    "present_days": 46,
+    "percentage": 52.27,
+    "cgpa": 7.37,
+    "credits_gained": 78.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 1,
+    "backlogs": [
+      {
+        "sem": "4SEM",
+        "code": "CS-402",
+        "title": "Java Programming",
+        "internal": "20",
+        "external": "8",
+        "total": "51",
+        "grade": "F"
+      }
+    ],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 31,
+    "pin_ai": "24259-AI-031",
+    "pin_aiml": "24259-AIML-031",
+    "name": "CHINTHAKOTI DAMODHAR",
+    "working_days": 88,
+    "present_days": 26,
+    "percentage": 29.55,
+    "cgpa": 2.93,
+    "credits_gained": 42.75,
+    "total_max_credits": 80.0,
+    "backlogs_count": 15,
+    "backlogs": [
+      {
+        "sem": "2SEM",
+        "code": "HU-201",
+        "title": "Advanced English",
+        "internal": "19",
+        "external": "10.5",
+        "total": "50",
+        "grade": "F"
+      },
+      {
+        "sem": "4SEM",
+        "code": "SC-401",
+        "title": "Advanced Engineering Mathematics",
+        "internal": "20",
+        "external": "1",
+        "total": "22",
+        "grade": "F"
+      },
+      {
+        "sem": "2SEM",
+        "code": "SC-202",
+        "title": "Engineering Mathematics",
+        "internal": "18",
+        "external": "1",
+        "total": "22",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "SC-102",
+        "title": "Basic Engineering Mathematics",
+        "internal": "15",
+        "external": "0",
+        "total": "21",
+        "grade": "F"
+      },
+      {
+        "sem": "4SEM",
+        "code": "CS-402",
+        "title": "Java Programming",
+        "internal": "20",
+        "external": "3",
+        "total": "26",
+        "grade": "F"
+      },
+      {
+        "sem": "4SEM",
+        "code": "CS-403",
+        "title": "Python Programming",
+        "internal": "20",
+        "external": "7",
+        "total": "31",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "SC-103",
+        "title": "Basic Physics",
+        "internal": "18",
+        "external": "0",
+        "total": "26",
+        "grade": "F"
+      },
+      {
+        "sem": "2SEM",
+        "code": "SC-203",
+        "title": "Applied Physics",
+        "internal": "19",
+        "external": "7",
+        "total": "30",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "SC-104",
+        "title": "General Engineering Chemistry",
+        "internal": "18",
+        "external": "1",
+        "total": "27",
+        "grade": "F"
+      },
+      {
+        "sem": "2SEM",
+        "code": "CS-205",
+        "title": "Programming In C",
+        "internal": "19",
+        "external": "1",
+        "total": "26",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "CS-105",
+        "title": "Computer Fundamentals & Hardware",
+        "internal": "19",
+        "external": "0.5",
+        "total": "30",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "CS-106",
+        "title": "Basic Electrical & Electronics Engineering",
+        "internal": "19",
+        "external": "3",
+        "total": "31",
+        "grade": "F"
+      },
+      {
+        "sem": "2SEM",
+        "code": "CS-206",
+        "title": "Web Technologies",
+        "internal": "19",
+        "external": "1",
+        "total": "35",
+        "grade": "F"
+      },
+      {
+        "sem": "4SEM",
+        "code": "CS-406",
+        "title": "Operating Systems",
+        "internal": "18",
+        "external": "2",
+        "total": "23",
+        "grade": "F"
+      },
+      {
+        "sem": "3SEM",
+        "code": "SC-301",
+        "title": "Applied Engineering Mathematics",
+        "internal": "16",
+        "external": "0",
+        "total": "21",
+        "grade": "F"
+      }
+    ],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 32,
+    "pin_ai": "24259-AI-032",
+    "pin_aiml": "24259-AIML-032",
+    "name": "GOSHETTI ARUN KUMAR",
+    "working_days": 88,
+    "present_days": 33,
+    "percentage": 37.5,
+    "cgpa": 7.77,
+    "credits_gained": 80.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 33,
+    "pin_ai": "24259-AI-033",
+    "pin_aiml": "24259-AIML-033",
+    "name": "MUSHINI RAGHUVEER",
+    "working_days": 88,
+    "present_days": 38,
+    "percentage": 43.18,
+    "cgpa": 6.92,
+    "credits_gained": 80.5,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 34,
+    "pin_ai": "24259-AI-034",
+    "pin_aiml": "24259-AIML-034",
+    "name": "MATTUPALLI ANIL KUMAR",
+    "working_days": 88,
+    "present_days": 20,
+    "percentage": 22.73,
+    "cgpa": 4.36,
+    "credits_gained": 56.25,
+    "total_max_credits": 80.0,
+    "backlogs_count": 10,
+    "backlogs": [
+      {
+        "sem": "4SEM",
+        "code": "SC-401",
+        "title": "Advanced Engineering Mathematics",
+        "internal": "20",
+        "external": "0",
+        "total": "21",
+        "grade": "F"
+      },
+      {
+        "sem": "2SEM",
+        "code": "SC-202",
+        "title": "Engineering Mathematics",
+        "internal": "18",
+        "external": "6.5",
+        "total": "33",
+        "grade": "F"
+      },
+      {
+        "sem": "4SEM",
+        "code": "CS-402",
+        "title": "Java Programming",
+        "internal": "20",
+        "external": "4.5",
+        "total": "30",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "SC-103",
+        "title": "Basic Physics",
+        "internal": "18",
+        "external": "7",
+        "total": "30",
+        "grade": "F"
+      },
+      {
+        "sem": "2SEM",
+        "code": "CS-205",
+        "title": "Programming In C",
+        "internal": "19",
+        "external": "9",
+        "total": "42",
+        "grade": "F"
+      },
+      {
+        "sem": "4SEM",
+        "code": "AI-405",
+        "title": "Fundamentals of Data Science",
+        "internal": "19",
+        "external": "11.5",
+        "total": "45",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "CS-106",
+        "title": "Basic Electrical & Electronics Engineering",
+        "internal": "18",
+        "external": "2.5",
+        "total": "25",
+        "grade": "F"
+      },
+      {
+        "sem": "3SEM",
+        "code": "EC-307",
+        "title": "Digital Electronics Lab",
+        "internal": "18",
+        "external": "AB",
+        "total": "54",
+        "grade": "F"
+      },
+      {
+        "sem": "4SEM",
+        "code": "CS-406",
+        "title": "Operating Systems",
+        "internal": "19",
+        "external": "1",
+        "total": "21",
+        "grade": "F"
+      },
+      {
+        "sem": "3SEM",
+        "code": "SC-301",
+        "title": "Applied Engineering Mathematics",
+        "internal": "16",
+        "external": "1.5",
+        "total": "24",
+        "grade": "F"
+      }
+    ],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 35,
+    "pin_ai": "24259-AI-035",
+    "pin_aiml": "24259-AIML-035",
+    "name": "NAMPALLY PARNIKA",
+    "working_days": 88,
+    "present_days": 41,
+    "percentage": 46.59,
+    "cgpa": 8.42,
+    "credits_gained": 80.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 36,
+    "pin_ai": "24259-AI-036",
+    "pin_aiml": "24259-AIML-036",
+    "name": "BOLLI KEERTHANA",
+    "working_days": 88,
+    "present_days": 44,
+    "percentage": 50.0,
+    "cgpa": 8.53,
+    "credits_gained": 80.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 37,
+    "pin_ai": "24259-AI-037",
+    "pin_aiml": "24259-AIML-037",
+    "name": "SANGOJI YASHWANTH",
+    "working_days": 88,
+    "present_days": 39,
+    "percentage": 44.32,
+    "cgpa": 8.03,
+    "credits_gained": 80.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 38,
+    "pin_ai": "24259-AI-038",
+    "pin_aiml": "24259-AIML-038",
+    "name": "ANTHATI SIRI",
+    "working_days": 88,
+    "present_days": 44,
+    "percentage": 50.0,
+    "cgpa": 9.52,
+    "credits_gained": 80.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 39,
+    "pin_ai": "24259-AI-039",
+    "pin_aiml": "24259-AIML-039",
+    "name": "BANNE BALAJI",
+    "working_days": 88,
+    "present_days": 31,
+    "percentage": 35.23,
+    "cgpa": 7.63,
+    "credits_gained": 80.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 40,
+    "pin_ai": "24259-AI-040",
+    "pin_aiml": "24259-AIML-040",
+    "name": "ADAPALA DIVYA",
+    "working_days": 88,
+    "present_days": 39,
+    "percentage": 44.32,
+    "cgpa": 7.56,
+    "credits_gained": 80.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 41,
+    "pin_ai": "24259-AI-041",
+    "pin_aiml": "24259-AIML-041",
+    "name": "GANTEPAKA JASHWANTH",
+    "working_days": 88,
+    "present_days": 33,
+    "percentage": 37.5,
+    "cgpa": 5.34,
+    "credits_gained": 67.5,
+    "total_max_credits": 80.0,
+    "backlogs_count": 5,
+    "backlogs": [
+      {
+        "sem": "2SEM",
+        "code": "SC-202",
+        "title": "Engineering Mathematics",
+        "internal": "19",
+        "external": "3",
+        "total": "39",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "SC-104",
+        "title": "General Engineering Chemistry",
+        "internal": "18",
+        "external": "7",
+        "total": "31",
+        "grade": "F"
+      },
+      {
+        "sem": "4SEM",
+        "code": "CS-404",
+        "title": "Relational Database Management Systems",
+        "internal": "19",
+        "external": "4.5",
+        "total": "41",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "CS-106",
+        "title": "Basic Electrical & Electronics Engineering",
+        "internal": "18",
+        "external": "12.5",
+        "total": "39",
+        "grade": "F"
+      },
+      {
+        "sem": "3SEM",
+        "code": "SC-301",
+        "title": "Applied Engineering Mathematics",
+        "internal": "18",
+        "external": "9",
+        "total": "27",
+        "grade": "F"
+      }
+    ],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 42,
+    "pin_ai": "24259-AI-042",
+    "pin_aiml": "24259-AIML-042",
+    "name": "KESANI KIRAN",
+    "working_days": 88,
+    "present_days": 32,
+    "percentage": 36.36,
+    "cgpa": 6.92,
+    "credits_gained": 75.5,
+    "total_max_credits": 80.0,
+    "backlogs_count": 2,
+    "backlogs": [
+      {
+        "sem": "4SEM",
+        "code": "SC-401",
+        "title": "Advanced Engineering Mathematics",
+        "internal": "19",
+        "external": "10",
+        "total": "35",
+        "grade": "F"
+      },
+      {
+        "sem": "2SEM",
+        "code": "SC-202",
+        "title": "Engineering Mathematics",
+        "internal": "18",
+        "external": "2.5",
+        "total": "32",
+        "grade": "F"
+      }
+    ],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 43,
+    "pin_ai": "24259-AI-043",
+    "pin_aiml": "24259-AIML-043",
+    "name": "MAMIDISHETTI MANISHANKAR GURUNATH",
+    "working_days": 88,
+    "present_days": 44,
+    "percentage": 50.0,
+    "cgpa": 8.77,
+    "credits_gained": 80.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 44,
+    "pin_ai": "24259-AI-044",
+    "pin_aiml": "24259-AIML-044",
+    "name": "DUDDU MANISHA",
+    "working_days": 88,
+    "present_days": 33,
+    "percentage": 37.5,
+    "cgpa": 5.42,
+    "credits_gained": 60.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 8,
+    "backlogs": [
+      {
+        "sem": "4SEM",
+        "code": "SC-401",
+        "title": "Advanced Engineering Mathematics",
+        "internal": "20",
+        "external": "6",
+        "total": "28",
+        "grade": "F"
+      },
+      {
+        "sem": "3SEM",
+        "code": "EC-302",
+        "title": "Digital Electronics",
+        "internal": "19",
+        "external": "8.5",
+        "total": "42",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "SC-102",
+        "title": "Basic Engineering Mathematics",
+        "internal": "18",
+        "external": "5",
+        "total": "29",
+        "grade": "F"
+      },
+      {
+        "sem": "2SEM",
+        "code": "SC-202",
+        "title": "Engineering Mathematics",
+        "internal": "19",
+        "external": "1",
+        "total": "29",
+        "grade": "F"
+      },
+      {
+        "sem": "2SEM",
+        "code": "SC-203",
+        "title": "Applied Physics",
+        "internal": "19",
+        "external": "7",
+        "total": "29",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "SC-103",
+        "title": "Basic Physics",
+        "internal": "18",
+        "external": "1",
+        "total": "28",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "CS-106",
+        "title": "Basic Electrical & Electronics Engineering",
+        "internal": "18",
+        "external": "11",
+        "total": "39",
+        "grade": "F"
+      },
+      {
+        "sem": "3SEM",
+        "code": "SC-301",
+        "title": "Applied Engineering Mathematics",
+        "internal": "17",
+        "external": "5",
+        "total": "27",
+        "grade": "F"
+      }
+    ],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 45,
+    "pin_ai": "24259-AI-045",
+    "pin_aiml": "24259-AIML-045",
+    "name": "SHAIK SIDDIK AHAMED",
+    "working_days": 88,
+    "present_days": 33,
+    "percentage": 37.5,
+    "cgpa": 2.31,
+    "credits_gained": 30.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 20,
+    "backlogs": [
+      {
+        "sem": "4SEM",
+        "code": "SC-401",
+        "title": "Advanced Engineering Mathematics",
+        "internal": "19",
+        "external": "5",
+        "total": "28",
+        "grade": "F"
+      },
+      {
+        "sem": "3SEM",
+        "code": "EC-302",
+        "title": "Digital Electronics",
+        "internal": "19",
+        "external": "0",
+        "total": "25",
+        "grade": "F"
+      },
+      {
+        "sem": "2SEM",
+        "code": "SC-202",
+        "title": "Engineering Mathematics",
+        "internal": "18",
+        "external": "2",
+        "total": "38",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "SC-102",
+        "title": "Basic Engineering Mathematics",
+        "internal": "17",
+        "external": "4",
+        "total": "30",
+        "grade": "F"
+      },
+      {
+        "sem": "3SEM",
+        "code": "CS-303",
+        "title": "Data Structures Through C",
+        "internal": "17",
+        "external": "6.5",
+        "total": "36",
+        "grade": "F"
+      },
+      {
+        "sem": "4SEM",
+        "code": "CS-402",
+        "title": "Java Programming",
+        "internal": "20",
+        "external": "0",
+        "total": "27",
+        "grade": "F"
+      },
+      {
+        "sem": "4SEM",
+        "code": "CS-403",
+        "title": "Python Programming",
+        "internal": "19",
+        "external": "3",
+        "total": "32",
+        "grade": "F"
+      },
+      {
+        "sem": "3SEM",
+        "code": "CS-304",
+        "title": "Oops Through C++",
+        "internal": "17",
+        "external": "4",
+        "total": "37",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "SC-103",
+        "title": "Basic Physics",
+        "internal": "18",
+        "external": "1",
+        "total": "29",
+        "grade": "F"
+      },
+      {
+        "sem": "2SEM",
+        "code": "SC-203",
+        "title": "Applied Physics",
+        "internal": "18",
+        "external": "5",
+        "total": "37",
+        "grade": "F"
+      },
+      {
+        "sem": "2SEM",
+        "code": "SC-204",
+        "title": "Applied Engineering Chemistry",
+        "internal": "19",
+        "external": "9",
+        "total": "32",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "SC-104",
+        "title": "General Engineering Chemistry",
+        "internal": "18",
+        "external": "0",
+        "total": "29",
+        "grade": "F"
+      },
+      {
+        "sem": "3SEM",
+        "code": "CS-305",
+        "title": "Computer Organisation and Architecture",
+        "internal": "18",
+        "external": "8",
+        "total": "29",
+        "grade": "F"
+      },
+      {
+        "sem": "4SEM",
+        "code": "CS-404",
+        "title": "Relational Database Management Systems",
+        "internal": "19",
+        "external": "7.5",
+        "total": "30",
+        "grade": "F"
+      },
+      {
+        "sem": "3SEM",
+        "code": "AI-306",
+        "title": "Fundamentals of Artificial Intelligence",
+        "internal": "18",
+        "external": "7",
+        "total": "34",
+        "grade": "F"
+      },
+      {
+        "sem": "2SEM",
+        "code": "CS-205",
+        "title": "Programming In C",
+        "internal": "18",
+        "external": "0",
+        "total": "23",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "CS-105",
+        "title": "Computer Fundamentals & Hardware",
+        "internal": "18",
+        "external": "3",
+        "total": "29",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "CS-106",
+        "title": "Basic Electrical & Electronics Engineering",
+        "internal": "18",
+        "external": "0",
+        "total": "26",
+        "grade": "F"
+      },
+      {
+        "sem": "4SEM",
+        "code": "CS-406",
+        "title": "Operating Systems",
+        "internal": "18",
+        "external": "0",
+        "total": "21",
+        "grade": "F"
+      },
+      {
+        "sem": "3SEM",
+        "code": "SC-301",
+        "title": "Applied Engineering Mathematics",
+        "internal": "17",
+        "external": "0",
+        "total": "32",
+        "grade": "F"
+      }
+    ],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 46,
+    "pin_ai": "24259-AI-046",
+    "pin_aiml": "24259-AIML-046",
+    "name": "BODDU VAIDEHI",
+    "working_days": 88,
+    "present_days": 39,
+    "percentage": 44.32,
+    "cgpa": 9.19,
+    "credits_gained": 80.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 47,
+    "pin_ai": "24259-AI-047",
+    "pin_aiml": "24259-AIML-047",
+    "name": "IMMANDI SRI SAI MANOJ",
+    "working_days": 88,
+    "present_days": 39,
+    "percentage": 44.32,
+    "cgpa": 9.14,
+    "credits_gained": 80.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 48,
+    "pin_ai": "24259-AI-048",
+    "pin_aiml": "24259-AIML-048",
+    "name": "SAMREEN",
+    "working_days": 88,
+    "present_days": 44,
+    "percentage": 50.0,
+    "cgpa": 9.25,
+    "credits_gained": 80.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 49,
+    "pin_ai": "24259-AI-049",
+    "pin_aiml": "24259-AIML-049",
+    "name": "THUMMA NESHANTH",
+    "working_days": 88,
+    "present_days": 38,
+    "percentage": 43.18,
+    "cgpa": 8.2,
+    "credits_gained": 80.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 50,
+    "pin_ai": "24259-AI-050",
+    "pin_aiml": "24259-AIML-050",
+    "name": "MATURI GOWTHAM RAJ",
+    "working_days": 88,
+    "present_days": 43,
+    "percentage": 48.86,
+    "cgpa": 5.36,
+    "credits_gained": 62.5,
+    "total_max_credits": 80.0,
+    "backlogs_count": 7,
+    "backlogs": [
+      {
+        "sem": "3SEM",
+        "code": "EC-302",
+        "title": "Digital Electronics",
+        "internal": "18",
+        "external": "A",
+        "total": "25",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "SC-102",
+        "title": "Basic Engineering Mathematics",
+        "internal": "16",
+        "external": "10",
+        "total": "34",
+        "grade": "F"
+      },
+      {
+        "sem": "2SEM",
+        "code": "SC-202",
+        "title": "Engineering Mathematics",
+        "internal": "18",
+        "external": "6.5",
+        "total": "28",
+        "grade": "F"
+      },
+      {
+        "sem": "3SEM",
+        "code": "CS-304",
+        "title": "Oops Through C++",
+        "internal": "18",
+        "external": "9",
+        "total": "53",
+        "grade": "F"
+      },
+      {
+        "sem": "4SEM",
+        "code": "CS-404",
+        "title": "Relational Database Management Systems",
+        "internal": "19",
+        "external": "4",
+        "total": "35",
+        "grade": "F"
+      },
+      {
+        "sem": "4SEM",
+        "code": "CS-406",
+        "title": "Operating Systems",
+        "internal": "19",
+        "external": "7",
+        "total": "31",
+        "grade": "F"
+      },
+      {
+        "sem": "3SEM",
+        "code": "SC-301",
+        "title": "Applied Engineering Mathematics",
+        "internal": "18",
+        "external": "1.5",
+        "total": "32",
+        "grade": "F"
+      }
+    ],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 51,
+    "pin_ai": "24259-AI-051",
+    "pin_aiml": "24259-AIML-051",
+    "name": "BATHKA VARSHINI YADAV",
+    "working_days": 88,
+    "present_days": 43,
+    "percentage": 48.86,
+    "cgpa": 8.64,
+    "credits_gained": 80.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 52,
+    "pin_ai": "24259-AI-052",
+    "pin_aiml": "24259-AIML-052",
+    "name": "ETIKELA GNANA CHARAN",
+    "working_days": 88,
+    "present_days": 41,
+    "percentage": 46.59,
+    "cgpa": 8.86,
+    "credits_gained": 80.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 53,
+    "pin_ai": "24259-AI-053",
+    "pin_aiml": "24259-AIML-053",
+    "name": "VAGULOJU KIRTHANA",
+    "working_days": 88,
+    "present_days": 38,
+    "percentage": 43.18,
+    "cgpa": 9.16,
+    "credits_gained": 80.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 54,
+    "pin_ai": "24259-AI-054",
+    "pin_aiml": "24259-AIML-054",
+    "name": "BAIRU SEETHU",
+    "working_days": 88,
+    "present_days": 36,
+    "percentage": 40.91,
+    "cgpa": 5.41,
+    "credits_gained": 62.5,
+    "total_max_credits": 80.0,
+    "backlogs_count": 7,
+    "backlogs": [
+      {
+        "sem": "4SEM",
+        "code": "SC-401",
+        "title": "Advanced Engineering Mathematics",
+        "internal": "20",
+        "external": "5.5",
+        "total": "30",
+        "grade": "F"
+      },
+      {
+        "sem": "2SEM",
+        "code": "SC-202",
+        "title": "Engineering Mathematics",
+        "internal": "19",
+        "external": "5.5",
+        "total": "27",
+        "grade": "F"
+      },
+      {
+        "sem": "2SEM",
+        "code": "SC-203",
+        "title": "Applied Physics",
+        "internal": "19",
+        "external": "7",
+        "total": "30",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "SC-104",
+        "title": "General Engineering Chemistry",
+        "internal": "19",
+        "external": "1",
+        "total": "35",
+        "grade": "F"
+      },
+      {
+        "sem": "4SEM",
+        "code": "CS-406",
+        "title": "Operating Systems",
+        "internal": "19",
+        "external": "9",
+        "total": "33",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "CS-106",
+        "title": "Basic Electrical & Electronics Engineering",
+        "internal": "17",
+        "external": "8.5",
+        "total": "29",
+        "grade": "F"
+      },
+      {
+        "sem": "3SEM",
+        "code": "SC-301",
+        "title": "Applied Engineering Mathematics",
+        "internal": "15",
+        "external": "2",
+        "total": "17",
+        "grade": "F"
+      }
+    ],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 55,
+    "pin_ai": "24259-AI-055",
+    "pin_aiml": "24259-AIML-055",
+    "name": "PITTLA AKHIL",
+    "working_days": 88,
+    "present_days": 32,
+    "percentage": 36.36,
+    "cgpa": 7.56,
+    "credits_gained": 78.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 1,
+    "backlogs": [
+      {
+        "sem": "4SEM",
+        "code": "CS-404",
+        "title": "Relational Database Management Systems",
+        "internal": "19",
+        "external": "12.5",
+        "total": "57",
+        "grade": "F"
+      }
+    ],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 56,
+    "pin_ai": "24259-AI-056",
+    "pin_aiml": "24259-AIML-056",
+    "name": "H SOHAN CHAVAN",
+    "working_days": 88,
+    "present_days": 36,
+    "percentage": 40.91,
+    "cgpa": 7.6,
+    "credits_gained": 81.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 57,
+    "pin_ai": "24259-AI-057",
+    "pin_aiml": "24259-AIML-057",
+    "name": "BASKA SRI CHANDANA",
+    "working_days": 88,
+    "present_days": 39,
+    "percentage": 44.32,
+    "cgpa": 8.58,
+    "credits_gained": 80.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 58,
+    "pin_ai": "24259-AI-058",
+    "pin_aiml": "24259-AIML-058",
+    "name": "UTNOOR PRANAVI",
+    "working_days": 88,
+    "present_days": 40,
+    "percentage": 45.45,
+    "cgpa": 7.99,
+    "credits_gained": 81.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 59,
+    "pin_ai": "24259-AI-059",
+    "pin_aiml": "24259-AIML-059",
+    "name": "MD ABDUL REHAN",
+    "working_days": 88,
+    "present_days": 23,
+    "percentage": 26.14,
+    "cgpa": 5.23,
+    "credits_gained": 65.5,
+    "total_max_credits": 80.0,
+    "backlogs_count": 6,
+    "backlogs": [
+      {
+        "sem": "2SEM",
+        "code": "SC-202",
+        "title": "Engineering Mathematics",
+        "internal": "19",
+        "external": "7",
+        "total": "31",
+        "grade": "F"
+      },
+      {
+        "sem": "4SEM",
+        "code": "CS-402",
+        "title": "Java Programming",
+        "internal": "20",
+        "external": "6.5",
+        "total": "42",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "SC-103",
+        "title": "Basic Physics",
+        "internal": "18",
+        "external": "3",
+        "total": "22",
+        "grade": "F"
+      },
+      {
+        "sem": "4SEM",
+        "code": "CS-404",
+        "title": "Relational Database Management Systems",
+        "internal": "19",
+        "external": "10",
+        "total": "42",
+        "grade": "F"
+      },
+      {
+        "sem": "4SEM",
+        "code": "CS-406",
+        "title": "Operating Systems",
+        "internal": "18",
+        "external": "10",
+        "total": "32",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "CS-106",
+        "title": "Basic Electrical & Electronics Engineering",
+        "internal": "19",
+        "external": "4.5",
+        "total": "25",
+        "grade": "F"
+      }
+    ],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 60,
+    "pin_ai": "24259-AI-060",
+    "pin_aiml": "24259-AIML-060",
+    "name": "Syed Asimuddin",
+    "working_days": 88,
+    "present_days": 30,
+    "percentage": 34.09,
+    "cgpa": 8.02,
+    "credits_gained": 80.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 61,
+    "pin_ai": "24259-AI-061",
+    "pin_aiml": "24259-AIML-061",
+    "name": "SANGAM RAMESH KAASHINATH",
+    "working_days": 88,
+    "present_days": 45,
+    "percentage": 51.14,
+    "cgpa": 0.0,
+    "credits_gained": 0.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": true,
+    "has_results": false
+  },
+  {
+    "roll": 62,
+    "pin_ai": "24259-AI-062",
+    "pin_aiml": "24259-AIML-062",
+    "name": "AMGOTH SEVYA",
+    "working_days": 88,
+    "present_days": 0,
+    "percentage": 0.0,
+    "cgpa": 0.0,
+    "credits_gained": 0.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": false,
+    "has_results": true
+  },
+  {
+    "roll": 63,
+    "pin_ai": "24259-AI-063",
+    "pin_aiml": "24259-AIML-063",
+    "name": "PEDDAPURAM SUHAS",
+    "working_days": 88,
+    "present_days": 40,
+    "percentage": 46.02,
+    "cgpa": 4.84,
+    "credits_gained": 63.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 7,
+    "backlogs": [
+      {
+        "sem": "4SEM",
+        "code": "SC-401",
+        "title": "Advanced Engineering Mathematics",
+        "internal": "20",
+        "external": "4",
+        "total": "26",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "SC-102",
+        "title": "Basic Engineering Mathematics",
+        "internal": "16",
+        "external": "2",
+        "total": "19",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "SC-104",
+        "title": "General Engineering Chemistry",
+        "internal": "16",
+        "external": "0",
+        "total": "23",
+        "grade": "F"
+      },
+      {
+        "sem": "4SEM",
+        "code": "CS-404",
+        "title": "Relational Database Management Systems",
+        "internal": "19",
+        "external": "5",
+        "total": "40",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "CS-105",
+        "title": "Computer Fundamentals & Hardware",
+        "internal": "19",
+        "external": "7",
+        "total": "38",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "CS-106",
+        "title": "Basic Electrical & Electronics Engineering",
+        "internal": "18",
+        "external": "7.5",
+        "total": "30",
+        "grade": "F"
+      },
+      {
+        "sem": "3SEM",
+        "code": "SC-301",
+        "title": "Applied Engineering Mathematics",
+        "internal": "18",
+        "external": "5",
+        "total": "24",
+        "grade": "F"
+      }
+    ],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 64,
+    "pin_ai": "24259-AI-064",
+    "pin_aiml": "24259-AIML-064",
+    "name": "BANDARI ELIJAH STEPHEN PAUL",
+    "working_days": 88,
+    "present_days": 48,
+    "percentage": 54.55,
+    "cgpa": 7.48,
+    "credits_gained": 80.5,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 65,
+    "pin_ai": "24259-AI-065",
+    "pin_aiml": "24259-AIML-065",
+    "name": "CHINTAKUNTA ESHWAR",
+    "working_days": 88,
+    "present_days": 38,
+    "percentage": 43.75,
+    "cgpa": 6.0,
+    "credits_gained": 72.5,
+    "total_max_credits": 80.0,
+    "backlogs_count": 3,
+    "backlogs": [
+      {
+        "sem": "3SEM",
+        "code": "EC-302",
+        "title": "Digital Electronics",
+        "internal": "19",
+        "external": "5.5",
+        "total": "44",
+        "grade": "F"
+      },
+      {
+        "sem": "2SEM",
+        "code": "SC-202",
+        "title": "Engineering Mathematics",
+        "internal": "18",
+        "external": "5",
+        "total": "34",
+        "grade": "F"
+      },
+      {
+        "sem": "3SEM",
+        "code": "CS-305",
+        "title": "Computer Organisation and Architecture",
+        "internal": "19",
+        "external": "8",
+        "total": "35",
+        "grade": "F"
+      }
+    ],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 66,
+    "pin_ai": "24259-AI-066",
+    "pin_aiml": "24259-AIML-066",
+    "name": "NANDALA SUPRIYA",
+    "working_days": 88,
+    "present_days": 44,
+    "percentage": 50.57,
+    "cgpa": 6.65,
+    "credits_gained": 70.5,
+    "total_max_credits": 80.0,
+    "backlogs_count": 4,
+    "backlogs": [
+      {
+        "sem": "4SEM",
+        "code": "SC-401",
+        "title": "Advanced Engineering Mathematics",
+        "internal": "20",
+        "external": "9.5",
+        "total": "32",
+        "grade": "F"
+      },
+      {
+        "sem": "2SEM",
+        "code": "SC-203",
+        "title": "Applied Physics",
+        "internal": "19",
+        "external": "3",
+        "total": "40",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "SC-103",
+        "title": "Basic Physics",
+        "internal": "19",
+        "external": "3.5",
+        "total": "32",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "CS-106",
+        "title": "Basic Electrical & Electronics Engineering",
+        "internal": "17",
+        "external": "8",
+        "total": "37",
+        "grade": "F"
+      }
+    ],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 67,
+    "pin_ai": "24259-AI-067",
+    "pin_aiml": "24259-AIML-067",
+    "name": "K VENKATESWARLU",
+    "working_days": 88,
+    "present_days": 41,
+    "percentage": 47.16,
+    "cgpa": 7.31,
+    "credits_gained": 78.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 1,
+    "backlogs": [
+      {
+        "sem": "2SEM",
+        "code": "SC-204",
+        "title": "Applied Engineering Chemistry",
+        "internal": "18",
+        "external": "1",
+        "total": "39",
+        "grade": "F"
+      }
+    ],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 68,
+    "pin_ai": "24259-AI-068",
+    "pin_aiml": "24259-AIML-068",
+    "name": "BESTHA SRISHANTH",
+    "working_days": 88,
+    "present_days": 40,
+    "percentage": 46.02,
+    "cgpa": 7.49,
+    "credits_gained": 80.5,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 69,
+    "pin_ai": "24259-AI-069",
+    "pin_aiml": "24259-AIML-069",
+    "name": "BANOTH ABHIRAM NAIK",
+    "working_days": 88,
+    "present_days": 39,
+    "percentage": 44.32,
+    "cgpa": 4.48,
+    "credits_gained": 58.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 9,
+    "backlogs": [
+      {
+        "sem": "3SEM",
+        "code": "EC-302",
+        "title": "Digital Electronics",
+        "internal": "17",
+        "external": "0",
+        "total": "29",
+        "grade": "F"
+      },
+      {
+        "sem": "4SEM",
+        "code": "SC-401",
+        "title": "Advanced Engineering Mathematics",
+        "internal": "20",
+        "external": "1.5",
+        "total": "24",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "SC-102",
+        "title": "Basic Engineering Mathematics",
+        "internal": "18",
+        "external": "1",
+        "total": "19",
+        "grade": "F"
+      },
+      {
+        "sem": "2SEM",
+        "code": "SC-202",
+        "title": "Engineering Mathematics",
+        "internal": "20",
+        "external": "3",
+        "total": "25",
+        "grade": "F"
+      },
+      {
+        "sem": "2SEM",
+        "code": "SC-203",
+        "title": "Applied Physics",
+        "internal": "19",
+        "external": "2",
+        "total": "28",
+        "grade": "F"
+      },
+      {
+        "sem": "2SEM",
+        "code": "SC-204",
+        "title": "Applied Engineering Chemistry",
+        "internal": "18",
+        "external": "14",
+        "total": "34",
+        "grade": "F"
+      },
+      {
+        "sem": "2SEM",
+        "code": "CS-205",
+        "title": "Programming In C",
+        "internal": "18",
+        "external": "7.5",
+        "total": "30",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "CS-106",
+        "title": "Basic Electrical & Electronics Engineering",
+        "internal": "19",
+        "external": "0",
+        "total": "24",
+        "grade": "F"
+      },
+      {
+        "sem": "3SEM",
+        "code": "SC-301",
+        "title": "Applied Engineering Mathematics",
+        "internal": "16",
+        "external": "1",
+        "total": "19",
+        "grade": "F"
+      }
+    ],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 70,
+    "pin_ai": "24259-AI-070",
+    "pin_aiml": "24259-AIML-070",
+    "name": "PENUMATSA PRUDHVI VARMA",
+    "working_days": 88,
+    "present_days": 45,
+    "percentage": 51.14,
+    "cgpa": 8.72,
+    "credits_gained": 80.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 71,
+    "pin_ai": "24259-AI-071",
+    "pin_aiml": "24259-AIML-071",
+    "name": "AIML Student 071",
+    "working_days": 88,
+    "present_days": 0,
+    "percentage": 0.0,
+    "cgpa": 0.0,
+    "credits_gained": 0.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": false,
+    "has_results": false
+  },
+  {
+    "roll": 72,
+    "pin_ai": "24259-AI-072",
+    "pin_aiml": "24259-AIML-072",
+    "name": "MOHAMMED SAMEER",
+    "working_days": 88,
+    "present_days": 32,
+    "percentage": 36.36,
+    "cgpa": 6.09,
+    "credits_gained": 36.25,
+    "total_max_credits": 40.0,
+    "backlogs_count": 2,
+    "backlogs": [
+      {
+        "sem": "2SEM",
+        "code": "SC-202",
+        "title": "Engineering Mathematics",
+        "internal": "20",
+        "external": "8",
+        "total": "32",
+        "grade": "F"
+      },
+      {
+        "sem": "2SEM",
+        "code": "ME-207",
+        "title": "Engineering Drawing-II",
+        "internal": "19",
+        "external": "20",
+        "total": "39",
+        "grade": "F"
+      }
+    ],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 73,
+    "pin_ai": "24259-AI-073",
+    "pin_aiml": "24259-AIML-073",
+    "name": "PABBALA BHARATH KUMAR",
+    "working_days": 88,
+    "present_days": 49,
+    "percentage": 55.68,
+    "cgpa": 7.08,
+    "credits_gained": 77.5,
+    "total_max_credits": 80.0,
+    "backlogs_count": 1,
+    "backlogs": [
+      {
+        "sem": "1SEM",
+        "code": "SC-102",
+        "title": "Basic Engineering Mathematics",
+        "internal": "16",
+        "external": "8",
+        "total": "40",
+        "grade": "F"
+      }
+    ],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 74,
+    "pin_ai": "24259-AI-074",
+    "pin_aiml": "24259-AIML-074",
+    "name": "BITLA LIKHITHA",
+    "working_days": 88,
+    "present_days": 41,
+    "percentage": 47.16,
+    "cgpa": 7.77,
+    "credits_gained": 75.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 2,
+    "backlogs": [
+      {
+        "sem": "4SEM",
+        "code": "SC-401",
+        "title": "Advanced Engineering Mathematics",
+        "internal": "20",
+        "external": "8.5",
+        "total": "50",
+        "grade": "F"
+      },
+      {
+        "sem": "2SEM",
+        "code": "SC-202",
+        "title": "Engineering Mathematics",
+        "internal": "19",
+        "external": "5",
+        "total": "33",
+        "grade": "F"
+      }
+    ],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 75,
+    "pin_ai": "24259-AI-075",
+    "pin_aiml": "24259-AIML-075",
+    "name": "PAKA PURNA CHANDER",
+    "working_days": 88,
+    "present_days": 52,
+    "percentage": 59.09,
+    "cgpa": 8.11,
+    "credits_gained": 80.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 76,
+    "pin_ai": "24259-AI-076",
+    "pin_aiml": "24259-AIML-076",
+    "name": "THOGARI GAYATHREE",
+    "working_days": 88,
+    "present_days": 48,
+    "percentage": 55.11,
+    "cgpa": 8.05,
+    "credits_gained": 80.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 77,
+    "pin_ai": "24259-AI-077",
+    "pin_aiml": "24259-AIML-077",
+    "name": "KASU VASU",
+    "working_days": 88,
+    "present_days": 52,
+    "percentage": 59.66,
+    "cgpa": 9.31,
+    "credits_gained": 80.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 78,
+    "pin_ai": "24259-AI-078",
+    "pin_aiml": "24259-AIML-078",
+    "name": "MUDDADA CHANDRA SHEKAR",
+    "working_days": 88,
+    "present_days": 42,
+    "percentage": 47.73,
+    "cgpa": 5.08,
+    "credits_gained": 67.5,
+    "total_max_credits": 80.0,
+    "backlogs_count": 5,
+    "backlogs": [
+      {
+        "sem": "4SEM",
+        "code": "SC-401",
+        "title": "Advanced Engineering Mathematics",
+        "internal": "20",
+        "external": "2",
+        "total": "31",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "SC-102",
+        "title": "Basic Engineering Mathematics",
+        "internal": "18",
+        "external": "8.5",
+        "total": "38",
+        "grade": "F"
+      },
+      {
+        "sem": "4SEM",
+        "code": "CS-402",
+        "title": "Java Programming",
+        "internal": "20",
+        "external": "8.5",
+        "total": "44",
+        "grade": "F"
+      },
+      {
+        "sem": "2SEM",
+        "code": "SC-202",
+        "title": "Engineering Mathematics",
+        "internal": "18",
+        "external": "0",
+        "total": "22",
+        "grade": "F"
+      },
+      {
+        "sem": "2SEM",
+        "code": "SC-203",
+        "title": "Applied Physics",
+        "internal": "18",
+        "external": "8",
+        "total": "42",
+        "grade": "F"
+      }
+    ],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 79,
+    "pin_ai": "24259-AI-079",
+    "pin_aiml": "24259-AIML-079",
+    "name": "EDABOINA YASHWIKA",
+    "working_days": 88,
+    "present_days": 51,
+    "percentage": 58.52,
+    "cgpa": 8.68,
+    "credits_gained": 80.5,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 80,
+    "pin_ai": "24259-AI-080",
+    "pin_aiml": "24259-AIML-080",
+    "name": "SHANE MOIN",
+    "working_days": 88,
+    "present_days": 50,
+    "percentage": 56.82,
+    "cgpa": 6.15,
+    "credits_gained": 75.5,
+    "total_max_credits": 80.0,
+    "backlogs_count": 2,
+    "backlogs": [
+      {
+        "sem": "1SEM",
+        "code": "SC-102",
+        "title": "Basic Engineering Mathematics",
+        "internal": "19",
+        "external": "5",
+        "total": "29",
+        "grade": "F"
+      },
+      {
+        "sem": "4SEM",
+        "code": "CS-406",
+        "title": "Operating Systems",
+        "internal": "18",
+        "external": "8",
+        "total": "26",
+        "grade": "F"
+      }
+    ],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 81,
+    "pin_ai": "24259-AI-081",
+    "pin_aiml": "24259-AIML-081",
+    "name": "THUMMALURI SANTHOSH",
+    "working_days": 88,
+    "present_days": 40,
+    "percentage": 46.02,
+    "cgpa": 3.92,
+    "credits_gained": 50.5,
+    "total_max_credits": 80.0,
+    "backlogs_count": 12,
+    "backlogs": [
+      {
+        "sem": "3SEM",
+        "code": "EC-302",
+        "title": "Digital Electronics",
+        "internal": "17",
+        "external": "1.5",
+        "total": "33",
+        "grade": "F"
+      },
+      {
+        "sem": "4SEM",
+        "code": "SC-401",
+        "title": "Advanced Engineering Mathematics",
+        "internal": "20",
+        "external": "0",
+        "total": "21",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "SC-102",
+        "title": "Basic Engineering Mathematics",
+        "internal": "17",
+        "external": "1.5",
+        "total": "25",
+        "grade": "F"
+      },
+      {
+        "sem": "4SEM",
+        "code": "CS-402",
+        "title": "Java Programming",
+        "internal": "20",
+        "external": "4",
+        "total": "31",
+        "grade": "F"
+      },
+      {
+        "sem": "2SEM",
+        "code": "SC-202",
+        "title": "Engineering Mathematics",
+        "internal": "19",
+        "external": "1.5",
+        "total": "21",
+        "grade": "F"
+      },
+      {
+        "sem": "2SEM",
+        "code": "SC-203",
+        "title": "Applied Physics",
+        "internal": "19",
+        "external": "8",
+        "total": "39",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "SC-104",
+        "title": "General Engineering Chemistry",
+        "internal": "17",
+        "external": "3",
+        "total": "34",
+        "grade": "F"
+      },
+      {
+        "sem": "4SEM",
+        "code": "CS-404",
+        "title": "Relational Database Management Systems",
+        "internal": "19",
+        "external": "2",
+        "total": "24",
+        "grade": "F"
+      },
+      {
+        "sem": "3SEM",
+        "code": "CS-305",
+        "title": "Computer Organisation and Architecture",
+        "internal": "19",
+        "external": "9",
+        "total": "29",
+        "grade": "F"
+      },
+      {
+        "sem": "3SEM",
+        "code": "AI-306",
+        "title": "Fundamentals of Artificial Intelligence",
+        "internal": "18",
+        "external": "3.5",
+        "total": "23",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "CS-106",
+        "title": "Basic Electrical & Electronics Engineering",
+        "internal": "19",
+        "external": "1",
+        "total": "28",
+        "grade": "F"
+      },
+      {
+        "sem": "3SEM",
+        "code": "SC-301",
+        "title": "Applied Engineering Mathematics",
+        "internal": "16",
+        "external": "10",
+        "total": "32",
+        "grade": "F"
+      }
+    ],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 82,
+    "pin_ai": "24259-AI-082",
+    "pin_aiml": "24259-AIML-082",
+    "name": "THURAI KRISHNA LOHITH",
+    "working_days": 88,
+    "present_days": 50,
+    "percentage": 56.82,
+    "cgpa": 8.42,
+    "credits_gained": 80.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 83,
+    "pin_ai": "24259-AI-083",
+    "pin_aiml": "24259-AIML-083",
+    "name": "SIRIPANGA MANI KUMAR",
+    "working_days": 88,
+    "present_days": 27,
+    "percentage": 30.68,
+    "cgpa": 5.84,
+    "credits_gained": 72.5,
+    "total_max_credits": 80.0,
+    "backlogs_count": 3,
+    "backlogs": [
+      {
+        "sem": "1SEM",
+        "code": "SC-102",
+        "title": "Basic Engineering Mathematics",
+        "internal": "16",
+        "external": "0",
+        "total": "25",
+        "grade": "F"
+      },
+      {
+        "sem": "2SEM",
+        "code": "SC-203",
+        "title": "Applied Physics",
+        "internal": "18",
+        "external": "5",
+        "total": "42",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "CS-106",
+        "title": "Basic Electrical & Electronics Engineering",
+        "internal": "18",
+        "external": "4",
+        "total": "29",
+        "grade": "F"
+      }
+    ],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 84,
+    "pin_ai": "24259-AI-084",
+    "pin_aiml": "24259-AIML-084",
+    "name": "PACHIKANTI KARTHIK",
+    "working_days": 88,
+    "present_days": 51,
+    "percentage": 57.95,
+    "cgpa": 9.03,
+    "credits_gained": 80.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 85,
+    "pin_ai": "24259-AI-085",
+    "pin_aiml": "24259-AIML-085",
+    "name": "PAKAM GOWTHAM RAJU",
+    "working_days": 88,
+    "present_days": 39,
+    "percentage": 44.89,
+    "cgpa": 0.0,
+    "credits_gained": 0.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": true,
+    "has_results": false
+  },
+  {
+    "roll": 86,
+    "pin_ai": "24259-AI-086",
+    "pin_aiml": "24259-AIML-086",
+    "name": "K SIDHARTHA REDDY",
+    "working_days": 88,
+    "present_days": 45,
+    "percentage": 51.7,
+    "cgpa": 6.84,
+    "credits_gained": 75.5,
+    "total_max_credits": 80.0,
+    "backlogs_count": 2,
+    "backlogs": [
+      {
+        "sem": "4SEM",
+        "code": "SC-401",
+        "title": "Advanced Engineering Mathematics",
+        "internal": "20",
+        "external": "8.5",
+        "total": "49",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "SC-102",
+        "title": "Basic Engineering Mathematics",
+        "internal": "18",
+        "external": "5",
+        "total": "29",
+        "grade": "F"
+      }
+    ],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 87,
+    "pin_ai": "24259-AI-087",
+    "pin_aiml": "24259-AIML-087",
+    "name": "PUPPALA SUSHANTH",
+    "working_days": 88,
+    "present_days": 0,
+    "percentage": 0.0,
+    "cgpa": 0.0,
+    "credits_gained": 0.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": false,
+    "has_results": true
+  },
+  {
+    "roll": 88,
+    "pin_ai": "24259-AI-088",
+    "pin_aiml": "24259-AIML-088",
+    "name": "KONDRA MANOJ GOUD",
+    "working_days": 88,
+    "present_days": 41,
+    "percentage": 47.16,
+    "cgpa": 7.56,
+    "credits_gained": 80.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 89,
+    "pin_ai": "24259-AI-089",
+    "pin_aiml": "24259-AIML-089",
+    "name": "APOORVA CHOWDHARY",
+    "working_days": 88,
+    "present_days": 55,
+    "percentage": 62.5,
+    "cgpa": 9.09,
+    "credits_gained": 80.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 90,
+    "pin_ai": "24259-AI-090",
+    "pin_aiml": "24259-AIML-090",
+    "name": "KURRI MEGHANA",
+    "working_days": 88,
+    "present_days": 55,
+    "percentage": 63.07,
+    "cgpa": 8.55,
+    "credits_gained": 80.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 91,
+    "pin_ai": "24259-AI-091",
+    "pin_aiml": "24259-AIML-091",
+    "name": "DEGULAWADI AKSHAY KUMAR",
+    "working_days": 88,
+    "present_days": 38,
+    "percentage": 43.75,
+    "cgpa": 0.0,
+    "credits_gained": 0.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": true,
+    "has_results": false
+  },
+  {
+    "roll": 92,
+    "pin_ai": "24259-AI-092",
+    "pin_aiml": "24259-AIML-092",
+    "name": "KOLLOJU AKSHEETHA",
+    "working_days": 88,
+    "present_days": 59,
+    "percentage": 67.61,
+    "cgpa": 0.0,
+    "credits_gained": 0.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": true,
+    "has_results": false
+  },
+  {
+    "roll": 93,
+    "pin_ai": "24259-AI-093",
+    "pin_aiml": "24259-AIML-093",
+    "name": "SOMISHETTI SAI HARISHITH",
+    "working_days": 88,
+    "present_days": 36,
+    "percentage": 41.48,
+    "cgpa": 5.23,
+    "credits_gained": 65.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 6,
+    "backlogs": [
+      {
+        "sem": "4SEM",
+        "code": "SC-401",
+        "title": "Advanced Engineering Mathematics",
+        "internal": "20",
+        "external": "3.5",
+        "total": "25",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "SC-102",
+        "title": "Basic Engineering Mathematics",
+        "internal": "19",
+        "external": "3",
+        "total": "30",
+        "grade": "F"
+      },
+      {
+        "sem": "2SEM",
+        "code": "SC-203",
+        "title": "Applied Physics",
+        "internal": "19",
+        "external": "1",
+        "total": "35",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "SC-103",
+        "title": "Basic Physics",
+        "internal": "18",
+        "external": "6",
+        "total": "32",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "SC-104",
+        "title": "General Engineering Chemistry",
+        "internal": "16",
+        "external": "1",
+        "total": "32",
+        "grade": "F"
+      },
+      {
+        "sem": "3SEM",
+        "code": "SC-301",
+        "title": "Applied Engineering Mathematics",
+        "internal": "17",
+        "external": "5",
+        "total": "24",
+        "grade": "F"
+      }
+    ],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 94,
+    "pin_ai": "24259-AI-094",
+    "pin_aiml": "24259-AIML-094",
+    "name": "MODIPURAM SURYA TEJA REDDY",
+    "working_days": 88,
+    "present_days": 41,
+    "percentage": 47.16,
+    "cgpa": 0.0,
+    "credits_gained": 0.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": true,
+    "has_results": false
+  },
+  {
+    "roll": 95,
+    "pin_ai": "24259-AI-095",
+    "pin_aiml": "24259-AIML-095",
+    "name": "PURNA SATYA SRI SAI PHANI ADITYA KADAMBARI",
+    "working_days": 88,
+    "present_days": 57,
+    "percentage": 64.77,
+    "cgpa": 0.0,
+    "credits_gained": 0.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": true,
+    "has_results": false
+  },
+  {
+    "roll": 96,
+    "pin_ai": "24259-AI-096",
+    "pin_aiml": "24259-AIML-096",
+    "name": "INDUGULA LAXMI SRI SAI KARTHIKEYA",
+    "working_days": 88,
+    "present_days": 45,
+    "percentage": 51.14,
+    "cgpa": 5.95,
+    "credits_gained": 78.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 1,
+    "backlogs": [
+      {
+        "sem": "1SEM",
+        "code": "CS-106",
+        "title": "Basic Electrical & Electronics Engineering",
+        "internal": "19",
+        "external": "8",
+        "total": "30",
+        "grade": "F"
+      }
+    ],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 97,
+    "pin_ai": "24259-AI-097",
+    "pin_aiml": "24259-AIML-097",
+    "name": "RAMISETTY NAGA SAI JYOTHI NARESH KUMAR",
+    "working_days": 88,
+    "present_days": 53,
+    "percentage": 60.23,
+    "cgpa": 0.0,
+    "credits_gained": 0.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": true,
+    "has_results": false
+  },
+  {
+    "roll": 98,
+    "pin_ai": "24259-AI-098",
+    "pin_aiml": "24259-AIML-098",
+    "name": "SADINENI MRUDUL",
+    "working_days": 88,
+    "present_days": 40,
+    "percentage": 46.02,
+    "cgpa": 6.04,
+    "credits_gained": 75.5,
+    "total_max_credits": 80.0,
+    "backlogs_count": 2,
+    "backlogs": [
+      {
+        "sem": "4SEM",
+        "code": "SC-401",
+        "title": "Advanced Engineering Mathematics",
+        "internal": "20",
+        "external": "7",
+        "total": "33",
+        "grade": "F"
+      },
+      {
+        "sem": "2SEM",
+        "code": "SC-202",
+        "title": "Engineering Mathematics",
+        "internal": "19",
+        "external": "5",
+        "total": "25",
+        "grade": "F"
+      }
+    ],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 99,
+    "pin_ai": "24259-AI-099",
+    "pin_aiml": "24259-AIML-099",
+    "name": "N SURYA TEJ KUMAR",
+    "working_days": 88,
+    "present_days": 36,
+    "percentage": 40.91,
+    "cgpa": 0.0,
+    "credits_gained": 0.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": true,
+    "has_results": false
+  },
+  {
+    "roll": 100,
+    "pin_ai": "24259-AI-100",
+    "pin_aiml": "24259-AIML-100",
+    "name": "THURAI KALYANI",
+    "working_days": 88,
+    "present_days": 47,
+    "percentage": 53.41,
+    "cgpa": 8.81,
+    "credits_gained": 80.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 101,
+    "pin_ai": "24259-AI-101",
+    "pin_aiml": "24259-AIML-101",
+    "name": "YEDLLA DEEPTHI",
+    "working_days": 88,
+    "present_days": 46,
+    "percentage": 52.27,
+    "cgpa": 0.0,
+    "credits_gained": 0.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": true,
+    "has_results": false
+  },
+  {
+    "roll": 102,
+    "pin_ai": "24259-AI-102",
+    "pin_aiml": "24259-AIML-102",
+    "name": "R SPANDHANA",
+    "working_days": 88,
+    "present_days": 39,
+    "percentage": 44.89,
+    "cgpa": 0.0,
+    "credits_gained": 0.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": true,
+    "has_results": false
+  },
+  {
+    "roll": 103,
+    "pin_ai": "24259-AI-103",
+    "pin_aiml": "24259-AIML-103",
+    "name": "VENNE BHADRINATH",
+    "working_days": 88,
+    "present_days": 43,
+    "percentage": 48.86,
+    "cgpa": 6.06,
+    "credits_gained": 72.5,
+    "total_max_credits": 80.0,
+    "backlogs_count": 3,
+    "backlogs": [
+      {
+        "sem": "2SEM",
+        "code": "SC-202",
+        "title": "Engineering Mathematics",
+        "internal": "18",
+        "external": "9",
+        "total": "31",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "SC-103",
+        "title": "Basic Physics",
+        "internal": "19",
+        "external": "7",
+        "total": "39",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "SC-104",
+        "title": "General Engineering Chemistry",
+        "internal": "17",
+        "external": "11.5",
+        "total": "53",
+        "grade": "F"
+      }
+    ],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 104,
+    "pin_ai": "24259-AI-104",
+    "pin_aiml": "24259-AIML-104",
+    "name": "NIVAKOTI GAYATHRI",
+    "working_days": 88,
+    "present_days": 54,
+    "percentage": 61.93,
+    "cgpa": 9.19,
+    "credits_gained": 80.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 105,
+    "pin_ai": "24259-AI-105",
+    "pin_aiml": "24259-AIML-105",
+    "name": "THAKUR KARISHMA BAI",
+    "working_days": 88,
+    "present_days": 43,
+    "percentage": 48.86,
+    "cgpa": 8.64,
+    "credits_gained": 80.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 106,
+    "pin_ai": "24259-AI-106",
+    "pin_aiml": "24259-AIML-106",
+    "name": "BOREDDY SAI LAHARI REDDY",
+    "working_days": 88,
+    "present_days": 50,
+    "percentage": 57.39,
+    "cgpa": 9.0,
+    "credits_gained": 80.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 107,
+    "pin_ai": "24259-AI-107",
+    "pin_aiml": "24259-AIML-107",
+    "name": "REDDABOINA KEERTHANA",
+    "working_days": 88,
+    "present_days": 0,
+    "percentage": 0.0,
+    "cgpa": 6.38,
+    "credits_gained": 47.5,
+    "total_max_credits": 60.0,
+    "backlogs_count": 5,
+    "backlogs": [
+      {
+        "sem": "1SEM",
+        "code": "SC-102",
+        "title": "Basic Engineering Mathematics",
+        "internal": "20",
+        "external": "7.5",
+        "total": "41",
+        "grade": "F"
+      },
+      {
+        "sem": "2SEM",
+        "code": "SC-202",
+        "title": "Engineering Mathematics",
+        "internal": "18",
+        "external": "0",
+        "total": "26",
+        "grade": "F"
+      },
+      {
+        "sem": "2SEM",
+        "code": "SC-203",
+        "title": "Applied Physics",
+        "internal": "19",
+        "external": "3",
+        "total": "30",
+        "grade": "F"
+      },
+      {
+        "sem": "2SEM",
+        "code": "SC-204",
+        "title": "Applied Engineering Chemistry",
+        "internal": "18",
+        "external": "10",
+        "total": "52",
+        "grade": "F"
+      },
+      {
+        "sem": "3SEM",
+        "code": "SC-301",
+        "title": "Applied Engineering Mathematics",
+        "internal": "17",
+        "external": "4.5",
+        "total": "24",
+        "grade": "F"
+      }
+    ],
+    "has_attendance": false,
+    "has_results": true
+  },
+  {
+    "roll": 108,
+    "pin_ai": "24259-AI-108",
+    "pin_aiml": "24259-AIML-108",
+    "name": "KETHAVATH RAMCHARAN",
+    "working_days": 88,
+    "present_days": 19,
+    "percentage": 21.59,
+    "cgpa": 4.63,
+    "credits_gained": 57.5,
+    "total_max_credits": 80.0,
+    "backlogs_count": 9,
+    "backlogs": [
+      {
+        "sem": "3SEM",
+        "code": "EC-302",
+        "title": "Digital Electronics",
+        "internal": "18",
+        "external": "1",
+        "total": "25",
+        "grade": "F"
+      },
+      {
+        "sem": "4SEM",
+        "code": "SC-401",
+        "title": "Advanced Engineering Mathematics",
+        "internal": "20",
+        "external": "0",
+        "total": "20",
+        "grade": "F"
+      },
+      {
+        "sem": "4SEM",
+        "code": "CS-402",
+        "title": "Java Programming",
+        "internal": "20",
+        "external": "6.5",
+        "total": "31",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "SC-102",
+        "title": "Basic Engineering Mathematics",
+        "internal": "17",
+        "external": "5",
+        "total": "24",
+        "grade": "F"
+      },
+      {
+        "sem": "2SEM",
+        "code": "SC-202",
+        "title": "Engineering Mathematics",
+        "internal": "19",
+        "external": "6",
+        "total": "25",
+        "grade": "F"
+      },
+      {
+        "sem": "4SEM",
+        "code": "CS-403",
+        "title": "Python Programming",
+        "internal": "19",
+        "external": "A",
+        "total": "35",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "SC-104",
+        "title": "General Engineering Chemistry",
+        "internal": "17",
+        "external": "2",
+        "total": "28",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "CS-106",
+        "title": "Basic Electrical & Electronics Engineering",
+        "internal": "19",
+        "external": "0.5",
+        "total": "25",
+        "grade": "F"
+      },
+      {
+        "sem": "3SEM",
+        "code": "SC-301",
+        "title": "Applied Engineering Mathematics",
+        "internal": "17",
+        "external": "0",
+        "total": "18",
+        "grade": "F"
+      }
+    ],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 109,
+    "pin_ai": "24259-AI-109",
+    "pin_aiml": "24259-AIML-109",
+    "name": "ADLA RAVI TEJA",
+    "working_days": 88,
+    "present_days": 40,
+    "percentage": 45.45,
+    "cgpa": 4.61,
+    "credits_gained": 60.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 8,
+    "backlogs": [
+      {
+        "sem": "4SEM",
+        "code": "SC-401",
+        "title": "Advanced Engineering Mathematics",
+        "internal": "20",
+        "external": "10",
+        "total": "39",
+        "grade": "F"
+      },
+      {
+        "sem": "4SEM",
+        "code": "CS-402",
+        "title": "Java Programming",
+        "internal": "20",
+        "external": "11",
+        "total": "36",
+        "grade": "F"
+      },
+      {
+        "sem": "2SEM",
+        "code": "SC-203",
+        "title": "Applied Physics",
+        "internal": "19",
+        "external": "1",
+        "total": "35",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "SC-103",
+        "title": "Basic Physics",
+        "internal": "18",
+        "external": "1",
+        "total": "22",
+        "grade": "F"
+      },
+      {
+        "sem": "2SEM",
+        "code": "SC-204",
+        "title": "Applied Engineering Chemistry",
+        "internal": "19",
+        "external": "7.5",
+        "total": "42",
+        "grade": "F"
+      },
+      {
+        "sem": "4SEM",
+        "code": "CS-404",
+        "title": "Relational Database Management Systems",
+        "internal": "20",
+        "external": "11",
+        "total": "36",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "CS-106",
+        "title": "Basic Electrical & Electronics Engineering",
+        "internal": "18",
+        "external": "2",
+        "total": "27",
+        "grade": "F"
+      },
+      {
+        "sem": "3SEM",
+        "code": "SC-301",
+        "title": "Applied Engineering Mathematics",
+        "internal": "18",
+        "external": "11",
+        "total": "51",
+        "grade": "F"
+      }
+    ],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 110,
+    "pin_ai": "24259-AI-110",
+    "pin_aiml": "24259-AIML-110",
+    "name": "HARIJANA SANDEEP",
+    "working_days": 88,
+    "present_days": 31,
+    "percentage": 35.8,
+    "cgpa": 3.72,
+    "credits_gained": 47.5,
+    "total_max_credits": 80.0,
+    "backlogs_count": 13,
+    "backlogs": [
+      {
+        "sem": "1SEM",
+        "code": "SC-102",
+        "title": "Basic Engineering Mathematics",
+        "internal": "17",
+        "external": "A",
+        "total": "29",
+        "grade": "F"
+      },
+      {
+        "sem": "4SEM",
+        "code": "CS-402",
+        "title": "Java Programming",
+        "internal": "20",
+        "external": "2",
+        "total": "22",
+        "grade": "F"
+      },
+      {
+        "sem": "2SEM",
+        "code": "SC-202",
+        "title": "Engineering Mathematics",
+        "internal": "18",
+        "external": "0",
+        "total": "20",
+        "grade": "F"
+      },
+      {
+        "sem": "2SEM",
+        "code": "SC-203",
+        "title": "Applied Physics",
+        "internal": "18",
+        "external": "5",
+        "total": "33",
+        "grade": "F"
+      },
+      {
+        "sem": "3SEM",
+        "code": "CS-304",
+        "title": "Oops Through C++",
+        "internal": "18",
+        "external": "7.5",
+        "total": "38",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "SC-103",
+        "title": "Basic Physics",
+        "internal": "18",
+        "external": "0",
+        "total": "20",
+        "grade": "F"
+      },
+      {
+        "sem": "4SEM",
+        "code": "CS-404",
+        "title": "Relational Database Management Systems",
+        "internal": "20",
+        "external": "2.5",
+        "total": "25",
+        "grade": "F"
+      },
+      {
+        "sem": "4SEM",
+        "code": "AI-405",
+        "title": "Fundamentals of Data Science",
+        "internal": "19",
+        "external": "7.5",
+        "total": "37",
+        "grade": "F"
+      },
+      {
+        "sem": "2SEM",
+        "code": "CS-205",
+        "title": "Programming In C",
+        "internal": "19",
+        "external": "6",
+        "total": "30",
+        "grade": "F"
+      },
+      {
+        "sem": "2SEM",
+        "code": "CS-206",
+        "title": "Web Technologies",
+        "internal": "19",
+        "external": "A",
+        "total": "31",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "CS-106",
+        "title": "Basic Electrical & Electronics Engineering",
+        "internal": "18",
+        "external": "0",
+        "total": "23",
+        "grade": "F"
+      },
+      {
+        "sem": "4SEM",
+        "code": "CS-406",
+        "title": "Operating Systems",
+        "internal": "18",
+        "external": "14.5",
+        "total": "33",
+        "grade": "F"
+      },
+      {
+        "sem": "3SEM",
+        "code": "SC-301",
+        "title": "Applied Engineering Mathematics",
+        "internal": "18",
+        "external": "5",
+        "total": "42",
+        "grade": "F"
+      }
+    ],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 111,
+    "pin_ai": "24259-AI-111",
+    "pin_aiml": "24259-AIML-111",
+    "name": "KADARI AVINASH",
+    "working_days": 88,
+    "present_days": 38,
+    "percentage": 43.75,
+    "cgpa": 4.27,
+    "credits_gained": 55.75,
+    "total_max_credits": 80.0,
+    "backlogs_count": 10,
+    "backlogs": [
+      {
+        "sem": "3SEM",
+        "code": "EC-302",
+        "title": "Digital Electronics",
+        "internal": "18",
+        "external": "2",
+        "total": "25",
+        "grade": "F"
+      },
+      {
+        "sem": "4SEM",
+        "code": "SC-401",
+        "title": "Advanced Engineering Mathematics",
+        "internal": "20",
+        "external": "7",
+        "total": "35",
+        "grade": "F"
+      },
+      {
+        "sem": "2SEM",
+        "code": "SC-202",
+        "title": "Engineering Mathematics",
+        "internal": "18",
+        "external": "7",
+        "total": "28",
+        "grade": "F"
+      },
+      {
+        "sem": "4SEM",
+        "code": "CS-402",
+        "title": "Java Programming",
+        "internal": "20",
+        "external": "2.5",
+        "total": "30",
+        "grade": "F"
+      },
+      {
+        "sem": "2SEM",
+        "code": "SC-203",
+        "title": "Applied Physics",
+        "internal": "19",
+        "external": "3",
+        "total": "35",
+        "grade": "F"
+      },
+      {
+        "sem": "3SEM",
+        "code": "CS-304",
+        "title": "Oops Through C++",
+        "internal": "17",
+        "external": "6.5",
+        "total": "39",
+        "grade": "F"
+      },
+      {
+        "sem": "3SEM",
+        "code": "CS-305",
+        "title": "Computer Organisation and Architecture",
+        "internal": "20",
+        "external": "2",
+        "total": "27",
+        "grade": "F"
+      },
+      {
+        "sem": "2SEM",
+        "code": "SC-204",
+        "title": "Applied Engineering Chemistry",
+        "internal": "19",
+        "external": "11",
+        "total": "42",
+        "grade": "F"
+      },
+      {
+        "sem": "4SEM",
+        "code": "CS-404",
+        "title": "Relational Database Management Systems",
+        "internal": "20",
+        "external": "8",
+        "total": "32",
+        "grade": "F"
+      },
+      {
+        "sem": "3SEM",
+        "code": "SC-301",
+        "title": "Applied Engineering Mathematics",
+        "internal": "17",
+        "external": "9",
+        "total": "35",
+        "grade": "F"
+      }
+    ],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 112,
+    "pin_ai": "24259-AI-112",
+    "pin_aiml": "24259-AIML-112",
+    "name": "MILARAM HARIKA",
+    "working_days": 88,
+    "present_days": 45,
+    "percentage": 51.14,
+    "cgpa": 4.76,
+    "credits_gained": 58.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 9,
+    "backlogs": [
+      {
+        "sem": "4SEM",
+        "code": "SC-401",
+        "title": "Advanced Engineering Mathematics",
+        "internal": "20",
+        "external": "1",
+        "total": "25",
+        "grade": "F"
+      },
+      {
+        "sem": "2SEM",
+        "code": "SC-202",
+        "title": "Engineering Mathematics",
+        "internal": "19",
+        "external": "4",
+        "total": "24",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "SC-102",
+        "title": "Basic Engineering Mathematics",
+        "internal": "18",
+        "external": "3",
+        "total": "24",
+        "grade": "F"
+      },
+      {
+        "sem": "2SEM",
+        "code": "SC-203",
+        "title": "Applied Physics",
+        "internal": "19",
+        "external": "5",
+        "total": "26",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "SC-104",
+        "title": "General Engineering Chemistry",
+        "internal": "16",
+        "external": "6",
+        "total": "40",
+        "grade": "F"
+      },
+      {
+        "sem": "4SEM",
+        "code": "CS-404",
+        "title": "Relational Database Management Systems",
+        "internal": "20",
+        "external": "9",
+        "total": "42",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "CS-105",
+        "title": "Computer Fundamentals & Hardware",
+        "internal": "19",
+        "external": "4",
+        "total": "26",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "CS-106",
+        "title": "Basic Electrical & Electronics Engineering",
+        "internal": "18",
+        "external": "7",
+        "total": "32",
+        "grade": "F"
+      },
+      {
+        "sem": "3SEM",
+        "code": "SC-301",
+        "title": "Applied Engineering Mathematics",
+        "internal": "20",
+        "external": "1.5",
+        "total": "25",
+        "grade": "F"
+      }
+    ],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 113,
+    "pin_ai": "24259-AI-113",
+    "pin_aiml": "24259-AIML-113",
+    "name": "MOHAMMED ZAID AHMED",
+    "working_days": 88,
+    "present_days": 38,
+    "percentage": 43.18,
+    "cgpa": 6.58,
+    "credits_gained": 80.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 114,
+    "pin_ai": "24259-AI-114",
+    "pin_aiml": "24259-AIML-114",
+    "name": "KURAKULA GOUTHAM",
+    "working_days": 88,
+    "present_days": 43,
+    "percentage": 49.43,
+    "cgpa": 6.28,
+    "credits_gained": 75.5,
+    "total_max_credits": 80.0,
+    "backlogs_count": 2,
+    "backlogs": [
+      {
+        "sem": "4SEM",
+        "code": "CS-402",
+        "title": "Java Programming",
+        "internal": "20",
+        "external": "6",
+        "total": "36",
+        "grade": "F"
+      },
+      {
+        "sem": "2SEM",
+        "code": "SC-203",
+        "title": "Applied Physics",
+        "internal": "19",
+        "external": "5",
+        "total": "46",
+        "grade": "F"
+      }
+    ],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 115,
+    "pin_ai": "24259-AI-115",
+    "pin_aiml": "24259-AIML-115",
+    "name": "DUNUKA DIVYA",
+    "working_days": 88,
+    "present_days": 50,
+    "percentage": 56.82,
+    "cgpa": 7.63,
+    "credits_gained": 80.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 116,
+    "pin_ai": "24259-AI-116",
+    "pin_aiml": "24259-AIML-116",
+    "name": "MAMIDI VYDHIKA",
+    "working_days": 88,
+    "present_days": 53,
+    "percentage": 60.23,
+    "cgpa": 8.78,
+    "credits_gained": 80.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 117,
+    "pin_ai": "24259-AI-117",
+    "pin_aiml": "24259-AIML-117",
+    "name": "POTHULA UMESH CHANDRA",
+    "working_days": 88,
+    "present_days": 37,
+    "percentage": 42.61,
+    "cgpa": 2.13,
+    "credits_gained": 33.25,
+    "total_max_credits": 80.0,
+    "backlogs_count": 19,
+    "backlogs": [
+      {
+        "sem": "4SEM",
+        "code": "SC-401",
+        "title": "Advanced Engineering Mathematics",
+        "internal": "19",
+        "external": "1",
+        "total": "20",
+        "grade": "F"
+      },
+      {
+        "sem": "3SEM",
+        "code": "EC-302",
+        "title": "Digital Electronics",
+        "internal": "17",
+        "external": "2",
+        "total": "22",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "SC-102",
+        "title": "Basic Engineering Mathematics",
+        "internal": "18",
+        "external": "0",
+        "total": "18",
+        "grade": "F"
+      },
+      {
+        "sem": "4SEM",
+        "code": "CS-402",
+        "title": "Java Programming",
+        "internal": "20",
+        "external": "5.5",
+        "total": "36",
+        "grade": "F"
+      },
+      {
+        "sem": "2SEM",
+        "code": "SC-202",
+        "title": "Engineering Mathematics",
+        "internal": "18",
+        "external": "1.5",
+        "total": "22",
+        "grade": "F"
+      },
+      {
+        "sem": "2SEM",
+        "code": "SC-203",
+        "title": "Applied Physics",
+        "internal": "19",
+        "external": "2",
+        "total": "22",
+        "grade": "F"
+      },
+      {
+        "sem": "4SEM",
+        "code": "CS-403",
+        "title": "Python Programming",
+        "internal": "20",
+        "external": "9.5",
+        "total": "32",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "SC-103",
+        "title": "Basic Physics",
+        "internal": "18",
+        "external": "1",
+        "total": "19",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "SC-104",
+        "title": "General Engineering Chemistry",
+        "internal": "12",
+        "external": "6",
+        "total": "25",
+        "grade": "F"
+      },
+      {
+        "sem": "4SEM",
+        "code": "CS-404",
+        "title": "Relational Database Management Systems",
+        "internal": "20",
+        "external": "4",
+        "total": "28",
+        "grade": "F"
+      },
+      {
+        "sem": "3SEM",
+        "code": "CS-305",
+        "title": "Computer Organisation and Architecture",
+        "internal": "19",
+        "external": "0",
+        "total": "23",
+        "grade": "F"
+      },
+      {
+        "sem": "4SEM",
+        "code": "AI-405",
+        "title": "Fundamentals of Data Science",
+        "internal": "18",
+        "external": "2",
+        "total": "32",
+        "grade": "F"
+      },
+      {
+        "sem": "3SEM",
+        "code": "AI-306",
+        "title": "Fundamentals of Artificial Intelligence",
+        "internal": "18",
+        "external": "0",
+        "total": "19",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "CS-105",
+        "title": "Computer Fundamentals & Hardware",
+        "internal": "19",
+        "external": "5",
+        "total": "34",
+        "grade": "F"
+      },
+      {
+        "sem": "2SEM",
+        "code": "CS-205",
+        "title": "Programming In C",
+        "internal": "18",
+        "external": "3.5",
+        "total": "22",
+        "grade": "F"
+      },
+      {
+        "sem": "2SEM",
+        "code": "CS-206",
+        "title": "Web Technologies",
+        "internal": "19",
+        "external": "4",
+        "total": "32",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "CS-106",
+        "title": "Basic Electrical & Electronics Engineering",
+        "internal": "19",
+        "external": "2",
+        "total": "21",
+        "grade": "F"
+      },
+      {
+        "sem": "4SEM",
+        "code": "CS-406",
+        "title": "Operating Systems",
+        "internal": "19",
+        "external": "13",
+        "total": "32",
+        "grade": "F"
+      },
+      {
+        "sem": "3SEM",
+        "code": "SC-301",
+        "title": "Applied Engineering Mathematics",
+        "internal": "17",
+        "external": "0",
+        "total": "25",
+        "grade": "F"
+      }
+    ],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 118,
+    "pin_ai": "24259-AI-118",
+    "pin_aiml": "24259-AIML-118",
+    "name": "PENDLI LOKESHWAR REDDY",
+    "working_days": 88,
+    "present_days": 47,
+    "percentage": 53.41,
+    "cgpa": 7.53,
+    "credits_gained": 80.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 119,
+    "pin_ai": "24259-AI-119",
+    "pin_aiml": "24259-AIML-119",
+    "name": "KARNATI HITESH",
+    "working_days": 88,
+    "present_days": 45,
+    "percentage": 51.14,
+    "cgpa": 7.53,
+    "credits_gained": 80.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 120,
+    "pin_ai": "24259-AI-120",
+    "pin_aiml": "24259-AIML-120",
+    "name": "ASKANI CHARAN TEJA",
+    "working_days": 88,
+    "present_days": 49,
+    "percentage": 55.68,
+    "cgpa": 5.03,
+    "credits_gained": 63.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 7,
+    "backlogs": [
+      {
+        "sem": "4SEM",
+        "code": "CS-402",
+        "title": "Java Programming",
+        "internal": "20",
+        "external": "9.5",
+        "total": "37",
+        "grade": "F"
+      },
+      {
+        "sem": "4SEM",
+        "code": "CS-403",
+        "title": "Python Programming",
+        "internal": "19",
+        "external": "7.5",
+        "total": "38",
+        "grade": "F"
+      },
+      {
+        "sem": "3SEM",
+        "code": "CS-304",
+        "title": "Oops Through C++",
+        "internal": "18",
+        "external": "2",
+        "total": "36",
+        "grade": "F"
+      },
+      {
+        "sem": "3SEM",
+        "code": "CS-305",
+        "title": "Computer Organisation and Architecture",
+        "internal": "19",
+        "external": "5",
+        "total": "36",
+        "grade": "F"
+      },
+      {
+        "sem": "4SEM",
+        "code": "CS-404",
+        "title": "Relational Database Management Systems",
+        "internal": "19",
+        "external": "6",
+        "total": "34",
+        "grade": "F"
+      },
+      {
+        "sem": "4SEM",
+        "code": "AI-405",
+        "title": "Fundamentals of Data Science",
+        "internal": "19",
+        "external": "A",
+        "total": "25",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "CS-106",
+        "title": "Basic Electrical & Electronics Engineering",
+        "internal": "18",
+        "external": "5",
+        "total": "32",
+        "grade": "F"
+      }
+    ],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 121,
+    "pin_ai": "24259-AI-121",
+    "pin_aiml": "24259-AIML-121",
+    "name": "JAKKULA KARTHIKEYA",
+    "working_days": 88,
+    "present_days": 36,
+    "percentage": 41.48,
+    "cgpa": 6.3,
+    "credits_gained": 75.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 2,
+    "backlogs": [
+      {
+        "sem": "2SEM",
+        "code": "SC-202",
+        "title": "Engineering Mathematics",
+        "internal": "18",
+        "external": "7",
+        "total": "36",
+        "grade": "F"
+      },
+      {
+        "sem": "1SEM",
+        "code": "SC-102",
+        "title": "Basic Engineering Mathematics",
+        "internal": "18",
+        "external": "8",
+        "total": "34",
+        "grade": "F"
+      }
+    ],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 122,
+    "pin_ai": "24259-AI-122",
+    "pin_aiml": "24259-AIML-122",
+    "name": "ANNEPALLI JASHWANTH REDDY",
+    "working_days": 88,
+    "present_days": 44,
+    "percentage": 50.0,
+    "cgpa": 6.58,
+    "credits_gained": 77.5,
+    "total_max_credits": 80.0,
+    "backlogs_count": 1,
+    "backlogs": [
+      {
+        "sem": "4SEM",
+        "code": "CS-402",
+        "title": "Java Programming",
+        "internal": "20",
+        "external": "1",
+        "total": "35",
+        "grade": "F"
+      }
+    ],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 123,
+    "pin_ai": "24259-AI-123",
+    "pin_aiml": "24259-AIML-123",
+    "name": "MACHERLA BHAVISH",
+    "working_days": 88,
+    "present_days": 62,
+    "percentage": 71.02,
+    "cgpa": 8.66,
+    "credits_gained": 80.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 124,
+    "pin_ai": "24259-AI-124",
+    "pin_aiml": "24259-AIML-124",
+    "name": "BANDARI LALITH KRISHNA",
+    "working_days": 88,
+    "present_days": 0,
+    "percentage": 0.0,
+    "cgpa": 0.0,
+    "credits_gained": 0.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": false,
+    "has_results": true
+  },
+  {
+    "roll": 125,
+    "pin_ai": "24259-AI-125",
+    "pin_aiml": "24259-AIML-125",
+    "name": "MOODA DEEPTHI",
+    "working_days": 88,
+    "present_days": 48,
+    "percentage": 55.11,
+    "cgpa": 8.8,
+    "credits_gained": 80.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": true,
+    "has_results": true
+  },
+  {
+    "roll": 126,
+    "pin_ai": "24259-AI-126",
+    "pin_aiml": "24259-AIML-126",
+    "name": "LELLA NITHIN",
+    "working_days": 88,
+    "present_days": 0,
+    "percentage": 0.0,
+    "cgpa": 0.0,
+    "credits_gained": 0.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": false,
+    "has_results": true
+  },
+  {
+    "roll": 127,
+    "pin_ai": "24259-AI-127",
+    "pin_aiml": "24259-AIML-127",
+    "name": "MALOTHU ASHWIN",
+    "working_days": 88,
+    "present_days": 0,
+    "percentage": 0.0,
+    "cgpa": 0.0,
+    "credits_gained": 0.0,
+    "total_max_credits": 80.0,
+    "backlogs_count": 0,
+    "backlogs": [],
+    "has_attendance": false,
+    "has_results": true
+  }
+]

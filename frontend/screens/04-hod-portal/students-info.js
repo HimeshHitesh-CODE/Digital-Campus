@@ -1,7 +1,8 @@
 /**
- * Samskruti Digital Campus • HOD Master Students Info & Automated Background Sync Controller
+ * Samskruti Digital Campus • Multi-Department HOD Master Students Info & Synchronization Controller
  * Executive Glass-Neumorphic standard with dynamic active percentage calculations,
- * distinct student roster hydration, zero counter desync, and real-time SSE progress streaming.
+ * distinct student roster hydration (CS: 180 Students, AIML: 120 Students),
+ * dual PDF export engines with branch-specific HOD credentials, and real-time SSE progress streaming.
  */
 
 import { api } from '../../js/api.js';
@@ -10,8 +11,36 @@ import { renderDock } from '../../js/dock.js';
 import { alerts } from '../../js/alerts.js';
 
 // Verify HOD / Faculty Authentication & Render Dock
-requireAuth(['HOD', 'HOD_CS', 'ADMIN', 'FACULTY']);
+const currentUser = requireAuth(['HOD', 'HOD_CS', 'HOD_AIML', 'ADMIN', 'FACULTY']) || JSON.parse(localStorage.getItem('dc_user') || '{}');
 renderDock('students-info.html', 'HOD');
+
+// Initial Branch Context Detection
+const isInitialAIML = (currentUser.branch === 'AIML') || 
+                      (currentUser.role === 'HOD_AIML') || 
+                      (currentUser.pin && (currentUser.pin.includes('AIML') || currentUser.pin.includes('PADMINI'))) || 
+                      (currentUser.department && currentUser.department.includes('Artificial')) ||
+                      (localStorage.getItem('hod_branch') === 'AIML') ||
+                      (localStorage.getItem('hod_id') && localStorage.getItem('hod_id').toUpperCase().includes('PADMINI'));
+
+let currentBranch = isInitialAIML ? 'AIML' : 'CS';
+
+// Department Metadata Definition
+function getBranchMeta(branch) {
+  const isAIML = (branch === 'AIML');
+  return {
+    branchCode: isAIML ? 'AIML' : 'CS',
+    totalIntake: isAIML ? 127 : 180,
+    deptTitle: isAIML ? 'Artificial Intelligence & Machine Learning' : 'Computer Science & Engineering',
+    deptShort: isAIML ? 'AIML' : 'CS',
+    scheme: 'C-24',
+    schemeGateway: 'C24',
+    prefix: isAIML ? '24259-AI-' : '24259-CS-',
+    hodName: isAIML ? 'Prof. Padmini' : 'Dr. J. Vamshi Krishna',
+    hodSignatureTitle: isAIML ? 'Head of Department, Artificial Intelligence & Machine Learning' : 'Head of Department, Computer Science & Engg.',
+    accentColor: isAIML ? '#10b981' : '#3b82f6',
+    badgeClass: isAIML ? 'aiml-active' : ''
+  };
+}
 
 // State
 let allStudents = [];
@@ -22,12 +51,102 @@ let sortDirection = 'asc'; // 'asc' | 'desc'
 let activeEventSource = null;
 let isSyncInProgress = false;
 
-document.addEventListener('DOMContentLoaded', async () => {
+async function initStudentsInfo() {
   setupEventListeners();
+  updateBranchUI();
   await loadDepartmentStudents();
-});
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initStudentsInfo);
+} else {
+  initStudentsInfo();
+}
+
+function updateBranchUI() {
+  const meta = getBranchMeta(currentBranch);
+
+  // Document & Header Title
+  document.title = `${meta.deptShort} Department Students Info (${currentBranch === 'AIML' ? '001–120' : '001–180'}) • Live Synchronization Engine • Samskruti Digital Campus`;
+
+  const brandAccent = document.getElementById('brand-accent-text');
+  if (brandAccent) {
+    brandAccent.style.color = meta.accentColor;
+  }
+
+  const deptSub = document.getElementById('dept-subtitle');
+  if (deptSub) {
+    deptSub.textContent = `Samskruti College (Code: 259) • Department of ${meta.deptTitle} • Scheme: ${meta.scheme}`;
+  }
+
+  const deptTitleEl = document.getElementById('dept-title');
+  if (deptTitleEl) {
+    deptTitleEl.textContent = `${meta.deptShort} Department Master Students Info (${currentBranch === 'AIML' ? '001–120' : '001–180'})`;
+  }
+
+  // Batch Sync Button Label
+  const syncBtnLabel = document.getElementById('btn-sync-label');
+  if (syncBtnLabel) {
+    syncBtnLabel.textContent = `⚡ Live Sync Entire Dept (${currentBranch === 'AIML' ? '001–120' : '001–180'})`;
+  }
+
+  // Stat Intake Card
+  const intakeLabel = document.getElementById('stat-intake-label');
+  if (intakeLabel) {
+    intakeLabel.textContent = `Total Allocated ${meta.deptShort} Intake`;
+  }
+
+  const intakeVal = document.getElementById('stat-total-intake');
+  if (intakeVal) {
+    intakeVal.textContent = meta.totalIntake;
+  }
+
+  const intakeSub = document.getElementById('stat-intake-sub');
+  if (intakeSub) {
+    intakeSub.textContent = `Diploma C-24 ${meta.deptTitle}`;
+  }
+
+  // Filter All Tab
+  const filterAll = document.getElementById('filter-all-btn');
+  if (filterAll) {
+    filterAll.textContent = `All (${meta.totalIntake})`;
+  }
+
+  // Modal Counter Reset
+  const subCounter = document.getElementById('modal-sub-counter');
+  if (subCounter && !isSyncInProgress) {
+    subCounter.textContent = `0 / ${meta.totalIntake} Students (0%)`;
+  }
+
+  // Department Selector Tabs
+  const tabCs = document.getElementById('dept-tab-cs');
+  const tabAiml = document.getElementById('dept-tab-aiml');
+  if (tabCs) {
+    tabCs.classList.toggle('active', currentBranch === 'CS');
+    tabCs.classList.remove('aiml-active');
+  }
+  if (tabAiml) {
+    tabAiml.classList.toggle('active', currentBranch === 'AIML');
+    if (currentBranch === 'AIML') tabAiml.classList.add('aiml-active');
+  }
+}
 
 function setupEventListeners() {
+  // Department Switcher Tabs
+  document.getElementById('dept-tab-cs')?.addEventListener('click', async () => {
+    if (currentBranch === 'CS') return;
+    currentBranch = 'CS';
+    updateBranchUI();
+    await loadDepartmentStudents();
+  });
+
+  document.getElementById('dept-tab-aiml')?.addEventListener('click', async () => {
+    if (currentBranch === 'AIML') return;
+    currentBranch = 'AIML';
+    updateBranchUI();
+    await loadDepartmentStudents();
+  });
+
   // Batch Sync Trigger Button (Forced Re-sync)
   document.getElementById('btn-start-batch-sync')?.addEventListener('click', () => startLiveDepartmentSync(false));
 
@@ -49,8 +168,9 @@ function setupEventListeners() {
   // Filter Tabs
   document.querySelectorAll('#attendance-filter-tabs button').forEach(btn => {
     btn.addEventListener('click', () => {
-      document.querySelectorAll('#attendance-filter-tabs button').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('#attendance-filter-tabs button').forEach(b => b.classList.remove('active', 'aiml-active'));
       btn.classList.add('active');
+      if (currentBranch === 'AIML') btn.classList.add('aiml-active');
       activeFilter = btn.getAttribute('data-filter');
       renderStudentsTable();
     });
@@ -90,20 +210,23 @@ function setupEventListeners() {
 }
 
 /**
- * 1. LOAD ALL 180 DEPARTMENT STUDENTS & AUTO-SYNC CHECK
+ * 1. LOAD ALL DEPARTMENT STUDENTS (CS: 180, AIML: 120) & AUTO-SYNC CHECK
  */
 async function loadDepartmentStudents() {
+  const meta = getBranchMeta(currentBranch);
   let isStale = true;
+
   try {
-    const res = await api.get('/hod/students');
+    const res = await api.get(`/hod/students?branch=${currentBranch}`);
     if (res && res.success && Array.isArray(res.students)) {
       allStudents = res.students;
       isStale = res.isStale === true || allStudents.some(s => !s.isSynced && !s.attendance);
     } else {
-      allStudents = generateFallbackDepartmentStudents();
+      allStudents = generateFallbackDepartmentStudents(currentBranch);
     }
-  } catch {
-    allStudents = generateFallbackDepartmentStudents();
+  } catch (err) {
+    console.warn(`[Load ${currentBranch} Students Fallback]`, err);
+    allStudents = generateFallbackDepartmentStudents(currentBranch);
   }
 
   recalculateDepartmentSummaryStats();
@@ -115,7 +238,7 @@ async function loadDepartmentStudents() {
     if (autoPill) {
       autoPill.innerHTML = `
         <span style="width: 8px; height: 8px; border-radius: 50%; background: #3b82f6; display: inline-block; box-shadow: 0 0 8px #3b82f6; animation: pulse 1s infinite;"></span>
-        Auto-Syncing Fresh Records...
+        Auto-Syncing ${meta.deptShort} Records...
       `;
     }
     startLiveDepartmentSync(true);
@@ -129,7 +252,7 @@ async function loadDepartmentStudents() {
 function computeActiveAttendancePercentage(student) {
   if (!student.attendance || student.attendance.daysPresent == null) return null;
   const att = student.attendance;
-  const working = Number(att.workingDays) || 64;
+  const working = Number(att.workingDays) || 88;
   const present = Number(att.daysPresent) || 0;
   
   let pct = Number(att.percentage);
@@ -140,11 +263,12 @@ function computeActiveAttendancePercentage(student) {
 }
 
 /**
- * 3. RENDER MASTER TABLE (With Unsynced Placeholders & Tabular Alignments)
+ * 3. RENDER MASTER TABLE
  */
 function renderStudentsTable() {
   const tbody = document.getElementById('students-tbody');
   if (!tbody) return;
+  const meta = getBranchMeta(currentBranch);
 
   // Filter
   const filtered = allStudents.filter(student => {
@@ -207,7 +331,7 @@ function renderStudentsTable() {
     tbody.innerHTML = `
       <tr>
         <td colspan="10" style="text-align: center; padding: 36px; color: var(--hod-text-muted); font-style: italic;">
-          No student records found matching the current search or filter criteria.
+          No ${meta.deptShort} student records found matching the current search or filter criteria.
         </td>
       </tr>
     `;
@@ -219,8 +343,9 @@ function renderStudentsTable() {
     const attPct = computeActiveAttendancePercentage(s);
     const backlogs = Number(s.backlogs != null ? s.backlogs : (s.results?.backlogCount || s.backlogs_count || 0));
     const cgpa = Number(s.cgpa != null ? s.cgpa : (s.results?.cgpa || 0));
-    const workingDays = s.attendance?.workingDays || 64;
+    const workingDays = s.attendance?.workingDays || 88;
     const daysPresent = s.attendance?.daysPresent || 0;
+    const branchTag = (s.pin && s.pin.includes('AIML')) || s.branch === 'Artificial Intelligence & Machine Learning' ? 'AIML (C-24)' : 'CS (C-24)';
 
     let nameHtml = `<span class="inline-flex items-center gap-1.5 text-slate-500 italic" style="font-size: 0.82rem; color: #64748b;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #475569; display: inline-block;"></span> Pending Sync</span>`;
     let daysDisplay = `<span class="mono-num" style="color: var(--hod-text-muted); font-size: 0.8rem;">-- / -- days</span>`;
@@ -238,7 +363,7 @@ function renderStudentsTable() {
       const isWarning = attPct >= 65 && attPct < 75;
 
       statusBadge = isCritical
-        ? `<span class="status-badge-critical">CRITICAL (<65%)</span>`
+        ? `<span class="status-badge-critical">CRITICAL (&lt;65%)</span>`
         : isWarning
         ? `<span class="status-badge-warning">CONDONATION</span>`
         : `<span class="status-badge-good">ELIGIBLE (≥75%)</span>`;
@@ -260,7 +385,7 @@ function renderStudentsTable() {
       <tr id="row-${s.pin}">
         <td><strong class="mono-num" style="color: #93c5fd; font-size: 0.85rem;">${escapeHtml(s.pin)}</strong></td>
         <td class="student-name-cell">${nameHtml}</td>
-        <td><span style="font-size: 0.78rem; color: var(--hod-text-muted);">CS (C-24)</span></td>
+        <td><span style="font-size: 0.78rem; color: var(--hod-text-muted);">${branchTag}</span></td>
         <td>${daysDisplay}</td>
         <td>${pctDisplay}</td>
         <td>${statusBadge}</td>
@@ -279,27 +404,32 @@ function renderStudentsTable() {
 
 /**
  * 4. ROBUST SERVER-SENT EVENTS (SSE) STREAM HANDLER
- * Guarantees zero counter desync, 0% to 100% progress tracking, and live row updates.
  */
 function startLiveDepartmentSync(isSilent = false) {
   if (isSyncInProgress) return;
   isSyncInProgress = true;
 
+  const meta = getBranchMeta(currentBranch);
   const modal = document.getElementById('sync-progress-modal');
-  const topPercentBadge = document.getElementById('modal-top-percent') || document.getElementById('sync-live-pct');
-  const subCounter = document.getElementById('modal-sub-counter') || document.getElementById('sync-progress-text');
-  const progressBar = document.getElementById('modal-progress-bar') || document.getElementById('sync-progress-bar');
-  const logTerminal = document.getElementById('modal-terminal-log') || document.getElementById('sync-live-feed');
+  const topPercentBadge = document.getElementById('modal-top-percent');
+  const subCounter = document.getElementById('modal-sub-counter');
+  const progressBar = document.getElementById('modal-progress-bar');
+  const logTerminal = document.getElementById('modal-terminal-log');
   const statusPill = document.getElementById('auto-sync-status-pill');
+  const modalTitle = document.getElementById('modal-sync-title');
+  const modalSub = document.getElementById('modal-sync-subtitle');
+
+  if (modalTitle) modalTitle.textContent = `Live ${meta.deptShort} Batch Sync`;
+  if (modalSub) modalSub.textContent = `SBTET Live Gateway • ${meta.totalIntake} Students • 6 Concurrent Rate-Limited Workers`;
 
   // 1. Reset Modal State to 0%
   if (!isSilent && modal) {
     modal.style.display = 'flex';
     if (topPercentBadge) topPercentBadge.textContent = '0%';
-    if (subCounter) subCounter.textContent = '0 / 180 Students (0%)';
+    if (subCounter) subCounter.textContent = `0 / ${meta.totalIntake} Students (0%)`;
     if (progressBar) progressBar.style.width = '0%';
     if (logTerminal) {
-      logTerminal.innerHTML = '<div style="color: #94a3b8;">Connecting to live SBTET gateway...</div>';
+      logTerminal.innerHTML = `<div style="color: #94a3b8;">Connecting to live SBTET gateway for ${meta.deptTitle}...</div>`;
     }
   }
 
@@ -307,7 +437,7 @@ function startLiveDepartmentSync(isSilent = false) {
     activeEventSource.close();
   }
 
-  activeEventSource = new EventSource('/api/hod/sync-stream');
+  activeEventSource = new EventSource(`/api/hod/sync-stream?branch=${currentBranch}`);
 
   activeEventSource.onmessage = (e) => {
     try {
@@ -315,16 +445,15 @@ function startLiveDepartmentSync(isSilent = false) {
 
       if (data.type === 'CONNECTED') {
         if (logTerminal && !isSilent) {
-          logTerminal.innerHTML += `<div style="color: #34d399; font-weight: 700;">✓ Connected. Dispatching 5 concurrent workers across 180 PINs...</div>`;
+          logTerminal.innerHTML += `<div style="color: #34d399; font-weight: 700;">✓ Connected. Dispatching 6 concurrent workers across ${meta.totalIntake} PINs...</div>`;
         }
       }
 
       if (data.type === 'PROGRESS' || data.type === 'PROGRESS_ERROR') {
-        const percent = data.percent !== undefined ? data.percent : Math.round(((data.completed || 0) / 180) * 100);
+        const total = data.total || meta.totalIntake;
         const completed = data.completed || 0;
-        const total = data.total || 180;
+        const percent = data.percent !== undefined ? data.percent : Math.round((completed / total) * 100);
 
-        // Synchronize both UI percentage elements
         if (topPercentBadge && !isSilent) topPercentBadge.textContent = `${percent}%`;
         if (subCounter && !isSilent) subCounter.textContent = `${completed} / ${total} Students (${percent}%)`;
         if (progressBar && !isSilent) progressBar.style.width = `${percent}%`;
@@ -343,7 +472,6 @@ function startLiveDepartmentSync(isSilent = false) {
           recalculateDepartmentSummaryStats();
 
           if (logTerminal && !isSilent) {
-            const att = data.student.attendance || {};
             const attPct = computeActiveAttendancePercentage(data.student);
             logTerminal.innerHTML += `<div style="color: #cbd5e1;">✓ Synced <strong style="color: #93c5fd; font-family: monospace;">${data.pin}</strong>: ${escapeHtml(data.student.name)} (${attPct !== null ? attPct : '--'}%)</div>`;
             logTerminal.scrollTop = logTerminal.scrollHeight;
@@ -356,7 +484,7 @@ function startLiveDepartmentSync(isSilent = false) {
 
       if (data.type === 'COMPLETE') {
         if (topPercentBadge && !isSilent) topPercentBadge.textContent = '100%';
-        if (subCounter && !isSilent) subCounter.textContent = '180 / 180 Students (100%)';
+        if (subCounter && !isSilent) subCounter.textContent = `${meta.totalIntake} / ${meta.totalIntake} Students (100%)`;
         if (progressBar && !isSilent) progressBar.style.width = '100%';
         
         if (logTerminal && !isSilent) {
@@ -376,7 +504,7 @@ function startLiveDepartmentSync(isSilent = false) {
         }
 
         if (!isSilent) {
-          alerts.success('Batch Sync Complete', 'All 180 department students updated with fresh SBTET metrics.');
+          alerts.success('Batch Sync Complete', `All ${meta.totalIntake} ${meta.deptShort} department students updated with fresh SBTET metrics.`);
         }
       }
     } catch (err) {
@@ -391,7 +519,7 @@ function startLiveDepartmentSync(isSilent = false) {
     }
     isSyncInProgress = false;
     if (logTerminal && !isSilent) {
-      logTerminal.innerHTML += `<div style="color: #f87171;">Connection closed or completed.</div>`;
+      logTerminal.innerHTML += `<div style="color: #f87171;">Connection completed or closed.</div>`;
     }
     if (statusPill) {
       statusPill.innerHTML = `
@@ -412,7 +540,7 @@ function updateTableRowWithRealData(student) {
   const attPct = computeActiveAttendancePercentage(student);
   const backlogs = Number(student.backlogs != null ? student.backlogs : (student.results?.backlogCount || student.backlogs_count || 0));
   const cgpa = Number(student.cgpa != null ? student.cgpa : (student.results?.cgpa || 0));
-  const workingDays = student.attendance?.workingDays || 64;
+  const workingDays = student.attendance?.workingDays || 88;
   const daysPresent = student.attendance?.daysPresent || 0;
 
   // 1. Update verified student name
@@ -430,7 +558,7 @@ function updateTableRowWithRealData(student) {
     const isWarning = attPct >= 65 && attPct < 75;
 
     const statusBadge = isCritical
-      ? `<span class="status-badge-critical">CRITICAL (<65%)</span>`
+      ? `<span class="status-badge-critical">CRITICAL (&lt;65%)</span>`
       : isWarning
       ? `<span class="status-badge-warning">CONDONATION</span>`
       : `<span class="status-badge-good">ELIGIBLE (≥75%)</span>`;
@@ -451,52 +579,54 @@ function updateTableRowWithRealData(student) {
        </button>`
     : `<span class="status-badge-good" style="background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); padding: 4px 10px; border-radius: 6px; font-weight: 800; font-size: 0.78rem;">✓ 0 Cleared</span>`;
 
-  // 6. Update Last Synced Time
-  row.cells[8].innerHTML = `<span class="mono-num" style="font-size: 0.75rem; color: var(--hod-text-sub);">${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>`;
+  // 6. Update last synced
+  row.cells[8].innerHTML = `<span class="mono-num" style="font-size: 0.75rem; color: var(--hod-text-sub);">${student.lastSynced ? formatTime(student.lastSynced) : 'Just Now'}</span>`;
 }
 
 /**
  * 6. RECALCULATE DEPARTMENT SUMMARY STATS
  */
 function recalculateDepartmentSummaryStats() {
-  const total = allStudents.length || 180;
+  const meta = getBranchMeta(currentBranch);
   let totalAtt = 0;
   let syncedCount = 0;
-  let critical = 0;
-  let condonation = 0;
   let eligible = 0;
+  let condonation = 0;
+  let critical = 0;
   let withBacklogs = 0;
   let totalBacklogsCount = 0;
 
   allStudents.forEach(s => {
-    const pct = computeActiveAttendancePercentage(s);
-    if (pct !== null) {
+    const attPct = computeActiveAttendancePercentage(s);
+    const bCount = Number(s.backlogs != null ? s.backlogs : (s.results?.backlogCount || s.backlogs_count || 0));
+
+    if (attPct !== null) {
+      totalAtt += attPct;
       syncedCount++;
-      totalAtt += pct;
-      if (pct < 65) critical++;
-      else if (pct < 75) condonation++;
-      else eligible++;
+
+      if (attPct >= 75) eligible++;
+      else if (attPct >= 65) condonation++;
+      else critical++;
     }
 
-    const bCount = Number(s.backlogs != null ? s.backlogs : (s.results?.backlogCount || s.backlogs_count || (s.backlogSubjects?.length) || 0));
     if (bCount > 0) {
       withBacklogs++;
       totalBacklogsCount += bCount;
     }
   });
 
-  const avgAttendance = syncedCount > 0 ? Number((totalAtt / syncedCount).toFixed(1)) : 0;
+  const avgAtt = syncedCount > 0 ? (totalAtt / syncedCount).toFixed(1) : 0;
 
-  const totalElem = document.getElementById('stat-total-intake') || document.getElementById('stat-total-students');
   const avgElem = document.getElementById('stat-avg-attendance');
-  const eligibleElem = document.getElementById('stat-eligible') || document.getElementById('stat-eligible-count');
-  const condonationElem = document.getElementById('stat-condonation') || document.getElementById('stat-condonation-count');
-  const criticalElem = document.getElementById('stat-detention') || document.getElementById('stat-critical-count');
-  const backlogStudentsElem = document.getElementById('stat-backlogs') || document.getElementById('stat-backlog-students');
-  const totalBacklogsSub = document.getElementById('stat-total-backlogs-count') || document.getElementById('stat-total-backlogs-sub');
+  const eligibleElem = document.getElementById('stat-eligible');
+  const condonationElem = document.getElementById('stat-condonation');
+  const criticalElem = document.getElementById('stat-detention');
+  const backlogStudentsElem = document.getElementById('stat-backlogs');
+  const totalBacklogsSub = document.getElementById('stat-total-backlogs-count');
+  const totalIntakeElem = document.getElementById('stat-total-intake');
 
-  if (totalElem) totalElem.textContent = total;
-  if (avgElem) avgElem.textContent = syncedCount > 0 ? `${avgAttendance}%` : '--%';
+  if (totalIntakeElem) totalIntakeElem.textContent = meta.totalIntake;
+  if (avgElem) avgElem.textContent = syncedCount > 0 ? `${avgAtt}%` : '--%';
   if (eligibleElem) eligibleElem.textContent = syncedCount > 0 ? eligible : '--';
   if (condonationElem) condonationElem.textContent = syncedCount > 0 ? condonation : '--';
   if (criticalElem) criticalElem.textContent = syncedCount > 0 ? critical : '--';
@@ -540,11 +670,12 @@ async function openBacklogDetailsModal(pin) {
 
   const backlogCount = student?.backlogs || student?.backlogs_count || student?.results?.backlogCount || 0;
   const details = student?.backlog_details || [];
+  const meta = getBranchMeta(pin.includes('AIML') ? 'AIML' : 'CS');
 
   // 3. Hydrate Header Info
   if (nameEl) nameEl.textContent = student?.name || 'Student Name';
   if (pinEl) pinEl.textContent = student?.pin || pin;
-  if (schemeEl) schemeEl.textContent = `${student?.scheme || 'C-24'} Computer Science`;
+  if (schemeEl) schemeEl.textContent = `Diploma C-24 ${meta.deptTitle}`;
   if (summaryEl) {
     summaryEl.textContent = `${backlogCount} Active Backlog${backlogCount !== 1 ? 's' : ''}`;
     summaryEl.style.color = backlogCount > 0 ? '#fb7185' : '#4ade80';
@@ -579,13 +710,12 @@ async function openBacklogDetailsModal(pin) {
     }
   }
 
-  // 5. Reveal Modal with smooth animation
+  // 5. Reveal Modal
   modal.classList.remove('hidden');
   modal.classList.add('flex');
   modal.style.display = 'flex';
 }
 
-// Close Modal
 function closeBacklogDetailsModal() {
   const modal = document.getElementById('backlog-modal');
   if (modal) {
@@ -595,7 +725,6 @@ function closeBacklogDetailsModal() {
   }
 }
 
-// Expose on global window
 window.openBacklogDetailsModal = openBacklogDetailsModal;
 window.closeBacklogDetailsModal = closeBacklogDetailsModal;
 window.inspectStudentBacklogs = openBacklogDetailsModal;
@@ -629,6 +758,7 @@ window.syncSingleStudent = async function(pin) {
  * 9. EXPORT CSV
  */
 function exportDepartmentCSV() {
+  const meta = getBranchMeta(currentBranch);
   if (allStudents.length === 0) {
     alerts.warning('No data to export.');
     return;
@@ -654,10 +784,10 @@ function exportDepartmentCSV() {
     return [
       `"${s.pin}"`,
       `"${(s.name || '').replace(/"/g, '""')}"`,
-      `"${s.branch || 'CSE'}"`,
-      `"${s.scheme || 'C-24'}"`,
-      `"${s.semester || 3}"`,
-      s.attendance?.workingDays || 64,
+      `"${meta.deptTitle}"`,
+      `"${meta.scheme}"`,
+      `"${s.semester || 6}"`,
+      s.attendance?.workingDays || 88,
       s.attendance?.daysPresent || 0,
       attPct !== null ? attPct.toFixed(2) : 'Unsynced',
       `"${s.attendance?.status || 'UNSYNCED'}"`,
@@ -671,16 +801,17 @@ function exportDepartmentCSV() {
   const encodedUri = encodeURI(csvContent);
   const link = document.createElement('a');
   link.setAttribute('href', encodedUri);
-  link.setAttribute('download', `Samskruti_CS_Department_Master_Sync_${new Date().toISOString().slice(0, 10)}.csv`);
+  link.setAttribute('download', `Samskruti_${meta.deptShort}_Department_Master_Sync_${new Date().toISOString().slice(0, 10)}.csv`);
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
 
-  alerts.success('CSV Exported', 'Department metrics downloaded successfully.');
+  alerts.success('CSV Exported', `${meta.deptShort} department metrics downloaded successfully.`);
 }
 
 /**
- * 10. GENERATE ALL 180 ATTENDANCE REPORT (PDF)
+ * 10. GENERATE ATTENDANCE REPORT (PDF)
+ * High-fidelity institutional PDF generator for either CS (180) or AIML (120) with branch HOD credentials.
  */
 function generateAttendancePDF() {
   if (!window.jspdf || !window.jspdf.jsPDF) {
@@ -692,6 +823,7 @@ function generateAttendancePDF() {
     return;
   }
 
+  const meta = getBranchMeta(currentBranch);
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF({
     orientation: 'portrait',
@@ -716,7 +848,7 @@ function generateAttendancePDF() {
     }
   });
 
-  const avgAttendance = document.getElementById('stat-avg-attendance')?.textContent || '38.64%';
+  const avgAttendance = document.getElementById('stat-avg-attendance')?.textContent || '0.0%';
   const generatedDate = new Date().toLocaleDateString('en-IN', {
     day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
   });
@@ -805,14 +937,14 @@ function generateAttendancePDF() {
 
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(10);
-      doc.setTextColor(2, 132, 199);
-      doc.text('DEPARTMENT OF COMPUTER SCIENCE & ENGINEERING • BIOMETRIC ATTENDANCE DOSSIER', pageWidth / 2, 58, { align: 'center' });
+      doc.setTextColor(currentBranch === 'AIML' ? 16 : 2, currentBranch === 'AIML' ? 185 : 132, currentBranch === 'AIML' ? 129 : 199);
+      doc.text(`DEPARTMENT OF ${meta.deptTitle.toUpperCase()} • BIOMETRIC ATTENDANCE DOSSIER`, pageWidth / 2, 58, { align: 'center' });
 
       // Sub-bar info
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(7.5);
       doc.setTextColor(100, 116, 139);
-      doc.text(`Scheme: C-24 | Semester: 6SEM | Batch: 2024-2027 | Report Generated: ${generatedDate}`, 36, 74);
+      doc.text(`Scheme: C-24 | Batch: 24259 | Total Intake: ${meta.totalIntake} | Report Generated: ${generatedDate}`, 36, 74);
       doc.text(`Institutional Portal: digital-campus.samskruti.ac.in`, pageWidth - 36, 74, { align: 'right' });
 
       // KPI Metric Ribbon
@@ -825,7 +957,7 @@ function generateAttendancePDF() {
       doc.setTextColor(30, 41, 59);
 
       const colW = (pageWidth - 72) / 4;
-      doc.text(`Total CS Intake: 180`, 36 + (colW * 0.5), 102, { align: 'center' });
+      doc.text(`Total ${meta.deptShort} Intake: ${meta.totalIntake}`, 36 + (colW * 0.5), 102, { align: 'center' });
       doc.text(`Dept Average Att: ${avgAttendance}`, 36 + (colW * 1.5), 102, { align: 'center' });
       doc.setTextColor(16, 185, 129);
       doc.text(`Eligible (≥75%): ${eligibleCount}`, 36 + (colW * 2.5), 102, { align: 'center' });
@@ -848,32 +980,35 @@ function generateAttendancePDF() {
     doc.setFont('helvetica', 'italic');
     doc.setFontSize(8);
     doc.setTextColor(100, 116, 139);
-    doc.text('Certified that the biometric attendance records above represent the verified SBTET status for the Diploma C-24 CS batch.', 36, finalY);
+    doc.text(`Certified that the biometric attendance records above represent the verified SBTET status for the Diploma C-24 ${meta.deptShort} batch.`, 36, finalY);
 
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(9);
     doc.setTextColor(15, 23, 42);
-    doc.text('_________________________________', pageWidth - 220, finalY + 40);
-    doc.text('Dr. J. Vamshi Krishna', pageWidth - 220, finalY + 54);
+    doc.text('_________________________________', pageWidth - 240, finalY + 40);
+    doc.text(meta.hodName, pageWidth - 240, finalY + 54);
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(8);
     doc.setTextColor(71, 85, 105);
-    doc.text('Head of Department, Computer Science & Engg.', pageWidth - 220, finalY + 66);
-    doc.text('Samskruti College of Engineering & Technology', pageWidth - 220, finalY + 77);
+    doc.text(meta.hodSignatureTitle, pageWidth - 240, finalY + 66);
+    doc.text('Samskruti College of Engineering & Technology', pageWidth - 240, finalY + 77);
   }
 
-  doc.save(`Samskruti_CS_Attendance_Status_Report_180_${new Date().toISOString().slice(0, 10)}.pdf`);
-  alerts.success('PDF Generated', 'All 180 Students Attendance Report exported successfully.');
+  doc.save(`Samskruti_${meta.deptShort}_Attendance_Status_Report_${meta.totalIntake}_${new Date().toISOString().slice(0, 10)}.pdf`);
+  alerts.success('PDF Generated', `All ${meta.totalIntake} Students Attendance Report exported successfully.`);
 }
 
 /**
  * 11. GENERATE BACKLOGS-ONLY DOSSIER (PDF)
+ * Official remedial audit dossier for failed subjects in landscape layout with HOD signature.
  */
 function generateBacklogsDossierPDF() {
   if (!window.jspdf || !window.jspdf.jsPDF) {
     alerts.error('PDF Library Error', 'jsPDF is not loaded. Please verify your internet connection.');
     return;
   }
+
+  const meta = getBranchMeta(currentBranch);
 
   // Filter students with backlogs
   const studentsWithBacklogs = allStudents.filter(s => {
@@ -883,7 +1018,7 @@ function generateBacklogsDossierPDF() {
   });
 
   if (studentsWithBacklogs.length === 0) {
-    alerts.info('No Backlogs', 'All students currently cleared! No active backlogs in the department.');
+    alerts.info('No Backlogs', `All ${meta.deptShort} students currently cleared! No active backlogs in the department.`);
     return;
   }
 
@@ -1002,7 +1137,7 @@ function generateBacklogsDossierPDF() {
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(10);
       doc.setTextColor(225, 29, 72);
-      doc.text('DEPARTMENT OF COMPUTER SCIENCE & ENGINEERING • OFFICIAL BACKLOGS INSPECTION DOSSIER', pageWidth / 2, 52, { align: 'center' });
+      doc.text(`DEPARTMENT OF ${meta.deptTitle.toUpperCase()} • OFFICIAL BACKLOGS INSPECTION DOSSIER`, pageWidth / 2, 52, { align: 'center' });
 
       // KPI Ribbon
       doc.setDrawColor(254, 205, 211);
@@ -1040,30 +1175,31 @@ function generateBacklogsDossierPDF() {
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(9);
     doc.setTextColor(15, 23, 42);
-    doc.text('_________________________________', pageWidth - 220, finalY + 36);
-    doc.text('Dr. J. Vamshi Krishna', pageWidth - 220, finalY + 48);
+    doc.text('_________________________________', pageWidth - 240, finalY + 36);
+    doc.text(meta.hodName, pageWidth - 240, finalY + 48);
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(8);
     doc.setTextColor(71, 85, 105);
-    doc.text('Head of Department, Computer Science & Engg.', pageWidth - 220, finalY + 59);
-    doc.text('Samskruti College of Engineering & Technology', pageWidth - 220, finalY + 70);
+    doc.text(meta.hodSignatureTitle, pageWidth - 240, finalY + 59);
+    doc.text('Samskruti College of Engineering & Technology', pageWidth - 240, finalY + 70);
   }
 
-  doc.save(`Samskruti_CS_Backlogs_Inspection_Dossier_${new Date().toISOString().slice(0, 10)}.pdf`);
-  alerts.success('PDF Generated', 'Official Backlogs Dossier exported successfully.');
+  doc.save(`Samskruti_${meta.deptShort}_Backlogs_Inspection_Dossier_${new Date().toISOString().slice(0, 10)}.pdf`);
+  alerts.success('PDF Generated', `Official ${meta.deptShort} Backlogs Dossier exported successfully.`);
 }
 
-function generateFallbackDepartmentStudents() {
-  return Array.from({ length: 180 }, (_, i) => {
+function generateFallbackDepartmentStudents(branch = 'CS') {
+  const meta = getBranchMeta(branch);
+  return Array.from({ length: meta.totalIntake }, (_, i) => {
     const roll = i + 1;
-    const pin = `24259-CS-${String(roll).padStart(3, '0')}`;
+    const pin = `${meta.prefix}${String(roll).padStart(3, '0')}`;
     return {
       pin,
       rollNumber: roll,
-      name: `CS Student ${roll}`,
-      branch: 'Computer Science & Engineering',
+      name: `${meta.deptShort} Student ${roll}`,
+      branch: meta.deptTitle,
       scheme: 'C-24',
-      semester: 3,
+      semester: '5th Sem',
       isSynced: false,
       attendance: null,
       results: null,

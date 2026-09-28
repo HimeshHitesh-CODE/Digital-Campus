@@ -75,13 +75,16 @@
           </div>
           
           <!-- Test PIN quick picks -->
-          <div class="flex items-center gap-1.5 mt-2 ml-1">
+          <div class="flex items-center gap-1.5 mt-2 ml-1 flex-wrap">
             <span class="text-[10px] text-slate-400 font-medium">Quick Test:</span>
-            <button type="button" onclick="fillPin('24259-CS-039')" class="text-[10px] bg-slate-200/80 hover:bg-blue-100 hover:text-blue-700 px-2 py-0.5 rounded text-slate-600 font-mono transition-colors">
-              24259-CS-039
+            <button type="button" onclick="fillPin('24259-AIML-019')" class="text-[10px] bg-emerald-100 hover:bg-emerald-200 text-emerald-800 px-2 py-0.5 rounded font-mono font-bold transition-colors">
+              24259-AIML-019 (Hitesh)
             </button>
             <button type="button" onclick="fillPin('24259-CS-025')" class="text-[10px] bg-slate-200/80 hover:bg-blue-100 hover:text-blue-700 px-2 py-0.5 rounded text-slate-600 font-mono transition-colors">
               24259-CS-025
+            </button>
+            <button type="button" onclick="fillPin('24259-CS-039')" class="text-[10px] bg-slate-200/80 hover:bg-blue-100 hover:text-blue-700 px-2 py-0.5 rounded text-slate-600 font-mono transition-colors">
+              24259-CS-039
             </button>
           </div>
           
@@ -303,11 +306,21 @@
           <input
             type="text"
             id="hodId"
-            value="HOD_CS"
-            placeholder="e.g. HOD_CS or VAMSHI-CS-HOD"
+            value="PADMINI-AIML-HOD"
+            placeholder="e.g. PADMINI-AIML-HOD or HOD_CS"
             class="w-full bg-white border border-slate-200 rounded-xl pl-10 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all font-mono uppercase text-slate-800"
             autocomplete="username"
           />
+        </div>
+        <!-- HOD quick picks -->
+        <div class="flex items-center gap-1.5 mt-2 ml-1 flex-wrap">
+          <span class="text-[10px] text-slate-400 font-medium">Quick Pick:</span>
+          <button type="button" onclick="document.getElementById('hodId').value='PADMINI-AIML-HOD'" class="text-[10px] bg-emerald-100 hover:bg-emerald-200 text-emerald-800 px-2 py-0.5 rounded font-mono font-bold transition-colors">
+            Prof. Padmini (AIML)
+          </button>
+          <button type="button" onclick="document.getElementById('hodId').value='HOD_CS'" class="text-[10px] bg-blue-100 hover:bg-blue-200 text-blue-800 px-2 py-0.5 rounded font-mono font-bold transition-colors">
+            Prof. Vamshi (CSE)
+          </button>
         </div>
       </div>
 
@@ -686,13 +699,31 @@
           throw new Error(data.detail || data.message || 'Invalid HOD credentials.');
         }
 
-        // Store HOD session
+        // 1. Purge old student/HOD cached data to prevent bleed-through
+        localStorage.removeItem('student_pin');
+        localStorage.removeItem('user_role');
+        localStorage.removeItem('dc_user');
+        localStorage.removeItem('user_name');
+        localStorage.removeItem('auth_token');
+        localStorage.removeItem('dc_auth_token');
+        localStorage.removeItem('hod_branch');
+        localStorage.removeItem('hod_id');
+        sessionStorage.clear();
+
+        // 2. Resolve HOD user object accurately
+        const isAiml = hodId.toUpperCase().includes('AIML') || (data.user && (data.user.role === 'HOD_AIML' || data.user.branch === 'AIML'));
         const hodUser = data.user || {
           pin: hodId,
-          name: "Prof. Vamshi Krishna",
-          role: "HOD_CS",
-          department: "Computer Science & Engineering",
-          collegeCode: "259"
+          name: isAiml ? "Prof. Padmini" : "Dr. J. Vamshi Krishna",
+          role: isAiml ? "HOD_AIML" : "HOD_CS",
+          department: isAiml ? "Artificial Intelligence & Machine Learning" : "Computer Science & Engineering",
+          branch: isAiml ? "AIML" : "CS",
+          scheme: "C-24",
+          semester: "5th Sem",
+          total_intake: isAiml ? 127 : 180,
+          collegeCode: "259",
+          isRegistered: true,
+          isActivated: true
         };
 
         const token = data.token || `tok_hod_${Date.now()}`;
@@ -700,11 +731,12 @@
         localStorage.setItem('dc_auth_token', token);
         localStorage.setItem('dc_user', JSON.stringify(hodUser));
         localStorage.setItem('user_name', hodUser.name);
-        localStorage.setItem('user_role', 'HOD');
+        localStorage.setItem('user_role', hodUser.role);
+        localStorage.setItem('hod_branch', hodUser.branch || (isAiml ? 'AIML' : 'CS'));
         localStorage.setItem('hod_id', hodId);
 
         const redirectUrl = data.redirect_url || '/screens/04-hod-portal/hod-dashboard.html';
-        window.location.href = redirectUrl;
+        window.location.replace(redirectUrl);
 
       } catch (err) {
         showError(hodError, err.message || 'HOD Login failed.');
@@ -727,20 +759,31 @@
     // ========================================================
     function persistSession(data, pin, email, role) {
       const token = data.token || `tok_${Date.now()}`;
+      const userRole = role || data.user?.role || 'STUDENT';
+      const isHod = userRole.toUpperCase().includes('HOD');
+
       const user = data.user || {
         sbtetPin: pin,
         rollNumber: pin,
         name: data.name || verifiedData?.name || 'Student',
         email: email,
-        department: data.department || verifiedData?.department || 'Computer Science (CS)',
-        semester: data.semester || verifiedData?.semester || '6SEM',
-        role: role || 'STUDENT',
+        department: data.department || verifiedData?.department || (pin.includes('AI') ? 'Artificial Intelligence & Machine Learning' : 'Computer Science & Engineering'),
+        branch: data.branch || (pin.includes('AI') ? 'AIML' : 'CS'),
+        scheme: data.scheme || 'C-24',
+        semester: data.semester || verifiedData?.semester || '5th Sem',
+        role: userRole,
         collegeCode: '259'
       };
 
       localStorage.setItem('auth_token', token);
       localStorage.setItem('dc_auth_token', token);
-      localStorage.setItem('student_pin', pin);
+      if (!isHod) {
+        localStorage.setItem('student_pin', pin);
+      } else {
+        localStorage.removeItem('student_pin');
+        localStorage.setItem('hod_id', pin);
+        localStorage.setItem('hod_branch', user.branch || (userRole.includes('AIML') ? 'AIML' : 'CS'));
+      }
       localStorage.setItem('dc_user', JSON.stringify(user));
       localStorage.setItem('user_name', user.name);
       localStorage.setItem('user_role', user.role);

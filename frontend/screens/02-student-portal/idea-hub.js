@@ -269,7 +269,8 @@ function setupSkillsModal() {
  */
 async function loadPeerDirectory() {
   try {
-    const res = await api.get('/hod/roster');
+    const targetBranch = user?.branch || (myPin.includes('-AI-') || myPin.includes('AIML') ? 'AIML' : 'CS');
+    const res = await api.get(`/hod/roster?branch=${targetBranch}`);
     if (res && res.success && Array.isArray(res.students)) {
       // Default sample skills pool distributed to students to make exploration interactive
       const skillPresets = [
@@ -290,9 +291,9 @@ async function loadPeerDirectory() {
           return {
             pin: s.pin,
             name: s.name,
-            branch: s.branch || 'Computer Science & Engineering',
+            branch: s.branch || (targetBranch === 'AIML' ? 'Artificial Intelligence & Machine Learning' : 'Computer Science & Engineering'),
             year: '3rd Year',
-            semester: '6th Sem',
+            semester: s.semester || '5th Sem',
             skills: preset,
             status: 'Available'
           };

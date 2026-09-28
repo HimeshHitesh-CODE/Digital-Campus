@@ -9,8 +9,8 @@ logger = logging.getLogger("sbtet_scraper")
 class SBTETScraperService:
     """
     SBTET Scraper and Live Data Bridge for sbtetconnect.app.
-    Supports high-speed multi-gateway failover and retry logic for onboarding,
-    biometric attendance, and consolidated marksheet/backlogs across semesters.
+    Supports multi-department (CSE and AIML) high-speed multi-gateway failover,
+    biometric attendance, and consolidated marksheet/backlogs across semesters under C-24 scheme.
     """
 
     GATEWAY_URLS = [
@@ -30,6 +30,21 @@ class SBTETScraperService:
 
     def _clean_pin(self, pin: str) -> str:
         return pin.strip().upper()
+
+    def _gateway_pin(self, pin: str) -> str:
+        """SBTET AWS gateway strictly uses branch code AI (e.g. 24259-AI-xxx)."""
+        cleaned = pin.strip().upper()
+        if "-AIML-" in cleaned:
+            cleaned = cleaned.replace("-AIML-", "-AI-")
+        return cleaned
+
+    def _get_department_name(self, branch: str) -> str:
+        b = branch.upper().strip()
+        if b in ["AIML", "AI"]:
+            return "Artificial Intelligence & Machine Learning"
+        if b in ["CS", "CSE"]:
+            return "Computer Science & Engineering"
+        return b
 
     async def _fetch_with_failover(self, client: httpx.AsyncClient, path: str) -> Optional[httpx.Response]:
         """
@@ -51,44 +66,53 @@ class SBTETScraperService:
     async def scrape_student_onboarding(self, pin: str) -> Dict[str, Any]:
         """
         Scrapes student identity (Name, Branch, Scheme, Year, Semester)
-        during the PIN-first onboarding registration flow.
+        during the PIN-first onboarding registration flow. Supports both CSE and AIML.
         """
         clean_pin = self._clean_pin(pin)
-        path = f"/api/attendance?pin={clean_pin}"
+        gw_pin = self._gateway_pin(clean_pin)
+        path = f"/api/attendance?pin={gw_pin}"
 
         async with httpx.AsyncClient(timeout=self.timeout) as client:
             try:
                 res = await self._fetch_with_failover(client, path)
-                if not res or res.status_code == 404:
+                name = None
+                raw_branch = "AIML" if ("-AI-" in clean_pin or "-AIML-" in clean_pin) else "CS"
+                scheme = "C-24"
+
+                if res and res.status_code == 200:
+                    data = res.json().get("data", {})
+                    table = data.get("Table", [])
+                    if table:
+                        summary = table[0]
+                        name = summary.get("Name")
+                        raw_b = (summary.get("BranchCode") or "").strip().upper()
+                        if raw_b:
+                            raw_branch = raw_b
+                        scheme = summary.get("Scheme") or "C-24"
+
+                # Fallback to consolidated results if attendance had no table
+                if not name or name == "Student":
+                    res_c = await self._fetch_with_failover(client, f"/api/consolidated?pin={gw_pin}&scheme=C24")
+                    if res_c and res_c.status_code == 200:
+                        s_info = res_c.json().get("student", {})
+                        if s_info.get("StudentName"):
+                            name = s_info.get("StudentName")
+                        if s_info.get("BranchCode"):
+                            raw_branch = s_info.get("BranchCode")
+
+                if not name:
                     return {"success": False, "error": f"PIN {clean_pin} not found on SBTET portal."}
-                
-                data = res.json().get("data", {})
-                table = data.get("Table", [])
-                if not table:
-                    return {"success": False, "error": f"No active SBTET records for PIN {clean_pin}."}
 
-                summary = table[0]
-                name = summary.get("Name") or "Student"
-                branch = summary.get("BranchCode") or "CS"
-                scheme = summary.get("Scheme") or "C-24"
-                semester = summary.get("Semester") or "6SEM"
-                sem_num = 6
-                try:
-                    sem_num = int(''.join(filter(str.isdigit, semester))) or 6
-                except:
-                    pass
-
-                year = "3rd Year" if sem_num >= 5 else ("2nd Year" if sem_num >= 3 else "1st Year")
-
+                branch = "AIML" if raw_branch.upper() in ["AIML", "AI"] else "CS"
                 return {
                     "success": True,
                     "pin": clean_pin,
-                    "name": name,
+                    "name": name.strip(),
                     "branch": branch,
-                    "department": "Computer Science & Engineering" if branch == "CS" else branch,
-                    "scheme": scheme,
-                    "semester": semester,
-                    "year": year
+                    "department": self._get_department_name(branch),
+                    "scheme": "C-24",
+                    "semester": "5th Sem",
+                    "year": "3rd Year"
                 }
             except Exception as e:
                 logger.error(f"[Scraper Error] Onboarding scrape failed for {clean_pin}: {e}")
@@ -100,7 +124,8 @@ class SBTETScraperService:
         monthly matrices, and trend data with gateway failover.
         """
         clean_pin = self._clean_pin(pin)
-        path = f"/api/attendance?pin={clean_pin}"
+        gw_pin = self._gateway_pin(clean_pin)
+        path = f"/api/attendance?pin={gw_pin}"
 
         async with httpx.AsyncClient(timeout=self.timeout) as client:
             try:
@@ -177,14 +202,20 @@ class SBTETScraperService:
         raw_name = summary.get("Name")
         student_name = raw_name.strip() if raw_name else None
 
+        raw_branch = (summary.get("BranchCode") or "").strip().upper()
+        if not raw_branch:
+            raw_branch = "AIML" if ("-AIML-" in clean_pin or "-AI-" in clean_pin) else "CS"
+        branch = "AIML" if raw_branch in ["AIML", "AI"] else raw_branch
+
         return {
             "success": True,
             "pin": clean_pin,
             "name": student_name,
             "college_code": summary.get("CollegeCode", "259"),
-            "branch": summary.get("BranchCode", "CS"),
+            "branch": branch,
+            "department": self._get_department_name(branch),
             "scheme": summary.get("Scheme", "C24"),
-            "semester": summary.get("Semester", "6SEM"),
+            "semester": "5th Sem",
             "workingDays": int(working_days),
             "presentDays": int(days_present),
             "absentDays": max(0, int(working_days - days_present)),
@@ -212,10 +243,12 @@ class SBTETScraperService:
     async def scrape_results(self, pin: str, scheme: str = "C24") -> Dict[str, Any]:
         """
         Scrapes live consolidated semester marksheet, CGPA, total credits,
-        and backlogs breakdown across all historical semesters (1SEM to 6SEM).
+        and backlogs breakdown across all historical semesters under C-24 scheme.
         """
         clean_pin = self._clean_pin(pin)
-        path = f"/api/consolidated?pin={clean_pin}&scheme={scheme}"
+        gw_pin = self._gateway_pin(clean_pin)
+        scheme_clean = (scheme or "C24").replace("-", "").upper()
+        path = f"/api/consolidated?pin={gw_pin}&scheme={scheme_clean}"
 
         async with httpx.AsyncClient(timeout=self.timeout) as client:
             try:
@@ -302,12 +335,18 @@ class SBTETScraperService:
         raw_student_name = student_info.get("Name")
         student_name = raw_student_name.strip() if raw_student_name else None
 
+        raw_branch = (student_info.get("Branch_Code") or "").strip().upper()
+        if not raw_branch:
+            raw_branch = "AIML" if "-AIML-" in clean_pin else "CS"
+        branch = "AIML" if raw_branch in ["AIML", "AI"] else raw_branch
+
         return {
             "success": True,
             "studentName": student_name,
             "pin": clean_pin,
-            "scheme": scheme,
-            "branch": student_info.get("Branch_Code") or "CS",
+            "scheme": scheme_clean,
+            "branch": branch,
+            "department": self._get_department_name(branch),
             "summary": formatted_summary,
             "semesters": semesters_map,
             "availableSemesters": available_semesters,
@@ -324,12 +363,14 @@ class SBTETScraperService:
     async def scrape_student_complete(self, pin: str, scheme: str = "C24") -> Dict[str, Any]:
         """
         Synchronously coordinates biometric attendance AND academic results/CGPA/backlogs
-        in parallel to ensure atomic, unified student records during 180-student auto-sync.
+        in parallel to ensure atomic, unified student records during department auto-sync.
+        Supports both CS (180 students) and AIML (120 students).
         """
         clean_pin = self._clean_pin(pin)
+        scheme_clean = (scheme or "C24").replace("-", "").upper()
         att_res, res_res = await asyncio.gather(
             self.scrape_attendance(clean_pin),
-            self.scrape_results(clean_pin, scheme),
+            self.scrape_results(clean_pin, scheme_clean),
             return_exceptions=True
         )
 
@@ -338,6 +379,13 @@ class SBTETScraperService:
 
         att = att_res if att_success else {}
         res = res_res if res_success else {}
+
+        # Resolve branch
+        pin_branch = "AIML" if ("-AIML-" in clean_pin or "-AI-" in clean_pin) else "CS"
+        branch = att.get("branch") or res.get("branch") or pin_branch
+        if branch in ["AI", "AIML"]:
+            branch = "AIML"
+        department = self._get_department_name(branch)
 
         # Resolve real student name without forcing placeholder
         name = att.get("name") or res.get("studentName") or None
@@ -356,10 +404,10 @@ class SBTETScraperService:
             "has_results": res_success,
             "pin": clean_pin,
             "name": name,
-            "branch": att.get("branch") or res.get("branch") or "CS",
-            "department": "Computer Science & Engineering",
-            "scheme": scheme,
-            "semester": att.get("semester") or "6SEM",
+            "branch": branch,
+            "department": department,
+            "scheme": "C-24",
+            "semester": "5th Sem",
             "workingDays": int(working_days),
             "presentDays": int(present_days),
             "attendancePercentage": float(att_pct or 0.0),

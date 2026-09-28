@@ -28,8 +28,8 @@ const HOD_NAV_ITEMS = [
 export function renderDock(activeFileName = '', explicitRole = null) {
   const currentPath = activeFileName || window.location.pathname.split('/').pop() || 'dashboard.html';
   const authenticatedUser = api.getUser();
-  const role = explicitRole || (authenticatedUser?.role?.includes('HOD') || authenticatedUser?.role === 'ADMIN' ? 'HOD' : 'STUDENT');
-  const isHOD = role === 'HOD' || role === 'HOD_CS' || window.location.pathname.includes('/04-hod-portal/') || window.location.pathname.includes('/03-admin-portal/');
+  const role = explicitRole || authenticatedUser?.role || 'STUDENT';
+  const isHOD = role.toUpperCase().includes('HOD') || role === 'ADMIN' || window.location.pathname.includes('/04-hod-portal/') || window.location.pathname.includes('/03-admin-portal/');
 
   if (!window.location.pathname.includes('/01-auth/')) {
     if (isHOD) {

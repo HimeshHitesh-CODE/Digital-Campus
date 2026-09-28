@@ -28,16 +28,15 @@ function getActiveStudentInfo() {
 
   // Branch mapping
   let branch = sessionUser.department || 'Computer Science & Engineering';
-  if (pin.includes('-AI-')) branch = 'Artificial Intelligence & Machine Learning (AI)';
+  if (pin.includes('-AI-') || pin.includes('-AIML-')) branch = 'Artificial Intelligence & Machine Learning (AIML)';
   else if (pin.includes('-CS-')) branch = 'Computer Science & Engineering (CS)';
   else if (pin.includes('-EC-')) branch = 'Electronics & Communication (EC)';
   else if (pin.includes('-EE-')) branch = 'Electrical & Electronics (EE)';
   else if (pin.includes('-M-')) branch = 'Mechanical Engineering (MECH)';
   else if (pin.includes('-CIV-')) branch = 'Civil Engineering (CIV)';
 
-  // Semester mapping
-  const semNum = sessionUser.semester || user.semester || 3;
-  const semText = `Semester ${semNum} (${semNum <= 2 ? '1st Year' : semNum <= 4 ? '2nd Year' : '3rd Year'})`;
+  // Semester mapping: Diploma C-24 Semester V
+  const semText = 'Semester V (3rd Year • 5th Sem)';
 
   // Custom saved contact details
   const savedContact = JSON.parse(localStorage.getItem(`contact_${pin}`) || '{}');

@@ -8,7 +8,7 @@ import { renderDock } from '../../js/dock.js';
 import { alerts } from '../../js/alerts.js';
 
 // Verify authenticated student session
-const user = requireAuth(['STUDENT', 'HOD', 'HOD_CS', 'ADMIN']);
+const user = requireAuth(['STUDENT', 'HOD', 'HOD_CS', 'HOD_AIML', 'ADMIN']);
 
 if (user) {
   // Mount the left dock with active state
@@ -52,7 +52,7 @@ async function populateUserProfile() {
   if (profileNameElem) profileNameElem.textContent = displayName;
   if (profilePinElem) profilePinElem.textContent = pin ? `PIN: ${pin}` : '';
   if (statusElem) {
-    statusElem.textContent = `Samskruti College (259) • Diploma C-24 • ${dept}`;
+    statusElem.textContent = `Samskruti College (259) • Diploma C-24 (5th Sem) • ${dept}`;
   }
 
   if (initialsElem) {

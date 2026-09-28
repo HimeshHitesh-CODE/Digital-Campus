@@ -143,7 +143,7 @@ function setupPinVerificationFlow() {
         document.getElementById('final-name').value = std.name || '';
         document.getElementById('final-branch').value = std.branch || 'CS';
         document.getElementById('final-scheme').value = std.scheme || 'C-24';
-        document.getElementById('final-semester').value = std.semester || '6SEM';
+        document.getElementById('final-semester').value = std.semester || '5th Sem';
         document.getElementById('final-year').value = std.year || '3rd Year';
 
         // Transition from Stage 1 to Stage 2
@@ -282,7 +282,7 @@ function setupStudentSignIn() {
         if (res.user) api.setUser(res.user);
 
         setTimeout(() => {
-          window.location.href = res.redirectUrl || '../02-student-portal/dashboard.html';
+          window.location.href = res.redirect_url || res.redirectUrl || '../02-student-portal/dashboard.html';
         }, 600);
       } else {
         throw new Error(res.message || 'Invalid credentials.');
@@ -335,7 +335,7 @@ function setupAdminHODLogin() {
         if (res.user) api.setUser(res.user);
 
         setTimeout(() => {
-          window.location.href = res.redirectUrl || '../04-hod-portal/hod-dashboard.html';
+          window.location.href = res.redirect_url || res.redirectUrl || '../04-hod-portal/hod-dashboard.html';
         }, 600);
       } else {
         throw new Error(res.message || 'Invalid HOD security credentials.');

@@ -207,12 +207,13 @@ def login_redirect():
 async def verify_pin(req: PinVerificationRequest, db: Session = Depends(get_db)):
     """
     Step 1 & 2: Validates PIN against roster_keys and scrapes verified student
-    details from sbtetconnect.app.
+    details from sbtetconnect.app under C-24 scheme for CS (180) & AIML (127).
     """
     clean_pin = req.pin.strip().upper()
+    alt_pin = clean_pin.replace("-AIML-", "-AI-") if "-AIML-" in clean_pin else clean_pin.replace("-AI-", "-AIML-")
 
     # 1. Validate against pre-populated roster_keys
-    roster_entry = db.query(RosterKeyDB).filter(RosterKeyDB.pin == clean_pin).first()
+    roster_entry = db.query(RosterKeyDB).filter(or_(RosterKeyDB.pin == clean_pin, RosterKeyDB.pin == alt_pin)).first()
     if not roster_entry:
         raise HTTPException(
             status_code=404,
@@ -220,7 +221,13 @@ async def verify_pin(req: PinVerificationRequest, db: Session = Depends(get_db))
         )
 
     # 2. Check if student already finalized their account
-    existing_student = db.query(StudentDB).filter(StudentDB.pin == clean_pin).first()
+    existing_student = db.query(StudentDB).filter(or_(
+        StudentDB.pin == clean_pin,
+        StudentDB.pin == alt_pin,
+        StudentDB.roll_no == clean_pin,
+        StudentDB.roll_no == alt_pin
+    )).first()
+
     if existing_student and existing_student.email and existing_student.password:
         return {
             "status": "already_registered",
@@ -229,28 +236,36 @@ async def verify_pin(req: PinVerificationRequest, db: Session = Depends(get_db))
             "pin": clean_pin,
             "name": existing_student.name,
             "email": existing_student.email,
-            "department": existing_student.department or "Computer Science (CS)",
-            "semester": existing_student.semester or "5th Semester (C-24)"
+            "branch": existing_student.branch or roster_entry.branch or ("AIML" if ("-AIML-" in clean_pin or "-AI-" in clean_pin) else "CS"),
+            "department": existing_student.department or roster_entry.department or ("Artificial Intelligence & Machine Learning" if ("-AIML-" in clean_pin or "-AI-" in clean_pin) else "Computer Science & Engineering"),
+            "scheme": existing_student.scheme or "C-24",
+            "semester": "5th Sem",
+            "isRegistered": True,
+            "isActivated": True
         }
 
-    # 3. Scrape real student identity from SBTET Gateway
+    # 3. Scrape real student identity from SBTET Gateway or use existing DB record
     scraped = await sbtet_scraper.scrape_student_onboarding(clean_pin)
 
-    student_name = scraped.get("name") if (scraped.get("success") and scraped.get("name") and scraped.get("name") != "Student") else f"Student {clean_pin}"
-    branch = scraped.get("branch", "Computer Science (CS)")
-    scheme = scraped.get("scheme", "C-24")
-    semester = scraped.get("semester", "5th Semester (C-24)")
-    year = scraped.get("year", "3rd Year")
+    fallback_name = existing_student.name if (existing_student and existing_student.name and not existing_student.name.startswith("Student") and not existing_student.name.startswith("CS Student") and not existing_student.name.startswith("AIML Student")) else f"Student {clean_pin}"
+    student_name = scraped.get("name") if (scraped.get("success") and scraped.get("name") and scraped.get("name") != "Student") else fallback_name
+    branch = roster_entry.branch or scraped.get("branch", "AIML" if ("-AI-" in clean_pin or "-AIML-" in clean_pin) else "CS")
+    scheme = "C-24"
+    semester = "5th Sem"
+    year = "3rd Year"
 
     return {
         "status": "success",
         "success": True,
         "name": student_name,
-        "department": "Computer Science (CS)" if "CS" in branch else branch,
+        "branch": branch,
+        "department": roster_entry.department or ("Artificial Intelligence & Machine Learning" if branch == "AIML" else "Computer Science & Engineering"),
         "semester": semester,
         "pin": clean_pin,
         "year": year,
-        "scheme": scheme
+        "scheme": scheme,
+        "isRegistered": True,
+        "isActivated": True
     }
 
 @app.post("/api/auth/register")
@@ -291,18 +306,18 @@ async def register_student(req: StudentRegistrationRequest, db: Session = Depend
             name=name,
             email=clean_email,
             password=req.password,
-            department="Computer Science & Engineering",
-            branch="CS",
+            department="Artificial Intelligence & Machine Learning" if ("-AI-" in clean_pin or "-AIML-" in clean_pin) else "Computer Science & Engineering",
+            branch="AIML" if ("-AI-" in clean_pin or "-AIML-" in clean_pin) else "CS",
             scheme="C-24",
             year="3rd Year",
-            semester="5th Semester (C-24)",
+            semester="5th Sem",
             role="STUDENT",
             created_at=now_ts
         )
         db.add(student)
 
     # Mark roster key as registered
-    roster_entry = db.query(RosterKeyDB).filter(RosterKeyDB.pin == clean_pin).first()
+    roster_entry = db.query(RosterKeyDB).filter(or_(RosterKeyDB.pin == clean_pin, RosterKeyDB.pin == clean_pin.replace("-AIML-", "-AI-"), RosterKeyDB.pin == clean_pin.replace("-AI-", "-AIML-"))).first()
     if roster_entry:
         roster_entry.is_registered = True
 
@@ -324,6 +339,10 @@ async def register_student(req: StudentRegistrationRequest, db: Session = Depend
             "email": student.email,
             "role": student.role or "STUDENT",
             "department": student.department,
+            "branch": student.branch,
+            "scheme": student.scheme or "C-24",
+            "semester": "5th Sem",
+            "year": "3rd Year",
             "collegeCode": "259"
         }
     }
@@ -333,36 +352,77 @@ async def register_student(req: StudentRegistrationRequest, db: Session = Depend
 async def login(req: LoginRequest, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
     """
     Standard login using Email or PIN + Password.
-    When HOD logs in, triggers 180-student background task!
+    When HOD logs in, triggers branch-aware department background sync!
     """
     ident = req.identifier.strip()
     clean_id = ident.upper()
 
-    # 1. Check for HOD Console Login
-    if clean_id in ["VAMSHI-CS-HOD", "HOD.CS@SAMSKRUTI.AC.IN", "HOD", "HOD_CS"]:
-        if req.password in ["Password123", "VamshiCS@2026", "HOD@SCET259"]:
-            background_tasks.add_task(run_180_student_sync_background)
-            token = f"tok_hod_{random.randint(100000, 999999)}"
+    # 1A. Check for AIML HOD Console Login (Prof. Padmini)
+    if clean_id in ["PADMINI-AIML-HOD", "HOD_AIML", "HOD.AIML@SAMSKRUTI.AC.IN", "PROF_PADMINI", "PADMINI"]:
+        if req.password in ["Password123", "Padmini@259", "HOD@SCET259"]:
+            background_tasks.add_task(run_department_sync_background, "AIML", 127, "24259-AI-", "C24")
+            token = f"tok_hod_aiml_{random.randint(100000, 999999)}"
             return {
                 "status": "success",
                 "success": True,
-                "message": "Welcome, Prof. Vamshi Krishna (Computer Science & Engineering HOD Console)",
+                "message": "Welcome, Prof. Padmini (Artificial Intelligence & Machine Learning HOD Console)",
+                "token": token,
+                "redirect_url": "/screens/04-hod-portal/hod-dashboard.html",
+                "user": {
+                    "pin": "PADMINI-AIML-HOD",
+                    "name": "Prof. Padmini",
+                    "role": "HOD_AIML",
+                    "department": "Artificial Intelligence & Machine Learning",
+                    "branch": "AIML",
+                    "total_intake": 127,
+                    "scheme": "C-24",
+                    "semester": "5th Sem",
+                    "collegeCode": "259",
+                    "isRegistered": True,
+                    "isActivated": True
+                }
+            }
+        else:
+            raise HTTPException(status_code=401, detail="Invalid password for AIML HOD Console.")
+
+    # 1B. Check for CSE HOD Console Login (Dr. J. Vamshi Krishna)
+    elif clean_id in ["VAMSHI-CS-HOD", "HOD_CS", "HOD.CS@SAMSKRUTI.AC.IN", "HOD", "PROF_VAMSHI"]:
+        if req.password in ["Password123", "VamshiCS@2026", "HOD@SCET259"]:
+            background_tasks.add_task(run_department_sync_background, "CS", 180, "24259-CS-", "C24")
+            token = f"tok_hod_cs_{random.randint(100000, 999999)}"
+            return {
+                "status": "success",
+                "success": True,
+                "message": "Welcome, Dr. J. Vamshi Krishna (Computer Science & Engineering HOD Console)",
                 "token": token,
                 "redirect_url": "/screens/04-hod-portal/hod-dashboard.html",
                 "user": {
                     "pin": "VAMSHI-CS-HOD",
-                    "name": "Prof. Vamshi Krishna",
+                    "name": "Dr. J. Vamshi Krishna",
                     "role": "HOD_CS",
                     "department": "Computer Science & Engineering",
-                    "collegeCode": "259"
+                    "branch": "CS",
+                    "total_intake": 180,
+                    "scheme": "C-24",
+                    "semester": "5th Sem",
+                    "collegeCode": "259",
+                    "isRegistered": True,
+                    "isActivated": True
                 }
             }
         else:
-            raise HTTPException(status_code=401, detail="Invalid password for HOD Console.")
+            raise HTTPException(status_code=401, detail="Invalid password for CSE HOD Console.")
 
-    # 2. Check for Student Login by PIN or Email
+    # 2. Check for Student Login by PIN (both -AI- and -AIML-) or Email
+    alt_id = clean_id.replace("-AIML-", "-AI-") if "-AIML-" in clean_id else clean_id.replace("-AI-", "-AIML-")
     student = db.query(StudentDB).filter(
-        or_(StudentDB.pin.ilike(ident), StudentDB.email.ilike(ident))
+        or_(
+            StudentDB.pin.ilike(ident),
+            StudentDB.pin.ilike(alt_id),
+            StudentDB.roll_no.ilike(ident),
+            StudentDB.roll_no.ilike(alt_id),
+            StudentDB.email.ilike(ident)
+        )
     ).first()
 
     if not student:
@@ -389,6 +449,10 @@ async def login(req: LoginRequest, background_tasks: BackgroundTasks, db: Sessio
             "email": student.email,
             "role": student.role or "STUDENT",
             "department": student.department,
+            "branch": student.branch,
+            "scheme": student.scheme or "C-24",
+            "semester": "5th Sem",
+            "year": "3rd Year",
             "collegeCode": "259"
         }
     }
@@ -397,29 +461,64 @@ async def login(req: LoginRequest, background_tasks: BackgroundTasks, db: Sessio
 @app.post("/api/v1/auth/hod-login")
 async def hod_login(req: HODLoginRequest, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
     """
-    HOD Dedicated Login endpoint. Triggers 180-student background sync.
+    HOD Dedicated Login endpoint. Triggers branch-aware department background sync.
     """
     clean_id = req.hod_id.strip().upper()
-    if clean_id in ["HOD_CS", "VAMSHI-CS-HOD", "HOD.CS@SAMSKRUTI.AC.IN", "HOD", "PROF_VAMSHI"]:
-        if req.password in ["Password123", "VamshiCS@2026", "HOD@SCET259"]:
-            background_tasks.add_task(run_180_student_sync_background)
-            token = f"tok_hod_{random.randint(100000, 999999)}"
+
+    # AIML HOD (Prof. Padmini)
+    if clean_id in ["PADMINI-AIML-HOD", "HOD_AIML", "HOD.AIML@SAMSKRUTI.AC.IN", "PROF_PADMINI", "PADMINI"]:
+        if req.password in ["Password123", "Padmini@259", "HOD@SCET259"]:
+            background_tasks.add_task(run_department_sync_background, "AIML", 127, "24259-AI-", "C24")
+            token = f"tok_hod_aiml_{random.randint(100000, 999999)}"
             return {
                 "status": "success",
                 "success": True,
-                "message": "Welcome, Prof. Vamshi Krishna (HOD Computer Science)",
+                "message": "Welcome, Prof. Padmini (HOD Artificial Intelligence & Machine Learning)",
+                "token": token,
+                "redirect_url": "/screens/04-hod-portal/hod-dashboard.html",
+                "user": {
+                    "pin": "PADMINI-AIML-HOD",
+                    "name": "Prof. Padmini",
+                    "role": "HOD_AIML",
+                    "department": "Artificial Intelligence & Machine Learning",
+                    "branch": "AIML",
+                    "total_intake": 127,
+                    "scheme": "C-24",
+                    "semester": "5th Sem",
+                    "collegeCode": "259",
+                    "isRegistered": True,
+                    "isActivated": True
+                }
+            }
+        else:
+            raise HTTPException(status_code=401, detail="Invalid password for AIML HOD.")
+
+    # CSE HOD (Dr. J. Vamshi Krishna)
+    elif clean_id in ["VAMSHI-CS-HOD", "HOD_CS", "HOD.CS@SAMSKRUTI.AC.IN", "HOD", "PROF_VAMSHI"]:
+        if req.password in ["Password123", "VamshiCS@2026", "HOD@SCET259"]:
+            background_tasks.add_task(run_department_sync_background, "CS", 180, "24259-CS-", "C24")
+            token = f"tok_hod_cs_{random.randint(100000, 999999)}"
+            return {
+                "status": "success",
+                "success": True,
+                "message": "Welcome, Dr. J. Vamshi Krishna (HOD Computer Science)",
                 "token": token,
                 "redirect_url": "/screens/04-hod-portal/hod-dashboard.html",
                 "user": {
                     "pin": "VAMSHI-CS-HOD",
-                    "name": "Prof. Vamshi Krishna",
+                    "name": "Dr. J. Vamshi Krishna",
                     "role": "HOD_CS",
                     "department": "Computer Science & Engineering",
-                    "collegeCode": "259"
+                    "branch": "CS",
+                    "total_intake": 180,
+                    "scheme": "C-24",
+                    "collegeCode": "259",
+                    "isRegistered": True,
+                    "isActivated": True
                 }
             }
         else:
-            raise HTTPException(status_code=401, detail="Invalid HOD password.")
+            raise HTTPException(status_code=401, detail="Invalid password for CSE HOD Console.")
     else:
         raise HTTPException(status_code=404, detail="HOD ID not recognized.")
 
@@ -464,6 +563,7 @@ async def sync_student_attendance(req: PinRequest, db: Session = Depends(get_db)
         **att
     }
 
+@app.get("/api/v1/attendance")
 @app.get("/api/v1/attendance/data")
 @app.get("/api/v1/student/attendance")
 @app.get("/api/student/attendance")
@@ -523,6 +623,7 @@ async def sync_student_results(req: PinRequest, db: Session = Depends(get_db)):
         **res
     }
 
+@app.get("/api/v1/results")
 @app.get("/api/v1/results/data")
 @app.get("/api/v1/student/results")
 @app.get("/api/student/results")
@@ -536,6 +637,42 @@ async def get_student_results(pin: str = Query("24259-CS-025"), scheme: str = Qu
         "data": res,
         "results": res,
         **res
+    }
+
+@app.get("/api/v1/student/profile")
+@app.get("/api/student/profile")
+def get_student_profile(pin: str = Query(...), db: Session = Depends(get_db)):
+    """Retrieves student profile information with full dual-PIN support."""
+    clean_pin = pin.strip().upper()
+    alt_pin = clean_pin.replace("-AIML-", "-AI-") if "-AIML-" in clean_pin else clean_pin.replace("-AI-", "-AIML-")
+    student = db.query(StudentDB).filter(or_(
+        StudentDB.pin == clean_pin,
+        StudentDB.pin == alt_pin,
+        StudentDB.roll_no == clean_pin,
+        StudentDB.roll_no == alt_pin
+    )).first()
+
+    if not student:
+        raise HTTPException(status_code=404, detail=f"Student with PIN '{clean_pin}' not found")
+
+    return {
+        "success": True,
+        "data": {
+            "pin": student.pin,
+            "roll_no": student.roll_no or student.pin,
+            "name": student.name,
+            "email": student.email,
+            "department": student.department,
+            "branch": student.branch,
+            "scheme": student.scheme or "C-24",
+            "semester": "5th Sem",
+            "year": student.year or "3rd Year",
+            "role": student.role or "STUDENT",
+            "attendance_val": student.attendance_val,
+            "attendance_pct": student.attendance_pct,
+            "cgpa": student.cgpa,
+            "backlogs": student.backlogs
+        }
     }
 
 # ==============================================================================
@@ -973,42 +1110,58 @@ async def send_project_invite(req: SendInviteRequest, db: Session = Depends(get_
     return {"success": True, "message": "Invite dispatched!", "invite_id": invite.id}
 
 # ==============================================================================
-# 8. HOD / ADMIN PORTAL: 180-STUDENT AUTO-SYNC & MANAGEMENT
+# 8. MULTI-DEPARTMENT HOD & ADMIN PORTAL: AUTO-SYNC & MANAGEMENT
 # ==============================================================================
 
-async def run_180_student_sync_background():
+async def run_department_sync_background(
+    branch: str = "CS",
+    total: int = 180,
+    prefix: str = "24259-CS-",
+    scheme: str = "C24"
+):
     """
     Background Task: Automatically scrapes & syncs attendance, backlogs,
-    and pass data for all 180 department students, broadcasting progress via WebSockets.
+    and pass data for students in the specified department (CS: 180, AIML: 120),
+    broadcasting progress via WebSockets and updating SQLite records atomically.
     """
+    b = "AIML" if branch.upper() in ["AIML", "AI"] else "CS"
+    if b == "AIML":
+        total = 127
+        prefix = "24259-AI-"
+        dept_name = "Artificial Intelligence & Machine Learning"
+    else:
+        total = 180
+        prefix = "24259-CS-"
+        dept_name = "Computer Science & Engineering"
+
     db = SessionLocal()
     try:
-        prog = db.query(SyncProgressDB).first()
+        prog = db.query(SyncProgressDB).filter(SyncProgressDB.branch == b).first()
         if not prog:
-            prog = SyncProgressDB(status="RUNNING", total_students=180, synced_count=0)
+            prog = SyncProgressDB(branch=b, status="RUNNING", total_students=total, synced_count=0)
             db.add(prog)
         else:
             prog.status = "RUNNING"
+            prog.total_students = total
             prog.synced_count = 0
             prog.started_at = datetime.utcnow().isoformat()
         db.commit()
 
-        # Generate list of PINs (CS-001 to CS-180)
-        pins = [f"24259-CS-{str(i).zfill(3)}" for i in range(1, 181)]
-        total = len(pins)
+        # Generate list of PINs (e.g. 24259-CS-001..180 or 24259-AI-001..127)
+        pins = [f"{prefix}{str(i).zfill(3)}" for i in range(1, total + 1)]
 
         total_attendance_sum = 0.0
         eligible_count = 0
         synced_count = 0
 
-        # Sync in batches of 6 concurrent workers with 60ms stagger
+        # Sync in batches of 6 concurrent workers with 50ms stagger
         batch_size = 6
         for i in range(0, total, batch_size):
             batch = pins[i:i + batch_size]
             tasks = []
             for pin in batch:
-                tasks.append(sbtet_scraper.scrape_student_complete(pin))
-                await asyncio.sleep(0.060)  # 60ms stagger to prevent AWS Gateway rate drops
+                tasks.append(sbtet_scraper.scrape_student_complete(pin, scheme="C24"))
+                await asyncio.sleep(0.050)  # 50ms stagger to prevent AWS Gateway rate drops
 
             results = await asyncio.gather(*tasks, return_exceptions=True)
 
@@ -1016,7 +1169,13 @@ async def run_180_student_sync_background():
                 current_pin = batch[idx]
                 synced_count += 1
 
-                student = db.query(StudentDB).filter(StudentDB.pin == current_pin).first()
+                alt_pin = current_pin.replace("-AI-", "-AIML-") if "-AI-" in current_pin else current_pin.replace("-AIML-", "-AI-")
+                student = db.query(StudentDB).filter(or_(
+                    StudentDB.pin == current_pin,
+                    StudentDB.pin == alt_pin,
+                    StudentDB.roll_no == current_pin,
+                    StudentDB.roll_no == alt_pin
+                )).first()
 
                 if isinstance(res, dict) and res.get("success"):
                     now_ts = datetime.utcnow().isoformat()
@@ -1025,7 +1184,7 @@ async def run_180_student_sync_background():
                     res_ok = res.get("results_success") is True
 
                     if student:
-                        if real_name and not real_name.startswith("CS Student") and not real_name.startswith("Student"):
+                        if real_name and not real_name.startswith("CS Student") and not real_name.startswith("AIML Student") and not real_name.startswith("Student"):
                             student.name = real_name
 
                         # ATOMIC ATTENDANCE UPDATE: Only touch attendance if attendance fetch succeeded
@@ -1046,12 +1205,12 @@ async def run_180_student_sync_background():
 
                             # Persist individual backlog subject records
                             backlog_subjects = res.get("backlog_subjects", [])
-                            db.query(BacklogRecordDB).filter(BacklogRecordDB.pin == current_pin).delete()
+                            db.query(BacklogRecordDB).filter(or_(BacklogRecordDB.pin == current_pin, BacklogRecordDB.pin == alt_pin)).delete()
                             for subj in backlog_subjects:
                                 record = BacklogRecordDB(
                                     student_id=student.id,
                                     pin=current_pin,
-                                    semester=str(subj.get("semester", "")),
+                                    semester=str(subj.get("semester", "") or "5th Sem"),
                                     subject_code=str(subj.get("code", "")),
                                     subject_title=str(subj.get("name", "")),
                                     internal_marks=str(subj.get("internal", "")),
@@ -1061,6 +1220,8 @@ async def run_180_student_sync_background():
                                 )
                                 db.add(record)
 
+                        student.semester = "5th Sem"
+                        student.scheme = "C-24"
                         student.last_synced = now_ts
                     else:
                         pct_val = float(res.get("attendancePercentage", 0.0) or 0.0) if att_ok else 0.0
@@ -1069,11 +1230,13 @@ async def run_180_student_sync_background():
                         student = StudentDB(
                             pin=current_pin,
                             roll_no=current_pin,
-                            name=real_name or f"CS Student {current_pin.split('-')[-1]}",
+                            name=real_name or f"{b} Student {current_pin.split('-')[-1]}",
                             password="Password123",
-                            department="Computer Science & Engineering",
-                            branch="CS",
+                            department=dept_name,
+                            branch=b,
                             scheme="C-24",
+                            year="3rd Year",
+                            semester="5th Sem",
                             role="STUDENT",
                             attendance_pct=f"{pct_val:.2f}%" if att_ok else "0.0%",
                             attendance_val=pct_val if att_ok else 0.0,
@@ -1093,7 +1256,7 @@ async def run_180_student_sync_background():
                                 record = BacklogRecordDB(
                                     student_id=student.id,
                                     pin=current_pin,
-                                    semester=str(subj.get("semester", "")),
+                                    semester=str(subj.get("semester", "") or "5th Sem"),
                                     subject_code=str(subj.get("code", "")),
                                     subject_title=str(subj.get("name", "")),
                                     internal_marks=str(subj.get("internal", "")),
@@ -1119,6 +1282,7 @@ async def run_180_student_sync_background():
                 percent = int((synced_count / total) * 100)
                 await ws_manager.broadcast({
                     "type": "HOD_SYNC_PROGRESS",
+                    "branch": b,
                     "synced": synced_count,
                     "total": total,
                     "percent": percent,
@@ -1140,15 +1304,16 @@ async def run_180_student_sync_background():
 
         await ws_manager.broadcast({
             "type": "HOD_SYNC_COMPLETE",
+            "branch": b,
             "total": total,
             "department_avg_attendance": avg_att,
             "department_clearance_rate": clearance_rate
         })
 
     except Exception as e:
-        logger.error(f"[180 Background Sync Error]: {e}")
+        logger.error(f"[{b} Background Sync Error]: {e}")
         try:
-            prog = db.query(SyncProgressDB).first()
+            prog = db.query(SyncProgressDB).filter(SyncProgressDB.branch == b).first()
             if prog:
                 prog.status = "FAILED"
                 db.commit()
@@ -1157,24 +1322,36 @@ async def run_180_student_sync_background():
     finally:
         db.close()
 
+async def run_180_student_sync_background():
+    """Legacy alias for CS 180 background sync."""
+    await run_department_sync_background("CS", 180, "24259-CS-", "C24")
+
 @app.post("/api/v1/hod/trigger-sync")
-def trigger_hod_sync(background_tasks: BackgroundTasks):
-    """Manually triggers background sync for all 180 department students."""
-    background_tasks.add_task(run_180_student_sync_background)
-    return {"success": True, "message": "180-Student Background Sync Dispatched!"}
+@app.post("/api/hod/trigger-sync")
+def trigger_hod_sync(background_tasks: BackgroundTasks, branch: str = Query("CS")):
+    """Manually triggers background sync for all students in the branch (CS: 180, AIML: 127)."""
+    b = "AIML" if branch.upper() in ["AIML", "AI"] else "CS"
+    total = 127 if b == "AIML" else 180
+    prefix = "24259-AI-" if b == "AIML" else "24259-CS-"
+    background_tasks.add_task(run_department_sync_background, b, total, prefix, "C24")
+    return {"success": True, "branch": b, "total": total, "message": f"{total}-Student {b} Background Sync Dispatched!"}
 
 @app.get("/api/v1/hod/sync-status")
-def get_hod_sync_status(db: Session = Depends(get_db)):
-    """Returns current state of 180-student background sync."""
-    prog = db.query(SyncProgressDB).first()
+@app.get("/api/hod/sync-status")
+def get_hod_sync_status(branch: str = Query("CS"), db: Session = Depends(get_db)):
+    """Returns current state of background sync for specified branch."""
+    b = "AIML" if branch.upper() in ["AIML", "AI"] else "CS"
+    total = 127 if b == "AIML" else 180
+    prog = db.query(SyncProgressDB).filter(SyncProgressDB.branch == b).first()
     if not prog:
-        return {"status": "IDLE", "synced_count": 0, "total_students": 180, "percent": 0}
+        return {"status": "IDLE", "branch": b, "synced_count": 0, "total_students": total, "percent": 0}
 
-    pct = int((prog.synced_count / max(1, prog.total_students)) * 100)
+    pct = int((prog.synced_count / max(1, prog.total_students or total)) * 100)
     return {
         "status": prog.status,
+        "branch": b,
         "synced_count": prog.synced_count,
-        "total_students": prog.total_students,
+        "total_students": prog.total_students or total,
         "percent": pct,
         "current_pin": prog.current_pin,
         "department_avg_attendance": prog.department_avg_attendance,
@@ -1182,19 +1359,25 @@ def get_hod_sync_status(db: Session = Depends(get_db)):
     }
 
 @app.get("/api/v1/hod/stats")
-def get_hod_dashboard_stats(db: Session = Depends(get_db)):
+@app.get("/api/hod/stats")
+def get_hod_dashboard_stats(branch: str = Query("CS"), db: Session = Depends(get_db)):
     """
     Computes accurate Department Average Attendance, Total Intake,
-    and Clearance Rates strictly from real synced database records.
+    and Clearance Rates strictly from real synced database records per branch.
     NO DUMMY DATA.
     """
-    students = db.query(StudentDB).filter(StudentDB.role == "STUDENT").all()
-    total_roster = 180
+    b = "AIML" if branch.upper() in ["AIML", "AI"] else "CS"
+    total_roster = 127 if b == "AIML" else 180
+    dept_title = "Artificial Intelligence & Machine Learning" if b == "AIML" else "Computer Science & Engineering"
+
+    students = db.query(StudentDB).filter(StudentDB.role == "STUDENT", StudentDB.branch == b).all()
     pending_requests = db.query(DigitalRequestDB).filter(DigitalRequestDB.status == "PENDING").count()
 
     if not students:
         return {
             "total_intake": total_roster,
+            "branch": b,
+            "department": dept_title,
             "average_attendance": "0.0%",
             "clearance_rate": "0.0%",
             "eligible_students": 0,
@@ -1210,6 +1393,8 @@ def get_hod_dashboard_stats(db: Session = Depends(get_db)):
 
     return {
         "total_intake": total_roster,
+        "branch": b,
+        "department": dept_title,
         "average_attendance": f"{avg_att}%",
         "clearance_rate": f"{clearance_rate}%",
         "eligible_students": eligible,
@@ -1220,31 +1405,57 @@ def get_hod_dashboard_stats(db: Session = Depends(get_db)):
 @app.get("/api/v1/hod/roster")
 @app.get("/api/v1/hod/students")
 @app.get("/api/hod/students")
-def get_hod_roster(db: Session = Depends(get_db)):
+def get_hod_roster(branch: Optional[str] = Query(None), db: Session = Depends(get_db)):
     """
-    Returns clean, searchable roster of all 180 department students with live data,
+    Returns clean, searchable roster of department students with live data (CS: 180, AIML: 127),
     including nested backlog_details array for modal rendering.
     """
-    db_students = db.query(StudentDB).filter(StudentDB.role == "STUDENT").all()
-    student_map = {s.pin.upper(): s for s in db_students}
+    target_branch = branch.upper().strip() if branch else "CS"
+    if target_branch in ["AIML", "AI"]:
+        b = "AIML"
+        total = 127
+        prefix = "24259-AI-"
+        dept_name = "Artificial Intelligence & Machine Learning"
+    else:
+        b = "CS"
+        total = 180
+        prefix = "24259-CS-"
+        dept_name = "Computer Science & Engineering"
+
+    db_students = db.query(StudentDB).filter(StudentDB.role == "STUDENT", StudentDB.branch == b).all()
+    student_map = {}
+    for s in db_students:
+        if s.pin:
+            student_map[s.pin.upper()] = s
+            alt = s.pin.upper().replace("-AI-", "-AIML-") if "-AI-" in s.pin.upper() else s.pin.upper().replace("-AIML-", "-AI-")
+            student_map[alt] = s
+        if s.roll_no:
+            student_map[s.roll_no.upper()] = s
+            alt_r = s.roll_no.upper().replace("-AI-", "-AIML-") if "-AI-" in s.roll_no.upper() else s.roll_no.upper().replace("-AIML-", "-AI-")
+            student_map[alt_r] = s
 
     # Pre-load all backlog records in a single query for performance
     all_backlogs = db.query(BacklogRecordDB).all()
     backlog_map = {}
-    for b in all_backlogs:
-        backlog_map.setdefault(b.pin.upper(), []).append({
-            "sem": b.semester or "",
-            "code": b.subject_code or "",
-            "title": b.subject_title or "",
-            "internal": b.internal_marks or "",
-            "external": b.external_marks or "",
-            "total": b.total_marks or "",
-            "grade": b.grade or "F"
-        })
+    for item in all_backlogs:
+        p_up = item.pin.upper() if item.pin else ""
+        b_entry = {
+            "sem": item.semester or "5th Sem",
+            "code": item.subject_code or "",
+            "title": item.subject_title or "",
+            "internal": item.internal_marks or "",
+            "external": item.external_marks or "",
+            "total": item.total_marks or "",
+            "grade": item.grade or "F"
+        }
+        backlog_map.setdefault(p_up, []).append(b_entry)
+        alt_p = p_up.replace("-AI-", "-AIML-") if "-AI-" in p_up else p_up.replace("-AIML-", "-AI-")
+        if alt_p != p_up:
+            backlog_map.setdefault(alt_p, []).append(b_entry)
 
     roster = []
-    for i in range(1, 181):
-        pin = f"24259-CS-{str(i).zfill(3)}"
+    for i in range(1, total + 1):
+        pin = f"{prefix}{str(i).zfill(3)}"
         user = student_map.get(pin)
 
         att_pct = user.attendance_val if user and user.attendance_val > 0 else (
@@ -1262,10 +1473,10 @@ def get_hod_roster(db: Session = Depends(get_db)):
         roster.append({
             "pin": pin,
             "rollNumber": i,
-            "name": user.name if user else f"CS Student {i}",
-            "branch": "Computer Science & Engineering",
+            "name": user.name if user else f"{b} Student {i}",
+            "branch": dept_name,
             "scheme": "C-24",
-            "semester": 6,
+            "semester": "5th Sem",
             "isSynced": (att_pct is not None),
             "cgpa": cgpa_val,
             "backlogs": backlogs_val,
@@ -1286,34 +1497,57 @@ def get_hod_roster(db: Session = Depends(get_db)):
             "isOnline": ws_manager.is_user_online(pin)
         })
 
-    return {"success": True, "students": roster, "total": len(roster)}
+    return {"success": True, "branch": b, "students": roster, "total": len(roster)}
 
 @app.get("/api/v1/hod/security-roster")
 @app.get("/api/hod/security-roster")
-def get_security_roster(db: Session = Depends(get_db)):
-    keys = db.query(RosterKeyDB).all()
+def get_security_roster(branch: Optional[str] = Query(None), db: Session = Depends(get_db)):
+    """Returns anti-spoofing security keys roster across CS (180) and AIML (127)."""
+    query = db.query(RosterKeyDB)
+    if branch:
+        b = "AIML" if branch.upper() in ["AIML", "AI"] else ("CS" if branch.upper() in ["CS", "CSE"] else branch.upper())
+        query = query.filter(RosterKeyDB.branch == b)
+    keys = query.all()
     students = db.query(StudentDB).filter(StudentDB.role == "STUDENT").all()
-    name_map = {s.pin.upper(): s.name for s in students}
-    
+    name_map = {}
+    for s in students:
+        if s.pin:
+            name_map[s.pin.upper()] = s.name
+            alt = s.pin.upper().replace("-AI-", "-AIML-") if "-AI-" in s.pin.upper() else s.pin.upper().replace("-AIML-", "-AI-")
+            name_map[alt] = s.name
+        if s.roll_no:
+            name_map[s.roll_no.upper()] = s.name
+            alt_r = s.roll_no.upper().replace("-AI-", "-AIML-") if "-AI-" in s.roll_no.upper() else s.roll_no.upper().replace("-AIML-", "-AI-")
+            name_map[alt_r] = s.name
+
     roster = []
+    seen_pins = set()
     for k in keys:
         pin = k.pin.upper()
+        # Prefer AI-xxx or CS-xxx representation
+        if pin in seen_pins:
+            continue
+        seen_pins.add(pin)
         try:
             roll = int(pin.split("-")[-1])
         except:
             roll = 1
-        name = name_map.get(pin, f"CS Student {str(roll).zfill(3)}")
+        name = name_map.get(pin, f"Student {str(roll).zfill(3)}")
+        if isinstance(name, dict):
+            name = name.get("name", f"Student {str(roll).zfill(3)}")
+        elif hasattr(name, "name"):
+            name = name.name
         roster.append({
             "pin": pin,
             "rollNumber": roll,
             "name": name,
             "secretKey": k.secret_key or "STD-SECRET",
-            "department": k.department or "Computer Science & Engineering",
+            "department": k.department or ("Artificial Intelligence & Machine Learning" if k.branch == "AIML" else "Computer Science & Engineering"),
             "branch": k.branch or "CS",
             "scheme": k.scheme or "C-24",
             "is_registered": bool(k.is_registered)
         })
-    roster.sort(key=lambda x: x["rollNumber"])
+    roster.sort(key=lambda x: (x["branch"], x["rollNumber"], x["pin"]))
     return {"success": True, "roster": roster, "total": len(roster)}
 
 class SingleStudentSyncRequest(BaseModel):
@@ -1324,19 +1558,29 @@ class SingleStudentSyncRequest(BaseModel):
 async def sync_single_student_endpoint(req: SingleStudentSyncRequest, db: Session = Depends(get_db)):
     """
     Synchronously fetches live attendance & academic results (CGPA, backlogs)
-    for a single student and updates the database immediately.
+    for a single student (CS or AIML) and updates the database immediately.
     """
     clean_pin = req.pin.strip().upper()
-    res = await sbtet_scraper.scrape_student_complete(clean_pin)
+    alt_pin = clean_pin.replace("-AIML-", "-AI-") if "-AIML-" in clean_pin else clean_pin.replace("-AI-", "-AIML-")
+    b = "AIML" if ("-AIML-" in clean_pin or "-AI-" in clean_pin) else "CS"
+    dept_name = "Artificial Intelligence & Machine Learning" if b == "AIML" else "Computer Science & Engineering"
+
+    res = await sbtet_scraper.scrape_student_complete(clean_pin, scheme="C24")
 
     now_ts = datetime.utcnow().isoformat()
     att_ok = res.get("attendance_success") is True and res.get("workingDays", 0) > 0
     res_ok = res.get("results_success") is True
     real_name = res.get("name")
 
-    student = db.query(StudentDB).filter(StudentDB.pin == clean_pin).first()
+    student = db.query(StudentDB).filter(or_(
+        StudentDB.pin == clean_pin,
+        StudentDB.pin == alt_pin,
+        StudentDB.roll_no == clean_pin,
+        StudentDB.roll_no == alt_pin
+    )).first()
+
     if student:
-        if real_name and not real_name.startswith("CS Student") and not real_name.startswith("Student"):
+        if real_name and not real_name.startswith("CS Student") and not real_name.startswith("AIML Student") and not real_name.startswith("Student"):
             student.name = real_name
 
         # ATOMIC ATTENDANCE UPDATE
@@ -1356,12 +1600,12 @@ async def sync_single_student_endpoint(req: SingleStudentSyncRequest, db: Sessio
             student.credits_earned = float(res.get("credits_earned", 0.0) or 0.0)
 
             backlog_subjects = res.get("backlog_subjects", [])
-            db.query(BacklogRecordDB).filter(BacklogRecordDB.pin == clean_pin).delete()
+            db.query(BacklogRecordDB).filter(or_(BacklogRecordDB.pin == clean_pin, BacklogRecordDB.pin == alt_pin)).delete()
             for subj in backlog_subjects:
                 record = BacklogRecordDB(
                     student_id=student.id,
                     pin=clean_pin,
-                    semester=str(subj.get("semester", "")),
+                    semester=str(subj.get("semester", "") or "5th Sem"),
                     subject_code=str(subj.get("code", "")),
                     subject_title=str(subj.get("name", "")),
                     internal_marks=str(subj.get("internal", "")),
@@ -1371,6 +1615,8 @@ async def sync_single_student_endpoint(req: SingleStudentSyncRequest, db: Sessio
                 )
                 db.add(record)
 
+        student.semester = "5th Sem"
+        student.scheme = "C-24"
         student.last_synced = now_ts
     else:
         pct_val = float(res.get("attendancePercentage", 0.0) or 0.0) if att_ok else 0.0
@@ -1379,11 +1625,13 @@ async def sync_single_student_endpoint(req: SingleStudentSyncRequest, db: Sessio
         student = StudentDB(
             pin=clean_pin,
             roll_no=clean_pin,
-            name=real_name or f"CS Student {clean_pin.split('-')[-1]}",
+            name=real_name or f"{b} Student {clean_pin.split('-')[-1]}",
             password="Password123",
-            department="Computer Science & Engineering",
-            branch="CS",
+            department=dept_name,
+            branch=b,
             scheme="C-24",
+            year="3rd Year",
+            semester="5th Sem",
             role="STUDENT",
             attendance_pct=f"{pct_val:.2f}%" if att_ok else "0.0%",
             attendance_val=pct_val if att_ok else 0.0,
@@ -1403,7 +1651,7 @@ async def sync_single_student_endpoint(req: SingleStudentSyncRequest, db: Sessio
                 record = BacklogRecordDB(
                     student_id=student.id,
                     pin=clean_pin,
-                    semester=str(subj.get("semester", "")),
+                    semester=str(subj.get("semester", "") or "5th Sem"),
                     subject_code=str(subj.get("code", "")),
                     subject_title=str(subj.get("name", "")),
                     internal_marks=str(subj.get("internal", "")),
@@ -1414,9 +1662,9 @@ async def sync_single_student_endpoint(req: SingleStudentSyncRequest, db: Sessio
                 db.add(record)
     db.commit()
 
-    all_b = db.query(BacklogRecordDB).filter(BacklogRecordDB.pin == clean_pin).all()
+    all_b = db.query(BacklogRecordDB).filter(or_(BacklogRecordDB.pin == clean_pin, BacklogRecordDB.pin == alt_pin)).all()
     backlog_details = [{
-        "sem": b.semester or "",
+        "sem": b.semester or "5th Sem",
         "code": b.subject_code or "",
         "title": b.subject_title or "",
         "internal": b.internal_marks or "",
@@ -1432,9 +1680,9 @@ async def sync_single_student_endpoint(req: SingleStudentSyncRequest, db: Sessio
     student_data = {
         "pin": clean_pin,
         "name": student.name,
-        "branch": "Computer Science & Engineering",
+        "branch": dept_name,
         "scheme": "C-24",
-        "semester": 6,
+        "semester": "5th Sem",
         "isSynced": True,
         "cgpa": cur_cgpa,
         "backlogs": cur_backlogs,
@@ -1579,7 +1827,8 @@ async def get_student_backlogs_endpoint(pin: str, db: Session = Depends(get_db))
     return {"success": True, "student": student_dict}
 
 @app.get("/api/v1/hod/requests")
-def get_hod_live_requests(db: Session = Depends(get_db)):
+@app.get("/api/hod/requests")
+def get_hod_live_requests(branch: Optional[str] = Query(None), db: Session = Depends(get_db)):
     """
     Displays live submitted student requests with current Live Attendance %
     to assist HOD approval/rejection decisions.
@@ -1653,25 +1902,29 @@ async def update_request_status(request_id: int, body: UpdateRequestStatus, db: 
 # --- HOD HELPER & SSE SYNC STREAM ROUTES ---
 @app.get("/api/hod/sync-stream")
 @app.get("/api/v1/hod/sync-stream")
-async def hod_sync_stream(background_tasks: BackgroundTasks):
-    """Server-Sent Events (SSE) stream for live 180-student department synchronization."""
+async def hod_sync_stream(background_tasks: BackgroundTasks, branch: str = Query("CS")):
+    """Server-Sent Events (SSE) stream for live department synchronization (CS: 180, AIML: 127)."""
+    b = "AIML" if branch.upper() in ["AIML", "AI"] else "CS"
+    total = 127 if b == "AIML" else 180
+    prefix = "24259-AI-" if b == "AIML" else "24259-CS-"
+
     db = SessionLocal()
-    prog = db.query(SyncProgressDB).first()
+    prog = db.query(SyncProgressDB).filter(SyncProgressDB.branch == b).first()
     db.close()
     if not prog or prog.status != "RUNNING":
-        background_tasks.add_task(run_180_student_sync_background)
+        background_tasks.add_task(run_department_sync_background, b, total, prefix, "C24")
 
     async def event_generator():
-        yield f"data: {json.dumps({'type': 'CONNECTED'})}\n\n"
+        yield f"data: {json.dumps({'type': 'CONNECTED', 'branch': b})}\n\n"
         last_synced = -1
         while True:
             db_s = SessionLocal()
             try:
-                curr = db_s.query(SyncProgressDB).first()
+                curr = db_s.query(SyncProgressDB).filter(SyncProgressDB.branch == b).first()
                 if curr:
                     if curr.synced_count != last_synced:
                         last_synced = curr.synced_count
-                        pct = int((curr.synced_count / max(1, curr.total_students)) * 100)
+                        pct = int((curr.synced_count / max(1, curr.total_students or total)) * 100)
                         st = None
                         if curr.current_pin:
                             st_rec = db_s.query(StudentDB).filter(StudentDB.pin == curr.current_pin).first()
@@ -1679,17 +1932,18 @@ async def hod_sync_stream(background_tasks: BackgroundTasks):
                                 # Fetch backlog details for this student
                                 bl_records = db_s.query(BacklogRecordDB).filter(BacklogRecordDB.pin == curr.current_pin).all()
                                 bl_details = [{
-                                    "sem": b.semester or "",
-                                    "code": b.subject_code or "",
-                                    "title": b.subject_title or "",
-                                    "internal": b.internal_marks or "",
-                                    "external": b.external_marks or "",
-                                    "total": b.total_marks or "",
-                                    "grade": b.grade or "F"
-                                } for b in bl_records]
+                                    "sem": b_rec.semester or "",
+                                    "code": b_rec.subject_code or "",
+                                    "title": b_rec.subject_title or "",
+                                    "internal": b_rec.internal_marks or "",
+                                    "external": b_rec.external_marks or "",
+                                    "total": b_rec.total_marks or "",
+                                    "grade": b_rec.grade or "F"
+                                } for b_rec in bl_records]
                                 st = {
                                     "pin": st_rec.pin,
                                     "name": st_rec.name,
+                                    "branch": st_rec.branch,
                                     "cgpa": float(st_rec.cgpa) if st_rec.cgpa else 0.0,
                                     "backlogs": st_rec.backlogs if hasattr(st_rec, 'backlogs') and st_rec.backlogs is not None else (st_rec.backlogs_count or 0),
                                     "backlog_details": bl_details,
@@ -1704,12 +1958,12 @@ async def hod_sync_stream(background_tasks: BackgroundTasks):
                                         "backlogs": st_rec.backlogs if hasattr(st_rec, 'backlogs') and st_rec.backlogs is not None else (st_rec.backlogs_count or 0)
                                     }
                                 }
-                        yield f"data: {json.dumps({'type': 'PROGRESS', 'completed': curr.synced_count, 'total': curr.total_students, 'percent': pct, 'pin': curr.current_pin, 'student': st})}\n\n"
+                        yield f"data: {json.dumps({'type': 'PROGRESS', 'branch': b, 'completed': curr.synced_count, 'total': curr.total_students or total, 'percent': pct, 'pin': curr.current_pin, 'student': st})}\n\n"
                     if curr.status == "COMPLETED":
-                        yield f"data: {json.dumps({'type': 'COMPLETE', 'total': curr.total_students, 'department_avg_attendance': curr.department_avg_attendance, 'department_clearance_rate': curr.department_clearance_rate})}\n\n"
+                        yield f"data: {json.dumps({'type': 'COMPLETE', 'branch': b, 'total': curr.total_students or total, 'department_avg_attendance': curr.department_avg_attendance, 'department_clearance_rate': curr.department_clearance_rate})}\n\n"
                         break
                     elif curr.status == "FAILED":
-                        yield f"data: {json.dumps({'type': 'ERROR', 'error': 'Sync encountered an issue'})}\n\n"
+                        yield f"data: {json.dumps({'type': 'ERROR', 'branch': b, 'error': f'Sync encountered an issue for {b}'})}\n\n"
                         break
             finally:
                 db_s.close()

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>HOD Executive Console • Computer Science & Engineering • Samskruti Digital Campus</title>
+  <title id="page-head-title">HOD Executive Console • Samskruti Digital Campus</title>
   
   <!-- Web Fonts for Pro UI -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -132,41 +132,41 @@
       <!-- Top Bar with Executive Pro Typography -->
       <header class="content-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 18px; margin-bottom: 24px;">
         <div class="header-titles">
-          <div class="pro-subtitle-badge">
-            <span style="width: 6px; height: 6px; border-radius: 50%; background: #3b82f6; display: inline-block; box-shadow: 0 0 8px #3b82f6;"></span>
-            Samskruti College (259) • Department of Computer Science & Engineering
+          <div class="pro-subtitle-badge" id="hod-dept-subtitle">
+            <span id="hod-dot-indicator" style="width: 6px; height: 6px; border-radius: 50%; background: #3b82f6; display: inline-block; box-shadow: 0 0 8px #3b82f6;"></span>
+            <span id="hod-dept-title-text">Samskruti College (259) • Department of Computer Science &amp; Engineering</span>
           </div>
-          <h1 class="pro-gradient-title">Head of Department Executive Console</h1>
+          <h1 class="pro-gradient-title" id="hod-main-heading">Head of Department Executive Console</h1>
         </div>
 
         <div class="header-actions">
           <div class="executive-card" style="display: flex; align-items: center; gap: 14px; padding: 8px 18px; border-radius: 9999px; border: 1px solid var(--hod-border-highlight); box-shadow: var(--hod-shadow-card);">
-            <div class="user-avatar" style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #2563eb, #3b82f6); color: white; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 0.95rem; box-shadow: var(--hod-glow-blue);">VK</div>
+            <div id="hod-avatar" class="user-avatar" style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #2563eb, #3b82f6); color: white; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 0.95rem; box-shadow: var(--hod-glow-blue);">VK</div>
             <div class="user-info">
-              <div style="font-size: 0.9rem; font-weight: 800; color: var(--hod-text-main);">Prof. Vamshi Krishna</div>
-              <div style="font-size: 0.72rem; color: #60a5fa; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em;">Official HOD (Computer Science)</div>
+              <div id="hod-name" style="font-size: 0.9rem; font-weight: 800; color: var(--hod-text-main);">Prof. Vamshi Krishna</div>
+              <div id="hod-role-badge" style="font-size: 0.72rem; color: #60a5fa; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em;">Official HOD (Computer Science)</div>
             </div>
           </div>
         </div>
       </header>
 
-      <!-- Non-Blocking 180-Student Live Background Sync Widget -->
+      <!-- Non-Blocking Department Live Background Sync Widget -->
       <section id="sync-banner-card" class="executive-card" style="padding: 18px 24px; margin-bottom: 24px; border-left: 4px solid #3b82f6; background: rgba(15, 23, 42, 0.75);">
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
           <div>
             <div style="display: flex; align-items: center; gap: 8px;">
               <span id="sync-status-indicator" style="width: 8px; height: 8px; border-radius: 50%; background: #3b82f6; display: inline-block;"></span>
-              <strong id="sync-title-text" style="font-size: 0.95rem; color: var(--hod-text-main);">180-Student Automated Department Sync</strong>
+              <strong id="sync-title-text" style="font-size: 0.95rem; color: var(--hod-text-main);">Automated Department Sync</strong>
               <span id="sync-percent-badge" class="neu-badge" style="font-size: 0.7rem; background: rgba(59, 130, 246, 0.15); color: #60a5fa;">Idle</span>
             </div>
             <p id="sync-desc-text" style="font-size: 0.8rem; color: var(--hod-text-muted); margin: 4px 0 0 0;">
-              Live background sync automatically pulls attendance, CGPA, and backlog statistics directly from SBTET for all 180 department students.
+              Live background sync automatically pulls attendance, CGPA, and backlog statistics directly from SBTET for all department students.
             </p>
           </div>
 
           <div style="display: flex; align-items: center; gap: 10px;">
             <button id="btn-trigger-sync" class="neu-btn-primary" style="font-size: 0.8rem; padding: 8px 16px; border-radius: 8px; cursor: pointer;">
-              ⚡ Sync All 180 Now
+              ⚡ Sync All Now
             </button>
             <a href="./students-info.html" class="neu-btn" style="font-size: 0.8rem; padding: 8px 16px; border-radius: 8px; text-decoration: none; font-weight: 700;">
               View Batch →
@@ -183,8 +183,8 @@
       <section class="grid-cols-4">
         <div class="executive-card pro-stat-card">
           <div class="hod-stat-title">Department Total Intake</div>
-          <div class="hod-stat-val mono-num" id="stat-intake">180</div>
-          <div class="hod-stat-sub">Diploma C-24 CS (CS-001 to CS-180)</div>
+          <div class="hod-stat-val mono-num" id="stat-intake">--</div>
+          <div class="hod-stat-sub" id="stat-intake-sub">Diploma C-24 Department</div>
         </div>
 
         <div class="executive-card pro-stat-card">
@@ -196,7 +196,7 @@
         <div class="executive-card pro-stat-card">
           <div class="hod-stat-title">Examination Clearance Rate</div>
           <div class="hod-stat-val mono-num" id="stat-clearance" style="color: #34d399;">--%</div>
-          <div class="hod-stat-sub"><span id="stat-eligible-count">0</span> / 180 students &ge; 75% SBTET line</div>
+          <div class="hod-stat-sub" id="stat-clearance-sub"><span id="stat-eligible-count">0</span> students &ge; 75% SBTET line</div>
         </div>
 
         <div class="executive-card pro-stat-card">
@@ -213,7 +213,7 @@
           <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
             <div>
               <h2 class="section-title" style="font-size: 1.15rem; font-weight: 800; color: var(--hod-text-main); margin: 0 0 2px 0;">Live Student Requests Queue</h2>
-              <span style="font-size: 0.75rem; color: var(--hod-text-muted);">Verified Attendance Snapshots & Instant OTP Generation</span>
+              <span style="font-size: 0.75rem; color: var(--hod-text-muted);">Verified Attendance Snapshots &amp; Instant OTP Generation</span>
             </div>
             <a href="./document-approvals.html" class="neu-btn" style="font-size: 0.78rem; padding: 6px 14px; border-radius: 8px; text-decoration: none; font-weight: 700;">Full Queue →</a>
           </div>
@@ -243,9 +243,9 @@
           <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
             <div>
               <h2 class="section-title" style="font-size: 1.15rem; font-weight: 800; color: var(--hod-text-main); margin: 0 0 2px 0;">Student Security Keys Roster</h2>
-              <span style="font-size: 0.75rem; color: var(--hod-text-muted);">Master Anti-Spoofing Keys (CS-001 to CS-180)</span>
+              <span id="security-keys-subtext" style="font-size: 0.75rem; color: var(--hod-text-muted);">Master Anti-Spoofing Keys</span>
             </div>
-            <a href="./security-roster.html" class="neu-btn" style="font-size: 0.78rem; padding: 6px 14px; border-radius: 8px; text-decoration: none; font-weight: 700;">View All 180 →</a>
+            <a id="security-keys-link" href="./security-roster.html" class="neu-btn" style="font-size: 0.78rem; padding: 6px 14px; border-radius: 8px; text-decoration: none; font-weight: 700;">View All →</a>
           </div>
 
           <div class="table-responsive">
@@ -260,28 +260,7 @@
               </thead>
               <tbody id="dash-security-tbody">
                 <tr>
-                  <td><code class="mono-num" style="color: #93c5fd; font-weight: 700;">24259-CS-025</code></td>
-                  <td><strong style="color: var(--hod-text-main);">KARNATI HIMESH</strong></td>
-                  <td><span class="neu-badge metric-emerald-glow mono-num">STD-XAz10F</span></td>
-                  <td><span class="neu-badge neu-badge-success" style="font-size: 0.7rem;">Active</span></td>
-                </tr>
-                <tr>
-                  <td><code class="mono-num" style="color: #93c5fd; font-weight: 700;">24259-CS-039</code></td>
-                  <td><strong style="color: var(--hod-text-main);">KAKARLA RAKESH</strong></td>
-                  <td><span class="neu-badge metric-emerald-glow mono-num">STD-B03209</span></td>
-                  <td><span class="neu-badge neu-badge-success" style="font-size: 0.7rem;">Active</span></td>
-                </tr>
-                <tr>
-                  <td><code class="mono-num" style="color: #93c5fd; font-weight: 700;">24259-CS-023</code></td>
-                  <td><strong style="color: var(--hod-text-main);">P. SHANKUM</strong></td>
-                  <td><span class="neu-badge metric-emerald-glow mono-num">STD-SH23PK</span></td>
-                  <td><span class="neu-badge neu-badge-success" style="font-size: 0.7rem;">Active</span></td>
-                </tr>
-                <tr>
-                  <td><code class="mono-num" style="color: #93c5fd; font-weight: 700;">24259-CS-001</code></td>
-                  <td><strong style="color: var(--hod-text-main);">CS-001 CANDIDATE</strong></td>
-                  <td><span class="neu-badge metric-emerald-glow mono-num">STD-M01K89</span></td>
-                  <td><span class="neu-badge neu-badge-success" style="font-size: 0.7rem;">Active</span></td>
+                  <td colspan="4" style="text-align: center; color: var(--hod-text-muted); padding: 20px;">Loading security roster preview...</td>
                 </tr>
               </tbody>
             </table>
@@ -299,35 +278,135 @@
     import { alerts } from '../../js/alerts.js';
     import { wsClient } from '../../js/ws.js';
 
-    // Verify HOD Role
-    const user = requireAuth(['HOD', 'HOD_CS', 'ADMIN', 'FACULTY']);
+    // Verify HOD Role & Branch
+    const user = requireAuth(['HOD', 'HOD_CS', 'HOD_AIML', 'ADMIN', 'FACULTY']) || JSON.parse(localStorage.getItem('dc_user') || '{}');
     renderDock('hod-dashboard.html', 'HOD');
 
-    document.addEventListener('DOMContentLoaded', () => {
+    // Branch context detection
+    const isAIML = (user.branch === 'AIML') || 
+                   (user.role === 'HOD_AIML') || 
+                   (user.pin && (user.pin.includes('AIML') || user.pin.includes('PADMINI'))) || 
+                   (user.department && user.department.includes('Artificial')) ||
+                   (localStorage.getItem('hod_branch') === 'AIML') ||
+                   (localStorage.getItem('hod_id') && localStorage.getItem('hod_id').toUpperCase().includes('PADMINI'));
+    const branchCode = isAIML ? 'AIML' : 'CS';
+    const totalIntake = isAIML ? 127 : 180;
+    const deptTitle = isAIML ? 'Department of Artificial Intelligence & Machine Learning' : 'Department of Computer Science & Engineering';
+    const hodName = isAIML ? 'Prof. Padmini' : 'Dr. J. Vamshi Krishna';
+    const hodRoleText = isAIML ? 'Official HOD (Artificial Intelligence & Machine Learning)' : 'Official HOD (Computer Science)';
+    const hodAvatarText = isAIML ? 'PP' : 'VK';
+    const accentColor = isAIML ? '#10b981' : '#3b82f6';
+
+    function initHodDashboard() {
+      hydrateDepartmentProfile();
       setupRealtimeWebSocket();
       loadDashboardStats();
       loadLiveRequests();
+      loadSecurityPreview();
       checkSyncStatus();
       setupSyncTrigger();
-    });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initHodDashboard);
+    } else {
+      initHodDashboard();
+    }
+
+    /**
+     * Hydrate HOD Profile and Department Theming
+     */
+    function hydrateDepartmentProfile() {
+      // Document title
+      document.title = `HOD Console • ${deptTitle} • Samskruti Digital Campus`;
+      const headTitle = document.getElementById('page-head-title');
+      if (headTitle) headTitle.textContent = `HOD Executive Console • ${deptTitle}`;
+
+      // Subtitle badge
+      const subtitleText = document.getElementById('hod-dept-title-text');
+      if (subtitleText) subtitleText.textContent = `Samskruti College (259) • ${deptTitle}`;
+
+      const dot = document.getElementById('hod-dot-indicator');
+      if (dot) {
+        dot.style.background = accentColor;
+        dot.style.boxShadow = `0 0 8px ${accentColor}`;
+      }
+
+      // HOD Badge
+      const avatarEl = document.getElementById('hod-avatar');
+      if (avatarEl) {
+        avatarEl.textContent = hodAvatarText;
+        if (isAIML) {
+          avatarEl.style.background = 'linear-gradient(135deg, #059669, #10b981)';
+          avatarEl.style.boxShadow = '0 0 16px rgba(16, 185, 129, 0.4)';
+        } else {
+          avatarEl.style.background = 'linear-gradient(135deg, #1d4ed8, #3b82f6)';
+          avatarEl.style.boxShadow = '0 0 16px rgba(59, 130, 246, 0.4)';
+        }
+      }
+
+      const nameEl = document.getElementById('hod-name');
+      if (nameEl) nameEl.textContent = hodName;
+
+      const roleEl = document.getElementById('hod-role-badge');
+      if (roleEl) {
+        roleEl.textContent = hodRoleText;
+        if (isAIML) roleEl.style.color = '#34d399';
+      }
+
+      // Sync Card
+      const syncBanner = document.getElementById('sync-banner-card');
+      if (syncBanner && isAIML) syncBanner.style.borderLeftColor = '#10b981';
+
+      const syncTitle = document.getElementById('sync-title-text');
+      if (syncTitle) syncTitle.textContent = `${totalIntake}-Student Automated Department Sync`;
+
+      const syncDesc = document.getElementById('sync-desc-text');
+      if (syncDesc) {
+        syncDesc.textContent = `Live background sync automatically pulls attendance, CGPA, and backlog statistics directly from SBTET for all ${totalIntake} department students under C-24 scheme.`;
+      }
+
+      const syncBtn = document.getElementById('btn-trigger-sync');
+      if (syncBtn) {
+        syncBtn.textContent = `⚡ Sync All ${totalIntake} Now`;
+        if (isAIML) syncBtn.style.background = 'linear-gradient(135deg, #059669, #10b981)';
+      }
+
+      // Intake Card
+      const intakeVal = document.getElementById('stat-intake');
+      if (intakeVal) intakeVal.textContent = totalIntake;
+
+      const intakeSub = document.getElementById('stat-intake-sub');
+      if (intakeSub) {
+        intakeSub.textContent = `${totalIntake} Students (24259 Batch • Scheme C-24)`;
+      }
+
+      const secSub = document.getElementById('security-keys-subtext');
+      if (secSub) secSub.textContent = `Master Anti-Spoofing Keys (${branchCode}-001 to ${branchCode}-${String(totalIntake).padStart(3, '0')})`;
+
+      const secLink = document.getElementById('security-keys-link');
+      if (secLink) secLink.textContent = `View All ${totalIntake} →`;
+    }
 
     /**
      * 1. REAL-TIME WEBSOCKET SUBSCRIPTION
      */
     function setupRealtimeWebSocket() {
-      wsClient.connect('HOD_CS_CONSOLE', 'Prof. Vamshi Krishna');
+      wsClient.connect(`HOD_${branchCode}_CONSOLE`, hodName);
 
-      // Live 180-student background sync updates
       wsClient.on('HOD_SYNC_PROGRESS', (data) => {
-        updateSyncProgressUI(data);
+        if (!data.branch || data.branch === branchCode) {
+          updateSyncProgressUI(data);
+        }
       });
 
       wsClient.on('HOD_SYNC_COMPLETE', (data) => {
-        onSyncCompleteUI(data);
-        loadDashboardStats();
+        if (!data.branch || data.branch === branchCode) {
+          onSyncCompleteUI(data);
+          loadDashboardStats();
+        }
       });
 
-      // New student request submitted in real time
       wsClient.on('NEW_DIGITAL_REQUEST_SUBMITTED', (data) => {
         alerts.info('New Student Request', `${data.request?.student_name} submitted a ${data.request?.request_type}.`);
         loadLiveRequests();
@@ -341,17 +420,22 @@
     }
 
     /**
-     * 2. LOAD STRICT REAL-DATA STATS (NO DUMMY MOCKS)
+     * 2. LOAD STRICT REAL-DATA STATS FOR THIS BRANCH
      */
     async function loadDashboardStats() {
       try {
-        const stats = await api.get('/hod/stats');
+        const stats = await api.get(`/hod/stats?branch=${branchCode}`);
         if (stats) {
-          document.getElementById('stat-intake').textContent = stats.total_intake || 180;
+          document.getElementById('stat-intake').textContent = stats.total_intake || totalIntake;
           document.getElementById('stat-avg-att').textContent = stats.average_attendance || '0.0%';
           document.getElementById('stat-clearance').textContent = stats.clearance_rate || '0.0%';
           document.getElementById('stat-eligible-count').textContent = stats.eligible_students || 0;
           document.getElementById('stat-pending-docs').textContent = stats.pending_requests || 0;
+
+          const clrSub = document.getElementById('stat-clearance-sub');
+          if (clrSub) {
+            clrSub.innerHTML = `<span id="stat-eligible-count">${stats.eligible_students || 0}</span> / ${stats.total_intake || totalIntake} students &ge; 75% SBTET line`;
+          }
         }
       } catch (err) {
         console.error('Failed to load HOD stats:', err);
@@ -359,14 +443,14 @@
     }
 
     /**
-     * 3. LOAD LIVE REQUESTS WITH REAL ATTENDANCE SNAPSHOT
+     * 3. LOAD LIVE REQUESTS FOR THIS DEPARTMENT
      */
     async function loadLiveRequests() {
       const tbody = document.getElementById('dash-docs-tbody');
       if (!tbody) return;
 
       try {
-        const res = await api.get('/hod/requests');
+        const res = await api.get(`/hod/requests?branch=${branchCode}`);
         if (res && res.success && Array.isArray(res.requests)) {
           const pending = res.requests.filter(r => r.status === 'PENDING').slice(0, 5);
 
@@ -382,7 +466,7 @@
           }
 
           tbody.innerHTML = pending.map(req => {
-            const att = req.attendance_snapshot || '38.64%';
+            const att = req.attendance_snapshot || '0.0%';
             const attVal = parseFloat(att.replace('%', '')) || 0;
             const isEligible = attVal >= 75.0;
 
@@ -411,11 +495,36 @@
     }
 
     /**
-     * 4. BACKGROUND SYNC CONTROLLER
+     * 4. LOAD SECURITY KEYS PREVIEW
+     */
+    async function loadSecurityPreview() {
+      const tbody = document.getElementById('dash-security-tbody');
+      if (!tbody) return;
+
+      try {
+        const res = await api.get(`/hod/security-roster?branch=${branchCode}`);
+        if (res && res.success && Array.isArray(res.roster)) {
+          const sample = res.roster.slice(0, 4);
+          tbody.innerHTML = sample.map(s => `
+            <tr>
+              <td><code class="mono-num" style="color: #93c5fd; font-weight: 700;">${escapeHtml(s.pin)}</code></td>
+              <td><strong style="color: var(--hod-text-main);">${escapeHtml(s.name)}</strong></td>
+              <td><span class="neu-badge metric-emerald-glow mono-num">${escapeHtml(s.secretKey)}</span></td>
+              <td><span class="neu-badge neu-badge-success" style="font-size: 0.7rem;">Active</span></td>
+            </tr>
+          `).join('');
+        }
+      } catch (err) {
+        console.error('Failed to load security preview:', err);
+      }
+    }
+
+    /**
+     * 5. BACKGROUND SYNC CONTROLLER
      */
     async function checkSyncStatus() {
       try {
-        const res = await api.get('/hod/sync-status');
+        const res = await api.get(`/hod/sync-status?branch=${branchCode}`);
         if (res && res.status === 'RUNNING') {
           updateSyncProgressUI(res);
         } else if (res && res.status === 'COMPLETED') {
@@ -431,8 +540,8 @@
         btn.textContent = '⚡ Dispatching Sync...';
 
         try {
-          await api.post('/hod/trigger-sync');
-          alerts.info('Sync Dispatched', '180-student SBTET scraper running in background.');
+          await api.post(`/hod/trigger-sync?branch=${branchCode}`);
+          alerts.info('Sync Dispatched', `${totalIntake}-student ${branchCode} SBTET scraper running in background.`);
           document.getElementById('sync-progress-bar-wrap').style.display = 'block';
           document.getElementById('sync-percent-badge').textContent = 'Syncing...';
         } catch (err) {
@@ -440,7 +549,7 @@
         } finally {
           setTimeout(() => {
             btn.disabled = false;
-            btn.textContent = '⚡ Sync All 180 Now';
+            btn.textContent = `⚡ Sync All ${totalIntake} Now`;
           }, 2000);
         }
       });
@@ -462,7 +571,7 @@
       }
       if (indicator) indicator.style.background = '#3b82f6';
       if (desc) {
-        desc.textContent = `Background worker active: Processed ${data.synced || data.synced_count || 0} / 180 students. Currently fetching PIN: ${data.current_pin || '...'}`;
+        desc.textContent = `Background worker active: Processed ${data.synced || data.synced_count || 0} / ${totalIntake} students. Currently fetching PIN: ${data.current_pin || '...'}`;
       }
     }
 
@@ -474,13 +583,13 @@
 
       if (barFill) barFill.style.width = '100%';
       if (badge) {
-        badge.textContent = '180 Students Live';
+        badge.textContent = `${totalIntake} Students Live`;
         badge.style.background = 'rgba(16, 185, 129, 0.2)';
         badge.style.color = '#34d399';
       }
       if (indicator) indicator.style.background = '#10b981';
       if (desc) {
-        desc.textContent = `All 180 CS department students are synchronized with live SBTET records. Department Attendance: ${data.department_avg_attendance || '--'}% • Clearance: ${data.department_clearance_rate || '--'}%`;
+        desc.textContent = `All ${totalIntake} ${branchCode} department students are synchronized with live SBTET records. Department Attendance: ${data.department_avg_attendance || '--'}% • Clearance: ${data.department_clearance_rate || '--'}%`;
       }
     }
 
