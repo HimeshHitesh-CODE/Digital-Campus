@@ -1,7 +1,7 @@
 /**
  * Campus Connect - Universal Floating Top Capsule Navigation Controller
- * Supports Strict Role-Based Navigation for Students, HODs, and Administrators.
- * Completely eliminates financial/ledger references from HOD navigation.
+ * Features: Hardware-accelerated sliding morph pill, role-based navigation,
+ * theme toggle integration, and smooth view exit transitions.
  */
 
 import { api } from './api.js';
@@ -42,6 +42,7 @@ export function renderDock(activeFileName = '', explicitRole = null) {
   // Setup theme toggle listener and smooth transitions
   setupThemeToggleListener();
   setupNavTransitions(currentPath);
+  setupMorphPillTracker();
 }
 
 export function renderTopCapsule(activeFileName = '') {
@@ -62,11 +63,12 @@ export function renderTopCapsule(activeFileName = '') {
 
         <div class="nav-divider"></div>
 
-        <div class="capsule-menu-items">
+        <div class="capsule-menu-items" id="capsule-menu-track">
+          <div class="sliding-morph-pill" id="nav-morph-pill"></div>
           ${STUDENT_NAV_ITEMS.map(item => {
             const isActive = currentPath.includes(item.file) || (item.alias && currentPath.includes(item.alias));
             return `
-              <a href="${item.file}" class="nav-item ${isActive ? 'active' : ''}">
+              <a href="${item.file}" class="nav-item ${isActive ? 'active' : ''}" data-file="${item.file}">
                 <i data-lucide="${item.iconName}"></i>
                 <span>${item.label}</span>
               </a>
@@ -90,6 +92,18 @@ export function renderTopCapsule(activeFileName = '') {
     
     if (window.lucide) {
       window.lucide.createIcons();
+    }
+  } else {
+    // If container already existed in static HTML, ensure morph pill is present
+    const track = capsuleContainer.querySelector('.capsule-menu-items');
+    if (track) {
+      if (!track.id) track.id = 'capsule-menu-track';
+      if (!document.getElementById('nav-morph-pill')) {
+        const pill = document.createElement('div');
+        pill.className = 'sliding-morph-pill';
+        pill.id = 'nav-morph-pill';
+        track.insertBefore(pill, track.firstChild);
+      }
     }
   }
 }
@@ -101,23 +115,23 @@ export function renderHODCapsule(activeFileName = '') {
   if (!capsuleContainer) {
     capsuleContainer = document.createElement('header');
     capsuleContainer.className = 'top-nav-capsule-container';
-    capsuleContainer.style.cssText = 'position: sticky; top: 12px; z-index: 1000; width: 100%; max-width: 1400px; margin: 0 auto 20px auto; padding: 0 16px;';
     capsuleContainer.innerHTML = `
       <nav class="capsule-nav" aria-label="HOD Executive Navigation">
         <a href="hod-dashboard.html" class="capsule-brand" style="text-decoration: none;">
           <div class="brand-emblem-badge" title="Samskruti Institutions (259) • HOD Console">
             <img src="/assets/images/samskruti-logo-blue.png" alt="Campus Connect Logo" class="brand-logo-img" />
           </div>
-          <span class="brand-title">HOD <span class="accent-text" style="color: #60a5fa;">CONSOLE</span></span>
+          <span class="brand-title">HOD <span class="accent-text">CONSOLE</span></span>
         </a>
 
         <div class="nav-divider"></div>
 
-        <div class="capsule-menu-items">
+        <div class="capsule-menu-items" id="capsule-menu-track">
+          <div class="sliding-morph-pill" id="nav-morph-pill"></div>
           ${HOD_NAV_ITEMS.map(item => {
             const isActive = currentPath.includes(item.file) || (item.alias && currentPath.includes(item.alias));
             return `
-              <a href="${item.file}" class="nav-item ${isActive ? 'active' : ''}">
+              <a href="${item.file}" class="nav-item ${isActive ? 'active' : ''}" data-file="${item.file}">
                 <i data-lucide="${item.iconName}"></i>
                 <span>${item.label}</span>
               </a>
@@ -142,11 +156,60 @@ export function renderHODCapsule(activeFileName = '') {
     if (window.lucide) {
       window.lucide.createIcons();
     }
+  } else {
+    // If container already existed in static HTML, ensure morph pill is present
+    const track = capsuleContainer.querySelector('.capsule-menu-items');
+    if (track) {
+      if (!track.id) track.id = 'capsule-menu-track';
+      if (!document.getElementById('nav-morph-pill')) {
+        const pill = document.createElement('div');
+        pill.className = 'sliding-morph-pill';
+        pill.id = 'nav-morph-pill';
+        track.insertBefore(pill, track.firstChild);
+      }
+    }
   }
 }
 
+/**
+ * Updates sliding morph pill position to match active navigation link
+ */
+export function updateMorphPill(targetItem) {
+  const pill = document.getElementById('nav-morph-pill');
+  if (!pill || !targetItem) return;
+
+  const track = document.getElementById('capsule-menu-track');
+  if (!track) return;
+
+  const left = targetItem.offsetLeft;
+  const width = targetItem.offsetWidth;
+
+  pill.style.width = `${width}px`;
+  pill.style.transform = `translate3d(${left}px, -50%, 0)`;
+  pill.classList.add('visible');
+}
+
+/**
+ * Initializes position and resize listeners for the morph pill
+ */
+function setupMorphPillTracker() {
+  requestAnimationFrame(() => {
+    const activeItem = document.querySelector('.capsule-menu-items .nav-item.active');
+    if (activeItem) {
+      updateMorphPill(activeItem);
+    }
+  });
+
+  window.addEventListener('resize', () => {
+    const activeItem = document.querySelector('.capsule-menu-items .nav-item.active');
+    if (activeItem) {
+      updateMorphPill(activeItem);
+    }
+  });
+}
+
 function setupNavTransitions(currentPath) {
-  const mainContent = document.querySelector('.main-content') || document.querySelector('.dashboard-canvas');
+  const mainContent = document.querySelector('.main-content') || document.querySelector('.dashboard-canvas') || document.querySelector('.portal-viewport-wrapper');
 
   // Sign out action
   const logoutBtns = document.querySelectorAll('.util-btn.logout, .logout-btn');
@@ -165,7 +228,7 @@ function setupNavTransitions(currentPath) {
     });
   });
 
-  // Smooth link transitions
+  // Smooth link transitions & morph pill animation on click
   document.querySelectorAll('.nav-item').forEach(link => {
     const targetUrl = link.getAttribute('href');
     const currentUrl = currentPath || window.location.pathname.split('/').pop() || 'dashboard.html';
@@ -177,10 +240,17 @@ function setupNavTransitions(currentPath) {
     link.addEventListener('click', function(e) {
       if (targetUrl === currentUrl || targetUrl === '#') return;
       e.preventDefault();
+
+      // Glide pill to the clicked link immediately
+      updateMorphPill(this);
+
+      document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+      this.classList.add('active');
+
       if (mainContent) mainContent.classList.add('view-exit');
       setTimeout(() => {
         window.location.href = targetUrl;
-      }, 120);
+      }, 140);
     });
   });
 }

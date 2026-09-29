@@ -1,11 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Student Dashboard | Campus Connect (Code: 259)</title>
   
-  <!-- Base & Neumorphic Styles -->
+  <!-- Urbanist and JetBrains Mono Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Base & Modern Styles -->
   <link rel="stylesheet" href="../../css/reset.css" />
   <link rel="stylesheet" href="../../css/theme-tokens.css" />
   <link rel="stylesheet" href="../../css/global-layout.css" />
@@ -39,7 +44,8 @@
         <div class="nav-divider"></div>
 
         <!-- Working Navigation Links -->
-        <div class="capsule-menu-items">
+        <div class="capsule-menu-items" id="capsule-menu-track">
+          <div class="sliding-morph-pill" id="nav-morph-pill"></div>
           <a href="dashboard.html" class="nav-item active" data-page="dashboard">
             <i data-lucide="layout-dashboard" class="nav-icon"></i>
             <span>Dashboard</span>

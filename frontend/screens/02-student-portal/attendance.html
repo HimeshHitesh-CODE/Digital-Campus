@@ -1,14 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Campus Connect | Student Attendance Intelligence (Code: 259)</title>
+  
+  <!-- Urbanist and JetBrains Mono Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet" />
+  
   <link rel="stylesheet" href="../../css/reset.css" />
   <link rel="stylesheet" href="../../css/theme-tokens.css" />
   <link rel="stylesheet" href="../../css/global-layout.css" />
   <link rel="stylesheet" href="../../css/top-nav.css" />
+  <link rel="stylesheet" href="../../css/animations.css" />
   <link rel="stylesheet" href="attendance.css" />
+  
   <!-- Lucide Icons, Chart.js & Theme Engine -->
   <script src="https://unpkg.com/lucide@latest"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -22,17 +30,18 @@
       <nav class="capsule-nav" aria-label="Campus Connect Navigation">
         
         <!-- Brand / Emblem -->
-        <div class="capsule-brand">
+        <a href="dashboard.html" class="capsule-brand" style="text-decoration: none;">
           <div class="brand-emblem-badge" title="Samskruti Institutions (259)">
             <img src="/assets/images/samskruti-logo-blue.png" alt="Campus Connect Logo" class="brand-logo-img" />
           </div>
           <span class="brand-title">CAMPUS <span class="accent-text">CONNECT</span></span>
-        </div>
+        </a>
 
         <div class="nav-divider"></div>
 
-        <!-- Working Navigation Links -->
-        <div class="capsule-menu-items">
+        <!-- Working Navigation Links with Sliding Morph Pill -->
+        <div class="capsule-menu-items" id="capsule-menu-track">
+          <div class="sliding-morph-pill" id="nav-morph-pill"></div>
           <a href="dashboard.html" class="nav-item">
             <i data-lucide="layout-dashboard"></i>
             <span>Dashboard</span>
@@ -69,10 +78,10 @@
 
         <!-- Utilities -->
         <div class="capsule-actions">
-          <button id="theme-toggle-btn" class="util-btn" title="Toggle Theme">
+          <button type="button" id="theme-toggle-btn" class="util-btn" title="Toggle Theme" aria-label="Toggle Theme">
             <i data-lucide="sun"></i>
           </button>
-          <a href="/screens/01-auth/login.html" class="util-btn logout" title="Sign Out" onclick="localStorage.clear(); sessionStorage.clear();">
+          <a href="/screens/01-auth/login.html" class="util-btn logout" title="Sign Out" aria-label="Sign Out" onclick="localStorage.clear(); sessionStorage.clear();">
             <i data-lucide="log-out"></i>
           </a>
         </div>
@@ -85,39 +94,40 @@
       <!-- 2. PAGE HEADER & SYNC CONTROLLER -->
       <section class="page-header-row">
         <div class="header-titles">
-          <h1 class="page-title">Biometric Attendance Analytics</h1>
-          <p class="page-subtitle" id="student-meta-subtitle">Student Attendance Intelligence & Academic Monitoring • Samskruti (Code: 259)</p>
+          <h1 class="page-title" id="greeting-title">Good morning, Kakarla Rakesh</h1>
+          <p class="page-subtitle" id="student-meta-subtitle">Samskruti College of Engineering &amp; Technology (Code: 259) • PIN: 24259-CS-039</p>
         </div>
         <div class="header-sync-container">
-          <div class="sync-metadata">
-            <span class="sync-ping"></span>
-            <span class="sync-label">Last Synced: <strong id="last-sync-timestamp">Today, 10:45 PM</strong></span>
-          </div>
-          <button id="re-sync-trigger" class="btn-neumorphic-sync">
-            <i data-lucide="refresh-cw" id="sync-icon-spinner"></i>
+          <button id="re-sync-trigger" class="btn-resync-pill">
+            <i data-lucide="refresh-cw" id="sync-icon-spinner" class="sync-icon"></i>
             <span>Re-sync Latest</span>
           </button>
         </div>
       </section>
 
-      <!-- 3. ATTENDANCE TRENDS GRAPH (CHART.JS) -->
-      <section class="chart-section-card" style="margin-bottom: 24px; padding: 22px; border-radius: 16px; background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.08); backdrop-filter: blur(12px);">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
-          <div>
-            <h3 style="font-size: 1.15rem; font-weight: 800; color: #f8fafc; margin: 0 0 4px 0;">Semester Attendance Trajectory & Trends</h3>
-            <span style="font-size: 0.8rem; color: #94a3b8;">Monthly biometric presence plotted against the 75% SBTET mandatory eligibility threshold</span>
+      <!-- 3. ATTENDANCE TRENDS GRAPH CARD (MATCHING REFERENCE DESIGN) -->
+      <section class="chart-section-card">
+        <div class="chart-header-block">
+          <div class="chart-title-group">
+            <h3 class="chart-heading">Semester Attendance Trajectory &amp; Trends</h3>
           </div>
-          <div style="display: flex; gap: 14px; font-size: 0.78rem; font-weight: 700;">
-            <span style="display: inline-flex; align-items: center; gap: 6px; color: #38bdf8;"><span style="width: 10px; height: 10px; background: #38bdf8; border-radius: 2px;"></span> Monthly %</span>
-            <span style="display: inline-flex; align-items: center; gap: 6px; color: #fbbf24;"><span style="width: 14px; height: 2px; background: #fbbf24;"></span> 75% Target Line</span>
+          <div class="chart-legend-group">
+            <span class="legend-chip legend-monthly">
+              <span class="legend-dot"></span> Monthly Attendance %
+            </span>
+            <span class="legend-chip legend-target">
+              <span class="legend-dash"></span> 75% Mandatory Line
+            </span>
           </div>
         </div>
-        <div style="height: 240px; position: relative;">
+
+        <!-- Spline Waves Chart Canvas -->
+        <div class="chart-canvas-wrapper">
           <canvas id="attendanceTrendChart"></canvas>
         </div>
       </section>
 
-      <!-- 3. STUDENT IDENTITY STRIP -->
+      <!-- 4. STUDENT IDENTITY STRIP -->
       <section class="identity-card-neumorphic">
         <div class="identity-profile-cell">
           <div class="avatar-hexagon-wrapper">
@@ -136,36 +146,36 @@
           </div>
           <div class="info-chip">
             <span class="chip-k">Branch</span>
-            <span class="chip-v" id="student-branch">Computer Science & Eng.</span>
+            <span class="chip-v" id="student-branch">Computer Science &amp; Engineering</span>
           </div>
           <div class="info-chip">
             <span class="chip-k">College Code</span>
             <span class="chip-v">259 (SCET)</span>
           </div>
           <div class="gateway-live-pill">
-            <i data-lucide="activity" class="live-icon"></i>
-            <span>Direct SBTET Gateway</span>
+            <span class="live-dot-pulse"></span>
+            <span>Direct SCET Gateway</span>
           </div>
         </div>
       </section>
 
-      <!-- 4. ATTENDANCE HERO: INTELLIGENCE ENGINE & RISK FORECAST -->
+      <!-- 5. ATTENDANCE HERO: INTELLIGENCE ENGINE & RISK FORECAST -->
       <section class="hero-intelligence-grid">
         
         <!-- Left: Circular Gauge Card -->
         <div class="hero-card gauge-centerpiece">
           <div class="card-inner-header">
-            <h3 class="card-title">Overall Attendance Score</h3>
+            <h3 class="card-title">Overall Attendance</h3>
             <span class="risk-pill-danger" id="risk-pill-badge">Detained Risk (&lt;65%)</span>
           </div>
 
           <div class="radial-gauge-container">
             <svg class="radial-svg" viewBox="0 0 200 200">
-              <circle class="gauge-track" cx="100" cy="100" r="82" />
-              <circle class="gauge-progress danger-stroke" id="hero-progress-ring" cx="100" cy="100" r="82" />
+              <circle class="gauge-track" cx="100" cy="100" r="80" />
+              <circle class="gauge-progress danger-stroke" id="hero-progress-ring" cx="100" cy="100" r="80" />
             </svg>
             <div class="gauge-readout-centered">
-              <span class="gauge-number font-mono" id="attendance-pct-display">30.3%</span>
+              <span class="gauge-number font-mono" id="attendance-pct-display">38.46%</span>
               <span class="gauge-sub">OVERALL</span>
             </div>
           </div>
@@ -178,23 +188,22 @@
             <div class="stat-separator"></div>
             <div class="footer-stat">
               <span class="stat-lbl">Clearance Deficit</span>
-              <span class="stat-val font-mono text-danger" id="clearance-deficit-val">-44.7%</span>
+              <span class="stat-val font-mono text-danger" id="clearance-deficit-val">-36.5%</span>
             </div>
             <div class="stat-separator"></div>
             <div class="footer-stat">
               <span class="stat-lbl">Current Exam %</span>
-              <span class="stat-val font-mono text-warning" id="exam-pct-val">22.2%</span>
+              <span class="stat-val font-mono text-warning" id="exam-pct-val">28.4%</span>
             </div>
           </div>
         </div>
 
-        <!-- Right: Diagnostic Recovery & SBTET Projections -->
+        <!-- Center: Diagnostic Recovery & SBTET Projections -->
         <div class="hero-card projection-centerpiece">
           <div class="card-inner-header">
-            <h3 class="card-title">SBTET Examination Status & Projections</h3>
-            <div class="ai-confidence-pill">
-              <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
-              <span>AI Attendance Analysis</span>
+            <h3 class="card-title">SBTET Examination Status</h3>
+            <div class="warning-header-icon" title="Regulatory Compliance Warning">
+              <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-500"></i>
             </div>
           </div>
 
@@ -205,7 +214,7 @@
             </div>
             <div class="alert-text">
               <h4 class="alert-title" id="alert-title-text">Critical Detainment Alert (&lt;65% Threshold)</h4>
-              <p class="alert-desc" id="alert-desc-text">Your attendance is currently 30.3%. You are below the mandatory condonation and hall-ticket clearance mark.</p>
+              <p class="alert-desc" id="alert-desc-text">Your attendance is below 65%. You must attend upcoming sessions consistently to avoid academic detention.</p>
             </div>
           </div>
 
@@ -214,16 +223,16 @@
             <div class="proj-box">
               <div class="proj-icon text-primary"><i data-lucide="target"></i></div>
               <div class="proj-data">
-                <span class="proj-label">To Reach 75% Threshold</span>
-                <span class="proj-value font-mono text-primary" id="reach-75-target">48 Days Total (20 Present / 68 Target)</span>
+                <span class="proj-label">Attend 33 More Days</span>
+                <span class="proj-value font-mono" id="reach-75-target">(35 Present / 68 Target)</span>
               </div>
             </div>
 
             <div class="proj-box">
               <div class="proj-icon text-warning"><i data-lucide="calendar-clock"></i></div>
               <div class="proj-data">
-                <span class="proj-label">Current Semester Trajectory</span>
-                <span class="proj-value font-mono text-slate-100" id="trajectory-text">24 Sessions Left • Max Attainable: 48.9%</span>
+                <span class="proj-label">9 Sessions Left</span>
+                <span class="proj-value font-mono" id="trajectory-text">Max Attainable: 38.9%</span>
               </div>
             </div>
           </div>
@@ -232,15 +241,30 @@
           <div class="sbtet-rules-accordion">
             <span class="rules-header font-mono"><i data-lucide="shield-alert" class="w-3.5 h-3.5"></i> SBTET C-24 Regulatory Mandates:</span>
             <ul class="rules-list">
-              <li><strong>&ge; 75%:</strong> Eligible for Hall Ticket generation without condonation fine.</li>
-              <li><strong>65% – 74.9%:</strong> Medical Condonation allowed subject to Principal & HOD sign-off.</li>
+              <li><strong>&ge; 75%:</strong> Eligible for Hall Ticket generation without condonation.</li>
+              <li><strong>65% – 74.9%:</strong> Medical Condonation allowed subject to Principal sign-off.</li>
               <li><strong>&lt; 65%:</strong> Strict Detainment. Student must repeat the academic term.</li>
             </ul>
           </div>
         </div>
+
+        <!-- Right: KPI Quick Stat Tiles (as in screenshot) -->
+        <div class="hero-kpi-sidebar">
+          <div class="side-kpi-card">
+            <span class="side-kpi-tag">WORKING SESSIONS</span>
+            <div class="side-kpi-val font-mono" id="val-working-days">36</div>
+            <span class="side-kpi-badge badge-green">Status Badges</span>
+          </div>
+          <div class="side-kpi-card">
+            <span class="side-kpi-tag">KPI STATISTICS</span>
+            <div class="side-kpi-val font-mono" id="val-present-days">43</div>
+            <span class="side-kpi-badge badge-green">Status Badges</span>
+          </div>
+        </div>
+
       </section>
 
-      <!-- 5. TIERED KPI CARDS -->
+      <!-- 6. TIERED KPI CARDS (WORKING, PRESENT, ABSENT, REMAINING, ERRORS) -->
       <section class="kpi-cards-grid">
         
         <!-- Card 1: Working Days -->
@@ -249,7 +273,7 @@
             <span class="kpi-label">WORKING DAYS</span>
             <div class="kpi-icon-pill"><i data-lucide="layers"></i></div>
           </div>
-          <div class="kpi-val font-mono" id="val-working-days">66</div>
+          <div class="kpi-val font-mono" id="kpi-working-days">66</div>
           <span class="kpi-subtext">Sessions Held to Date</span>
         </div>
 
@@ -259,7 +283,7 @@
             <span class="kpi-label">PRESENT DAYS</span>
             <div class="kpi-icon-pill"><i data-lucide="user-check"></i></div>
           </div>
-          <div class="kpi-val font-mono text-success" id="val-present-days">20</div>
+          <div class="kpi-val font-mono text-success" id="kpi-present-days">18</div>
           <span class="kpi-subtext">Biometric Marked Present</span>
         </div>
 
@@ -269,7 +293,7 @@
             <span class="kpi-label">ABSENT DAYS</span>
             <div class="kpi-icon-pill"><i data-lucide="user-x"></i></div>
           </div>
-          <div class="kpi-val font-mono text-danger" id="val-absent-days">46</div>
+          <div class="kpi-val font-mono text-danger" id="kpi-absent-days">48</div>
           <span class="kpi-subtext">Unattended Sessions</span>
         </div>
 
@@ -279,7 +303,7 @@
             <span class="kpi-label">REMAINING DAYS</span>
             <div class="kpi-icon-pill"><i data-lucide="hourglass"></i></div>
           </div>
-          <div class="kpi-val font-mono text-primary" id="val-remaining-days">24</div>
+          <div class="kpi-val font-mono text-primary" id="kpi-remaining-days">24</div>
           <span class="kpi-subtext">Left in Semester (of 90)</span>
         </div>
 
@@ -289,25 +313,34 @@
             <span class="kpi-label">ERRORS / HP</span>
             <div class="kpi-icon-pill"><i data-lucide="bug"></i></div>
           </div>
-          <div class="kpi-val font-mono" id="val-error-days">0</div>
+          <div class="kpi-val font-mono" id="kpi-error-days">0</div>
           <span class="kpi-subtext">Logged Exception Records</span>
         </div>
 
       </section>
 
-      <!-- 6. MONTHLY ATTENDANCE CALENDAR MATRIX -->
+      <!-- 7. MONTHLY ATTENDANCE CALENDAR MATRIX -->
       <section class="calendar-section-card">
         <div class="calendar-header-toolbar">
           <div class="cal-title-block">
-            <h3 class="card-title">Biometric Attendance Log</h3>
-            <span class="cal-sub">Daily fingerprint / facial biometric check-in stream</span>
+            <span class="cal-eyebrow">CALENDAR MATRIX</span>
+            <h3 class="card-title">Calendar Matrix</h3>
           </div>
 
-          <!-- Month Selector Pills -->
-          <div class="cal-month-switch" role="tablist">
-            <button type="button" class="month-pill-btn active" data-month="august">August</button>
-            <button type="button" class="month-pill-btn" data-month="july">July</button>
-            <button type="button" class="month-pill-btn" data-month="june">June</button>
+          <div class="cal-toolbar-actions">
+            <div class="cal-status-pills">
+              <span class="status-pill status-pill-present">Present</span>
+              <span class="status-pill status-pill-absent">Absent</span>
+            </div>
+
+            <!-- Month Selector Pills -->
+            <div class="cal-month-switch" role="tablist">
+              <button type="button" class="month-pill-btn" data-month="june">June</button>
+              <button type="button" class="month-pill-btn" data-month="july">July</button>
+              <button type="button" class="month-pill-btn active" data-month="august">August</button>
+              <button type="button" class="month-pill-btn" data-month="september">September</button>
+              <button type="button" class="month-pill-btn" data-month="october">October</button>
+            </div>
           </div>
         </div>
 

@@ -1,7 +1,7 @@
 /**
  * Campus Connect - SBTET Biometric Attendance Intelligence Engine
  * Features: Live SBTET Cloud Synchronization, Real Name Hydration, 75% Target Recovery Math,
- * Dynamic Biometric Calendar Logs Matrix, and Neumorphic State Management.
+ * Dynamic Biometric Calendar Logs Matrix, and Precision Spline Chart.js Visualization.
  */
 
 import { api } from '../../js/api.js';
@@ -15,8 +15,8 @@ let currentSelectedMonth = 'august';
 window.ACTIVE_MONTHLY_LOGS = {};
 
 const DEFAULT_ATTENDANCE_DATA = {
-  pin: '24259-CS-037',
-  name: 'EDAMANAPALLY SAMISAAC',
+  pin: '24259-CS-039',
+  name: 'KAKARLA RAKESH',
   scheme: 'C-24',
   branch: 'Computer Science & Engineering',
   workingDays: 66,
@@ -25,10 +25,14 @@ const DEFAULT_ATTENDANCE_DATA = {
   remainingDays: 24,
   totalSemesterDays: 90,
   errors: 0,
-  attendancePercentage: 27.27,
-  examConsiderationPercentage: 20.0,
-  daysToReach75: 50,
-  maxAttainablePercentage: 46.7,
+  attendancePercentage: 38.46,
+  examConsiderationPercentage: 28.4,
+  daysToReach75: 33,
+  maxAttainablePercentage: 38.9,
+  chart_data: {
+    labels: ['June', 'July', 'August', 'September', 'October'],
+    data: [15.0, 32.0, 40.0, 45.83, 12.0]
+  }
 };
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -57,7 +61,7 @@ async function hydrateStudentIdentity() {
     localStorage.getItem('student_pin') ||
     sessionUser.sbtetPin ||
     sessionUser.rollNumber ||
-    '24259-CS-037'
+    '24259-CS-039'
   ).trim().toUpperCase();
 
   let storedUser = null;
@@ -80,10 +84,11 @@ async function hydrateStudentIdentity() {
   }
 
   if (!studentName || studentName.includes('Roll #') || studentName.toLowerCase().startsWith('student')) {
-    if (activePin === '24259-CS-037') studentName = 'EDAMANAPALLY SAMISAAC';
+    if (activePin === '24259-CS-039') studentName = 'KAKARLA RAKESH';
+    else if (activePin === '24259-CS-037') studentName = 'EDAMANAPALLY SAMISAAC';
     else if (activePin === '24259-CS-001') studentName = 'GONA LAXMI NARASIMHA SWAMI';
     else if (activePin === '24259-CS-025') studentName = 'KARNATI HIMESH';
-    else if (activePin === '24259-CS-039') studentName = 'KAKARLA RAKESH';
+    else if (activePin.includes('119')) studentName = 'KARNATI HITESH';
   }
 
   // Update DOM identity elements
@@ -92,11 +97,13 @@ async function hydrateStudentIdentity() {
   const initialsEl = document.getElementById('student-avatar-initials') || document.querySelector('.avatar-initials');
   const branchEl = document.getElementById('student-branch');
   const schemeEl = document.getElementById('student-scheme');
+  const greetingEl = document.getElementById('greeting-title');
   const subtitleEl = document.getElementById('student-meta-subtitle');
 
-  if (nameEl) nameEl.textContent = studentName || 'EDAMANAPALLY SAMISAAC';
+  if (greetingEl) greetingEl.textContent = `Good morning, ${studentName || 'Kakarla Rakesh'}`;
+  if (nameEl) nameEl.textContent = studentName || 'KAKARLA RAKESH';
   if (pinEl) pinEl.textContent = activePin;
-  if (branchEl) branchEl.textContent = storedUser.department || 'Computer Science & Eng.';
+  if (branchEl) branchEl.textContent = storedUser.department || (activePin.includes('AI') ? 'Artificial Intelligence & Machine Learning' : 'Computer Science & Engineering');
   if (schemeEl) schemeEl.textContent = storedUser.curriculum || storedUser.scheme || 'C-24';
 
   if (initialsEl && studentName) {
@@ -106,7 +113,7 @@ async function hydrateStudentIdentity() {
   }
 
   if (subtitleEl) {
-    subtitleEl.textContent = `Student Attendance Intelligence & Academic Monitoring • Samskruti (Code: 259) • ${activePin}`;
+    subtitleEl.textContent = `Samskruti College of Engineering & Technology (Code: 259) • PIN: ${activePin}`;
   }
 }
 
@@ -119,12 +126,11 @@ async function triggerAttendanceSync(showToasts = true) {
     urlParams.get('pin') ||
     localStorage.getItem('student_pin') ||
     sessionUser.sbtetPin ||
-    '24259-CS-037'
+    '24259-CS-039'
   ).trim().toUpperCase();
 
   const syncBtn = document.getElementById('re-sync-trigger');
   const syncIcon = document.getElementById('sync-icon-spinner');
-  const syncTimestamp = document.getElementById('last-sync-timestamp');
 
   try {
     if (syncBtn) syncBtn.disabled = true;
@@ -149,19 +155,13 @@ async function triggerAttendanceSync(showToasts = true) {
       renderActiveCalendarMonth();
     }
 
-    // Update Timestamp
-    if (syncTimestamp) {
-      const now = new Date();
-      syncTimestamp.textContent = `Today, ${now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
-    }
-
     if (showToasts && window.alerts) {
       alerts.success('Biometric attendance log synchronized with Telangana SBTET gateway.');
     }
   } catch (err) {
     console.warn('[Attendance Sync Gateway fallback]:', err.message);
     renderAttendanceMetrics(DEFAULT_ATTENDANCE_DATA);
-    renderAttendanceTrendChart();
+    renderAttendanceTrendChart(DEFAULT_ATTENDANCE_DATA.chart_data);
     window.ACTIVE_MONTHLY_LOGS = getDefaultMonthLogs();
     renderActiveCalendarMonth();
   } finally {
@@ -173,19 +173,55 @@ async function triggerAttendanceSync(showToasts = true) {
 let attendanceChartInstance = null;
 
 /**
- * Renders interactive Chart.js trend graph of attendance vs 75% line
+ * Renders interactive Chart.js trend graph with smooth spline curves, gradient area fill, and floating pill tooltip.
  */
 function renderAttendanceTrendChart(chartData) {
   const canvas = document.getElementById('attendanceTrendChart');
   if (!canvas || !window.Chart) return;
 
   const labels = chartData?.labels || ['June', 'July', 'August', 'September', 'October'];
-  const values = chartData?.data || [45.0, 40.0, 38.0, 39.0, 38.6];
+  const values = chartData?.data || [15.0, 32.0, 40.0, 45.83, 12.0];
   const targetLine = labels.map(() => 75);
+
+  const ctx = canvas.getContext('2d');
+  const gradient = ctx.createLinearGradient(0, 0, 0, 240);
+  gradient.addColorStop(0, 'rgba(37, 99, 235, 0.22)');
+  gradient.addColorStop(0.7, 'rgba(37, 99, 235, 0.05)');
+  gradient.addColorStop(1, 'rgba(37, 99, 235, 0.0)');
 
   if (attendanceChartInstance) {
     attendanceChartInstance.destroy();
   }
+
+  // Custom Chart Plugin for drawing vertical dashed guide line to the active peak point
+  const verticalGuideLinePlugin = {
+    id: 'verticalGuideLine',
+    afterDraw: (chart) => {
+      const activeElements = chart.tooltip?.getActiveElements();
+      const meta = chart.getDatasetMeta(0);
+      
+      // Default to point index 3 (September) if not hovered
+      const point = (activeElements && activeElements.length > 0)
+        ? meta.data[activeElements[0].index]
+        : meta.data[3];
+
+      if (point) {
+        const { x, y } = point;
+        const bottomY = chart.scales.y.bottom;
+        const chartCtx = chart.ctx;
+
+        chartCtx.save();
+        chartCtx.beginPath();
+        chartCtx.setLineDash([4, 4]);
+        chartCtx.moveTo(x, y);
+        chartCtx.lineTo(x, bottomY);
+        chartCtx.lineWidth = 1.5;
+        chartCtx.strokeStyle = 'rgba(100, 116, 139, 0.4)';
+        chartCtx.stroke();
+        chartCtx.restore();
+      }
+    }
+  };
 
   attendanceChartInstance = new Chart(canvas, {
     type: 'line',
@@ -193,24 +229,27 @@ function renderAttendanceTrendChart(chartData) {
       labels: labels,
       datasets: [
         {
-          label: 'Attendance %',
+          label: 'Monthly Attendance %',
           data: values,
-          borderColor: '#38bdf8',
-          backgroundColor: 'rgba(56, 189, 248, 0.12)',
+          borderColor: '#2563eb',
+          backgroundColor: gradient,
           borderWidth: 3,
           fill: true,
-          tension: 0.35,
-          pointBackgroundColor: '#0284c7',
+          tension: 0.45, // Smooth graceful spline waves
+          pointBackgroundColor: '#2563eb',
           pointBorderColor: '#ffffff',
+          pointBorderWidth: 2,
+          pointRadius: (ctx) => (ctx.dataIndex === 3 ? 5 : 3),
           pointHoverRadius: 6,
-          pointRadius: 4
+          pointHoverBackgroundColor: '#2563eb',
+          pointHoverBorderColor: '#ffffff'
         },
         {
           label: '75% Mandatory Line',
           data: targetLine,
-          borderColor: '#fbbf24',
-          borderWidth: 2,
-          borderDash: [6, 6],
+          borderColor: '#475569',
+          borderWidth: 1.5,
+          borderDash: [5, 5],
           pointRadius: 0,
           fill: false
         }
@@ -219,30 +258,54 @@ function renderAttendanceTrendChart(chartData) {
     options: {
       responsive: true,
       maintainAspectRatio: false,
+      interaction: {
+        mode: 'index',
+        intersect: false
+      },
       scales: {
         y: {
           min: 0,
           max: 100,
-          grid: { color: 'rgba(255, 255, 255, 0.05)' },
+          grid: {
+            color: 'rgba(226, 232, 240, 0.8)',
+            borderDash: [4, 4],
+            drawBorder: false
+          },
           ticks: {
             color: '#94a3b8',
+            font: { family: 'Urbanist', size: 11, weight: '600' },
+            stepSize: 10,
             callback: (v) => `${v}%`
           }
         },
         x: {
-          grid: { color: 'rgba(255, 255, 255, 0.05)' },
-          ticks: { color: '#94a3b8' }
+          grid: {
+            display: false,
+            drawBorder: false
+          },
+          ticks: {
+            color: '#64748b',
+            font: { family: 'Urbanist', size: 12, weight: '600' }
+          }
         }
       },
       plugins: {
         legend: { display: false },
         tooltip: {
+          backgroundColor: '#2563eb',
+          titleFont: { family: 'Urbanist', weight: '700', size: 12 },
+          bodyFont: { family: 'Urbanist', weight: '700', size: 12 },
+          padding: { top: 6, bottom: 6, left: 14, right: 14 },
+          cornerRadius: 9999, // Floating pill tooltip
+          displayColors: false,
           callbacks: {
-            label: (ctx) => `${ctx.dataset.label}: ${ctx.parsed.y}%`
+            title: () => '',
+            label: (ctx) => `${ctx.label.slice(0, 4)} ${Number(ctx.parsed.y).toFixed(2)}`
           }
         }
       }
-    }
+    },
+    plugins: [verticalGuideLinePlugin]
   });
 }
 
@@ -263,8 +326,8 @@ function renderAttendanceMetrics(data) {
 
   // Accurate 75% Threshold Calculations
   const targetRequired = Math.ceil(0.75 * totalSemesterDays); // 68 days
-  const daysToReach75 = Math.max(0, targetRequired - presentDays); // 68 - 18 = 50 days
-  const maxAttainable = (((presentDays + remainingDays) / totalSemesterDays) * 100); // 46.7%
+  const daysToReach75 = Math.max(0, targetRequired - presentDays); // 33 or 50 days
+  const maxAttainable = (((presentDays + remainingDays) / totalSemesterDays) * 100); // 38.9%
 
   // 1. Percentage Display
   const pctDisplay = document.getElementById('attendance-pct-display');
@@ -273,7 +336,7 @@ function renderAttendanceMetrics(data) {
   // 2. SVG Progress Ring
   const progressRing = document.getElementById('hero-progress-ring');
   if (progressRing) {
-    const circumference = 2 * Math.PI * 82; // radius = 82
+    const circumference = 2 * Math.PI * 80; // radius = 80 -> 502.65
     const strokeOffset = circumference - (Math.min(100, percentage) / 100) * circumference;
     progressRing.style.strokeDashoffset = strokeOffset;
   }
@@ -297,21 +360,25 @@ function renderAttendanceMetrics(data) {
     const el = document.getElementById(id);
     if (el) el.textContent = val;
   };
+  setElText('kpi-working-days', workingDays);
+  setElText('kpi-present-days', presentDays);
+  setElText('kpi-absent-days', absentDays);
+  setElText('kpi-remaining-days', remainingDays);
+  setElText('kpi-error-days', errors);
+
+  // Also set sidebar tiles
   setElText('val-working-days', workingDays);
   setElText('val-present-days', presentDays);
-  setElText('val-absent-days', absentDays);
-  setElText('val-remaining-days', remainingDays);
-  setElText('val-error-days', errors);
 
   // 5. 75% Recovery Projections
-  const reach75El = document.getElementById('reach-75-target') || document.getElementById('stat-target-days-needed');
-  const trajectoryEl = document.getElementById('trajectory-text') || document.getElementById('stat-trajectory-note');
+  const reach75El = document.getElementById('reach-75-target');
+  const trajectoryEl = document.getElementById('trajectory-text');
 
   if (reach75El) {
-    reach75El.textContent = `Attend ${daysToReach75} More Days (${presentDays} Present / ${targetRequired} Target)`;
+    reach75El.textContent = `(${presentDays} Present / ${targetRequired} Target)`;
   }
   if (trajectoryEl) {
-    trajectoryEl.textContent = `${remainingDays} Sessions Left • Max Attainable: ${maxAttainable.toFixed(1)}%`;
+    trajectoryEl.textContent = `Max Attainable: ${maxAttainable.toFixed(1)}%`;
   }
 
   // 6. Diagnostic Alert & Risk Badge
@@ -371,7 +438,7 @@ function renderActiveCalendarMonth() {
 
   monthData.forEach(entry => {
     const cell = document.createElement('div');
-    cell.className = 'cal-day-cell neumorphic-card';
+    cell.className = 'cal-day-cell';
 
     let badgeClass = 'status-off';
     let statusText = 'Week Off';
@@ -383,7 +450,7 @@ function renderActiveCalendarMonth() {
       badgeClass = 'status-absent';
       statusText = 'Absent';
     } else if (entry.status === 'HP') {
-      badgeClass = 'status-warning';
+      badgeClass = 'status-half';
       statusText = 'Half Day';
     } else if (entry.status === 'H') {
       badgeClass = 'status-holiday';
@@ -394,7 +461,7 @@ function renderActiveCalendarMonth() {
     }
 
     cell.innerHTML = `
-      <span class="day-num font-mono text-slate-100 font-bold">${entry.day || entry.date}</span>
+      <span class="day-num font-mono">${entry.day || entry.date}</span>
       <span class="day-badge ${badgeClass}">${statusText}</span>
     `;
     grid.appendChild(cell);

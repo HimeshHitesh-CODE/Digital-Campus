@@ -1,17 +1,39 @@
 /* ==========================================================================
-   EXECUTIVE DARK GLASS-NEUMORPHIC UI THEME (HOD-THEME.CSS)
-   Samskruti Digital Campus • Head of Department Console
+   CAMPUS CONNECT - HOD EXECUTIVE CONSOLE THEME (HOD-THEME.CSS)
+   Light Ceramic Canvas, Crisp White Surface Cards, Urbanist Font System
    ========================================================================== */
 
-:root {
-  --hod-bg-canvas: radial-gradient(circle at 50% 0%, #172033 0%, #0b0f19 75%, #070a10 100%);
-  --hod-surface-card: linear-gradient(135deg, rgba(30, 41, 59, 0.72) 0%, rgba(15, 23, 42, 0.85) 100%);
-  --hod-surface-card-hover: linear-gradient(135deg, rgba(37, 51, 74, 0.8) 0%, rgba(18, 28, 51, 0.9) 100%);
-  --hod-surface-inset: rgba(11, 15, 25, 0.6);
+:root,
+[data-theme="light"] {
+  --hod-bg-canvas: #edf2f7;
+  --hod-surface-card: #ffffff;
+  --hod-surface-card-hover: #ffffff;
+  --hod-surface-inset: #f8fafc;
+  --hod-border: #e2e8f0;
+  --hod-border-highlight: #cbd5e1;
+  
+  --hod-glow-blue: 0 4px 14px rgba(37, 99, 235, 0.35);
+  --hod-glow-emerald: 0 4px 14px rgba(16, 185, 129, 0.3);
+  --hod-glow-ruby: 0 4px 14px rgba(239, 68, 68, 0.25);
+  --hod-glow-amber: 0 4px 14px rgba(245, 158, 11, 0.25);
+
+  --hod-text-main: #0f172a;
+  --hod-text-muted: #64748b;
+  --hod-text-sub: #94a3b8;
+  
+  --hod-shadow-card: 0 10px 25px -5px rgba(15, 23, 42, 0.04), 0 8px 10px -6px rgba(15, 23, 42, 0.02);
+  --hod-shadow-inset: inset 1px 1px 3px rgba(15, 23, 42, 0.04);
+}
+
+[data-theme="dark"] {
+  --hod-bg-canvas: #0b1120;
+  --hod-surface-card: #131d33;
+  --hod-surface-card-hover: #17233d;
+  --hod-surface-inset: #0e172a;
   --hod-border: rgba(255, 255, 255, 0.08);
   --hod-border-highlight: rgba(255, 255, 255, 0.16);
-  
-  --hod-glow-blue: 0 0 24px rgba(37, 99, 235, 0.45);
+
+  --hod-glow-blue: 0 0 20px rgba(59, 130, 246, 0.4);
   --hod-glow-emerald: 0 0 20px rgba(16, 185, 129, 0.35);
   --hod-glow-ruby: 0 0 20px rgba(239, 68, 68, 0.35);
   --hod-glow-amber: 0 0 20px rgba(245, 158, 11, 0.35);
@@ -19,101 +41,124 @@
   --hod-text-main: #f8fafc;
   --hod-text-muted: #94a3b8;
   --hod-text-sub: #64748b;
-  
-  --hod-shadow-card: 0 12px 36px 0 rgba(0, 0, 0, 0.45), inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
-  --hod-shadow-inset: inset 0 2px 4px 0 rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+
+  --hod-shadow-card: 0 12px 36px 0 rgba(0, 0, 0, 0.45);
+  --hod-shadow-inset: inset 0 2px 4px 0 rgba(0, 0, 0, 0.5);
 }
 
-body.hod-executive,
-html[data-theme="dark"] body.hod-executive,
-body {
+body.hod-executive {
   background: var(--hod-bg-canvas) !important;
-  color: var(--hod-text-main);
+  color: var(--hod-text-main) !important;
   min-height: 100vh;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: 'Urbanist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
   -webkit-font-smoothing: antialiased;
 }
 
-/* --- Executive Glass-Neumorphic Card Surfaces --- */
+/* --- Executive Clean White Card Surfaces --- */
 .executive-card,
 .hod-stat-card,
-.neu-card {
+.neu-card,
+.pro-stat-card,
+.bg-slate-900\/60,
+.bg-slate-900\/50,
+.bg-slate-900\/80 {
   background: var(--hod-surface-card) !important;
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--hod-border) !important;
   box-shadow: var(--hod-shadow-card) !important;
-  border-radius: 1.25rem;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  border-radius: var(--radius-card, 24px) !important;
+  color: var(--hod-text-main) !important;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease !important;
 }
 
 .executive-card:hover,
-.hod-stat-card:hover {
+.hod-stat-card:hover,
+.neu-card:hover,
+.pro-stat-card:hover {
+  transform: translateY(-2px) !important;
   border-color: var(--hod-border-highlight) !important;
-  box-shadow: 0 16px 44px 0 rgba(0, 0, 0, 0.55), inset 0 1px 0 0 rgba(255, 255, 255, 0.15) !important;
+  box-shadow: 0 16px 32px -4px rgba(15, 23, 42, 0.08) !important;
 }
 
 /* --- Metric Glow Badges --- */
 .metric-ruby-glow {
-  background: rgba(239, 68, 68, 0.15) !important;
-  color: #f87171 !important;
-  border: 1px solid rgba(239, 68, 68, 0.3) !important;
-  box-shadow: var(--hod-glow-ruby);
+  background: rgba(239, 68, 68, 0.1) !important;
+  color: #ef4444 !important;
+  border: 1px solid rgba(239, 68, 68, 0.25) !important;
+  border-radius: 9999px !important;
+  padding: 0.2rem 0.65rem !important;
+  font-weight: 700 !important;
 }
 
 .metric-emerald-glow {
-  background: rgba(16, 185, 129, 0.15) !important;
-  color: #34d399 !important;
-  border: 1px solid rgba(16, 185, 129, 0.3) !important;
-  box-shadow: var(--hod-glow-emerald);
+  background: rgba(16, 185, 129, 0.1) !important;
+  color: #10b981 !important;
+  border: 1px solid rgba(16, 185, 129, 0.25) !important;
+  border-radius: 9999px !important;
+  padding: 0.2rem 0.65rem !important;
+  font-weight: 700 !important;
 }
 
 .metric-amber-glow {
-  background: rgba(245, 158, 11, 0.15) !important;
-  color: #fbbf24 !important;
-  border: 1px solid rgba(245, 158, 11, 0.3) !important;
-  box-shadow: var(--hod-glow-amber);
+  background: rgba(245, 158, 11, 0.1) !important;
+  color: #f59e0b !important;
+  border: 1px solid rgba(245, 158, 11, 0.25) !important;
+  border-radius: 9999px !important;
+  padding: 0.2rem 0.65rem !important;
+  font-weight: 700 !important;
 }
 
 .metric-blue-glow {
-  background: rgba(37, 99, 235, 0.15) !important;
-  color: #60a5fa !important;
-  border: 1px solid rgba(37, 99, 235, 0.3) !important;
-  box-shadow: var(--hod-glow-blue);
+  background: rgba(37, 99, 235, 0.1) !important;
+  color: #2563eb !important;
+  border: 1px solid rgba(37, 99, 235, 0.25) !important;
+  border-radius: 9999px !important;
+  padding: 0.2rem 0.65rem !important;
+  font-weight: 700 !important;
 }
 
 /* --- Electric Blue Action Buttons --- */
 .neu-btn-primary,
+#btn-trigger-sync,
 #btn-start-batch-sync {
-  background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%) !important;
+  background: #2563eb !important;
   color: #ffffff !important;
-  border: 1px solid rgba(255, 255, 255, 0.2) !important;
-  box-shadow: var(--hod-glow-blue) !important;
-  font-weight: 800;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  border: none !important;
+  border-radius: 9999px !important;
+  padding: 0.65rem 1.4rem !important;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35) !important;
+  font-family: 'Urbanist', sans-serif !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1), background 0.2s ease !important;
 }
 
 .neu-btn-primary:hover,
+#btn-trigger-sync:hover,
 #btn-start-batch-sync:hover {
-  transform: translate3d(0, -2px, 0);
-  box-shadow: 0 0 28px rgba(37, 99, 235, 0.65) !important;
+  transform: translateY(-2px) !important;
+  background: #1d4ed8 !important;
+  box-shadow: 0 8px 22px rgba(37, 99, 235, 0.45) !important;
 }
 
 .neu-btn {
-  background: var(--hod-surface-card) !important;
+  background: #ffffff !important;
   color: var(--hod-text-main) !important;
   border: 1px solid var(--hod-border) !important;
-  box-shadow: var(--hod-shadow-card) !important;
-  backdrop-filter: blur(12px);
+  border-radius: 9999px !important;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04) !important;
+  font-family: 'Urbanist', sans-serif !important;
+  font-weight: 700 !important;
 }
 
 .neu-btn:hover {
   border-color: var(--hod-border-highlight) !important;
+  transform: translateY(-1px) !important;
 }
 
 /* --- Table Refinements & Tabular Numbers --- */
 .master-students-table,
-.fee-table {
+.fee-table,
+.hod-table {
   font-variant-numeric: tabular-nums;
   border-collapse: separate;
   border-spacing: 0;
@@ -121,9 +166,11 @@ body {
 }
 
 .master-students-table th,
-.fee-table th {
-  background: rgba(15, 23, 42, 0.95) !important;
+.fee-table th,
+.hod-table th {
+  background: #f8fafc !important;
   color: var(--hod-text-muted) !important;
+  font-family: 'Urbanist', sans-serif !important;
   font-size: 0.76rem !important;
   font-weight: 800;
   text-transform: uppercase;
@@ -132,212 +179,62 @@ body {
   border-bottom: 1px solid var(--hod-border) !important;
 }
 
+[data-theme="dark"] .master-students-table th,
+[data-theme="dark"] .fee-table th {
+  background: #1e293b !important;
+}
+
 .master-students-table td,
-.fee-table td {
+.fee-table td,
+.hod-table td {
   padding: 14px 16px !important;
-  color: var(--hod-text-main);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04) !important;
+  color: var(--hod-text-main) !important;
+  border-bottom: 1px solid var(--hod-border) !important;
   transition: background 0.15s ease;
 }
 
 .master-students-table tbody tr:hover,
-.fee-table tbody tr:hover {
-  background: rgba(59, 130, 246, 0.08) !important;
+.fee-table tbody tr:hover,
+.hod-table tbody tr:hover {
+  background: rgba(37, 99, 235, 0.04) !important;
 }
 
-/* --- High-End Inset Inputs --- */
+/* --- Inset Inputs --- */
 .neu-input,
 #student-search-input,
 #fee-search-input {
-  background: var(--hod-surface-inset) !important;
+  background: #ffffff !important;
   border: 1px solid var(--hod-border) !important;
-  box-shadow: var(--hod-shadow-inset) !important;
   color: var(--hod-text-main) !important;
-  border-radius: var(--radius-md, 12px);
-  padding: 10px 16px;
+  border-radius: 9999px !important;
+  padding: 10px 18px !important;
+  font-family: 'Urbanist', sans-serif !important;
   outline: none;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03) !important;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .neu-input:focus,
 #student-search-input:focus,
 #fee-search-input:focus {
-  border-color: #3b82f6 !important;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25), inset 0 2px 4px rgba(0,0,0,0.5) !important;
+  border-color: #2563eb !important;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15) !important;
 }
 
-/* --- Dock Header Spacing --- */
-.dock-header {
-  margin-bottom: 1.5rem !important;
-}
-
-/* --- Circular Progress Ring --- */
-.progress-ring-circle {
-  transition: stroke-dashoffset 0.5s ease-in-out;
-  transform: rotate(-90deg);
-  transform-origin: 50% 50%;
-}
-
-/* --- Summary Metric Cards (6-Column Glass Grid) --- */
-.grid {
-  display: grid;
-}
-.grid-cols-2 {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-@media (min-width: 768px) {
-  .md\:grid-cols-3 {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-}
-@media (min-width: 1024px) {
-  .lg\:grid-cols-6 {
-    grid-template-columns: repeat(6, minmax(0, 1fr));
-  }
-}
-.gap-3\.5 {
-  gap: 0.875rem;
-}
-.mb-6 {
-  margin-bottom: 1.5rem;
-}
-
+/* --- Metric Cards --- */
 .metric-card {
-  background: linear-gradient(135deg, rgba(30, 41, 59, 0.5) 0%, rgba(15, 23, 42, 0.7) 100%) !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
-  border-radius: 1rem !important;
-  padding: 1.1rem 1rem !important;
+  background: var(--hod-surface-card) !important;
+  border: 1px solid var(--hod-border) !important;
+  box-shadow: var(--hod-shadow-card) !important;
+  border-radius: var(--radius-card, 24px) !important;
+  padding: 1.25rem !important;
   display: flex !important;
   flex-direction: column !important;
   justify-content: space-between !important;
-  min-height: 120px !important;
   transition: transform 0.2s ease, border-color 0.2s ease !important;
-  box-sizing: border-box;
 }
 
 .metric-card:hover {
   transform: translateY(-2px) !important;
-  border-color: rgba(59, 130, 246, 0.3) !important;
-}
-
-.metric-label {
-  font-size: 0.68rem !important;
-  font-weight: 800 !important;
-  letter-spacing: 0.06em !important;
-  text-transform: uppercase !important;
-  color: #94a3b8 !important;
-  line-height: 1.25 !important;
-}
-
-.metric-value {
-  font-size: 1.75rem !important;
-  font-weight: 900 !important;
-  font-family: 'JetBrains Mono', monospace !important;
-  margin: 0.4rem 0 0.2rem 0 !important;
-  letter-spacing: -0.02em !important;
-  font-variant-numeric: tabular-nums !important;
-}
-
-.metric-subtext {
-  font-size: 0.68rem !important;
-  color: #64748b !important;
-  font-weight: 500 !important;
-}
-
-.text-slate-100 { color: #f1f5f9 !important; }
-.text-sky-400 { color: #38bdf8 !important; }
-.text-emerald-400 { color: #34d399 !important; }
-.text-amber-400 { color: #fbbf24 !important; }
-.text-rose-500 { color: #f43f5e !important; }
-.text-purple-400 { color: #c084fc !important; }
-
-/* Backlog Interactive Button Pill */
-.btn-backlog-inspect {
-  background: none !important;
-  border: none !important;
-  padding: 0 !important;
-  cursor: pointer !important;
-  outline: none !important;
-  display: inline-flex !important;
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
-}
-
-.btn-backlog-inspect:hover {
-  transform: translate3d(0, -1px, 0) scale(1.05) !important;
-}
-
-.btn-backlog-inspect:active {
-  transform: translate3d(0, 1px, 0) scale(0.97) !important;
-}
-
-/* Modal Overlay & Card Surface */
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(4, 7, 13, 0.8);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  z-index: 9999;
-  align-items: center;
-  justify-content: center;
-}
-
-.modal-overlay.hidden {
-  display: none !important;
-}
-
-.modal-overlay.flex {
-  display: flex !important;
-}
-
-.neumorphic-modal {
-  background: linear-gradient(135deg, rgba(30, 41, 59, 0.88) 0%, rgba(15, 23, 42, 0.96) 100%) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
-  border-radius: 1.5rem !important;
-  padding: 1.5rem 1.75rem !important;
-  animation: modalPop 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
-}
-
-@keyframes modalPop {
-  from {
-    opacity: 0;
-    transform: translate3d(0, 16px, 0) scale(0.96);
-  }
-  to {
-    opacity: 1;
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-}
-
-/* Strict Layout and Logo Sizing Constraints */
-.app-layout {
-  display: flex !important;
-  flex-direction: column !important;
-  width: 100% !important;
-  min-height: 100vh !important;
-}
-
-.brand-logo-img, img.brand-logo-img, .brand-emblem-badge img, header img {
-  width: 32px !important;
-  height: 32px !important;
-  max-width: 32px !important;
-  max-height: 32px !important;
-  object-fit: contain !important;
-  display: block !important;
-}
-
-.brand-emblem-badge {
-  width: 40px !important;
-  height: 40px !important;
-  min-width: 40px !important;
-  min-height: 40px !important;
-  max-width: 40px !important;
-  max-height: 40px !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  overflow: hidden !important;
-  border-radius: 50% !important;
+  border-color: var(--hod-border-highlight) !important;
 }
