@@ -11,6 +11,17 @@
    ================================================================ */
 :root,
 [data-theme="light"] {
+  color-scheme: light;
+  --container-max-width: 1280px;
+  --header-height: 72px;
+  --radius-card: 28px;
+  --radius-tile: 20px;
+  --radius-input: 14px;
+  --radius-pill: 9999px;
+  --z-header: 1000;
+  --z-dock: 10000;
+  --z-dropdown: 10050;
+  --z-modal: 20000;
   /* ── Canvas Background & Ambient Gradients ───────────────────── */
   --bg-app:              #f2f7f4;
   --bg-canvas:           #edf4f0;
@@ -105,6 +116,9 @@
    2. DARK THEME OVERRIDES (Alternative Aesthetic)
    ================================================================ */
 [data-theme="dark"] {
+  color-scheme: dark;
+  --container-max-width: 1280px;
+  --header-height: 72px;
   /* ── Canvas Background & Ambient Gradients ───────────────────── */
   --bg-app:              #020804;
   --bg-canvas:           #020604;

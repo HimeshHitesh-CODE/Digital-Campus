@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Academic Disciplines & Branches | Samskruti College (Code: 259)</title>
+
+  <!-- Google Fonts: Urbanist & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+
+  <!-- Master Stylesheets -->
+  <link rel="stylesheet" href="../../css/reset.css?v=3.4.0" />
+  <link rel="stylesheet" href="../../css/theme-tokens.css?v=3.4.0" />
+  <link rel="stylesheet" href="../../css/dc-global-theme.css?v=3.4.0" />
+  <link rel="stylesheet" href="../../css/top-nav.css?v=3.4.0" />
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="../../js/dc-dynamic-island.js?v=3.4.0"></script>
+
+  <style>
+    .page-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .page-title {
+      font-size: 1.85rem;
+      font-weight: 800;
+      color: var(--text-heading);
+      letter-spacing: -0.02em;
+    }
+    .page-subtitle {
+      font-size: 0.90rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+    .disciplines-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 20px;
+    }
+    @media (max-width: 1024px) {
+      .disciplines-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 640px) {
+      .disciplines-grid { grid-template-columns: 1fr; }
+    }
+    .discipline-card {
+      background: var(--surface-card);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border: 1px solid var(--border-card);
+      border-radius: var(--radius-card, 28px);
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      transition: all 0.2s ease;
+    }
+    .discipline-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(16, 185, 129, 0.4);
+      box-shadow: var(--shadow-md);
+    }
+    .discipline-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .discipline-code-badge {
+      font-family: var(--font-mono);
+      font-size: 0.76rem;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      background: #dcfce7;
+      color: #065f46;
+    }
+    [data-theme="dark"] .discipline-code-badge {
+      background: rgba(16, 185, 129, 0.2);
+      color: #34d399;
+    }
+    .discipline-name {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--text-heading);
+    }
+    .discipline-desc {
+      font-size: 0.84rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    .discipline-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid var(--border-subtle);
+      padding-top: 12px;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body class="student-portal-body">
+
+  <div class="portal-viewport-wrapper">
+    <div class="page-header-row">
+      <div>
+        <h1 class="page-title">Academic Disciplines &amp; Engineering Branches</h1>
+        <p class="page-subtitle">Samskruti College of Engineering &amp; Technology (Institution Code: 259) &bull; Affiliated to SBTET &amp; JNTUH</p>
+      </div>
+      <a href="./dashboard.html" class="btn-hero-primary">
+        <i data-lucide="arrow-left"></i>
+        <span>Back to Home</span>
+      </a>
+    </div>
+
+    <div class="disciplines-grid">
+      <!-- CSE -->
+      <div class="discipline-card">
+        <div class="discipline-top">
+          <span class="discipline-code-badge">DEPT 05 &bull; C-24</span>
+          <i data-lucide="cpu" style="width: 22px; height: 22px; color: #10b981;"></i>
+        </div>
+        <h3 class="discipline-name">Computer Science &amp; Engineering</h3>
+        <p class="discipline-desc">Core software architecture, distributed systems, compiler design, full-stack development, and database engineering.</p>
+        <div class="discipline-meta">
+          <span>Intake: 180 Seats</span>
+          <span>Block A, 3rd Floor</span>
+        </div>
+      </div>
+
+      <!-- AIML -->
+      <div class="discipline-card">
+        <div class="discipline-top">
+          <span class="discipline-code-badge">DEPT 66 &bull; C-24</span>
+          <i data-lucide="brain" style="width: 22px; height: 22px; color: #10b981;"></i>
+        </div>
+        <h3 class="discipline-name">AI &amp; Machine Learning</h3>
+        <p class="discipline-desc">Deep neural networks, computational statistics, computer vision, natural language processing, and autonomous systems.</p>
+        <div class="discipline-meta">
+          <span>Intake: 120 Seats</span>
+          <span>Block B, 2nd Floor</span>
+        </div>
+      </div>
+
+      <!-- ECE -->
+      <div class="discipline-card">
+        <div class="discipline-top">
+          <span class="discipline-code-badge">DEPT 04 &bull; C-24</span>
+          <i data-lucide="radio" style="width: 22px; height: 22px; color: #10b981;"></i>
+        </div>
+        <h3 class="discipline-name">Electronics &amp; Communication</h3>
+        <p class="discipline-desc">VLSI system design, embedded microcontrollers, 5G signal processing, and IoT hardware interfaces.</p>
+        <div class="discipline-meta">
+          <span>Intake: 120 Seats</span>
+          <span>Block C, 1st Floor</span>
+        </div>
+      </div>
+
+      <!-- EEE -->
+      <div class="discipline-card">
+        <div class="discipline-top">
+          <span class="discipline-code-badge">DEPT 02 &bull; C-24</span>
+          <i data-lucide="zap" style="width: 22px; height: 22px; color: #10b981;"></i>
+        </div>
+        <h3 class="discipline-name">Electrical &amp; Electronics</h3>
+        <p class="discipline-desc">Renewable energy grids, high-voltage transmission, power converters, and industrial automation robotics.</p>
+        <div class="discipline-meta">
+          <span>Intake: 60 Seats</span>
+          <span>Power Systems Wing</span>
+        </div>
+      </div>
+
+      <!-- MECH -->
+      <div class="discipline-card">
+        <div class="discipline-top">
+          <span class="discipline-code-badge">DEPT 03 &bull; C-24</span>
+          <i data-lucide="wrench" style="width: 22px; height: 22px; color: #10b981;"></i>
+        </div>
+        <h3 class="discipline-name">Mechanical Engineering</h3>
+        <p class="discipline-desc">Thermal fluid dynamics, CAD/CAM manufacturing, mechatronics, and rapid prototyping technology.</p>
+        <div class="discipline-meta">
+          <span>Intake: 60 Seats</span>
+          <span>Workshop Complex</span>
+        </div>
+      </div>
+
+      <!-- CIVIL -->
+      <div class="discipline-card">
+        <div class="discipline-top">
+          <span class="discipline-code-badge">DEPT 01 &bull; C-24</span>
+          <i data-lucide="building" style="width: 22px; height: 22px; color: #10b981;"></i>
+        </div>
+        <h3 class="discipline-name">Civil Engineering</h3>
+        <p class="discipline-desc">Structural analysis, geotechnical surveying, seismic-resistant engineering, and environmental hydraulics.</p>
+        <div class="discipline-meta">
+          <span>Intake: 60 Seats</span>
+          <span>Survey Wing</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

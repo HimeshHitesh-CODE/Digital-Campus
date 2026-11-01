@@ -120,9 +120,9 @@
   padding: 10px 14px 10px 38px;
   font-size: 0.82rem;
   border-radius: 12px;
-  background: rgba(10, 28, 18, 0.75);
-  border: 1px solid rgba(110, 231, 183, 0.25);
-  color: #ffffff;
+  background: var(--surface-card, #ffffff);
+  border: 1px solid var(--border-default, rgba(0, 0, 0, 0.12));
+  color: var(--text-heading, #0f172a);
   outline: none;
   box-sizing: border-box;
   transition: all 0.2s ease;
@@ -209,21 +209,25 @@
 .thread-name {
   font-size: 0.88rem;
   font-weight: 800;
-  color: #ffffff;
+  color: var(--text-heading, #0f172a);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
+[data-theme="dark"] .thread-name {
+  color: #ffffff;
+}
+
 .thread-time {
   font-size: 0.7rem;
-  color: #649479;
+  color: var(--text-muted, #64748b);
   font-family: 'JetBrains Mono', monospace;
 }
 
 .thread-preview {
   font-size: 0.78rem;
-  color: #a7d9be;
+  color: var(--text-muted, #64748b);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -338,10 +342,17 @@
 
 .msg-bubble.peer {
   align-self: flex-start;
+  background: var(--surface-card, #ffffff);
+  border: 1px solid var(--border-card, rgba(0, 0, 0, 0.10));
+  color: var(--text-heading, #0f172a);
+  border-bottom-left-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="dark"] .msg-bubble.peer {
   background: rgba(255, 255, 255, 0.07);
   border: 1px solid rgba(110, 231, 183, 0.2);
   color: #f0fdf4;
-  border-bottom-left-radius: 4px;
 }
 
 .msg-meta {
@@ -365,9 +376,9 @@
   flex: 1;
   padding: 12px 18px;
   border-radius: 9999px;
-  background: rgba(10, 28, 18, 0.8);
-  border: 1px solid rgba(110, 231, 183, 0.28);
-  color: #ffffff;
+  background: var(--surface-card, #ffffff);
+  border: 1px solid var(--border-default, rgba(0, 0, 0, 0.14));
+  color: var(--text-heading, #0f172a);
   font-size: 0.88rem;
   outline: none;
   font-family: 'Urbanist', sans-serif;
@@ -388,4 +399,22 @@
   align-items: center !important;
   justify-content: center !important;
   flex-shrink: 0;
+}
+
+
+/* Dark Theme Overrides for Chat */
+[data-theme="dark"] .chat-composer-input {
+  background: rgba(10, 28, 18, 0.8);
+  border: 1px solid rgba(110, 231, 183, 0.28);
+  color: #ffffff;
+}
+
+[data-theme="dark"] .thread-search-input {
+  background: rgba(10, 28, 18, 0.75);
+  border: 1px solid rgba(110, 231, 183, 0.25);
+  color: #ffffff;
+}
+
+[data-theme="dark"] .thread-preview {
+  color: #a7d9be;
 }

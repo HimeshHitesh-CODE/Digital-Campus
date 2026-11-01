@@ -1,3 +1,76 @@
+
+/* ================================================================
+   PAGE & INNER SCROLLBAR SPECIFICATION (Single Document Scroller)
+   ================================================================ */
+:root {
+  --scrollbar-mode: hidden; /* "hidden" | "slim" */
+}
+
+/* Page-level scroller: keep scrolling fully active but visually hidden */
+html {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+  overflow-y: scroll; /* Maintain stable layout without scrollbar jump */
+  scrollbar-gutter: stable;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+/* Inner scroll areas: slim 6px themed scrollbar with rounded semi-transparent thumb */
+.custom-scroll,
+.inner-scroller,
+.chat-messages-container,
+.chat-thread-list,
+.modal-body-scroll,
+.modal-content-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(16, 185, 129, 0.35) transparent;
+}
+
+.custom-scroll::-webkit-scrollbar,
+.inner-scroller::-webkit-scrollbar,
+.chat-messages-container::-webkit-scrollbar,
+.chat-thread-list::-webkit-scrollbar,
+.modal-body-scroll::-webkit-scrollbar,
+.modal-content-scroll::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.custom-scroll::-webkit-scrollbar-track,
+.inner-scroller::-webkit-scrollbar-track,
+.chat-messages-container::-webkit-scrollbar-track,
+.chat-thread-list::-webkit-scrollbar-track,
+.modal-body-scroll::-webkit-scrollbar-track,
+.modal-content-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb,
+.inner-scroller::-webkit-scrollbar-thumb,
+.chat-messages-container::-webkit-scrollbar-thumb,
+.chat-thread-list::-webkit-scrollbar-thumb,
+.modal-body-scroll::-webkit-scrollbar-thumb,
+.modal-content-scroll::-webkit-scrollbar-thumb {
+  background: rgba(16, 185, 129, 0.35);
+  border-radius: 9999px;
+  transition: background 0.2s ease;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb:hover,
+.inner-scroller::-webkit-scrollbar-thumb:hover,
+.chat-messages-container::-webkit-scrollbar-thumb:hover,
+.chat-thread-list::-webkit-scrollbar-thumb:hover,
+.modal-body-scroll::-webkit-scrollbar-thumb:hover,
+.modal-content-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(16, 185, 129, 0.65);
+}
+
 /* ================================================================
    SAMSKRUTI DIGITAL CAMPUS (CODE: 259) — GLOBAL COMPONENT THEME
    Implements Phases 1, 3, 4, 13, 14, 20
@@ -149,365 +222,191 @@ body {
   }
 }
 
+
 /* ================================================================
-   3. GLOBAL FIXED TOP HEADER BAR (Header, Brand, Dock & TAL Profile)
+   3. GLOBAL FIXED TOP HEADER BAR (Header, Brand, Dock & Dropdown)
    ================================================================ */
 .app-global-header {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  height: 74px;
-  z-index: var(--z-header);
+  height: var(--header-height, 72px);
+  z-index: var(--z-header, 1000);
+  background: transparent;
+  border-bottom: 1px solid transparent;
+  transition: background-color 0.25s ease, border-color 0.25s ease, backdrop-filter 0.25s ease, box-shadow 0.25s ease;
+  pointer-events: none;
+}
+
+.app-global-header.is-scrolled {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border-bottom: 1px solid rgba(13, 71, 34, 0.10);
+  box-shadow: 0 4px 20px rgba(13, 71, 34, 0.05);
+}
+
+[data-theme="dark"] .app-global-header.is-scrolled {
+  background: rgba(2, 8, 4, 0.88);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.55);
+}
+
+.app-global-header-inner {
+  max-width: var(--container-max-width, 1280px);
+  width: 100%;
+  height: 100%;
+  margin: 0 auto;
+  padding: 0 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 36px;
-  pointer-events: none; /* children enable pointer events */
+  box-sizing: border-box;
 }
 
-/* Header Left: College Identity */
+/* Header Left: Clean College Identity without pill border */
 .header-brand-meta {
   pointer-events: auto;
   display: flex;
   flex-direction: column;
   justify-content: center;
   line-height: 1.25;
-  background: var(--surface-card);
-  backdrop-filter: blur(24px) saturate(180%);
-  -webkit-backdrop-filter: blur(24px) saturate(180%);
-  border: 1px solid var(--border-default);
-  border-radius: var(--radius-pill);
-  padding: 6px 18px;
-  box-shadow: var(--shadow-sm);
-  transition: all var(--duration-fast) var(--ease-smooth);
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+  text-decoration: none;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
 }
 
 .header-brand-meta:hover {
-  border-color: var(--border-active);
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-md);
+  opacity: 0.88;
+  transform: none !important;
+  box-shadow: none !important;
+  border-color: transparent !important;
 }
 
 .header-brand-title {
-  font-size: 0.95rem;
-  font-weight: 800;
+  font-family: var(--font-sans);
+  font-size: 1.12rem;
+  font-weight: 700;
   color: var(--text-heading);
-  letter-spacing: -0.01em;
+  letter-spacing: -0.015em;
+  margin: 0;
+  padding: 0;
 }
 
 .header-brand-sub {
+  font-family: var(--font-sans);
   font-size: 0.78rem;
   font-weight: 600;
   color: var(--text-muted);
   letter-spacing: 0.01em;
+  margin-top: 3px;
 }
 
-/* Header Right: Theme Toggle & TAL Profile Badge */
+/* Header Right Actions */
 .header-right-actions {
   pointer-events: auto;
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
   position: relative;
 }
 
-/* Theme Toggle Button (Circle with Sun/Moon) */
 .theme-switch-btn {
   width: 40px;
   height: 40px;
-  border-radius: var(--radius-pill);
-  background: var(--surface-card);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--border-default);
-  box-shadow: var(--shadow-sm);
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--brand-primary);
+  border: 1px solid var(--border-default);
+  background: var(--surface-card);
+  backdrop-filter: blur(12px);
+  color: var(--text-primary);
   cursor: pointer;
-  outline: none;
-  transition: all var(--duration-fast) var(--ease-smooth);
+  transition: all 0.2s ease;
 }
 
 .theme-switch-btn:hover {
-  background: var(--surface-0);
-  border-color: var(--border-active);
-  transform: translateY(-1px) scale(1.05);
-  box-shadow: var(--shadow-md);
+  border-color: var(--brand-accent);
+  transform: scale(1.05);
 }
 
-.theme-switch-btn svg,
-.theme-switch-btn i {
-  width: 19px;
-  height: 19px;
+.header-divider-v {
+  width: 1px;
+  height: 24px;
+  background: var(--border-subtle);
+  margin: 0 4px;
 }
 
-/* Student Profile Badge (TAL Avatar + Down Chevron) */
 .profile-badge-btn {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 8px;
+  padding: 4px 14px 4px 6px;
+  border-radius: 9999px;
+  border: 1px solid var(--border-default);
   background: var(--surface-card);
   backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--border-default);
-  border-radius: var(--radius-pill);
-  padding: 4px 12px 4px 4px;
-  box-shadow: var(--shadow-sm);
+  color: var(--text-heading);
   cursor: pointer;
-  outline: none;
-  transition: all var(--duration-fast) var(--ease-smooth);
+  transition: all 0.2s ease;
 }
 
 .profile-badge-btn:hover {
-  background: var(--surface-0);
-  border-color: var(--border-active);
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-md);
+  border-color: var(--brand-accent);
+  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.15);
 }
 
 .profile-badge-avatar {
   width: 32px;
   height: 32px;
-  border-radius: var(--radius-pill);
+  border-radius: 50%;
   background: var(--brand-primary);
   color: #ffffff;
+  font-size: 0.82rem;
+  font-weight: 800;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.76rem;
-  font-weight: 800;
-  letter-spacing: 0.02em;
+}
+
+[data-theme="dark"] .profile-badge-avatar {
+  background: #10b981;
+  color: #020804;
+}
+
+.profile-badge-name-preview {
   font-family: var(--font-sans);
+  font-size: 0.84rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
 }
 
 .profile-badge-chevron {
+  width: 14px;
+  height: 14px;
+  stroke-width: 2.2px;
   color: var(--text-muted);
-  width: 16px;
-  height: 16px;
-  transition: transform var(--duration-fast) ease;
+  transition: transform 0.2s ease;
 }
 
-.profile-badge-btn.open .profile-badge-chevron {
-  transform: rotate(180deg);
-}
-
-/* ================================================================
-   PHASE 3: STUDENT PROFILE DROPDOWN MENU
-   Exact match to dropdown in 1.png and 2.png
-   ================================================================ */
-/* Profile Badge Name Preview */
-.profile-badge-name-preview {
-  font-family: var(--font-sans, 'Urbanist', -apple-system, sans-serif);
-  font-size: 0.82rem;
-  font-weight: 700;
-  color: #ffffff;
-  letter-spacing: 0.01em;
-  display: inline-block;
-  white-space: nowrap;
-}
-
-[data-theme="light"] .profile-badge-name-preview {
-  color: #0f172a;
-}
-
-.profile-dropdown-card {
-  position: absolute;
-  top: calc(100% + 10px);
-  right: 0;
-  width: 270px;
-  background: rgba(3, 26, 17, 0.96) !important;
-  backdrop-filter: blur(32px) saturate(190%) !important;
-  -webkit-backdrop-filter: blur(32px) saturate(190%) !important;
-  border: 1px solid rgba(16, 185, 129, 0.42) !important;
-  border-radius: 20px !important;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.70), 0 0 28px rgba(16, 185, 129, 0.25) !important;
-  padding: 16px !important;
-  display: none;
-  flex-direction: column;
-  gap: 12px;
-  opacity: 0;
-  pointer-events: none;
-  transform: translateY(-8px) scale(0.96);
-  transform-origin: top right;
-  transition: opacity 0.24s cubic-bezier(0.16, 1, 0.3, 1), transform 0.26s cubic-bezier(0.16, 1, 0.3, 1);
-  z-index: 10000 !important;
-}
-
-.profile-dropdown-card.is-open,
-.profile-dropdown-card.is-active {
-  display: flex !important;
-  opacity: 1 !important;
-  pointer-events: auto !important;
-  transform: translateY(0) scale(1) !important;
-}
-
-/* Dropdown Top User Row */
-.dropdown-user-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--border-subtle);
-}
-
-.dropdown-user-avatar {
-  width: 38px;
-  height: 38px;
-  border-radius: var(--radius-pill);
-  background: var(--brand-primary);
-  color: #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.85rem;
-  font-weight: 800;
-  flex-shrink: 0;
-}
-
-.dropdown-user-meta {
-  display: flex;
-  flex-direction: column;
-  line-height: 1.25;
-}
-
-.dropdown-user-name {
-  font-size: 0.90rem;
-  font-weight: 800;
-  color: #ffffff;
-}
-
-.dropdown-user-sub {
-  font-size: 0.72rem;
-  font-weight: 600;
-  color: #a7f3d0;
-}
-
-/* Dropdown Action Items */
-.dropdown-menu-list {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.dropdown-menu-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 9px 12px;
-  border-radius: var(--radius-md);
-  font-size: 0.84rem;
-  font-weight: 600;
-  color: var(--text-body);
-  text-decoration: none;
-  transition: all var(--duration-fast) ease;
-  background: transparent;
-  border: none;
-  width: 100%;
-  cursor: pointer;
-  text-align: left;
-}
-
-.dropdown-menu-item:hover {
-  background: var(--brand-primary-tint);
-  color: var(--brand-primary);
-}
-
-.dropdown-menu-item i,
-.dropdown-menu-item svg {
-  width: 16px;
-  height: 16px;
-  color: var(--text-muted);
-}
-
-.dropdown-menu-item:hover i,
-.dropdown-menu-item:hover svg {
-  color: var(--brand-primary);
-}
-
-/* Dark Theme Toggle Row inside Dropdown */
-.dropdown-theme-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 8px 12px;
-  border-radius: var(--radius-md);
-  font-size: 0.84rem;
-  font-weight: 600;
-  color: var(--text-body);
-}
-
-.dropdown-theme-row .row-label {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-/* iOS-Style Toggle Switch */
-.switch-control {
+/* Centered Viewport Wrapper */
+.portal-viewport-wrapper {
   position: relative;
-  display: inline-block;
-  width: 38px;
-  height: 22px;
-  flex-shrink: 0;
+  z-index: var(--z-content, 10);
+  max-width: var(--container-max-width, 1280px);
+  width: 100%;
+  margin: 0 auto;
+  padding: 88px 24px 60px;
+  box-sizing: border-box;
 }
-
-.switch-control input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-.switch-slider {
-  position: absolute;
-  cursor: pointer;
-  inset: 0;
-  background-color: #cbd5e1;
-  transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  border-radius: 9999px;
-}
-
-.switch-slider::before {
-  position: absolute;
-  content: "";
-  height: 16px;
-  width: 16px;
-  left: 3px;
-  bottom: 3px;
-  background-color: #ffffff;
-  transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  border-radius: 50%;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-}
-
-input:checked + .switch-slider {
-  background-color: var(--brand-accent);
-}
-
-input:checked + .switch-slider::before {
-  transform: translateX(16px);
-}
-
-/* Logout Item in Red */
-.dropdown-menu-item.logout-item {
-  color: #dc2626;
-  margin-top: 4px;
-  border-top: 1px solid var(--border-subtle);
-  padding-top: 10px;
-}
-
-.dropdown-menu-item.logout-item:hover {
-  background: rgba(239, 68, 68, 0.10);
-  color: #b91c1c;
-}
-
-.dropdown-menu-item.logout-item i,
-.dropdown-menu-item.logout-item svg {
-  color: #dc2626;
-}
-
 /* ================================================================
    4. PAGE MAIN CONTAINER & LAYOUT
    ================================================================ */
@@ -567,18 +466,20 @@ input:checked + .switch-slider::before {
    ================================================================ */
 .stats-summary-card {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   background: var(--surface-card);
-  backdrop-filter: blur(28px) saturate(180%);
-  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
   border: 1px solid var(--border-card);
-  outline: 1px solid var(--border-card-outer);
-  border-radius: var(--radius-xl);
+  border-radius: var(--radius-card, 28px);
   box-shadow: var(--shadow-card);
-  padding: 24px 28px;
-  margin: 28px 0 32px;
-  gap: 16px;
+  padding: 16px 24px;
+  margin: 0;
+  gap: 0;
+  align-items: center;
   position: relative;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .stat-metric-col {

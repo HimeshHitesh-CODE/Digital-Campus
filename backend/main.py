@@ -82,11 +82,7 @@ app.add_middleware(DevNoCacheMiddleware)
 @app.get("/index.html")
 def root():
     """Directly serves the Student Dashboard as the default landing view."""
-    dash_file = os.path.join(FRONTEND_DIR, "screens", "02-student-portal", "dashboard.html")
-    if os.path.exists(dash_file):
-        from fastapi.responses import FileResponse
-        return FileResponse(dash_file)
-    return RedirectResponse(url="/screens/02-student-portal/dashboard.html")
+    return RedirectResponse(url="/screens/02-student-portal/dashboard.html", status_code=302)
 
 # ==============================================================================
 # 1. REAL-TIME WEBSOCKET ROUTE (PRESENCE, MESSAGING, NOTIFICATIONS)
