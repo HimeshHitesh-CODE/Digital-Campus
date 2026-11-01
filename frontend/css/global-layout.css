@@ -1,9 +1,9 @@
 /* ==========================================================================
-   GLOBAL LAYOUT & VIEWPORT ARCHITECTURE
-   Campus Connect - Clean Ceramic System & Urbanist Design Engine
+   GLOBAL LAYOUT & VIEWPORT — DARK EMERALD GLASS SYSTEM
+   Digital Campus · Dark orb background · Glassmorphic surface engine
    ========================================================================== */
 
-/* Application Viewport Shell */
+/* ── Base Reset ────────────────────────────────────────────────────────── */
 html {
   box-sizing: border-box;
   scroll-behavior: smooth;
@@ -15,26 +15,107 @@ html {
   padding: 0;
 }
 
+/* ── Body ──────────────────────────────────────────────────────────────── */
 body {
-  background-color: var(--bg-app, #edf2f7);
-  background-image: var(--bg-gradient, linear-gradient(180deg, #f1f5f9 0%, #edf2f7 100%));
+  background-color: var(--bg-app, #050a05);
+  background-image: var(--bg-gradient, linear-gradient(160deg, #050a05 0%, #0a1a0a 50%, #050a05 100%));
   background-attachment: fixed;
-  color: var(--text-primary, #0f172a);
+  color: var(--text-primary, #f0fdf4);
   font-family: 'Urbanist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   letter-spacing: -0.01em;
   min-height: 100vh;
   margin: 0;
   padding: 0;
   overflow-x: hidden;
-  transition: background-color 0.3s ease, color 0.3s ease;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* ── Animated Orb Background ───────────────────────────────────────────── */
+/* Shared drifting canvas — add <div class="dc-orb-bg"> right after <body> */
+.dc-orb-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.dc-orb-bg .orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.45;
+  animation: orbDrift linear infinite;
+  will-change: transform;
+}
+
+/* Individual orb sizes, colors, positions & speeds */
+.dc-orb-bg .orb-1 {
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(16,185,129,0.55) 0%, transparent 70%);
+  top: -15%; left: -10%;
+  animation-duration: 28s;
+  animation-delay: 0s;
+}
+
+.dc-orb-bg .orb-2 {
+  width: 380px; height: 380px;
+  background: radial-gradient(circle, rgba(5,150,105,0.40) 0%, transparent 70%);
+  top: 55%; right: -8%;
+  animation-duration: 36s;
+  animation-delay: -10s;
+}
+
+.dc-orb-bg .orb-3 {
+  width: 280px; height: 280px;
+  background: radial-gradient(circle, rgba(26,60,26,0.80) 0%, transparent 70%);
+  bottom: 10%; left: 30%;
+  animation-duration: 22s;
+  animation-delay: -6s;
+}
+
+.dc-orb-bg .orb-4 {
+  width: 420px; height: 420px;
+  background: radial-gradient(circle, rgba(10,185,129,0.22) 0%, transparent 70%);
+  top: 30%; left: 55%;
+  animation-duration: 44s;
+  animation-delay: -18s;
+}
+
+.dc-orb-bg .orb-5 {
+  width: 200px; height: 200px;
+  background: radial-gradient(circle, rgba(52,211,153,0.30) 0%, transparent 70%);
+  top: 75%; left: 10%;
+  animation-duration: 18s;
+  animation-delay: -3s;
+}
+
+/* Subtle noise grain overlay for depth */
+.dc-orb-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  opacity: 0.025;
+  pointer-events: none;
+}
+
+@keyframes orbDrift {
+  0%   { transform: translate(0px,   0px)   scale(1);    }
+  25%  { transform: translate(40px, -30px)  scale(1.06); }
+  50%  { transform: translate(-20px, 50px)  scale(0.96); }
+  75%  { transform: translate(30px,  20px)  scale(1.04); }
+  100% { transform: translate(0px,   0px)   scale(1);    }
+}
+
+/* ── Portal Wrapper ────────────────────────────────────────────────────── */
 .portal-viewport-wrapper,
 .main-content-viewport,
 .app-shell,
 .app-layout {
+  position: relative;
+  z-index: 1;
   width: 100%;
   max-width: 1400px;
   margin: 0 auto;
@@ -42,67 +123,65 @@ body {
   box-sizing: border-box;
 }
 
-/* Clear Margin Offset Below Sticky Nav */
+/* Sticky nav offset */
 .top-nav-capsule-container {
   position: sticky;
-  top: 1rem;
+  top: 1.25rem;
   z-index: 150;
   margin-bottom: 2rem;
   width: 100%;
 }
 
-/* Card Base & Surface Layers */
+/* ── Content offset for fixed dock (72px = 14px top + 46px dock + 12px buffer) ── */
+.cc-page-content,
+.portal-viewport-wrapper,
+.main-content,
+.dashboard-canvas,
+body > main {
+  padding-top: 72px;
+}
+
+/* ── Card & Surface Layers (Glassmorphic) ──────────────────────────────── */
 .card,
 .neu-card,
 .neumorphic-card,
 .dashboard-card,
 .analytics-card {
-  background: var(--surface-card, #ffffff);
-  border: 1px solid var(--border-light, #e2e8f0);
-  border-radius: var(--radius-card, 24px);
-  box-shadow: var(--shadow-card, 0 10px 25px -5px rgba(15, 23, 42, 0.04), 0 8px 10px -6px rgba(15, 23, 42, 0.02));
-  color: var(--text-primary, #0f172a);
-  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
-              box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1),
-              border-color 0.25s ease;
+  background: rgba(10, 30, 10, 0.45);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(16, 185, 129, 0.15);
+  border-radius: 20px;
+  box-shadow: var(--shadow-card, 0 8px 32px -4px rgba(0, 0, 0, 0.55));
+  color: var(--text-primary, #f0fdf4);
+  transition:
+    transform 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.28s ease;
 }
 
-/* Card Elevation on Hover */
 .card:hover,
 .neu-card:hover,
 .neumorphic-card:hover,
 .dashboard-card:hover,
 .analytics-card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-card-hover, 0 16px 32px -4px rgba(15, 23, 42, 0.07));
-  border-color: #cbd5e1;
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-card-hover, 0 16px 48px -6px rgba(0, 0, 0, 0.70), 0 0 24px rgba(16, 185, 129, 0.12));
+  border-color: rgba(16, 185, 129, 0.30);
 }
 
-/* Custom Styled Scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-::-webkit-scrollbar-track {
-  background: var(--bg-app, #edf2f7);
-}
-::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 9999px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: var(--brand-blue, #2563eb);
-}
+/* ── Scrollbar ─────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: #050a05; }
+::-webkit-scrollbar-thumb { background: rgba(16, 185, 129, 0.28); border-radius: 9999px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(16, 185, 129, 0.55); }
 
-/* ==========================================================================
-   BUTTONS, BADGES, AND PILL TOKENS
-   ========================================================================== */
-
-/* Primary Action Pill Button */
+/* ── Buttons ───────────────────────────────────────────────────────────── */
 .btn-primary-action,
 .neu-btn-primary,
-.btn-pill-primary {
-  background: var(--brand-blue, #2563eb);
+.btn-pill-primary,
+.neu-btn.neu-btn-primary {
+  background: linear-gradient(135deg, #10b981, #059669);
   color: #ffffff !important;
   border: none;
   border-radius: 9999px;
@@ -115,35 +194,38 @@ body {
   align-items: center;
   gap: 0.5rem;
   cursor: pointer;
-  box-shadow: 0 4px 14px var(--brand-blue-glow, rgba(37, 99, 235, 0.35));
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
-              box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1),
-              background 0.2s ease;
+  box-shadow: 0 4px 18px rgba(16, 185, 129, 0.45);
+  transition:
+    transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+    background 0.22s ease;
   text-decoration: none;
 }
 
 .btn-primary-action:hover,
 .neu-btn-primary:hover,
-.btn-pill-primary:hover {
+.btn-pill-primary:hover,
+.neu-btn.neu-btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 22px var(--brand-blue-glow, rgba(37, 99, 235, 0.45));
-  background: var(--brand-blue-hover, #1d4ed8);
+  box-shadow: 0 8px 28px rgba(16, 185, 129, 0.60);
+  background: linear-gradient(135deg, #34d399, #10b981);
 }
 
 .btn-primary-action:active,
 .neu-btn-primary:active,
 .btn-pill-primary:active {
   transform: translateY(1px);
-  box-shadow: 0 2px 8px var(--brand-blue-glow, rgba(37, 99, 235, 0.3));
 }
 
-/* Secondary Pill Button */
+/* Secondary Button */
 .btn-secondary-action,
 .neu-btn,
 .btn-pill-secondary {
-  background: var(--surface-card, #ffffff);
-  color: var(--text-primary, #0f172a);
-  border: 1px solid var(--border-light, #e2e8f0);
+  background: rgba(10, 30, 10, 0.60);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: var(--text-primary, #f0fdf4);
+  border: 1px solid rgba(16, 185, 129, 0.22);
   border-radius: 9999px;
   padding: 0.65rem 1.35rem;
   font-family: 'Urbanist', sans-serif;
@@ -153,8 +235,7 @@ body {
   align-items: center;
   gap: 0.5rem;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
   text-decoration: none;
 }
 
@@ -162,52 +243,52 @@ body {
 .neu-btn:hover,
 .btn-pill-secondary:hover {
   transform: translateY(-1px);
-  border-color: #cbd5e1;
-  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+  border-color: rgba(16, 185, 129, 0.45);
+  box-shadow: 0 0 18px rgba(16, 185, 129, 0.18);
+  color: #10b981;
 }
 
-/* Badges & Chips */
+/* ── Badges ────────────────────────────────────────────────────────────── */
 .neu-badge,
 .pill-badge {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
-  padding: 0.35rem 0.85rem;
+  padding: 0.3rem 0.80rem;
   border-radius: 9999px;
   font-family: 'Urbanist', sans-serif;
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 700;
   border: 1px solid transparent;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 .neu-badge-primary {
-  background: rgba(37, 99, 235, 0.08);
-  color: #2563eb;
-  border-color: rgba(37, 99, 235, 0.18);
+  background: rgba(16, 185, 129, 0.12);
+  color: #10b981;
+  border-color: rgba(16, 185, 129, 0.28);
 }
 
 .neu-badge-success {
-  background: rgba(16, 185, 129, 0.1);
-  color: #10b981;
-  border-color: rgba(16, 185, 129, 0.2);
+  background: rgba(16, 185, 129, 0.12);
+  color: #34d399;
+  border-color: rgba(52, 211, 153, 0.28);
 }
 
 .neu-badge-warning {
-  background: rgba(245, 158, 11, 0.1);
-  color: #f59e0b;
-  border-color: rgba(245, 158, 11, 0.2);
+  background: rgba(245, 158, 11, 0.12);
+  color: #fbbf24;
+  border-color: rgba(245, 158, 11, 0.28);
 }
 
 .neu-badge-danger {
-  background: rgba(239, 68, 68, 0.08);
-  color: #ef4444;
-  border-color: rgba(239, 68, 68, 0.2);
+  background: rgba(248, 113, 113, 0.12);
+  color: #f87171;
+  border-color: rgba(248, 113, 113, 0.28);
 }
 
-/* ==========================================================================
-   MOBILE BOTTOM NAVIGATION BAR & RESPONSIVE ENGINE
-   ========================================================================== */
-
+/* ── Mobile Bottom Nav ─────────────────────────────────────────────────── */
 .mobile-bottom-nav {
   display: none;
 }
@@ -219,8 +300,8 @@ body {
   }
 
   .capsule-nav {
-    height: 58px;
-    padding: 0 1rem;
+    height: 52px;
+    padding: 0 0.75rem;
     border-radius: 9999px;
   }
 
@@ -230,18 +311,18 @@ body {
     bottom: 0.75rem;
     left: 0.75rem;
     right: 0.75rem;
-    height: 62px;
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
+    height: 60px;
+    background: rgba(5, 14, 5, 0.90);
+    border: 1px solid rgba(16, 185, 129, 0.22);
     border-radius: 9999px;
-    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.65);
     z-index: 200;
     align-items: center;
     justify-content: space-around;
     padding: 0 0.5rem;
     box-sizing: border-box;
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(28px);
+    -webkit-backdrop-filter: blur(28px);
   }
 
   .mobile-nav-item {
@@ -250,23 +331,20 @@ body {
     align-items: center;
     justify-content: center;
     gap: 3px;
-    color: #64748b;
+    color: rgba(240, 253, 244, 0.50);
     text-decoration: none;
-    font-size: 0.65rem;
+    font-size: 0.60rem;
     font-weight: 700;
-    padding: 0.35rem 0.65rem;
+    padding: 0.3rem 0.6rem;
     border-radius: 9999px;
     transition: all 0.2s ease;
   }
 
-  .mobile-nav-item i {
-    width: 18px;
-    height: 18px;
-  }
+  .mobile-nav-item i { width: 18px; height: 18px; }
 
   .mobile-nav-item.active {
-    color: #2563eb;
-    background: rgba(37, 99, 235, 0.08);
+    color: #10b981;
+    background: rgba(16, 185, 129, 0.12);
   }
 
   .portal-viewport-wrapper {

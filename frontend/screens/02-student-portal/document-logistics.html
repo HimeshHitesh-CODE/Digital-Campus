@@ -1,185 +1,318 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Document Logistics & Requests | Campus Connect (Code: 259)</title>
-  
+  <title>Document Logistics &amp; Counter Pickup | Samskruti College (Code: 259)</title>
+
+  <!-- Typography & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Urbanist:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,600&family=JetBrains+Mono:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Master Design System Stylesheets -->
   <link rel="stylesheet" href="../../css/reset.css" />
   <link rel="stylesheet" href="../../css/theme-tokens.css" />
-  <link rel="stylesheet" href="../../css/global-layout.css" />
-  <link rel="stylesheet" href="../../css/top-nav.css" />
-  <link rel="stylesheet" href="../../css/animations.css" />
+  <link rel="stylesheet" href="../../css/dc-global-theme.css?v=3.3.0" />
+  <link rel="stylesheet" href="../../css/top-nav.css?v=3.3.0" />
   <link rel="stylesheet" href="./doc-request.css" />
-  
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <script src="../../js/theme-engine.js"></script>
+
+  <!-- Global Dynamic Island & Navigation Engine -->
+  <script src="../../js/dc-dynamic-island.js?v=3.3.0"></script>
+
+  <style>
+    .doc-page-container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 24px 0 60px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .top-bar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 8px;
+    }
+
+    .top-bar-title {
+      font-size: 1.85rem;
+      font-weight: 800;
+      color: var(--text-heading);
+      letter-spacing: -0.02em;
+      margin: 0;
+    }
+
+    .top-bar-sub {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+      font-weight: 500;
+    }
+
+    .grid-dashboard {
+      display: grid;
+      grid-template-columns: 1.15fr 1fr;
+      gap: 24px;
+    }
+
+    @media (max-width: 960px) {
+      .grid-dashboard {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .neu-card {
+      background: var(--surface-card);
+      backdrop-filter: blur(28px) saturate(180%);
+      -webkit-backdrop-filter: blur(28px) saturate(180%);
+      border: 1px solid var(--border-card);
+      outline: 1px solid var(--border-card-outer);
+      border-radius: var(--radius-2xl);
+      box-shadow: var(--shadow-card);
+      padding: 30px 32px;
+      position: relative;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 22px;
+      border-bottom: 1px solid var(--border-divider);
+      padding-bottom: 14px;
+    }
+
+    .section-title {
+      font-size: 1.18rem;
+      font-weight: 800;
+      color: var(--text-heading);
+      margin: 0;
+    }
+
+    .neu-input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+
+    .neu-input-label {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text-heading);
+      letter-spacing: 0.02em;
+    }
+
+    .neu-input {
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: var(--radius-md);
+      background: var(--surface-raised);
+      border: 1px solid var(--border-card);
+      color: var(--text-main);
+      font-size: 0.90rem;
+      font-family: var(--font-sans);
+      outline: none;
+      transition: all 0.2s ease;
+      box-sizing: border-box;
+    }
+
+    .neu-input:focus {
+      border-color: var(--brand-accent);
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.18);
+    }
+
+    .btn-submit-doc {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 13px 20px;
+      border-radius: var(--radius-pill);
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: #ffffff;
+      border: none;
+      font-size: 0.90rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 8px 24px rgba(16, 185, 129, 0.35);
+      transition: all 0.25s ease;
+      margin-top: 8px;
+    }
+
+    .btn-submit-doc:hover {
+      filter: brightness(1.08);
+      transform: translateY(-1px);
+      box-shadow: 0 12px 28px rgba(16, 185, 129, 0.45);
+    }
+
+    .btn-refresh {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: var(--radius-pill);
+      background: var(--surface-raised);
+      border: 1px solid var(--border-card);
+      color: var(--brand-primary);
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-refresh:hover {
+      background: var(--brand-primary-tint);
+      border-color: var(--brand-accent);
+    }
+
+    .doc-status-card {
+      background: var(--surface-raised);
+      border: 1px solid var(--border-card);
+      border-radius: var(--radius-lg);
+      padding: 18px 20px;
+      margin-bottom: 14px;
+      transition: all 0.2s ease;
+    }
+
+    .doc-status-card:hover {
+      border-color: var(--brand-accent);
+      transform: translateY(-2px);
+    }
+
+    .otp-box {
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      text-align: center;
+      margin-top: 12px;
+    }
+
+    .otp-label {
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: var(--brand-accent);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .otp-code {
+      font-family: var(--font-mono);
+      font-size: 1.6rem;
+      font-weight: 900;
+      letter-spacing: 5px;
+      color: var(--brand-accent);
+      display: block;
+    }
+  </style>
 </head>
 <body class="student-portal-body">
+
   <div class="portal-viewport-wrapper">
-    
-    <!-- 1. UNIVERSAL TOP FLOATING CAPSULE NAVIGATION -->
-    <header class="top-nav-capsule-container">
-      <nav class="capsule-nav" aria-label="Campus Connect Navigation">
-        
-        <!-- Brand / Institution Emblem -->
-        <a href="dashboard.html" class="capsule-brand" title="Campus Connect">
-          <div class="brand-emblem-badge">
-            <img 
-              src="/assets/images/samskruti-logo-blue.png" 
-              alt="Campus Connect Logo" 
-              class="brand-logo-img"
-            />
-          </div>
-          <span class="brand-title">CAMPUS <span class="accent-text">CONNECT</span></span>
-        </a>
-
-        <div class="nav-divider"></div>
-
-        <!-- Working Navigation Links -->
-        <div class="capsule-menu-items">
-          <a href="dashboard.html" class="nav-item" data-page="dashboard">
-            <i data-lucide="layout-dashboard" class="nav-icon"></i>
-            <span>Dashboard</span>
-          </a>
-          
-          <a href="attendance.html" class="nav-item" data-page="attendance">
-            <i data-lucide="calendar-check" class="nav-icon"></i>
-            <span>Attendance</span>
-          </a>
-
-          <a href="results.html" class="nav-item" data-page="results">
-            <i data-lucide="graduation-cap" class="nav-icon"></i>
-            <span>Results</span>
-          </a>
-
-          <a href="idea-hub.html" class="nav-item" data-page="idea-hub">
-            <i data-lucide="lightbulb" class="nav-icon"></i>
-            <span>Idea Hub</span>
-          </a>
-
-          <a href="marketplace.html" class="nav-item" data-page="marketplace">
-            <i data-lucide="shopping-bag" class="nav-icon"></i>
-            <span>Marketplace</span>
-          </a>
-
-          <a href="messages.html" class="nav-item" data-page="messages">
-            <i data-lucide="message-square" class="nav-icon"></i>
-            <span>Messages</span>
-          </a>
-
-          <a href="document-logistics.html" class="nav-item active" data-page="document-logistics">
-            <i data-lucide="file-text" class="nav-icon"></i>
-            <span>Requests</span>
-          </a>
-
-          <a href="profile.html" class="nav-item" data-page="profile">
-            <i data-lucide="user" class="nav-icon"></i>
-            <span>Profile</span>
-          </a>
-        </div>
-
-        <!-- Capsule Controls -->
-        <div class="capsule-actions">
-          <button id="theme-toggle-btn" class="util-btn" title="Toggle Theme" aria-label="Toggle Theme">
-            <i data-lucide="sun" class="nav-icon"></i>
-          </button>
-          <a href="/screens/01-auth/login.html" class="util-btn logout" title="Sign Out" aria-label="Sign Out">
-            <i data-lucide="log-out" class="nav-icon"></i>
-          </a>
-        </div>
-
-      </nav>
-    </header>
-
     <main class="main-content">
-      
-      <header class="top-bar">
-        <div class="welcome-text">
-          <h1>Document Logistics & Counter Pickup</h1>
-          <p id="doc-student-meta">Samskruti College (Code: 259) • Direct HOD Approval & Counter OTP Verification</p>
-        </div>
-        <div class="top-bar-actions">
-          <button class="neu-btn" id="refresh-docs-btn">
-            <i data-lucide="refresh-cw" class="w-4 h-4"></i>
-            Refresh Status
-          </button>
-        </div>
-      </header>
+      <div class="doc-page-container">
 
-      <div class="grid-dashboard">
-        
-        <!-- Left: Raise New Document Request -->
-        <div class="neu-card">
-          <div class="section-header">
-            <h2 class="section-title">New Certificate Request</h2>
+        <!-- Top Title Bar -->
+        <header class="top-bar-header">
+          <div>
+            <h1 class="top-bar-title">Document Logistics &amp; Counter Pickup</h1>
+            <p class="top-bar-sub" id="doc-student-meta">Samskruti College (Code: 259) • Direct HOD Queue &amp; Counter OTP Verification</p>
           </div>
-
-          <form id="doc-request-form" class="doc-form">
-            <div class="neu-input-group">
-              <label class="neu-input-label" for="doc-type">Document Type</label>
-              <select class="neu-input" id="doc-type" required>
-                <option value="BONAFIDE">Bonafide Certificate (Scholarship / Bank)</option>
-                <option value="CUSTODIAN">Custodian Certificate (Originals Verification)</option>
-                <option value="NO_OBJECTION">No Objection Certificate (NOC for Internship)</option>
-                <option value="TRANSCRIPT">Official Academic Transcript</option>
-                <option value="CUSTOM">Custom Document Request</option>
-              </select>
-            </div>
-
-            <!-- Expandable Custom Document Fields -->
-            <div id="custom-doc-fields" style="display: none;" class="custom-fields-panel">
-              <div class="neu-input-group">
-                <label class="neu-input-label" for="custom-doc-title">Custom Document Title</label>
-                <input type="text" class="neu-input" id="custom-doc-title" placeholder="Specific Certificate / Document Name" />
-              </div>
-
-              <div class="neu-input-group">
-                <label class="neu-input-label" for="custom-doc-format">Required Format & Medium</label>
-                <select class="neu-input" id="custom-doc-format">
-                  <option value="Official College Letterhead with Seal">Official College Letterhead with Seal</option>
-                  <option value="Printed Certificate on Stamped Bond">Printed Certificate on Stamped Bond</option>
-                  <option value="Digital Verified PDF Copy">Digital Verified PDF Copy</option>
-                  <option value="HOD Attested Copy">HOD Attested Copy</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="neu-input-group">
-              <label class="neu-input-label" for="doc-purpose">Purpose of Request</label>
-              <textarea class="neu-input" id="doc-purpose" rows="3" placeholder="State reason (State Post-Matric Scholarship / Passport Office / Internship Clearance)" required></textarea>
-            </div>
-
-            <div class="neu-input-group">
-              <label class="neu-input-label" for="doc-copies">Copies Needed</label>
-              <input type="number" class="neu-input" id="doc-copies" min="1" max="5" value="1" required />
-            </div>
-
-            <button type="submit" class="neu-btn neu-btn-primary" id="doc-submit-btn" style="margin-top: 10px;">
-              Submit to Department HOD for Approval
+          <div>
+            <button type="button" class="btn-refresh" id="refresh-docs-btn">
+              <i data-lucide="refresh-cw" style="width: 15px; height: 15px;"></i>
+              <span>Refresh Status</span>
             </button>
-          </form>
-        </div>
+          </div>
+        </header>
 
-        <!-- Right: Active Requests & Pickup OTP Cards -->
-        <div class="side-column">
+        <!-- Two Column Workspace -->
+        <div class="grid-dashboard">
+          
+          <!-- Left: Raise New Document Request -->
           <div class="neu-card">
             <div class="section-header">
-              <h2 class="section-title">Active Requests Queue</h2>
+              <h2 class="section-title">New Certificate Request</h2>
+              <span class="neu-badge neu-badge-primary">HOD Direct Queue</span>
             </div>
-            
-            <div class="active-doc-list" id="active-doc-list">
-              <!-- Dynamically populated states: Approved with OTP, Declined with reason, Pending, No requests -->
+
+            <form id="doc-request-form" class="doc-form">
+              <div class="neu-input-group">
+                <label class="neu-input-label" for="doc-type">Document Type</label>
+                <select class="neu-input" id="doc-type" required>
+                  <option value="BONAFIDE">Bonafide Certificate (Scholarship / Bank)</option>
+                  <option value="CUSTODIAN">Custodian Certificate (Originals Verification)</option>
+                  <option value="NO_OBJECTION">No Objection Certificate (NOC for Internship)</option>
+                  <option value="TRANSCRIPT">Official Academic Transcript</option>
+                  <option value="CAPSTONE_PROJECT">Capstone / Innovation Project Incubation Approval</option>
+                  <option value="CUSTOM">Custom Document Request</option>
+                </select>
+              </div>
+
+              <!-- Custom Document Fields (Expandable) -->
+              <div id="custom-doc-fields" style="display: none; flex-direction: column; gap: 14px; margin-bottom: 14px;">
+                <div class="neu-input-group">
+                  <label class="neu-input-label" for="custom-doc-title">Custom Document Title</label>
+                  <input type="text" class="neu-input" id="custom-doc-title" placeholder="Specific Certificate / Document Name" />
+                </div>
+                <div class="neu-input-group">
+                  <label class="neu-input-label" for="custom-doc-format">Required Format &amp; Medium</label>
+                  <select class="neu-input" id="custom-doc-format">
+                    <option value="Official College Letterhead with Seal">Official College Letterhead with Seal</option>
+                    <option value="Printed Certificate on Stamped Bond">Printed Certificate on Stamped Bond</option>
+                    <option value="Digital Verified PDF Copy">Digital Verified PDF Copy</option>
+                    <option value="HOD Attested Copy">HOD Attested Copy</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="neu-input-group">
+                <label class="neu-input-label" for="doc-purpose">Purpose of Request</label>
+                <textarea class="neu-input" id="doc-purpose" rows="3" placeholder="State reason for certificate request (e.g., Scholarship, Internship NOC, or higher studies)..." required></textarea>
+              </div>
+
+              <div class="neu-input-group">
+                <label class="neu-input-label" for="doc-copies">Copies Needed</label>
+                <input type="number" class="neu-input" id="doc-copies" min="1" max="5" value="1" required />
+              </div>
+
+              <button type="submit" class="btn-submit-doc" id="doc-submit-btn">
+                <i data-lucide="send" style="width: 16px; height: 16px;"></i>
+                <span>Submit to Department HOD for Approval</span>
+              </button>
+            </form>
+          </div>
+
+          <!-- Right: Active Requests & Pickup OTP Cards -->
+          <div class="side-column">
+            <div class="neu-card">
+              <div class="section-header">
+                <h2 class="section-title">Active Requests &amp; Pickup OTP</h2>
+                <span class="neu-badge neu-badge-success">Live Status</span>
+              </div>
+              
+              <div class="active-doc-list" id="active-doc-list">
+                <!-- Dynamically populated via doc-request.js -->
+              </div>
             </div>
           </div>
+
         </div>
 
       </div>
-
     </main>
   </div>
 
-  <script type="module" src="../../js/top-nav.js"></script>
   <script type="module" src="./doc-request.js"></script>
 </body>
 </html>

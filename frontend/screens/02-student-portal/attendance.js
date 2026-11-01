@@ -15,7 +15,7 @@ let currentSelectedMonth = 'august';
 window.ACTIVE_MONTHLY_LOGS = {};
 
 const DEFAULT_ATTENDANCE_DATA = {
-  pin: '24259-CS-039',
+  pin: (localStorage.getItem('student_pin') || '24259-CS-040'),
   name: 'KAKARLA RAKESH',
   scheme: 'C-24',
   branch: 'Computer Science & Engineering',
@@ -61,7 +61,7 @@ async function hydrateStudentIdentity() {
     localStorage.getItem('student_pin') ||
     sessionUser.sbtetPin ||
     sessionUser.rollNumber ||
-    '24259-CS-039'
+    (localStorage.getItem('student_pin') || '24259-CS-040')
   ).trim().toUpperCase();
 
   let storedUser = null;
@@ -71,7 +71,7 @@ async function hydrateStudentIdentity() {
     storedUser = {};
   }
 
-  let studentName = storedUser.name || sessionUser.name || '';
+  let studentName = (typeof window.dcGetActiveUser === 'function' ? window.dcGetActiveUser().name : null) || storedUser.name || sessionUser.name || localStorage.getItem('user_name') || 'Tallapalli Tulasi Ram Goud';
   if (!studentName || studentName.includes('Roll #') || studentName.toLowerCase().startsWith('student')) {
     try {
       const res = await api.get(`/auth/student-key?pin=${encodeURIComponent(activePin)}`);
@@ -83,12 +83,12 @@ async function hydrateStudentIdentity() {
     }
   }
 
-  if (!studentName || studentName.includes('Roll #') || studentName.toLowerCase().startsWith('student')) {
-    if (activePin === '24259-CS-039') studentName = 'KAKARLA RAKESH';
-    else if (activePin === '24259-CS-037') studentName = 'EDAMANAPALLY SAMISAAC';
-    else if (activePin === '24259-CS-001') studentName = 'GONA LAXMI NARASIMHA SWAMI';
-    else if (activePin === '24259-CS-025') studentName = 'KARNATI HIMESH';
-    else if (activePin.includes('119')) studentName = 'KARNATI HITESH';
+  const activeUser = typeof window.dcGetActiveUser === 'function' ? window.dcGetActiveUser() : null;
+  if (!studentName && activeUser && activeUser.name) {
+    studentName = activeUser.name;
+  }
+  if (!studentName) {
+    studentName = 'Tallapalli Tulasi Ram Goud';
   }
 
   // Update DOM identity elements
@@ -126,7 +126,7 @@ async function triggerAttendanceSync(showToasts = true) {
     urlParams.get('pin') ||
     localStorage.getItem('student_pin') ||
     sessionUser.sbtetPin ||
-    '24259-CS-039'
+    (localStorage.getItem('student_pin') || '24259-CS-040')
   ).trim().toUpperCase();
 
   const syncBtn = document.getElementById('re-sync-trigger');
@@ -185,9 +185,9 @@ function renderAttendanceTrendChart(chartData) {
 
   const ctx = canvas.getContext('2d');
   const gradient = ctx.createLinearGradient(0, 0, 0, 240);
-  gradient.addColorStop(0, 'rgba(37, 99, 235, 0.22)');
-  gradient.addColorStop(0.7, 'rgba(37, 99, 235, 0.05)');
-  gradient.addColorStop(1, 'rgba(37, 99, 235, 0.0)');
+  gradient.addColorStop(0, 'rgba(16, 185, 129, 0.45)');
+  gradient.addColorStop(0.7, 'rgba(16, 185, 129, 0.12)');
+  gradient.addColorStop(1, 'rgba(16, 185, 129, 0.0)');
 
   if (attendanceChartInstance) {
     attendanceChartInstance.destroy();
@@ -216,7 +216,7 @@ function renderAttendanceTrendChart(chartData) {
         chartCtx.moveTo(x, y);
         chartCtx.lineTo(x, bottomY);
         chartCtx.lineWidth = 1.5;
-        chartCtx.strokeStyle = 'rgba(100, 116, 139, 0.4)';
+        chartCtx.strokeStyle = 'rgba(110, 231, 183, 0.45)';
         chartCtx.stroke();
         chartCtx.restore();
       }
@@ -231,23 +231,23 @@ function renderAttendanceTrendChart(chartData) {
         {
           label: 'Monthly Attendance %',
           data: values,
-          borderColor: '#2563eb',
+          borderColor: '#10b981',
           backgroundColor: gradient,
           borderWidth: 3,
           fill: true,
           tension: 0.45, // Smooth graceful spline waves
-          pointBackgroundColor: '#2563eb',
+          pointBackgroundColor: '#34d399',
           pointBorderColor: '#ffffff',
           pointBorderWidth: 2,
-          pointRadius: (ctx) => (ctx.dataIndex === 3 ? 5 : 3),
-          pointHoverRadius: 6,
-          pointHoverBackgroundColor: '#2563eb',
+          pointRadius: (ctx) => (ctx.dataIndex === 3 ? 6 : 4),
+          pointHoverRadius: 7,
+          pointHoverBackgroundColor: '#10b981',
           pointHoverBorderColor: '#ffffff'
         },
         {
           label: '75% Mandatory Line',
           data: targetLine,
-          borderColor: '#475569',
+          borderColor: '#34d399',
           borderWidth: 1.5,
           borderDash: [5, 5],
           pointRadius: 0,
@@ -267,12 +267,12 @@ function renderAttendanceTrendChart(chartData) {
           min: 0,
           max: 100,
           grid: {
-            color: 'rgba(226, 232, 240, 0.8)',
+            color: 'rgba(110, 231, 183, 0.12)',
             borderDash: [4, 4],
             drawBorder: false
           },
           ticks: {
-            color: '#94a3b8',
+            color: '#a7d9be',
             font: { family: 'Urbanist', size: 11, weight: '600' },
             stepSize: 10,
             callback: (v) => `${v}%`
@@ -284,7 +284,7 @@ function renderAttendanceTrendChart(chartData) {
             drawBorder: false
           },
           ticks: {
-            color: '#64748b',
+            color: '#a7d9be',
             font: { family: 'Urbanist', size: 12, weight: '600' }
           }
         }
@@ -292,15 +292,19 @@ function renderAttendanceTrendChart(chartData) {
       plugins: {
         legend: { display: false },
         tooltip: {
-          backgroundColor: '#2563eb',
+          backgroundColor: 'rgba(3, 26, 17, 0.94)',
+          borderColor: 'rgba(16, 185, 129, 0.45)',
+          borderWidth: 1,
           titleFont: { family: 'Urbanist', weight: '700', size: 12 },
           bodyFont: { family: 'Urbanist', weight: '700', size: 12 },
-          padding: { top: 6, bottom: 6, left: 14, right: 14 },
-          cornerRadius: 9999, // Floating pill tooltip
+          titleColor: '#a7f3d0',
+          bodyColor: '#ffffff',
+          padding: { top: 8, bottom: 8, left: 14, right: 14 },
+          cornerRadius: 12,
           displayColors: false,
           callbacks: {
-            title: () => '',
-            label: (ctx) => `${ctx.label.slice(0, 4)} ${Number(ctx.parsed.y).toFixed(2)}`
+            title: (items) => items[0]?.label || '',
+            label: (ctx) => `Attendance: ${Number(ctx.parsed.y).toFixed(2)}%`
           }
         }
       }

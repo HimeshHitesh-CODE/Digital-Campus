@@ -56,7 +56,7 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.65rem 1.4rem;
-  background: #2563eb;
+  background: #10b981;
   border: none;
   border-radius: 9999px;
   color: #ffffff !important;
@@ -64,7 +64,7 @@
   font-size: 0.85rem;
   font-weight: 700;
   cursor: pointer;
-  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
   transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
               box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1),
               background-color 0.2s ease;
@@ -72,8 +72,8 @@
 
 .btn-resync-pill:hover {
   transform: translateY(-1px);
-  background: #1d4ed8;
-  box-shadow: 0 8px 22px rgba(37, 99, 235, 0.45);
+  background: #059669;
+  box-shadow: 0 8px 22px rgba(16, 185, 129, 0.45);
 }
 
 .btn-resync-pill:active {
@@ -149,7 +149,7 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #2563eb;
+  background: #10b981;
   display: inline-block;
 }
 
@@ -223,7 +223,7 @@
 
 .student-pin-badge {
   display: inline-block;
-  background: #2563eb;
+  background: #10b981;
   color: #ffffff;
   border-radius: 9999px;
   padding: 2px 10px;
@@ -373,7 +373,7 @@
 
 .gauge-progress {
   fill: none;
-  stroke: #2563eb;
+  stroke: #10b981;
   stroke-width: 12;
   stroke-linecap: round;
   stroke-dasharray: 502.6;
@@ -382,7 +382,7 @@
 }
 
 .gauge-progress.danger-stroke {
-  stroke: #2563eb;
+  stroke: #10b981;
 }
 
 .gauge-readout-centered {
@@ -492,7 +492,7 @@
   align-items: center;
   justify-content: center;
   border: 1px solid #e2e8f0;
-  color: #2563eb;
+  color: #10b981;
   flex-shrink: 0;
 }
 
@@ -622,7 +622,7 @@
 
 .kpi-card.success-accent { border-top: 3px solid #10b981; }
 .kpi-card.danger-accent { border-top: 3px solid #ef4444; }
-.kpi-card.primary-accent { border-top: 3px solid #2563eb; }
+.kpi-card.primary-accent { border-top: 3px solid #10b981; }
 
 /* ==========================================================================
    6. CALENDAR ENGINE (AUTHENTIC 7-COLUMN MATRIX)
@@ -716,9 +716,9 @@
 }
 
 .month-pill-btn.active {
-  background: #2563eb;
+  background: #10b981;
   color: #ffffff;
-  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.35);
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.35);
 }
 
 .calendar-week-header {

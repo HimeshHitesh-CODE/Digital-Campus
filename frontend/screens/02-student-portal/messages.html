@@ -3,191 +3,357 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Messages & Campus Chat • Samskruti Digital Campus</title>
+  <title>Messages &amp; Campus Chat | Samskruti College (Code: 259)</title>
 
-  <!-- Base & Neumorphic Styles -->
+  <!-- Typography & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Urbanist:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,600&family=JetBrains+Mono:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Master Design System Stylesheets -->
   <link rel="stylesheet" href="../../css/reset.css" />
   <link rel="stylesheet" href="../../css/theme-tokens.css" />
-  <link rel="stylesheet" href="../../css/global-layout.css" />
-  <link rel="stylesheet" href="../../css/top-nav.css" />
-  <link rel="stylesheet" href="../../css/animations.css" />
+  <link rel="stylesheet" href="../../css/dc-global-theme.css?v=3.3.0" />
+  <link rel="stylesheet" href="../../css/top-nav.css?v=3.3.0" />
   <link rel="stylesheet" href="./messages.css" />
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <script src="../../js/theme-engine.js"></script>
+
+  <!-- Global Dynamic Island & Navigation Engine -->
+  <script src="../../js/dc-dynamic-island.js?v=3.3.0"></script>
+
+  <style>
+    .messages-page-container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 24px 0 60px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      height: calc(100vh - 120px);
+      min-height: 600px;
+    }
+
+    .top-bar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .top-bar-title {
+      font-size: 1.85rem;
+      font-weight: 800;
+      color: var(--text-heading);
+      letter-spacing: -0.02em;
+      margin: 0;
+    }
+
+    .top-bar-sub {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+      font-weight: 500;
+    }
+
+    .messenger-wrapper {
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 20px;
+      flex: 1;
+      min-height: 0; /* Enable internal scrolling */
+    }
+
+    @media (max-width: 900px) {
+      .messenger-wrapper {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .threads-panel,
+    .active-chat-panel {
+      background: var(--surface-card);
+      backdrop-filter: blur(28px) saturate(180%);
+      -webkit-backdrop-filter: blur(28px) saturate(180%);
+      border: 1px solid var(--border-card);
+      outline: 1px solid var(--border-card-outer);
+      border-radius: var(--radius-2xl);
+      box-shadow: var(--shadow-card);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .threads-header {
+      padding: 20px;
+      border-bottom: 1px solid var(--border-divider);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .threads-header h2 {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--text-heading);
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .thread-filter-tabs {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+
+    .thread-filter-btn {
+      padding: 5px 12px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border-card);
+      background: var(--surface-raised);
+      color: var(--text-muted);
+      font-size: 0.76rem;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+
+    .thread-filter-btn:hover,
+    .thread-filter-btn.active {
+      background: var(--brand-primary-tint);
+      color: var(--brand-primary);
+      border-color: var(--brand-accent);
+    }
+
+    .thread-search-wrap {
+      position: relative;
+    }
+
+    .thread-search-input {
+      width: 100%;
+      padding: 9px 12px 9px 34px;
+      border-radius: var(--radius-pill);
+      background: var(--surface-raised);
+      border: 1px solid var(--border-card);
+      color: var(--text-main);
+      font-size: 0.82rem;
+      outline: none;
+      box-sizing: border-box;
+    }
+
+    .thread-search-icon {
+      position: absolute;
+      left: 11px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 14px;
+      height: 14px;
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+
+    .threads-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .thread-item {
+      padding: 12px 14px;
+      border-radius: var(--radius-lg);
+      background: var(--surface-raised);
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .thread-item:hover,
+    .thread-item.active {
+      background: var(--brand-primary-tint);
+      border-color: var(--brand-accent);
+    }
+
+    .active-chat-panel {
+      padding: 0;
+      position: relative;
+    }
+
+    .chat-header {
+      padding: 16px 22px;
+      border-bottom: 1px solid var(--border-divider);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--surface-card);
+    }
+
+    .chat-messages-viewport {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .chat-composer-bar {
+      padding: 14px 20px;
+      border-top: 1px solid var(--border-divider);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--surface-card);
+    }
+
+    .chat-composer-input {
+      flex: 1;
+      padding: 12px 18px;
+      border-radius: var(--radius-pill);
+      background: var(--surface-raised);
+      border: 1px solid var(--border-card);
+      color: var(--text-main);
+      font-size: 0.88rem;
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+
+    .chat-composer-input:focus {
+      border-color: var(--brand-accent);
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.16);
+    }
+
+    .chat-send-btn {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: #ffffff;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .chat-send-btn:hover {
+      transform: scale(1.05);
+    }
+  </style>
 </head>
 <body class="student-portal-body">
+
   <div class="portal-viewport-wrapper">
-    
-    <!-- 1. UNIVERSAL TOP FLOATING CAPSULE NAVIGATION -->
-    <header class="top-nav-capsule-container">
-      <nav class="capsule-nav" aria-label="Campus Connect Navigation">
-        
-        <!-- Brand / Institution Emblem -->
-        <a href="dashboard.html" class="capsule-brand" title="Campus Connect">
-          <div class="brand-emblem-badge">
-            <img 
-              src="/assets/images/samskruti-logo-blue.png" 
-              alt="Campus Connect Logo" 
-              class="brand-logo-img"
-            />
-          </div>
-          <span class="brand-title">CAMPUS <span class="accent-text">CONNECT</span></span>
-        </a>
-
-        <div class="nav-divider"></div>
-
-        <!-- Working Navigation Links -->
-        <div class="capsule-menu-items">
-          <a href="dashboard.html" class="nav-item" data-page="dashboard">
-            <i data-lucide="layout-dashboard" class="nav-icon"></i>
-            <span>Dashboard</span>
-          </a>
-          
-          <a href="attendance.html" class="nav-item" data-page="attendance">
-            <i data-lucide="calendar-check" class="nav-icon"></i>
-            <span>Attendance</span>
-          </a>
-
-          <a href="results.html" class="nav-item" data-page="results">
-            <i data-lucide="graduation-cap" class="nav-icon"></i>
-            <span>Results</span>
-          </a>
-
-          <a href="idea-hub.html" class="nav-item" data-page="idea-hub">
-            <i data-lucide="lightbulb" class="nav-icon"></i>
-            <span>Idea Hub</span>
-          </a>
-
-          <a href="marketplace.html" class="nav-item" data-page="marketplace">
-            <i data-lucide="shopping-bag" class="nav-icon"></i>
-            <span>Marketplace</span>
-          </a>
-
-          <a href="messages.html" class="nav-item active" data-page="messages">
-            <i data-lucide="message-square" class="nav-icon"></i>
-            <span>Messages</span>
-          </a>
-
-          <a href="document-logistics.html" class="nav-item" data-page="document-logistics">
-            <i data-lucide="file-text" class="nav-icon"></i>
-            <span>Requests</span>
-          </a>
-
-          <a href="profile.html" class="nav-item" data-page="profile">
-            <i data-lucide="user" class="nav-icon"></i>
-            <span>Profile</span>
-          </a>
-        </div>
-
-        <!-- Capsule Controls -->
-        <div class="capsule-actions">
-          <button id="theme-toggle-btn" class="util-btn" title="Toggle Theme" aria-label="Toggle Theme">
-            <i data-lucide="sun" class="nav-icon"></i>
-          </button>
-          <a href="/screens/01-auth/login.html" class="util-btn logout" title="Sign Out" aria-label="Sign Out">
-            <i data-lucide="log-out" class="nav-icon"></i>
-          </a>
-        </div>
-
-      </nav>
-    </header>
-
     <main class="main-content">
-      <!-- Top Title Bar -->
-      <header class="content-header" style="margin-bottom: 0;">
-        <div class="header-titles">
-          <div class="subtitle" id="messages-subtitle">Samskruti College (259) • Real-Time Student Messenger</div>
-          <h1 class="title">Campus Messages & Threads</h1>
-        </div>
-      </header>
+      <div class="messages-page-container">
 
-      <!-- Split-Pane Messenger Layout -->
-      <div class="messenger-wrapper">
-        <!-- Left Panel: Conversations Threads List -->
-        <aside class="neu-card threads-panel">
-          <div class="threads-header">
-            <h2>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-              <span>Conversations</span>
-            </h2>
+        <!-- Top Title Header -->
+        <header class="top-bar-header">
+          <div>
+            <h1 class="top-bar-title">Campus Messages &amp; Peer Threads</h1>
+            <p class="top-bar-sub" id="messages-subtitle">Samskruti College (Code: 259) • Real-Time Unified Student Messenger</p>
+          </div>
+        </header>
 
-            <!-- Filter Tabs -->
-            <div class="thread-filter-tabs" id="thread-filter-bar">
-              <button class="thread-filter-btn active" data-filter="ALL">All</button>
-              <button class="thread-filter-btn" data-filter="IDEA_HUB">💡 Idea Hub</button>
-              <button class="thread-filter-btn" data-filter="MARKETPLACE">🛍️ Market</button>
-              <button class="thread-filter-btn" data-filter="DIRECT">💬 Direct</button>
+        <!-- Split-Pane Messenger Layout -->
+        <div class="messenger-wrapper">
+          
+          <!-- Left Panel: Conversations Threads List -->
+          <aside class="threads-panel">
+            <div class="threads-header">
+              <h2>
+                <i data-lucide="message-square" style="width: 18px; height: 18px; color: var(--brand-accent);"></i>
+                <span>Conversations</span>
+              </h2>
+
+              <!-- Filter Tabs -->
+              <div class="thread-filter-tabs" id="thread-filter-bar">
+                <button class="thread-filter-btn active" data-filter="ALL">All</button>
+                <button class="thread-filter-btn" data-filter="DIRECT">💬 Direct &amp; HOD</button>
+                <button class="thread-filter-btn" data-filter="IDEA_HUB">💡 Idea Hub</button>
+                <button class="thread-filter-btn" data-filter="MARKETPLACE">🛍️ Market</button>
+              </div>
+
+              <!-- Search input -->
+              <div class="thread-search-wrap">
+                <i data-lucide="search" class="thread-search-icon"></i>
+                <input type="text" id="thread-search-input" class="thread-search-input" placeholder="Search conversations..." />
+              </div>
             </div>
 
-            <!-- Search input -->
-            <div class="thread-search-wrap">
-              <svg class="thread-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-              <input type="text" id="thread-search-input" class="thread-search-input" placeholder="Search conversations by student or item..." />
+            <!-- Active Threads Container -->
+            <div class="threads-list" id="threads-container">
+              <!-- Rendered dynamically via messages.js -->
             </div>
-          </div>
+          </aside>
 
-          <!-- Active Threads Container -->
-          <div class="threads-list" id="threads-container">
-            <!-- Rendered dynamically -->
-          </div>
-        </aside>
-
-        <!-- Right Panel: Active Chat Stream -->
-        <section class="neu-card active-chat-panel" id="active-chat-container">
-          <!-- Default Empty State Placeholder when no thread is selected -->
-          <div class="empty-chat-placeholder" id="empty-chat-view">
-            <div class="empty-state-icon">
-              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+          <!-- Right Panel: Active Chat Stream -->
+          <section class="active-chat-panel" id="active-chat-container">
+            
+            <!-- Default Empty State -->
+            <div class="empty-chat-placeholder" id="empty-chat-view" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; padding: 40px; text-align: center;">
+              <div style="width: 64px; height: 64px; border-radius: 50%; background: var(--brand-primary-tint); display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
+                <i data-lucide="message-circle" style="width: 32px; height: 32px; color: var(--brand-accent);"></i>
+              </div>
+              <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--text-heading); margin: 0 0 6px;">Select a Conversation</h3>
+              <p style="font-size: 0.88rem; color: var(--text-muted); max-width: 360px; line-height: 1.5; margin: 0;">
+                Choose a conversation on the left or connect with peers directly through Idea Hub, Marketplace, and Faculty Mentors.
+              </p>
             </div>
-            <h3 style="font-size: 1.1rem; font-weight: 800; color: var(--text-main); margin-top: 10px;">Select a Conversation</h3>
-            <p style="font-size: 0.85rem; color: var(--text-muted); max-width: 300px; margin-top: 6px;">
-              Choose a thread on the left or connect with peers directly through Idea Hub and Marketplace.
-            </p>
-          </div>
 
-          <!-- Active Chat View (Hidden until thread selected) -->
-          <div id="live-chat-view" style="display: none; flex-direction: column; height: 100%;">
-            <!-- Header -->
-            <div class="chat-header">
-              <div class="chat-peer-profile">
-                <div class="chat-peer-avatar" id="active-peer-avatar">SP</div>
-                <div>
-                  <h3 class="chat-peer-title" id="active-peer-name">Peer Name</h3>
-                  <span class="chat-peer-sub" id="active-peer-sub">PIN: 24259-CS-XXX</span>
+            <!-- Active Chat View (Shown when thread selected) -->
+            <div id="live-chat-view" style="display: none; flex-direction: column; height: 100%;">
+              
+              <!-- Chat Header -->
+              <div class="chat-header">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                  <div class="chat-peer-avatar" id="active-peer-avatar" style="width: 38px; height: 38px; border-radius: 50%; background: var(--brand-primary-tint); color: var(--brand-primary); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.88rem;">SP</div>
+                  <div>
+                    <h3 class="chat-peer-title" id="active-peer-name" style="font-size: 0.98rem; font-weight: 800; color: var(--text-heading); margin: 0;">Peer Name</h3>
+                    <span class="chat-peer-sub" id="active-peer-sub" style="font-size: 0.78rem; color: var(--text-muted);">PIN: 24259-CS-XXX</span>
+                  </div>
+                </div>
+
+                <div class="chat-context-pill" id="active-context-badge" style="font-size: 0.75rem; font-weight: 700; color: var(--brand-primary); background: var(--brand-primary-tint); padding: 4px 12px; border-radius: 9999px;">
+                  <span id="context-badge-icon">💬</span>
+                  <span id="context-badge-text">Direct Message</span>
                 </div>
               </div>
 
-              <!-- Context Badge (Collab or Marketplace) -->
-              <div class="chat-context-pill" id="active-context-badge">
-                <span id="context-badge-icon">💡</span>
-                <span id="context-badge-text">Collab: Web Project</span>
+              <!-- Message Stream Viewport -->
+              <div class="chat-messages-viewport" id="active-messages-stream">
+                <!-- Rendered dynamically -->
               </div>
-            </div>
 
-            <!-- Message Stream -->
-            <div class="chat-messages-viewport" id="active-messages-stream">
-              <!-- Rendered dynamically -->
-            </div>
+              <!-- Composer Bar -->
+              <form id="chat-composer-form" class="chat-composer-bar">
+                <input type="text" id="chat-composer-input" class="chat-composer-input" placeholder="Type your message... (Press Enter to send)" autocomplete="off" />
+                <button type="submit" class="chat-send-btn" id="btn-send-message" title="Send Message">
+                  <i data-lucide="send" style="width: 17px; height: 17px;"></i>
+                </button>
+              </form>
 
-            <!-- Composer Bar -->
-            <form id="chat-composer-form" class="chat-composer-bar">
-              <input type="text" id="chat-composer-input" class="chat-composer-input" placeholder="Type your message... (Press Enter to send)" autocomplete="off" />
-              <button type="submit" class="neu-btn neu-btn-primary chat-send-btn" id="btn-send-message" title="Send Message">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-              </button>
-            </form>
-          </div>
-        </section>
+            </div>
+          </section>
+
+        </div>
+
       </div>
     </main>
   </div>
 
-  <!-- Toast Notification Container -->
-  <div class="alert-container" id="alert-container"></div>
-
-  <!-- Script Modules -->
-  <script type="module" src="../../js/theme.js"></script>
-  <script type="module" src="../../js/top-nav.js"></script>
   <script type="module" src="./messages.js"></script>
 </body>
 </html>

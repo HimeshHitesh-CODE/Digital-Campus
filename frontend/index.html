@@ -2,26 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta http-equiv="refresh" content="0; url=./screens/01-auth/login.html" />
-  <title>Samskruti Digital Campus | Redirecting...</title>
-  <script type="module">
-    import { api } from './js/api.js';
-    import { redirectToDefaultPortal } from './js/auth-guard.js';
-
-    const token = api.getToken();
-    const user = api.getUser();
-
-    if (token && user && user.role) {
-      redirectToDefaultPortal(user.role);
-    } else {
-      window.location.replace('./screens/01-auth/login.html');
-    }
+  <meta http-equiv="refresh" content="0; url=/screens/02-student-portal/dashboard.html" />
+  <title>Redirecting to Student Dashboard...</title>
+  <script>
+    window.location.replace('/screens/02-student-portal/dashboard.html');
   </script>
 </head>
-<body style="background: #E8ECF2; display: flex; align-items: center; justify-content: center; height: 100vh; font-family: system-ui, -apple-system, sans-serif; color: #4A5568;">
-  <div style="text-align: center;">
-    <h2>Samskruti College of Engineering & Technology (Code: 259)</h2>
-    <p style="margin-top: 8px; color: #718096;">Redirecting to Digital Campus Portal...</p>
-  </div>
+<body style="background: #020604; color: #f0fdf4; font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0;">
+  <p>Connecting to Campus Connect Dashboard...</p>
 </body>
 </html>

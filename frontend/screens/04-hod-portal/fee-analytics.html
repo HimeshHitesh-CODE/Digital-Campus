@@ -1,13 +1,408 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8" />
-  <meta http-equiv="refresh" content="0; url=./hod-dashboard.html" />
-  <title>Redirecting to HOD Dashboard...</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fee Collection &amp; Defaulter Analytics • HOD Console</title>
+
+  <!-- Typography & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Urbanist:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,600&family=JetBrains+Mono:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Master Design System Stylesheets -->
+  <link rel="stylesheet" href="../../css/reset.css" />
+  <link rel="stylesheet" href="../../css/theme-tokens.css" />
+  <link rel="stylesheet" href="../../css/dc-global-theme.css?v=3.3.0" />
+  <link rel="stylesheet" href="../../css/top-nav.css?v=3.3.0" />
+
+  <!-- Global Dynamic Island Engine -->
+  <script src="../../js/dc-dynamic-island.js?v=3.3.0"></script>
+
+  <style>
+    .analytics-page-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 24px 0 60px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .top-bar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .top-bar-title {
+      font-size: 1.85rem;
+      font-weight: 800;
+      color: var(--text-heading);
+      letter-spacing: -0.02em;
+      margin: 0;
+    }
+
+    .top-bar-sub {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+      font-weight: 500;
+    }
+
+    /* KPI Row */
+    .kpi-summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+    }
+
+    .kpi-card {
+      background: var(--surface-card);
+      backdrop-filter: blur(28px) saturate(180%);
+      -webkit-backdrop-filter: blur(28px) saturate(180%);
+      border: 1px solid var(--border-card);
+      outline: 1px solid var(--border-card-outer);
+      border-radius: var(--radius-xl);
+      padding: 22px 24px;
+      box-shadow: var(--shadow-card);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .kpi-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--text-muted);
+      font-size: 0.80rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .kpi-val {
+      font-size: 1.85rem;
+      font-weight: 900;
+      color: var(--text-heading);
+      font-family: var(--font-mono);
+      line-height: 1.1;
+    }
+
+    .kpi-sub {
+      font-size: 0.76rem;
+      color: var(--brand-accent);
+      font-weight: 600;
+    }
+
+    /* Circular progress ring card */
+    .ring-card-wrap {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .ring-svg-wrap {
+      width: 64px;
+      height: 64px;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .ring-svg {
+      transform: rotate(-90deg);
+      width: 100%;
+      height: 100%;
+    }
+
+    .ring-bg {
+      stroke: rgba(16, 185, 129, 0.15);
+      stroke-width: 5;
+      fill: none;
+    }
+
+    .ring-progress {
+      stroke: #10b981;
+      stroke-width: 5;
+      stroke-linecap: round;
+      fill: none;
+      transition: stroke-dashoffset 0.8s ease;
+    }
+
+    /* Table & Controls Section */
+    .table-container-card {
+      background: var(--surface-card);
+      backdrop-filter: blur(28px) saturate(180%);
+      -webkit-backdrop-filter: blur(28px) saturate(180%);
+      border: 1px solid var(--border-card);
+      outline: 1px solid var(--border-card-outer);
+      border-radius: var(--radius-2xl);
+      box-shadow: var(--shadow-card);
+      padding: 26px 28px;
+    }
+
+    .table-controls-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .filter-pills {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .filter-pill-btn {
+      padding: 7px 16px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border-card);
+      background: var(--surface-raised);
+      color: var(--text-muted);
+      font-size: 0.80rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .filter-pill-btn.active,
+    .filter-pill-btn:hover {
+      background: rgba(16, 185, 129, 0.18);
+      border-color: rgba(16, 185, 129, 0.6);
+      color: var(--brand-accent);
+    }
+
+    .search-input-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--surface-raised);
+      border: 1px solid var(--border-card);
+      border-radius: var(--radius-pill);
+      padding: 8px 16px;
+      width: 280px;
+    }
+
+    .search-input-wrap input {
+      background: transparent;
+      border: none;
+      color: var(--text-main);
+      font-size: 0.84rem;
+      outline: none;
+      width: 100%;
+    }
+
+    .btn-export-csv {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 18px;
+      border-radius: var(--radius-pill);
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: #ffffff;
+      border: none;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
+    }
+
+    .btn-export-csv:hover {
+      filter: brightness(1.08);
+      transform: translateY(-1px);
+    }
+
+    /* Ledger Table */
+    .ledger-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.84rem;
+    }
+
+    .ledger-table th {
+      padding: 12px 14px;
+      color: var(--text-muted);
+      font-weight: 700;
+      border-bottom: 1px solid var(--border-divider);
+      cursor: pointer;
+      user-select: none;
+      white-space: nowrap;
+    }
+
+    .ledger-table th:hover {
+      color: var(--brand-accent);
+    }
+
+    .ledger-table td {
+      padding: 13px 14px;
+      border-bottom: 1px solid var(--border-divider);
+      color: var(--text-main);
+      vertical-align: middle;
+    }
+
+    .ledger-table tr:hover td {
+      background: rgba(16, 185, 129, 0.04);
+    }
+
+    .badge-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 10px;
+      border-radius: var(--radius-pill);
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .badge-cleared {
+      background: rgba(16, 185, 129, 0.16);
+      border: 1px solid rgba(16, 185, 129, 0.45);
+      color: #059669;
+    }
+
+    [data-theme="dark"] .badge-cleared {
+      color: #34d399;
+    }
+
+    .badge-partial {
+      background: rgba(245, 158, 11, 0.16);
+      border: 1px solid rgba(245, 158, 11, 0.45);
+      color: #d97706;
+    }
+
+    .badge-defaulter {
+      background: rgba(239, 68, 68, 0.16);
+      border: 1px solid rgba(239, 68, 68, 0.45);
+      color: #dc2626;
+    }
+  </style>
 </head>
-<body>
-  <script>
-    window.location.replace('./hod-dashboard.html');
-  </script>
+<body class="student-portal-body">
+
+  <div class="portal-viewport-wrapper">
+    <main class="main-content">
+      <div class="analytics-page-container">
+
+        <!-- Top Title Bar -->
+        <header class="top-bar-header">
+          <div>
+            <h1 class="top-bar-title">Department Fee Analytics &amp; Clearance</h1>
+            <p class="top-bar-sub">Samskruti College of Engineering (Code: 259) • Department of Computer Science &amp; Engineering</p>
+          </div>
+          <div>
+            <button type="button" class="btn-export-csv" id="btn-export-fee-csv">
+              <i data-lucide="download" style="width: 14px; height: 14px;"></i>
+              <span>Export Ledger CSV</span>
+            </button>
+          </div>
+        </header>
+
+        <!-- KPI Cards Row -->
+        <div class="kpi-summary-grid">
+          
+          <div class="kpi-card">
+            <div class="kpi-card-header">
+              <span>Total Intake</span>
+              <i data-lucide="users" style="width: 16px; height: 16px;"></i>
+            </div>
+            <div class="kpi-val" id="stat-total-intake">180</div>
+            <div class="kpi-sub">Scheme C-24 • 5th Sem</div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-card-header">
+              <span>Clearance Rate</span>
+              <i data-lucide="pie-chart" style="width: 16px; height: 16px;"></i>
+            </div>
+            <div class="ring-card-wrap">
+              <div class="ring-svg-wrap">
+                <svg class="ring-svg" viewBox="0 0 60 60">
+                  <circle class="ring-bg" cx="30" cy="30" r="24" />
+                  <circle class="ring-progress" id="clearance-ring-circle" cx="30" cy="30" r="24" />
+                </svg>
+              </div>
+              <div>
+                <div class="kpi-val" id="stat-clearance-rate">--%</div>
+                <div class="kpi-sub" id="stat-cleared-count">-- / 180 Cleared</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-card-header">
+              <span>Total Collected</span>
+              <i data-lucide="check-circle" style="width: 16px; height: 16px;"></i>
+            </div>
+            <div class="kpi-val" id="stat-total-collected" style="color: #10b981;">₹--</div>
+            <div class="kpi-sub">Verified College Accounts</div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-card-header">
+              <span>Pending Dues</span>
+              <i data-lucide="alert-circle" style="width: 16px; height: 16px;"></i>
+            </div>
+            <div class="kpi-val" id="stat-total-pending" style="color: #ef4444;">₹--</div>
+            <div class="kpi-sub"><span id="stat-defaulters-count">--</span> Defaulters Pending</div>
+          </div>
+
+        </div>
+
+        <!-- Table & Filter Workspace -->
+        <div class="table-container-card">
+          
+          <div class="table-controls-row">
+            <div class="filter-pills" id="fee-filter-tabs">
+              <button type="button" class="filter-pill-btn active" data-filter="ALL">All Students (180)</button>
+              <button type="button" class="filter-pill-btn" data-filter="CLEARED">Fully Cleared</button>
+              <button type="button" class="filter-pill-btn" data-filter="PARTIAL">Partial Payment</button>
+              <button type="button" class="filter-pill-btn" data-filter="DEFAULTER">Pending Defaulters</button>
+            </div>
+
+            <div class="search-input-wrap">
+              <i data-lucide="search" style="width: 14px; height: 14px; color: var(--text-muted);"></i>
+              <input type="text" id="fee-search-input" placeholder="Search PIN or Student Name..." />
+            </div>
+          </div>
+
+          <div style="overflow-x: auto;">
+            <table class="ledger-table" id="department-fees-table">
+              <thead>
+                <tr>
+                  <th data-sort="pin">Student PIN ↕</th>
+                  <th data-sort="name">Student Name ↕</th>
+                  <th data-sort="totalFee">Total Tuition (₹) ↕</th>
+                  <th data-sort="amountPaid">Amount Paid (₹) ↕</th>
+                  <th data-sort="balance">Pending Balance (₹) ↕</th>
+                  <th data-sort="status">Payment Status ↕</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="fees-tbody">
+                <!-- Dynamically populated via fee-analytics.js -->
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script type="module" src="./fee-analytics.js"></script>
 </body>
 </html>

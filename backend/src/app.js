@@ -27,9 +27,9 @@ app.use(cors({
 app.use(morgan('dev'));
 app.use(cookieParser());
 
-// 1. Root gateway redirect to Login Portal
+// 1. Root gateway to Landing Page
 app.get('/', (req, res) => {
-  res.redirect('/screens/01-auth/login.html');
+  res.sendFile(path.join(frontendPath, 'index.html'));
 });
 
 // 2. Serve static frontend assets without rate limiting

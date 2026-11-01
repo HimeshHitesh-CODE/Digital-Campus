@@ -1,262 +1,630 @@
-/* ==========================================================================
-   UNIVERSAL FLOATING TOP CAPSULE NAVIGATION (CAMPUS CONNECT)
-   Clean Light Ceramic Pill Dock with Hardware-Accelerated Sliding Morph Pill
-   ========================================================================== */
+/* ================================================================
+   SAMSKRUTI DIGITAL CAMPUS — DYNAMIC ISLAND NAVIGATION DOCK
+   Matches Reference 1.png (Expanded) and Reference 2.png (Collapsed)
+   ================================================================ */
 
-/* Floating Capsule Container */
-.top-nav-capsule-container {
-  position: sticky;
-  top: 1rem;
-  z-index: 150;
-  width: 100%;
-  max-width: 1400px;
-  margin: 0 auto 2rem auto;
-  padding: 0 1rem;
-  box-sizing: border-box;
+:root {
+  --dock-bg: rgba(2, 26, 16, 0.94);
+  --dock-border: rgba(16, 185, 129, 0.42);
+  --dock-border-hover: rgba(16, 185, 129, 0.85);
+  --dock-glow: 0 0 20px rgba(16, 185, 129, 0.35);
+  --dock-glow-hover: 0 0 32px rgba(16, 185, 129, 0.50);
+  --dock-text-active: #ffffff;
+  --dock-text-inactive: #a7d9be;
+  --dock-text-hover: #ffffff;
+  --dock-accent: #10b981;
+  --dock-pill-w: 68px;
+  --dock-pill-h: 38px;
+  --dock-expanded-h: 48px;
+  --dock-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --z-dock: 99999;
 }
 
-.capsule-nav {
-  height: 64px;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-radius: 9999px;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 8px 24px -4px rgba(15, 23, 42, 0.06);
+[data-theme="light"] {
+  --dock-bg: rgba(255, 255, 255, 0.94);
+  --dock-border: rgba(16, 185, 129, 0.38);
+  --dock-border-hover: rgba(16, 185, 129, 0.80);
+  --dock-glow: 0 10px 30px rgba(16, 185, 129, 0.12), 0 2px 8px rgba(0, 0, 0, 0.04);
+  --dock-glow-hover: 0 14px 40px rgba(16, 185, 129, 0.22), 0 4px 12px rgba(0, 0, 0, 0.08);
+  --dock-text-active: #065f46;
+  --dock-text-inactive: #475569;
+  --dock-text-hover: #047857;
+  --dock-accent: #059669;
+}
+
+[data-theme="light"] .wordmark-campus {
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .wordmark-connect {
+  color: #059669 !important;
+}
+
+[data-theme="light"] .dock-nav-link:hover,
+[data-theme="light"] .nav-item:hover {
+  background: rgba(16, 185, 129, 0.12) !important;
+  color: #047857 !important;
+}
+
+[data-theme="light"] .dock-nav-link.active,
+[data-theme="light"] .nav-item.active {
+  background: rgba(16, 185, 129, 0.18) !important;
+  border: 1px solid rgba(16, 185, 129, 0.70) !important;
+  color: #065f46 !important;
+  box-shadow: 0 0 14px rgba(16, 185, 129, 0.25) !important;
+  font-weight: 700 !important;
+}
+
+[data-theme="light"] .dock-nav-link.active i,
+[data-theme="light"] .dock-nav-link.active svg,
+[data-theme="light"] .nav-item.active i,
+[data-theme="light"] .nav-item.active svg {
+  color: #059669 !important;
+}
+
+[data-theme="light"] .dock-util-btn {
+  background: rgba(16, 185, 129, 0.10);
+  border-color: rgba(16, 185, 129, 0.30);
+  color: #047857;
+}
+
+[data-theme="light"] .dock-util-btn:hover {
+  background: rgba(16, 185, 129, 0.22);
+  color: #064e3b;
+  border-color: #10b981;
+}
+
+[data-theme="light"] .dock-util-btn.dock-logout-btn:hover {
+  background: rgba(239, 68, 68, 0.18);
+  border-color: #ef4444;
+  color: #dc2626;
+}
+
+[data-theme="light"] .dock-divider {
+  background: rgba(16, 185, 129, 0.25) !important;
+}
+
+/* ================================================================
+   1. OUTER DOCK WRAPPER (Fixed Center with Invisible Hit-Area)
+   ================================================================ */
+.expandable-dock-wrapper,
+.dynamic-island-container {
+  position: fixed;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: var(--z-dock);
+  padding: 10px 18px; /* Invisible hover buffer prevents accidental collapse */
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 1rem;
-  box-sizing: border-box;
-  transition: all 0.3s ease;
-}
-
-[data-theme="dark"] .capsule-nav {
-  background: rgba(19, 29, 51, 0.95);
-  border-color: rgba(255, 255, 255, 0.08);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-}
-
-/* Brand Emblem */
-.capsule-brand {
-  display: flex;
-  align-items: center;
-  gap: 0.65rem;
-  text-decoration: none;
-  color: #0f172a;
-  flex-shrink: 0;
-  padding-left: 0.25rem;
-}
-
-[data-theme="dark"] .capsule-brand {
-  color: #f8fafc;
-}
-
-.brand-emblem-badge {
-  width: 36px !important;
-  height: 36px !important;
-  max-width: 36px !important;
-  max-height: 36px !important;
-  min-width: 36px !important;
-  min-height: 36px !important;
-  border-radius: 50% !important;
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  padding: 4px;
-  box-sizing: border-box;
-  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
-  overflow: hidden !important;
-}
-
-[data-theme="dark"] .brand-emblem-badge {
-  background: #1e293b;
-  border-color: rgba(255, 255, 255, 0.1);
-}
-
-.brand-logo-img,
-img.brand-logo-img,
-.brand-emblem-badge img,
-header img {
-  width: 24px !important;
-  height: 24px !important;
-  max-width: 24px !important;
-  max-height: 24px !important;
-  object-fit: contain !important;
-  display: block !important;
-}
-
-.brand-title {
-  font-family: 'Urbanist', sans-serif;
-  font-size: 0.9rem;
-  font-weight: 800;
-  letter-spacing: 0.04em;
-  color: #0f172a;
-}
-
-[data-theme="dark"] .brand-title {
-  color: #f8fafc;
-}
-
-.brand-title .accent-text {
-  color: #2563eb;
-  font-weight: 800;
-}
-
-.nav-divider {
-  width: 1px;
-  height: 24px;
-  background: #e2e8f0;
-  margin: 0 0.5rem;
-}
-
-[data-theme="dark"] .nav-divider {
-  background: rgba(255, 255, 255, 0.1);
-}
-
-/* ==========================================================================
-   SLIDING MORPH PILL NAVIGATION MENU
-   ========================================================================== */
-.capsule-menu-items {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  flex: 1;
   justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  pointer-events: auto;
 }
 
-/* The Hardware-Accelerated Sliding Pill */
-.sliding-morph-pill {
-  position: absolute;
-  top: 50%;
-  left: 0;
-  transform: translate3d(0, -50%, 0);
-  height: 38px;
-  background: #2563eb;
-  border-radius: 9999px;
-  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
-  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-              width 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-              opacity 0.2s ease;
-  z-index: 1;
-  pointer-events: none;
-  opacity: 0;
-}
-
-.sliding-morph-pill.visible {
-  opacity: 1;
-}
-
-.nav-item {
+/* ================================================================
+   2. DOCK CAPSULE CONTAINER (Small Pill to Full Dock)
+   ================================================================ */
+.expandable-dock,
+.capsule-nav,
+.dynamic-island-nav {
   position: relative;
-  z-index: 2;
   display: flex;
   align-items: center;
-  gap: 0.45rem;
-  padding: 0.5rem 0.95rem;
+  justify-content: center;
   border-radius: 9999px;
-  font-family: 'Urbanist', sans-serif;
-  font-size: 0.84rem;
-  font-weight: 600;
-  color: #64748b;
-  text-decoration: none;
+  background: var(--dock-bg);
+  backdrop-filter: blur(28px) saturate(190%);
+  -webkit-backdrop-filter: blur(28px) saturate(190%);
+  border: 1px solid var(--dock-border);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55), var(--dock-glow);
+  overflow: hidden;
+  white-space: nowrap;
+  box-sizing: border-box;
+  cursor: pointer;
+
+  /* Default / Collapsed State: Matches Reference 2.png (Small CC Pill) */
+  width: var(--dock-pill-w) !important;
+  min-width: var(--dock-pill-w) !important;
+  max-width: var(--dock-pill-w) !important;
+  height: var(--dock-pill-h) !important;
+  padding: 0 !important;
+  transform: translateY(0);
+
+  will-change: width, max-width, height, box-shadow, border-color, transform;
+  transition:
+    width 0.40s var(--dock-ease),
+    max-width 0.40s var(--dock-ease),
+    height 0.30s var(--dock-ease),
+    border-color 0.25s ease,
+    box-shadow 0.30s ease,
+    background-color 0.30s ease,
+    transform 0.32s var(--dock-ease);
+}
+
+/* Extended hit area behind capsule */
+.expandable-dock::before,
+.capsule-nav::before {
+  content: '';
+  position: absolute;
+  inset: -12px -16px;
+  background: transparent;
+  pointer-events: auto;
+  border-radius: 9999px;
+  z-index: -1;
+}
+
+/* ================================================================
+   3. COLLAPSED VIEW (Matches Reference 2.png: "CC" Mint Monogram)
+   ================================================================ */
+.dock-collapsed-trigger,
+.dock-collapsed-view,
+.island-resting-view {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: transparent;
   border: none;
-  transition: color 0.22s ease, transform 0.2s ease;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+  outline: none;
+  opacity: 1;
+  visibility: visible;
+  transform: scale(1);
+  transition: opacity 0.22s ease, transform 0.26s var(--dock-ease), visibility 0.22s ease;
+  user-select: none;
+  z-index: 5;
+}
+
+
+.dock-collapsed-logo {
+  width: 22px;
+  height: 25px;
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 0 6px rgba(16, 185, 129, 0.75));
+  transition: transform 0.25s var(--dock-ease), filter 0.25s ease;
+}
+
+.expandable-dock:hover .dock-collapsed-logo,
+.dock-collapsed-trigger:hover .dock-collapsed-logo {
+  transform: scale(1.10);
+  filter: drop-shadow(0 0 10px rgba(52, 211, 153, 0.95));
+}
+
+.dock-monogram {
+  font-family: var(--font-sans, 'Urbanist', -apple-system, sans-serif);
+  font-weight: 900;
+  font-size: 18px;
+  color: #a7f3d0;
+  letter-spacing: 0.5px;
+  line-height: 1;
+  text-shadow: 0 0 10px rgba(16, 185, 129, 0.6);
+  pointer-events: none;
+}
+
+/* ================================================================
+   4. EXPANDED STATE (On Hover or Keyboard Focus)
+   ================================================================ */
+.expandable-dock:hover,
+.expandable-dock.is-expanded,
+.expandable-dock:focus-within,
+.capsule-nav:hover,
+.capsule-nav.is-expanded,
+.capsule-nav:focus-within {
+  width: max-content !important;
+  min-width: 0 !important;
+  max-width: min(1160px, calc(100vw - 20px)) !important;
+  height: var(--dock-expanded-h) !important;
+  border-color: var(--dock-border-hover);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.65), var(--dock-glow-hover);
+  cursor: default;
+  transform: translateY(4px); /* Dynamic island slide-down animation */
+}
+
+/* Fade out collapsed CC monogram on expansion */
+.expandable-dock:hover .dock-collapsed-trigger,
+.expandable-dock.is-expanded .dock-collapsed-trigger,
+.expandable-dock:focus-within .dock-collapsed-trigger,
+.capsule-nav:hover .dock-collapsed-trigger,
+.capsule-nav.is-expanded .dock-collapsed-trigger,
+.capsule-nav:focus-within .dock-collapsed-trigger {
+  opacity: 0;
+  visibility: hidden;
+  transform: scale(0.65);
+  pointer-events: none;
+}
+
+/* Fade in expanded navigation on expansion */
+.expandable-dock:hover .dock-expanded-content,
+.expandable-dock.is-expanded .dock-expanded-content,
+.expandable-dock:focus-within .dock-expanded-content,
+.capsule-nav:hover .dock-expanded-content,
+.capsule-nav.is-expanded .dock-expanded-content,
+.capsule-nav:focus-within .dock-expanded-content {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  position: relative;
+  left: auto;
+  transform: translateX(0) scale(1);
+}
+
+/* ================================================================
+   5. EXPANDED CONTENT WRAPPER (Matches Reference 1.png)
+   ================================================================ */
+.dock-expanded-content,
+.island-expanded-view {
+  display: flex;
+  align-items: center;
+  padding: 0 14px 0 10px;
+  height: 100%;
+  width: auto;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  box-sizing: border-box;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%) scale(0.92);
+  transition: opacity 0.24s ease, transform 0.28s var(--dock-ease), visibility 0.24s ease;
+  gap: 4px;
+}
+
+/* ================================================================
+   6. BRAND EMBLEM & WORDMARK (Matches Reference 1.png)
+   ================================================================ */
+.dock-brand-container,
+.capsule-brand,
+.dock-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  padding: 4px 6px;
+  border-radius: 9999px;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.dock-brand-container:hover {
+  opacity: 0.9;
+}
+
+.dock-logo-badge,
+.brand-emblem-badge {
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+  flex-shrink: 0;
+  padding: 3px;
+  box-sizing: border-box;
+}
+
+.dock-logo-badge img,
+.brand-emblem-badge img,
+.brand-logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.dock-wordmark,
+.brand-title {
+  font-family: var(--font-sans, 'Urbanist', -apple-system, sans-serif);
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   white-space: nowrap;
 }
 
-[data-theme="dark"] .nav-item {
-  color: #94a3b8;
+.wordmark-campus {
+  color: #ffffff;
+  font-weight: 800;
 }
 
+.wordmark-connect {
+  color: #10b981;
+  font-weight: 800;
+}
+
+/* Thin Vertical Divider (Matches Reference 1.png) */
+.dock-divider,
+.nav-divider {
+  width: 1px;
+  height: 18px;
+  background: rgba(255, 255, 255, 0.20);
+  margin: 0 4px;
+  flex-shrink: 0;
+}
+
+/* ================================================================
+   7. NAVIGATION ITEMS TRACK & LINKS (ALL 8 ITEMS LABELED)
+   ================================================================ */
+.dock-nav-track,
+.capsule-menu-items,
+.dock-nav-list {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.dock-nav-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* Nav Link Anchor — ALWAYS Shows Icon + Text */
+.dock-nav-link,
+.nav-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 11px;
+  border-radius: 9999px;
+  font-family: var(--font-sans, 'Urbanist', -apple-system, sans-serif);
+  font-size: 0.80rem;
+  font-weight: 600;
+  color: var(--dock-text-inactive);
+  text-decoration: none;
+  white-space: nowrap;
+  outline: none;
+  border: 1px solid transparent;
+  transition:
+    color 0.18s ease,
+    background-color 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    transform 0.18s ease;
+  position: relative;
+  z-index: 2;
+  cursor: pointer;
+}
+
+.dock-nav-link:hover,
 .nav-item:hover {
-  color: #0f172a;
+  color: var(--dock-text-hover);
+  background: rgba(16, 185, 129, 0.14);
   transform: translateY(-1px);
 }
 
-[data-theme="dark"] .nav-item:hover {
-  color: #f8fafc;
-}
-
-/* When morph pill is not active, fallback styling */
-.nav-item.active {
-  color: #ffffff !important;
-  font-weight: 700;
-}
-
-.nav-item.active i,
-.nav-item.active svg {
-  color: #ffffff !important;
-  stroke: #ffffff !important;
-}
-
+.dock-nav-link i,
+.dock-nav-link svg,
 .nav-item i,
 .nav-item svg {
   width: 15px;
   height: 15px;
   stroke-width: 2.2px;
-  transition: color 0.2s ease, stroke 0.2s ease;
+  color: var(--dock-accent);
+  transition: transform 0.18s ease, color 0.18s ease;
+  flex-shrink: 0;
 }
 
-/* ==========================================================================
-   UTILITY ACTIONS (THEME TOGGLE, SIGN OUT)
-   ========================================================================== */
+.dock-nav-link:hover i,
+.dock-nav-link:hover svg,
+.nav-item:hover i,
+.nav-item:hover svg {
+  color: #34d399;
+  transform: scale(1.08);
+}
+
+/* Nav Label — ALWAYS Visible in Expanded State for ALL 8 items */
+.dock-nav-label,
+.dock-nav-link span,
+.nav-item span {
+  display: inline-block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  font-family: var(--font-sans, 'Urbanist', -apple-system, sans-serif) !important;
+  font-size: 0.80rem !important;
+  font-weight: 600 !important;
+  color: inherit !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+}
+
+/* Active Nav Item (Matches Reference 1.png glowing pill: "Messages") */
+.dock-nav-link.active,
+.nav-item.active {
+  background: rgba(16, 185, 129, 0.24) !important;
+  border: 1px solid rgba(16, 185, 129, 0.75) !important;
+  box-shadow: 0 0 14px rgba(16, 185, 129, 0.40) !important;
+  color: #ffffff !important;
+  font-weight: 700 !important;
+}
+
+.dock-nav-link.active i,
+.dock-nav-link.active svg,
+.nav-item.active i,
+.nav-item.active svg {
+  color: #a7f3d0 !important;
+}
+
+/* Sliding Glass Selection Indicator (Optional Smooth Glow) */
+.dock-sliding-indicator {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 32px;
+  border-radius: 9999px;
+  background: rgba(16, 185, 129, 0.20);
+  border: 1px solid rgba(16, 185, 129, 0.65);
+  box-shadow: 0 0 14px rgba(16, 185, 129, 0.35);
+  pointer-events: none;
+  z-index: 1;
+  transition:
+    transform 0.30s var(--dock-ease),
+    width 0.26s var(--dock-ease),
+    opacity 0.20s ease;
+  opacity: 0;
+}
+
+.dock-nav-track.has-active .dock-sliding-indicator,
+.dock-nav-track.has-hover .dock-sliding-indicator {
+  opacity: 1;
+}
+
+/* Utility Actions inside dock if present */
+.dock-actions,
 .capsule-actions {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 3px;
+  margin-left: 2px;
   flex-shrink: 0;
 }
 
 .util-btn {
-  width: 36px;
-  height: 36px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  color: #64748b;
-  display: flex;
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.30);
+  color: var(--dock-text-inactive);
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   text-decoration: none;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03);
-}
-
-[data-theme="dark"] .util-btn {
-  background: #1e293b;
-  border-color: rgba(255, 255, 255, 0.08);
-  color: #94a3b8;
-}
-
-.util-btn:hover {
-  color: #0f172a;
-  background: #ffffff;
-  border-color: #cbd5e1;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 10px rgba(15, 23, 42, 0.06);
-}
-
-[data-theme="dark"] .util-btn:hover {
-  color: #f8fafc;
-  background: #24344d;
-  border-color: rgba(255, 255, 255, 0.16);
-}
-
-.util-btn.logout:hover {
-  color: #ef4444;
-  border-color: rgba(239, 68, 68, 0.25);
-  background: rgba(239, 68, 68, 0.06);
+  transition: all 0.2s ease;
+  padding: 0;
 }
 
 .util-btn i,
 .util-btn svg {
-  width: 16px;
-  height: 16px;
-  stroke-width: 2px;
+  width: 14px;
+  height: 14px;
+  color: inherit;
+}
+
+.util-btn:hover {
+  background: rgba(16, 185, 129, 0.25);
+  color: #ffffff;
+  border-color: #10b981;
+  transform: scale(1.06);
+}
+
+.util-btn.logout:hover {
+  background: rgba(239, 68, 68, 0.25);
+  border-color: #ef4444;
+  color: #fca5a5;
+}
+
+/* ================================================================
+   8. MOBILE RESPONSIVENESS (< 860px)
+   ================================================================ */
+@media (max-width: 860px) {
+  .expandable-dock-wrapper,
+  .dynamic-island-container {
+    top: 8px;
+    padding: 6px 10px;
+    width: 100vw;
+  }
+
+  .expandable-dock:hover,
+  .expandable-dock.is-expanded,
+  .expandable-dock:focus-within,
+  .capsule-nav:hover,
+  .capsule-nav.is-expanded,
+  .capsule-nav:focus-within {
+    width: calc(100vw - 16px);
+    max-width: 100vw;
+    height: 48px;
+    padding: 0 4px;
+  }
+
+  .dock-nav-track {
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .dock-nav-track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .dock-nav-link {
+    padding: 5px 8px;
+    font-size: 0.74rem;
+  }
+
+  .dock-wordmark {
+    display: none;
+  }
+}
+
+
+/* Actions Cluster After Profile (Theme Toggle & Logout) */
+.dock-actions-cluster {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-left: 2px;
+  flex-shrink: 0;
+}
+
+.dock-util-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  color: #a7f3d0;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  outline: none;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.dock-util-btn i,
+.dock-util-btn svg {
+  width: 15px;
+  height: 15px;
+  color: inherit;
+  transition: transform 0.2s ease;
+}
+
+.dock-util-btn:hover {
+  background: rgba(16, 185, 129, 0.28);
+  color: #ffffff;
+  border-color: #10b981;
+  transform: scale(1.08);
+  box-shadow: 0 0 12px rgba(16, 185, 129, 0.40);
+}
+
+.dock-util-btn:hover i,
+.dock-util-btn:hover svg {
+  transform: scale(1.10);
+}
+
+.dock-util-btn.dock-logout-btn:hover {
+  background: rgba(239, 68, 68, 0.22);
+  border-color: #ef4444;
+  color: #fca5a5;
+  box-shadow: 0 0 12px rgba(239, 68, 68, 0.40);
 }

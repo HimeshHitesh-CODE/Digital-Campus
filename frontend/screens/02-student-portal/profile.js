@@ -5,29 +5,30 @@
 
 import { api } from '../../js/api.js';
 import { requireAuth } from '../../js/auth-guard.js';
-import { renderDock } from '../../js/dock.js';
 import { alerts } from '../../js/alerts.js';
 
-// Verify student authentication
+// Verify student authentication safely
 const user = requireAuth(['STUDENT', 'HOD', 'HOD_CS', 'ADMIN']);
-
-// Render Left Dock Navigation
-if (user) {
-  renderDock('profile.html', user.role || 'STUDENT');
-}
 
 document.addEventListener('DOMContentLoaded', () => {
   populateStudentProfile();
   setupEditContactModal();
+
+  if (typeof window.dcSyncProfile === 'function') {
+    window.dcSyncProfile();
+  }
 });
 
 function getActiveStudentInfo() {
-  const sessionUser = api.getUser() || JSON.parse(localStorage.getItem('dc_user') || localStorage.getItem('user') || '{}');
-  const pin = (sessionUser.sbtetPin || sessionUser.rollNumber || user.sbtetPin || user.rollNumber || '24259-CS-039').trim().toUpperCase();
-  const name = sessionUser.name || user.name || 'Kakarla Rakesh';
+  const sessionUser = (typeof window.dcGetActiveUser === 'function' ? window.dcGetActiveUser() : null)
+    || api.getUser() 
+    || JSON.parse(localStorage.getItem('dc_user') || localStorage.getItem('smsk_user') || '{}');
+
+  const pin = (sessionUser.pin || sessionUser.sbtetPin || sessionUser.rollNumber || localStorage.getItem('student_pin') || '24259-CS-040').trim().toUpperCase();
+  const name = sessionUser.name || localStorage.getItem('user_name') || 'Tallapalli Tulasi Ram Goud';
 
   // Branch mapping
-  let branch = sessionUser.department || 'Computer Science & Engineering';
+  let branch = sessionUser.department || 'Computer Science & Engineering (CS)';
   if (pin.includes('-AI-') || pin.includes('-AIML-')) branch = 'Artificial Intelligence & Machine Learning (AIML)';
   else if (pin.includes('-CS-')) branch = 'Computer Science & Engineering (CS)';
   else if (pin.includes('-EC-')) branch = 'Electronics & Communication (EC)';
@@ -35,16 +36,14 @@ function getActiveStudentInfo() {
   else if (pin.includes('-M-')) branch = 'Mechanical Engineering (MECH)';
   else if (pin.includes('-CIV-')) branch = 'Civil Engineering (CIV)';
 
-  // Semester mapping: Diploma C-24 Semester V
   const semText = 'Semester V (3rd Year • 5th Sem)';
-
-  // Custom saved contact details
   const savedContact = JSON.parse(localStorage.getItem(`contact_${pin}`) || '{}');
 
   return {
     pin,
     name,
     branch,
+    email: sessionUser.email || `${pin.toLowerCase()}@samskruti.ac.in`,
     scheme: sessionUser.scheme || 'SBTET C-24',
     semester: semText,
     batch: sessionUser.batch || '2024 - 2027',
@@ -55,7 +54,11 @@ function getActiveStudentInfo() {
 
 function populateStudentProfile() {
   const student = getActiveStudentInfo();
-  const initials = student.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+  const clean = student.name.replace(/^(Dr\.|Prof\.|Mr\.|Ms\.|Mrs\.)\s*/i, '').trim();
+  const words = clean.split(/\s+/).filter(Boolean);
+  const initials = words.length >= 2 
+    ? `${words[0][0]}${words[1][0]}`.toUpperCase() 
+    : clean.substring(0, 2).toUpperCase();
 
   // Header banner elements
   const avatarElem = document.getElementById('profile-avatar');
@@ -84,9 +87,11 @@ function populateStudentProfile() {
   if (profBatch) profBatch.textContent = student.batch;
 
   // Contact Details
+  const profEmail = document.getElementById('prof-email');
   const profMobile = document.getElementById('prof-mobile');
   const profParentMobile = document.getElementById('prof-parent-mobile');
 
+  if (profEmail) profEmail.textContent = student.email;
   if (profMobile) profMobile.textContent = student.mobile;
   if (profParentMobile) profParentMobile.textContent = student.parentMobile;
 }
@@ -126,27 +131,16 @@ function setupEditContactModal() {
     const newParentMobile = parentMobileInput.value.trim();
 
     if (!newMobile || !newParentMobile) {
-      alerts.error('Required Fields', 'Please provide both contact numbers.');
+      alerts.error('Invalid Contact', 'Please provide valid phone numbers.');
       return;
     }
 
     const student = getActiveStudentInfo();
-    const updatedContact = {
-      mobile: newMobile,
-      parentMobile: newParentMobile
-    };
-
-    localStorage.setItem(`contact_${student.pin}`, JSON.stringify(updatedContact));
-
-    // Update in dc_user if present
-    const dcUser = api.getUser();
-    if (dcUser) {
-      dcUser.phone = newMobile;
-      api.setUser(dcUser);
-    }
+    const contactData = { mobile: newMobile, parentMobile: newParentMobile };
+    localStorage.setItem(`contact_${student.pin}`, JSON.stringify(contactData));
 
     populateStudentProfile();
     closeModal();
-    alerts.success('Contact Details Saved', 'Your registered mobile and emergency parent contact have been updated.');
+    alerts.success('Contact Saved', 'Your registered contact details have been updated.');
   });
 }

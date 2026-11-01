@@ -1,1033 +1,730 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Authentication Portal | Samskruti College of Engineering &amp; Technology (Code: 259)</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portal Access &bull; Samskruti Digital Campus (Code: 259)</title>
+
+  <!-- Typography & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Global Theme & Dynamic Island Stylesheets -->
+  <link rel="stylesheet" href="../../css/reset.css" />
+  <link rel="stylesheet" href="../../css/theme-tokens.css" />
+  <link rel="stylesheet" href="../../css/top-nav.css?v=3.3.0" />
+  <link rel="stylesheet" href="../../css/animations.css" />
+  <link rel="stylesheet" href="../../css/dc-global-theme.css?v=3.3.0" />
+
   <style>
-    body {
-      font-family: 'Urbanist', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background-color: #edf2f7;
-    }
-    .mono-font { font-family: 'JetBrains Mono', monospace; }
-    
-    /* Neumorphic soft elevation */
-    .neo-shadow {
-      box-shadow: 0 20px 50px -10px rgba(15, 23, 42, 0.08), 0 10px 20px -5px rgba(15, 23, 42, 0.04);
-    }
-    .neo-inset {
-      box-shadow: inset 1px 1px 3px rgba(15, 23, 42, 0.04);
+    /* ============================================================
+       AUTH VIEWPORT & LUXURY OBSIDIAN EMERALD GLASS
+       ============================================================ */
+    body.auth-viewport {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 70px 20px 30px;
+      overflow-x: hidden;
+      position: relative;
+      background: var(--bg-app);
+      font-family: 'Urbanist', -apple-system, BlinkMacSystemFont, sans-serif;
+      box-sizing: border-box;
     }
 
-    /* Error Shake Animation */
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      20%, 60% { transform: translateX(-5px); }
-      40%, 80% { transform: translateX(5px); }
+    .auth-card-wrapper {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 440px;
+      margin: auto;
     }
-    .animate-shake {
-      animation: shake 0.35s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+
+    /* Auth Card */
+    .auth-card {
+      position: relative;
+      background: rgba(20, 52, 36, 0.52);
+      backdrop-filter: blur(36px) saturate(190%);
+      -webkit-backdrop-filter: blur(36px) saturate(190%);
+      border: 1px solid rgba(110, 231, 183, 0.28);
+      border-radius: 32px;
+      padding: 34px 32px 30px;
+      box-shadow:
+        0 30px 80px rgba(0, 0, 0, 0.8),
+        0 0 50px rgba(16, 185, 129, 0.22),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: all 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* ============================================================
+       DYNAMIC ISLAND ROLE OPERATOR CAPSULE (HOVER TO SWITCH)
+       ============================================================ */
+    .role-operator-container {
+      position: relative;
+      margin-bottom: 20px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 20;
+    }
+
+    .role-capsule {
+      position: relative;
+      background: rgba(30, 68, 50, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(110, 231, 183, 0.45);
+      border-radius: 9999px;
+      height: 42px;
+      width: 150px;
+      padding: 4px 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      overflow: hidden;
+      box-shadow:
+        0 8px 24px rgba(0, 0, 0, 0.45),
+        0 0 18px rgba(16, 185, 129, 0.25);
+      transition:
+        width 0.42s cubic-bezier(0.16, 1, 0.3, 1),
+        height 0.42s cubic-bezier(0.16, 1, 0.3, 1),
+        background 0.3s ease,
+        border-color 0.3s ease,
+        box-shadow 0.35s ease;
+      transform-origin: center center;
+    }
+
+    /* Resting View: Single Role Pill */
+    .role-resting {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #f0fdf4;
+      font-weight: 800;
+      font-size: 0.86rem;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+      pointer-events: none;
+      transition: opacity 0.22s ease, transform 0.22s ease;
+    }
+
+    .role-resting-icon {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: rgba(16, 185, 129, 0.25);
+      border: 1px solid rgba(52, 211, 153, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #34d399;
+    }
+
+    .role-pulse-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #34d399;
+      box-shadow: 0 0 8px #34d399;
+      animation: pulseDot 2s infinite ease-in-out;
+    }
+
+    /* Hover Expansion: Reveals Student and HOD Options */
+    .role-capsule:hover,
+    .role-capsule.is-expanded {
+      width: 250px;
+      height: 44px;
+      background: rgba(8, 28, 18, 0.96);
+      border-color: rgba(52, 211, 153, 0.65);
+      box-shadow:
+        0 14px 34px rgba(0, 0, 0, 0.7),
+        0 0 25px rgba(16, 185, 129, 0.45);
+    }
+
+    .role-capsule:hover .role-resting,
+    .role-capsule.is-expanded .role-resting {
+      opacity: 0;
+      transform: scale(0.85);
+      pointer-events: none;
+    }
+
+    .role-expanded {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 0 6px;
+      opacity: 0;
+      pointer-events: none;
+      transform: scale(0.92);
+      transition: opacity 0.25s ease 0.05s, transform 0.25s cubic-bezier(0.16, 1, 0.3, 1) 0.05s;
+    }
+
+    .role-capsule:hover .role-expanded,
+    .role-capsule.is-expanded .role-expanded {
+      opacity: 1;
+      pointer-events: auto;
+      transform: scale(1);
+    }
+
+    .role-pill-btn {
+      flex: 1;
+      height: 32px;
+      border: none;
+      background: transparent;
+      color: #a7d9be;
+      font-family: 'Urbanist', sans-serif;
+      font-weight: 700;
+      font-size: 0.78rem;
+      border-radius: 9999px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      transition: all 0.22s ease;
+      white-space: nowrap;
+    }
+
+    .role-pill-btn:hover {
+      background: rgba(16, 185, 129, 0.2);
+      color: #ffffff;
+    }
+
+    .role-pill-btn.is-active {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.4), rgba(5, 150, 105, 0.3));
+      color: #ffffff;
+      border: 1px solid rgba(52, 211, 153, 0.5);
+      box-shadow: 0 0 12px rgba(16, 185, 129, 0.35);
+    }
+
+    /* Auth Header */
+    .auth-header {
+      text-align: center;
+      margin-bottom: 22px;
+    }
+
+    .auth-title {
+      font-size: 1.65rem;
+      font-weight: 900;
+      color: #ffffff;
+      margin: 0;
+      letter-spacing: -0.02em;
+    }
+
+    .auth-subtitle {
+      font-size: 0.84rem;
+      color: #a7d9be;
+      margin-top: 4px;
+      font-weight: 600;
+    }
+
+    /* Form Fields */
+    .auth-form {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .form-field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      position: relative;
+    }
+
+    .field-label {
+      font-size: 0.8rem;
+      font-weight: 800;
+      color: #e2e8f0;
+      letter-spacing: 0.02em;
+    }
+
+    .capsule-input-box {
+      position: relative;
+      width: 100%;
+    }
+
+    .capsule-input {
+      width: 100%;
+      height: 48px;
+      background: rgba(10, 26, 18, 0.75);
+      border: 1px solid rgba(110, 231, 183, 0.25);
+      border-radius: 9999px;
+      padding: 0 20px;
+      color: #ffffff;
+      font-family: 'Urbanist', sans-serif;
+      font-size: 0.92rem;
+      font-weight: 600;
+      box-sizing: border-box;
+      outline: none;
+      transition: all 0.25s ease;
+    }
+
+    .capsule-input.has-eye {
+      padding-right: 48px;
+    }
+
+    .capsule-input:focus {
+      background: rgba(12, 34, 24, 0.9);
+      border-color: rgba(52, 211, 153, 0.7);
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.25), 0 0 18px rgba(16, 185, 129, 0.2);
+    }
+
+    .capsule-input::placeholder {
+      color: rgba(167, 217, 190, 0.4);
+      font-weight: 500;
+    }
+
+    .eye-toggle-btn {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: transparent;
+      border: none;
+      color: #a7d9be;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px;
+      border-radius: 50%;
+      transition: color 0.2s ease;
+    }
+
+    .eye-toggle-btn:hover {
+      color: #34d399;
+    }
+
+    /* Live Student Roster Verified Badge */
+    .roster-verify-badge {
+      display: none;
+      align-items: center;
+      gap: 6px;
+      margin-top: 4px;
+      padding: 3px 10px;
+      border-radius: 9999px;
+      background: rgba(16, 185, 129, 0.16);
+      border: 1px solid rgba(52, 211, 153, 0.4);
+      color: #6ee7b7;
+      font-size: 0.74rem;
+      font-weight: 700;
+      width: fit-content;
+      animation: fadeSlideUp 0.25s ease both;
+    }
+
+    /* Submit Button (Golden/Emerald Glowing Capsule) */
+    .btn-auth-submit {
+      width: 100%;
+      height: 50px;
+      border: none;
+      border-radius: 9999px;
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: #04120a;
+      font-family: 'Urbanist', sans-serif;
+      font-weight: 900;
+      font-size: 0.95rem;
+      letter-spacing: 0.03em;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 8px;
+      box-shadow: 0 10px 28px rgba(16, 185, 129, 0.4);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .btn-auth-submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 36px rgba(16, 185, 129, 0.55), 0 0 20px rgba(52, 211, 153, 0.4);
+      filter: brightness(1.06);
+    }
+
+    .btn-auth-submit:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Feedback Toast Banner */
+    .auth-toast-banner {
+      display: none;
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-align: center;
+      margin-top: 14px;
+      box-sizing: border-box;
+      animation: fadeSlideUp 0.3s ease both;
+    }
+
+    .auth-toast-banner.is-error {
+      display: block;
+      background: rgba(239, 68, 68, 0.2);
+      border: 1px solid rgba(239, 68, 68, 0.5);
+      color: #fca5a5;
+    }
+
+    .auth-toast-banner.is-success {
+      display: block;
+      background: rgba(16, 185, 129, 0.22);
+      border: 1px solid rgba(52, 211, 153, 0.6);
+      color: #6ee7b7;
+    }
+
+    /* Footer meta */
+    .auth-footer-meta {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 20px;
+      font-size: 0.74rem;
+      font-weight: 600;
+      color: #649479;
+    }
+
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-4 bg-[#edf2f7]">
+<body class="auth-viewport">
 
-  <!-- Main Neumorphic Card Container -->
-  <div class="bg-white w-full max-w-md rounded-[2rem] p-7 md:p-8 neo-shadow relative overflow-hidden border border-slate-200/80">
-    
-    <!-- Institutional Branding Header -->
-    <div class="flex flex-col items-center mb-6">
-      <div class="w-14 h-14 bg-white rounded-full flex items-center justify-center text-blue-600 font-extrabold text-lg shadow-[0_4px_12px_rgba(37,99,235,0.12)] border border-slate-100 mb-3">
-        SCET
-      </div>
-      <h1 class="text-xl font-extrabold text-slate-800 text-center tracking-tight leading-tight">
-        Samskruti College of Engineering &amp; Technology
-      </h1>
-      <p class="text-xs text-slate-500 mt-1 font-medium text-center">
-        Unified Digital Campus • Institution Code: <strong class="text-blue-600 font-bold">259</strong>
-      </p>
-    </div>
-
-    <!-- 3-Segment Pill Switcher with Sliding Morph Pill -->
-    <div class="relative flex bg-slate-100 p-1.5 rounded-full mb-6 border border-slate-200/80" id="tabsBar">
-      <!-- Sliding Morph Pill -->
-      <div
-        id="tabIndicatorPill"
-        class="absolute bg-white rounded-full shadow-sm transition-all duration-300 ease-out z-0 pointer-events-none"
-        style="top: 6px; bottom: 6px;"
-      ></div>
-
-      <button
-        type="button"
-        id="tabBtnSignup"
-        class="flex-1 relative z-10 text-xs md:text-sm font-semibold py-2 px-2 rounded-full transition-colors duration-200 text-center text-slate-500 hover:text-slate-700 cursor-pointer"
-      >
-        Student Sign Up
-      </button>
-      <button
-        type="button"
-        id="tabBtnSignin"
-        class="flex-1 relative z-10 text-xs md:text-sm font-semibold py-2 px-2 rounded-full transition-colors duration-200 text-center text-blue-600 cursor-pointer"
-      >
-        Student Sign In
-      </button>
-      <button
-        type="button"
-        id="tabBtnHod"
-        class="flex-1 relative z-10 text-xs md:text-sm font-semibold py-2 px-2 rounded-full transition-colors duration-200 text-center text-slate-500 hover:text-slate-700 cursor-pointer"
-      >
-        Admin / HOD Login
-      </button>
-    </div>
-
-    <!-- ======================================================== -->
-    <!-- TAB 1: STUDENT SIGN UP (PIN-FIRST ONBOARDING FLOW)        -->
-    <!-- ======================================================== -->
-    <div id="tabSignUpContent" class="space-y-4 transition-all duration-300 ease-in-out hidden opacity-0 translate-y-2">
-      
-      <!-- STAGE 1: PIN ENTRY ONLY -->
-      <div id="step1-pin" class="space-y-4 block transition-opacity duration-300">
-        <div>
-          <label class="block text-xs font-semibold text-slate-600 mb-1.5 ml-1">
-            Diploma PIN No (Code: 259)
-          </label>
-          <div class="relative flex items-center rounded-xl bg-slate-50/70 border border-slate-200 px-4 py-3 transition-all duration-300 hover:border-slate-300 focus-within:ring-4 focus-within:ring-blue-500/20 focus-within:border-blue-500 focus-within:bg-white shadow-sm">
-            <svg class="w-4 h-4 text-slate-400 mr-2.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <rect x="3" y="4" width="18" height="16" rx="2" ry="2"/>
-              <line x1="7" y1="8" x2="17" y2="8"/>
-              <line x1="7" y1="12" x2="13" y2="12"/>
-              <circle cx="16" cy="14" r="2"/>
-            </svg>
-            <input
-              type="text"
-              id="studentPin"
-              placeholder="E.g. 24259-CS-039"
-              class="w-full bg-transparent text-sm focus:outline-none font-mono uppercase tracking-wider text-slate-800 placeholder:text-slate-400"
-              autocomplete="off"
-            />
-          </div>
-          
-          <!-- Test PIN quick picks -->
-          <div class="flex items-center gap-1.5 mt-2 ml-1 flex-wrap">
-            <span class="text-[10px] text-slate-400 font-medium">Quick Test:</span>
-            <button type="button" onclick="fillPin('24259-AIML-019')" class="text-[10px] bg-emerald-100 hover:bg-emerald-200 text-emerald-800 px-2 py-0.5 rounded font-mono font-bold transition-colors">
-              24259-AIML-019 (Hitesh)
-            </button>
-            <button type="button" onclick="fillPin('24259-CS-025')" class="text-[10px] bg-slate-200/80 hover:bg-blue-100 hover:text-blue-700 px-2 py-0.5 rounded text-slate-600 font-mono transition-colors">
-              24259-CS-025
-            </button>
-            <button type="button" onclick="fillPin('24259-CS-039')" class="text-[10px] bg-slate-200/80 hover:bg-blue-100 hover:text-blue-700 px-2 py-0.5 rounded text-slate-600 font-mono transition-colors">
-              24259-CS-039
-            </button>
-          </div>
-          
-          <p class="text-xs text-rose-500 mt-2 ml-1 hidden" id="pinError"></p>
-        </div>
-
-        <button
-          type="button"
-          id="verifyPinBtn"
-          class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3.5 rounded-xl shadow-[0_8px_20px_rgba(37,99,235,0.24)] hover:shadow-[0_12px_24px_rgba(37,99,235,0.35)] transition-all duration-300 transform hover:-translate-y-1 active:translate-y-0.5 active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer"
-        >
-          <span id="verifyBtnLabel">Verify &amp; Fetch Profile</span>
-          <svg class="w-4 h-4 hidden animate-spin" id="loadingSpinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="10" class="opacity-25" stroke="currentColor"></circle>
-            <path d="M4 12a8 8 0 018-8v8H4z" class="opacity-75" fill="currentColor"></path>
-          </svg>
-        </button>
-
-        <p class="text-center text-xs text-slate-400 pt-1">
-          Already registered? 
-          <button type="button" onclick="switchTab('signin')" class="text-blue-600 font-semibold hover:underline cursor-pointer">
-            Sign In to your account
-          </button>
-        </p>
-      </div>
-
-      <!-- STAGE 2: ACCOUNT FINALIZATION (Revealed upon verified PIN) -->
-      <div id="step2-finalize" class="space-y-4 hidden opacity-0 transition-opacity duration-300">
-        
-        <!-- Live Verified Profile Display -->
-        <div class="bg-blue-50/90 border border-blue-200/80 rounded-2xl p-4 shadow-sm">
-          <div class="flex items-center gap-3 mb-2.5">
-            <div class="w-9 h-9 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold shadow-sm flex-shrink-0">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
-                <polyline points="20 6 9 17 4 12"></polyline>
-              </svg>
-            </div>
-            <div class="flex-1 min-w-0">
-              <div class="flex items-center justify-between">
-                <span class="text-[10px] text-blue-700 font-bold uppercase tracking-wider">SBTET Verified Profile</span>
-                <span id="displayPin" class="text-[11px] font-mono font-bold text-blue-800 bg-blue-100/90 px-2 py-0.5 rounded-md"></span>
-              </div>
-              <h3 class="text-sm font-bold text-slate-800 truncate" id="displayName">...</h3>
-            </div>
-          </div>
-          
-          <div class="grid grid-cols-2 gap-2 text-[11px] bg-white/70 rounded-xl p-2.5 border border-blue-100 font-medium">
-            <p class="text-slate-600">Dept: <span id="displayDept" class="text-slate-900 font-semibold block truncate">...</span></p>
-            <p class="text-slate-600">Sem: <span id="displaySem" class="text-slate-900 font-semibold block truncate">...</span></p>
-          </div>
-        </div>
-
-        <!-- Official / Personal Email -->
-        <div>
-          <label class="block text-xs font-semibold text-slate-600 mb-1.5 ml-1">Set Official / Personal Email</label>
-          <div class="relative flex items-center rounded-xl bg-slate-50/70 border border-slate-200 px-4 py-3 transition-all duration-300 hover:border-slate-300 focus-within:ring-4 focus-within:ring-blue-500/20 focus-within:border-blue-500 focus-within:bg-white shadow-sm">
-            <svg class="w-4 h-4 text-slate-400 mr-2.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <rect x="2" y="4" width="20" height="16" rx="2"></rect>
-              <path d="M22 6l-10 7L2 6"></path>
-            </svg>
-            <input
-              type="email"
-              id="studentEmail"
-              placeholder="e.g. student@samskruti.ac.in"
-              class="w-full bg-transparent text-sm focus:outline-none text-slate-800 placeholder:text-slate-400 font-medium"
-              autocomplete="email"
-            />
-          </div>
-        </div>
-
-        <!-- Create Account Password -->
-        <div>
-          <label class="block text-xs font-semibold text-slate-600 mb-1.5 ml-1">Create Account Password</label>
-          <div class="relative flex items-center rounded-xl bg-slate-50/70 border border-slate-200 px-4 py-3 transition-all duration-300 hover:border-slate-300 focus-within:ring-4 focus-within:ring-blue-500/20 focus-within:border-blue-500 focus-within:bg-white shadow-sm">
-            <svg class="w-4 h-4 text-slate-400 mr-2.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-            </svg>
-            <input
-              type="password"
-              id="studentPassword"
-              placeholder="Minimum 8 characters"
-              class="w-full bg-transparent text-sm focus:outline-none text-slate-800 placeholder:text-slate-400 font-medium"
-              autocomplete="new-password"
-            />
-            <button
-              type="button"
-              onclick="togglePwdVisibility('studentPassword', this)"
-              class="text-slate-400 hover:text-slate-600 focus:outline-none cursor-pointer active:scale-90 transition-transform p-0.5 ml-1"
-            >
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                <circle cx="12" cy="12" r="3"></circle>
-              </svg>
-            </button>
-          </div>
-        </div>
-
-        <p class="text-xs text-rose-500 ml-1 hidden" id="registerError"></p>
-
-        <button
-          type="button"
-          id="completeSignUpBtn"
-          class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3.5 rounded-xl shadow-lg shadow-emerald-600/30 transition-all duration-300 transform hover:-translate-y-1 active:translate-y-0.5 active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer"
-        >
-          <span id="completeBtnLabel">Complete Registration →</span>
-          <svg class="w-4 h-4 hidden animate-spin" id="registerSpinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="10" class="opacity-25" stroke="currentColor"></circle>
-            <path d="M4 12a8 8 0 018-8v8H4z" class="opacity-75" fill="currentColor"></path>
-          </svg>
-        </button>
-
-        <button
-          type="button"
-          id="btnBackToPin"
-          class="w-full text-slate-400 hover:text-slate-600 text-xs font-semibold py-1.5 transition-colors text-center cursor-pointer"
-        >
-          ← Use a different PIN
-        </button>
-      </div>
-
-    </div>
-
-    <!-- ======================================================== -->
-    <!-- TAB 2: STUDENT SIGN IN (EXACT REFERENCE DESIGN)           -->
-    <!-- ======================================================== -->
-    <div id="tabSignInContent" class="space-y-4 transition-all duration-300 ease-in-out opacity-100 translate-y-0">
-      
-      <!-- Input Field 1: Identifier -->
-      <div>
-        <label for="loginIdentifier" class="block text-xs font-semibold text-slate-600 mb-1.5 ml-1">
-          Registered Student Email or PIN
-        </label>
-        <div class="relative flex items-center rounded-xl bg-slate-50/70 border border-slate-200 px-4 py-3 transition-all duration-300 hover:border-slate-300 focus-within:ring-4 focus-within:ring-blue-500/20 focus-within:border-blue-500 focus-within:bg-white shadow-sm">
-          <!-- Feather/Heroicon SVG Mail Icon -->
-          <svg class="w-4 h-4 text-slate-400 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-          </svg>
-          <input
-            type="text"
-            id="loginIdentifier"
-            name="identifier"
-            placeholder="Registered Email or Diploma PIN"
-            class="w-full bg-transparent text-sm focus:outline-none text-slate-800 placeholder:text-slate-400 font-medium"
-            autocomplete="username"
-          />
-        </div>
-
-        <!-- Quick Fill Helpers -->
-        <div class="flex items-center gap-1.5 mt-1.5 ml-1 flex-wrap">
-          <span class="text-[10px] text-slate-400 font-medium">Quick Fill:</span>
-          <button type="button" onclick="fillSignIn('24259-AIML-019')" class="text-[10px] bg-blue-50 hover:bg-blue-100 text-blue-700 px-2 py-0.5 rounded font-mono font-semibold transition-colors cursor-pointer">
-            24259-AIML-019 (Hitesh)
-          </button>
-          <button type="button" onclick="fillSignIn('24259-CS-025')" class="text-[10px] bg-slate-100 hover:bg-slate-200 text-slate-600 px-2 py-0.5 rounded font-mono transition-colors cursor-pointer">
-            24259-CS-025
-          </button>
-        </div>
-      </div>
-
-      <!-- Input Field 2: Password -->
-      <div>
-        <div class="flex items-center justify-between mb-1.5 ml-1 mr-1">
-          <label for="loginPassword" class="text-xs font-semibold text-slate-600">Password</label>
-          <a
-            href="javascript:void(0)"
-            onclick="fillTestPassword('loginPassword')"
-            class="text-xs text-blue-600 hover:text-blue-800 transition-colors font-medium cursor-pointer"
-          >
-            Forgot Password?
-          </a>
-        </div>
-        <div class="relative flex items-center rounded-xl bg-slate-50/70 border border-slate-200 px-4 py-3 transition-all duration-300 hover:border-slate-300 focus-within:ring-4 focus-within:ring-blue-500/20 focus-within:border-blue-500 focus-within:bg-white shadow-sm">
-          <!-- Feather/Heroicon SVG Lock Icon -->
-          <svg class="w-4 h-4 text-slate-400 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-          </svg>
-          <input
-            type="password"
-            id="loginPassword"
-            name="password"
-            placeholder="Enter account password"
-            class="w-full bg-transparent text-sm focus:outline-none text-slate-800 placeholder:text-slate-400 font-medium"
-            autocomplete="current-password"
-          />
-          <button
-            type="button"
-            id="togglePasswordBtn"
-            aria-label="Toggle password visibility"
-            class="text-slate-400 hover:text-slate-600 focus:outline-none cursor-pointer active:scale-90 transition-transform p-0.5 ml-1"
-          >
-            <!-- Default: Eye Open SVG -->
-            <svg id="eyeIconSvg" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-              <circle cx="12" cy="12" r="3"></circle>
-            </svg>
-          </button>
-        </div>
-      </div>
-
-      <!-- Options Row: Custom Remember Me Checkbox -->
-      <div class="flex items-center justify-between pt-0.5">
-        <label class="flex items-center cursor-pointer select-none">
-          <input
-            type="checkbox"
-            id="rememberMe"
-            class="accent-blue-600 w-4 h-4 rounded transition-all cursor-pointer mr-2"
-          />
-          <span class="text-xs font-medium text-slate-600">Remember Me</span>
-        </label>
-      </div>
-
-      <!-- Inline Clean Error Badge -->
-      <div
-        id="loginError"
-        class="text-xs text-rose-600 bg-rose-50 border border-rose-200 px-3.5 py-2.5 rounded-xl hidden font-medium transition-all duration-300"
-      ></div>
-
-      <!-- Primary CTA Button -->
-      <button
-        type="button"
-        id="btnStudentSignIn"
-        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3.5 rounded-xl shadow-[0_8px_20px_rgba(37,99,235,0.24)] hover:shadow-[0_12px_24px_rgba(37,99,235,0.35)] transition-all duration-300 transform hover:-translate-y-1 active:translate-y-0.5 active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer"
-      >
-        <span id="btnSignInText">Sign In to Student Portal →</span>
-        <svg class="w-4 h-4 hidden animate-spin" id="signInSpinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="12" cy="12" r="10" class="opacity-25" stroke="currentColor"></circle>
-          <path d="M4 12a8 8 0 018-8v8H4z" class="opacity-75" fill="currentColor"></path>
-        </svg>
-      </button>
-
-      <p class="text-center text-xs text-slate-400 pt-1">
-        New student? 
-        <button type="button" onclick="switchTab('signup')" class="text-blue-600 font-semibold hover:underline cursor-pointer">
-          Verify PIN &amp; Register
-        </button>
-      </p>
-    </div>
-
-    <!-- ======================================================== -->
-    <!-- TAB 3: ADMIN / HOD LOGIN                                  -->
-    <!-- ======================================================== -->
-    <div id="tabHodContent" class="space-y-4 transition-all duration-300 ease-in-out hidden opacity-0 translate-y-2">
-      <div class="bg-emerald-50 border border-emerald-200/80 rounded-xl p-3 flex items-center gap-2.5 text-xs text-emerald-800">
-        <svg class="w-4 h-4 text-emerald-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-        </svg>
-        <span>Department Head Access • Automatic 180-Student Scraper Sync</span>
-      </div>
-
-      <div>
-        <label for="hodId" class="block text-xs font-semibold text-slate-600 mb-1.5 ml-1">Faculty / HOD ID</label>
-        <div class="relative flex items-center rounded-xl bg-slate-50/70 border border-slate-200 px-4 py-3 transition-all duration-300 hover:border-slate-300 focus-within:ring-4 focus-within:ring-emerald-500/20 focus-within:border-emerald-500 focus-within:bg-white shadow-sm">
-          <svg class="w-4 h-4 text-slate-400 mr-2.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-            <circle cx="8.5" cy="7" r="4"></circle>
-            <polyline points="17 11 19 13 23 9"></polyline>
-          </svg>
-          <input
-            type="text"
-            id="hodId"
-            value="PADMINI-AIML-HOD"
-            placeholder="e.g. PADMINI-AIML-HOD or HOD_CS"
-            class="w-full bg-transparent text-sm focus:outline-none font-mono uppercase text-slate-800 placeholder:text-slate-400 font-semibold"
-            autocomplete="username"
-          />
-        </div>
-        <!-- HOD quick picks -->
-        <div class="flex items-center gap-1.5 mt-2 ml-1 flex-wrap">
-          <span class="text-[10px] text-slate-400 font-medium">Quick Pick:</span>
-          <button type="button" onclick="document.getElementById('hodId').value='PADMINI-AIML-HOD'" class="text-[10px] bg-emerald-100 hover:bg-emerald-200 text-emerald-800 px-2 py-0.5 rounded font-mono font-bold transition-colors cursor-pointer">
-            Prof. Padmini (AIML)
-          </button>
-          <button type="button" onclick="document.getElementById('hodId').value='HOD_CS'" class="text-[10px] bg-blue-100 hover:bg-blue-200 text-blue-800 px-2 py-0.5 rounded font-mono font-bold transition-colors cursor-pointer">
-            Prof. Vamshi (CSE)
-          </button>
-        </div>
-      </div>
-
-      <div>
-        <div class="flex items-center justify-between mb-1.5 ml-1 mr-1">
-          <label for="hodPassword" class="text-xs font-semibold text-slate-600">HOD Password</label>
-          <span class="text-[11px] text-emerald-600 hover:underline cursor-pointer" onclick="fillTestPassword('hodPassword')">Default: Password123</span>
-        </div>
-        <div class="relative flex items-center rounded-xl bg-slate-50/70 border border-slate-200 px-4 py-3 transition-all duration-300 hover:border-slate-300 focus-within:ring-4 focus-within:ring-emerald-500/20 focus-within:border-emerald-500 focus-within:bg-white shadow-sm">
-          <svg class="w-4 h-4 text-slate-400 mr-2.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-          </svg>
-          <input
-            type="password"
-            id="hodPassword"
-            value="Password123"
-            placeholder="Enter HOD security key"
-            class="w-full bg-transparent text-sm focus:outline-none text-slate-800 placeholder:text-slate-400 font-medium"
-            autocomplete="current-password"
-          />
-          <button
-            type="button"
-            onclick="togglePwdVisibility('hodPassword', this)"
-            class="text-slate-400 hover:text-slate-600 focus:outline-none cursor-pointer active:scale-90 transition-transform p-0.5 ml-1"
-          >
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-              <circle cx="12" cy="12" r="3"></circle>
-            </svg>
-          </button>
-        </div>
-      </div>
-
-      <p class="text-xs text-rose-500 ml-1 hidden" id="hodError"></p>
-
-      <button
-        type="button"
-        id="hodLoginBtn"
-        class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3.5 rounded-xl shadow-lg shadow-emerald-600/30 transition-all duration-300 transform hover:-translate-y-1 active:translate-y-0.5 active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer"
-      >
-        <span id="hodBtnLabel">Sign In as Department HOD →</span>
-        <svg class="w-4 h-4 hidden animate-spin" id="hodSpinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="12" cy="12" r="10" class="opacity-25" stroke="currentColor"></circle>
-          <path d="M4 12a8 8 0 018-8v8H4z" class="opacity-75" fill="currentColor"></path>
-        </svg>
-      </button>
-    </div>
-
+  <!-- ============================================================ -->
+  <!-- 1. LIVE ANIMATED BACKGROUND AURA (60 FPS MOVING ORBS)        -->
+  <!-- ============================================================ -->
+  <div class="dc-orb-bg" aria-hidden="true">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+    <div class="orb orb-4"></div>
   </div>
 
-  <!-- Integrated Frontend Controller Script -->
-  <script>
-    // ========================================================
-    // 1. SLIDING PILL MORPH & TAB SWITCHING ARCHITECTURE
-    // ========================================================
-    const tabBtnSignup = document.getElementById('tabBtnSignup');
-    const tabBtnSignin = document.getElementById('tabBtnSignin');
-    const tabBtnHod = document.getElementById('tabBtnHod');
-    const tabIndicatorPill = document.getElementById('tabIndicatorPill');
-    const tabsBar = document.getElementById('tabsBar');
+  <div class="auth-card-wrapper">
+    <div class="auth-card" id="authCard">
 
-    const tabSignUpContent = document.getElementById('tabSignUpContent');
-    const tabSignInContent = document.getElementById('tabSignInContent');
-    const tabHodContent = document.getElementById('tabHodContent');
+      <!-- Dynamic Role Operator Capsule (Hover upon it to switch) -->
+      <div class="role-operator-container">
+        <div class="role-capsule" id="roleCapsule" title="Hover to select account portal">
+          
+          <!-- Resting View -->
+          <div class="role-resting" id="roleResting">
+            <span class="role-resting-icon" id="roleRestingIcon">
+              <i data-lucide="graduation-cap" style="width: 15px; height: 15px;"></i>
+            </span>
+            <span id="roleRestingLabel">Student</span>
+            <span class="role-pulse-dot"></span>
+          </div>
 
-    // Backward-compatibility aliases for legacy scripts
-    const tabContentSignup = tabSignUpContent;
-    const tabContentSignin = tabSignInContent;
-    const tabContentHod = tabHodContent;
-    const signinIdentifierInput = document.getElementById('loginIdentifier');
-    const signinPasswordInput = document.getElementById('loginPassword');
-    const studentSignInBtn = document.getElementById('btnStudentSignIn');
+          <!-- Expanded View (Revealed on Hover) -->
+          <div class="role-expanded" id="roleExpanded">
+            <button type="button" class="role-pill-btn is-active" id="btnRoleStudent" onclick="switchRole('STUDENT')">
+              <i data-lucide="graduation-cap" style="width: 14px; height: 14px;"></i>
+              <span>Student</span>
+            </button>
+            <button type="button" class="role-pill-btn" id="btnRoleHOD" onclick="switchRole('HOD')">
+              <i data-lucide="shield" style="width: 14px; height: 14px;"></i>
+              <span>HOD</span>
+            </button>
+          </div>
 
-    let currentTab = 'signin';
-    let isTransitioning = false;
+        </div>
+      </div>
 
-    const tabElements = {
-      'signup': { btn: tabBtnSignup, content: tabSignUpContent },
-      'signin': { btn: tabBtnSignin, content: tabSignInContent },
-      'hod':    { btn: tabBtnHod,    content: tabHodContent }
-    };
+      <!-- Auth Header Title & Subtitle -->
+      <div class="auth-header">
+        <h1 class="auth-title" id="authTitleText">Student Login</h1>
+        <div class="auth-subtitle" id="authSubtitleText">Samskruti College of Engineering (Code: 259)</div>
+      </div>
 
-    function updatePillPosition(targetBtn) {
-      if (!targetBtn || !tabIndicatorPill || !tabsBar) return;
-      const barRect = tabsBar.getBoundingClientRect();
-      const btnRect = targetBtn.getBoundingClientRect();
-      const offsetLeft = btnRect.left - barRect.left;
-      const width = btnRect.width;
-
-      tabIndicatorPill.style.left = `${offsetLeft}px`;
-      tabIndicatorPill.style.width = `${width}px`;
-    }
-
-    function switchTab(tabId) {
-      if (!tabElements[tabId] || (tabId === currentTab && !tabElements[tabId].content.classList.contains('hidden'))) {
-        return;
-      }
-      if (isTransitioning) return;
-      isTransitioning = true;
-
-      const prevTabId = currentTab;
-      currentTab = tabId;
-
-      const targetBtn = tabElements[tabId].btn;
-      const targetContent = tabElements[tabId].content;
-      const prevContent = tabElements[prevTabId]?.content;
-
-      // 1. Update Buttons Styling
-      Object.keys(tabElements).forEach(id => {
-        const btn = tabElements[id].btn;
-        if (id === tabId) {
-          btn.className = "flex-1 relative z-10 text-xs md:text-sm font-semibold py-2 px-2 rounded-full transition-colors duration-200 text-center text-blue-600 cursor-pointer";
-        } else {
-          btn.className = "flex-1 relative z-10 text-xs md:text-sm font-semibold py-2 px-2 rounded-full transition-colors duration-200 text-center text-slate-500 hover:text-slate-700 cursor-pointer";
-        }
-      });
-
-      // 2. Animate sliding pill to clicked tab
-      updatePillPosition(targetBtn);
-
-      // 3. Smooth Content Cross-Fade
-      if (prevContent && prevContent !== targetContent) {
-        prevContent.classList.remove('opacity-100', 'translate-y-0');
-        prevContent.classList.add('opacity-0', 'translate-y-2');
-      }
-
-      setTimeout(() => {
-        // Hide all inactive contents
-        Object.keys(tabElements).forEach(id => {
-          if (id !== tabId) {
-            tabElements[id].content.classList.add('hidden');
-          }
-        });
-
-        // Unhide target content and trigger fade-in & slide-up
-        targetContent.classList.remove('hidden');
-        // Force reflow
-        void targetContent.offsetWidth;
-
-        targetContent.classList.remove('opacity-0', 'translate-y-2');
-        targetContent.classList.add('opacity-100', 'translate-y-0');
-
-        isTransitioning = false;
-      }, 150);
-    }
-
-    // Global alias
-    window.activateTab = switchTab;
-    window.switchTab = switchTab;
-
-    tabBtnSignup.addEventListener('click', () => switchTab('signup'));
-    tabBtnSignin.addEventListener('click', () => switchTab('signin'));
-    tabBtnHod.addEventListener('click', () => switchTab('hod'));
-
-    // Handle responsive resize for the sliding pill
-    window.addEventListener('resize', () => {
-      if (tabElements[currentTab]) {
-        updatePillPosition(tabElements[currentTab].btn);
-      }
-    });
-
-    // Initialize pill on DOM ready
-    window.addEventListener('DOMContentLoaded', () => {
-      // Check for remembered user
-      const remembered = localStorage.getItem('saved_identifier');
-      if (remembered) {
-        const idInput = document.getElementById('loginIdentifier');
-        if (idInput) idInput.value = remembered;
-        const rmBox = document.getElementById('rememberMe');
-        if (rmBox) rmBox.checked = true;
-      }
-
-      // Check URL query param (e.g. ?tab=signup or ?tab=hod)
-      const params = new URLSearchParams(window.location.search);
-      const requestedTab = params.get('tab');
-      if (requestedTab && tabElements[requestedTab]) {
-        switchTab(requestedTab);
-      } else {
-        // Default to Student Sign In as in reference design
-        switchTab('signin');
-      }
-
-      requestAnimationFrame(() => {
-        updatePillPosition(tabElements[currentTab].btn);
-      });
-    });
-
-    // ========================================================
-    // 2. PASSWORD TOGGLE & QUICK HELPERS
-    // ========================================================
-    const eyeSvg = `
-      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-        <circle cx="12" cy="12" r="3"></circle>
-      </svg>`;
-    const eyeOffSvg = `
-      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
-        <line x1="1" y1="1" x2="23" y2="23"></line>
-      </svg>`;
-
-    const togglePasswordBtn = document.getElementById('togglePasswordBtn');
-    const loginPasswordInput = document.getElementById('loginPassword');
-
-    if (togglePasswordBtn && loginPasswordInput) {
-      togglePasswordBtn.addEventListener('click', () => {
-        const isPassword = loginPasswordInput.type === 'password';
-        loginPasswordInput.type = isPassword ? 'text' : 'password';
-        togglePasswordBtn.innerHTML = isPassword ? eyeOffSvg : eyeSvg;
-        if (isPassword) {
-          togglePasswordBtn.classList.add('text-blue-600');
-        } else {
-          togglePasswordBtn.classList.remove('text-blue-600');
-        }
-      });
-    }
-
-    function togglePwdVisibility(inputId, btn) {
-      const input = document.getElementById(inputId);
-      if (!input) return;
-      if (input.type === 'password') {
-        input.type = 'text';
-        btn.classList.add('text-blue-600');
-      } else {
-        input.type = 'password';
-        btn.classList.remove('text-blue-600');
-      }
-    }
-
-    function fillSignIn(identifier) {
-      const idInput = document.getElementById('loginIdentifier');
-      const pwdInput = document.getElementById('loginPassword');
-      if (idInput) idInput.value = identifier;
-      if (pwdInput && !pwdInput.value) pwdInput.value = 'Password123';
-      hideError(document.getElementById('loginError'));
-    }
-
-    function fillPin(pin) {
-      const pinInput = document.getElementById('studentPin');
-      if (pinInput) pinInput.value = pin;
-      hideError(document.getElementById('pinError'));
-    }
-
-    function fillTestPassword(fieldId) {
-      const field = document.getElementById(fieldId);
-      if (field) {
-        field.value = "Password123";
-        field.type = "text";
-        setTimeout(() => { field.type = "password"; }, 2000);
-      }
-    }
-
-    function showInlineError(elem, msg) {
-      if (!elem) return;
-      elem.textContent = msg;
-      elem.classList.remove('hidden');
-      elem.classList.remove('animate-shake');
-      void elem.offsetWidth; // retrigger shake
-      elem.classList.add('animate-shake');
-    }
-
-    function hideError(elem) {
-      if (!elem) return;
-      elem.textContent = '';
-      elem.classList.add('hidden');
-      elem.classList.remove('animate-shake');
-    }
-
-    // ========================================================
-    // 3. STUDENT SIGN IN API INTEGRATION (POST /api/auth/login)
-    // ========================================================
-    const btnStudentSignIn = document.getElementById('btnStudentSignIn');
-    const loginIdentifier = document.getElementById('loginIdentifier');
-    const loginPassword = document.getElementById('loginPassword');
-    const loginError = document.getElementById('loginError');
-    const signInSpinner = document.getElementById('signInSpinner');
-    const btnSignInText = document.getElementById('btnSignInText');
-    const rememberMe = document.getElementById('rememberMe');
-
-    async function handleStudentSignIn() {
-      const identifier = loginIdentifier.value.trim();
-      const password = loginPassword.value;
-
-      if (!identifier) {
-        showInlineError(loginError, 'Please enter your registered Student Email or PIN.');
-        loginIdentifier.focus();
-        return;
-      }
-      if (!password) {
-        showInlineError(loginError, 'Please enter your password.');
-        loginPassword.focus();
-        return;
-      }
-
-      // UI Loading state
-      btnStudentSignIn.disabled = true;
-      signInSpinner.classList.remove('hidden');
-      btnSignInText.textContent = "Authenticating...";
-      hideError(loginError);
-
-      try {
-        const response = await fetch('/api/auth/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            identifier: identifier,
-            password: password
-          })
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data.detail || data.message || 'Invalid credentials. Please verify your PIN or password.');
-        }
-
-        // Remember Me Handler
-        if (rememberMe && rememberMe.checked) {
-          localStorage.setItem('saved_identifier', identifier);
-        } else {
-          localStorage.removeItem('saved_identifier');
-        }
-
-        // Persist session tokens & user profile
-        const userObj = data.user || {};
-        const isHod = (userObj.role || '').toUpperCase().includes('HOD');
+      <!-- Authentication Form (No example text in placeholders) -->
+      <form id="authMainForm" class="auth-form" onsubmit="event.preventDefault(); handleAuthSubmit();">
         
-        persistSession(
-          data,
-          userObj.sbtetPin || userObj.pin || identifier,
-          userObj.email || '',
-          userObj.role || 'STUDENT'
-        );
+        <!-- Field 1: PIN or HOD ID -->
+        <div class="form-field-group" id="groupField1">
+          <label class="field-label" id="labelField1" for="inputField1">Student PIN</label>
+          <div class="capsule-input-box">
+            <input 
+              type="text" 
+              id="inputField1" 
+              class="capsule-input" 
+              placeholder="Enter Student PIN"
+              autocomplete="off"
+              required
+            />
+          </div>
+          <!-- Live Roster Verification Badge for PIN -->
+          <div id="rosterVerifyBadge" class="roster-verify-badge">
+            <i data-lucide="check-circle" style="width: 13px; height: 13px;"></i>
+            <span id="rosterVerifyText">Verified</span>
+          </div>
+        </div>
 
-        // Success redirect
-        const redirectUrl = data.redirect_url || (isHod ? '/screens/04-hod-portal/hod-dashboard.html' : '/screens/02-student-portal/dashboard.html');
-        window.location.href = redirectUrl;
+        <!-- Field 2: Password -->
+        <div class="form-field-group" id="groupField2">
+          <label class="field-label" id="labelField2" for="inputField2">Password</label>
+          <div class="capsule-input-box">
+            <input 
+              type="password" 
+              id="inputField2" 
+              class="capsule-input has-eye" 
+              placeholder="Enter Password"
+              autocomplete="current-password"
+              required
+            />
+            <button type="button" class="eye-toggle-btn" onclick="togglePasswordVisibility('inputField2', this)">
+              <i data-lucide="eye" style="width: 16px; height: 16px;"></i>
+            </button>
+          </div>
+        </div>
 
-      } catch (err) {
-        showInlineError(loginError, err.message || 'Sign in failed. Please check credentials and try again.');
-      } finally {
-        btnStudentSignIn.disabled = false;
-        signInSpinner.classList.add('hidden');
-        btnSignInText.textContent = "Sign In to Student Portal →";
+        <!-- Submit Button -->
+        <button type="submit" id="btnSubmitAuth" class="btn-auth-submit">
+          <span id="btnSubmitText">Login to Portal</span>
+          <i data-lucide="arrow-right" id="btnSubmitArrow" style="width: 18px; height: 18px;"></i>
+          <i data-lucide="loader-2" id="btnSubmitSpinner" style="width: 18px; height: 18px; display: none; animation: spin 1s linear infinite;"></i>
+        </button>
+
+      </form>
+
+      <!-- Feedback Toast Banner -->
+      <div id="authToastBanner" class="auth-toast-banner"></div>
+
+      <!-- Footer Institutional Label -->
+      <div class="auth-footer-meta">
+        <i data-lucide="lock" style="width: 13px; height: 13px;"></i>
+        <span>SBTET C-24 Encrypted Authentication</span>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="../../js/dc-dynamic-island.js?v=3.3.0"></script>
+
+  <script>
+    if (window.lucide) {
+      window.lucide.createIcons();
+    }
+
+    // State
+    let currentRole = 'STUDENT'; // 'STUDENT' or 'HOD'
+    let rosterDebounceTimer = null;
+
+    const input1 = document.getElementById('inputField1');
+    const input2 = document.getElementById('inputField2');
+    const label1 = document.getElementById('labelField1');
+    const label2 = document.getElementById('labelField2');
+    const authTitle = document.getElementById('authTitleText');
+    const authSubtitle = document.getElementById('authSubtitleText');
+    const roleRestingIcon = document.getElementById('roleRestingIcon');
+    const roleRestingLabel = document.getElementById('roleRestingLabel');
+    const btnRoleStudent = document.getElementById('btnRoleStudent');
+    const btnRoleHOD = document.getElementById('btnRoleHOD');
+    const rosterBadge = document.getElementById('rosterVerifyBadge');
+    const rosterText = document.getElementById('rosterVerifyText');
+    const toastBanner = document.getElementById('authToastBanner');
+
+    function updateAuthUI() {
+      if (currentRole === 'STUDENT') {
+        roleRestingLabel.textContent = 'Student';
+        roleRestingIcon.innerHTML = '<i data-lucide="graduation-cap" style="width: 15px; height: 15px;"></i>';
+        btnRoleStudent.classList.add('is-active');
+        btnRoleHOD.classList.remove('is-active');
+
+        authTitle.textContent = 'Student Login';
+        authSubtitle.textContent = 'Samskruti College of Engineering (Code: 259)';
+        label1.textContent = 'Student PIN';
+        input1.placeholder = 'Enter Student PIN';
+        label2.textContent = 'Password';
+        input2.placeholder = 'Enter Password';
+      } else {
+        roleRestingLabel.textContent = 'HOD';
+        roleRestingIcon.innerHTML = '<i data-lucide="shield" style="width: 15px; height: 15px;"></i>';
+        btnRoleHOD.classList.add('is-active');
+        btnRoleStudent.classList.remove('is-active');
+
+        authTitle.textContent = 'HOD Executive Login';
+        authSubtitle.textContent = 'Department Head Administrative Console';
+        label1.textContent = 'HOD ID';
+        input1.placeholder = 'Enter HOD ID';
+        label2.textContent = 'Security Password';
+        input2.placeholder = 'Enter Security Password';
+        rosterBadge.style.display = 'none';
+      }
+
+      if (window.lucide) {
+        window.lucide.createIcons();
       }
     }
 
-    btnStudentSignIn.addEventListener('click', handleStudentSignIn);
+    function switchRole(role) {
+      currentRole = role;
+      updateAuthUI();
+      hideToast();
+    }
 
-    [loginIdentifier, loginPassword].forEach(input => {
-      input.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-          e.preventDefault();
-          handleStudentSignIn();
-        }
-      });
-    });
+    function togglePasswordVisibility(fieldId, btn) {
+      const field = document.getElementById(fieldId);
+      if (!field) return;
+      const isPwd = field.type === 'password';
+      field.type = isPwd ? 'text' : 'password';
+      btn.innerHTML = isPwd 
+        ? '<i data-lucide="eye-off" style="width: 16px; height: 16px;"></i>' 
+        : '<i data-lucide="eye" style="width: 16px; height: 16px;"></i>';
+      if (window.lucide) window.lucide.createIcons();
+    }
 
-    // ========================================================
-    // 4. STUDENT SIGN UP (PIN VERIFICATION & FINALIZATION)
-    // ========================================================
-    const verifyPinBtn = document.getElementById('verifyPinBtn');
-    const studentPinInput = document.getElementById('studentPin');
-    const pinError = document.getElementById('pinError');
-    const loadingSpinner = document.getElementById('loadingSpinner');
-    const verifyBtnLabel = document.getElementById('verifyBtnLabel');
+    // Live PIN Verification against Roster
+    input1.addEventListener('input', () => {
+      if (currentRole !== 'STUDENT') return;
+      const val = input1.value.trim().toUpperCase();
 
-    const step1 = document.getElementById('step1-pin');
-    const step2 = document.getElementById('step2-finalize');
-    let verifiedData = null;
-
-    verifyPinBtn.addEventListener('click', async () => {
-      const pin = studentPinInput.value.trim().toUpperCase();
-      if (!pin) {
-        showInlineError(pinError, 'Please enter your Diploma PIN No.');
-        studentPinInput.focus();
+      clearTimeout(rosterDebounceTimer);
+      if (val.length < 5) {
+        rosterBadge.style.display = 'none';
         return;
       }
 
-      verifyPinBtn.disabled = true;
-      loadingSpinner.classList.remove('hidden');
-      verifyBtnLabel.textContent = "Verifying with SBTET...";
-      hideError(pinError);
+      rosterDebounceTimer = setTimeout(async () => {
+        try {
+          const res = await fetch(`/api/student/profile?pin=${encodeURIComponent(val)}`);
+          const data = await res.json();
+          if (res.ok && data.success && data.data) {
+            rosterText.textContent = `Verified: ${data.data.name || val}`;
+            rosterBadge.style.display = 'inline-flex';
+          } else {
+            rosterBadge.style.display = 'none';
+          }
+        } catch (e) {
+          rosterBadge.style.display = 'none';
+        }
+      }, 300);
+    });
+
+    async function handleAuthSubmit() {
+      const val1 = input1.value.trim();
+      const val2 = input2.value.trim();
+
+      const btn = document.getElementById('btnSubmitAuth');
+      const btnText = document.getElementById('btnSubmitText');
+      const btnArrow = document.getElementById('btnSubmitArrow');
+      const btnSpinner = document.getElementById('btnSubmitSpinner');
+
+      btn.disabled = true;
+      btnSpinner.style.display = 'inline-block';
+      btnArrow.style.display = 'none';
+      btnText.textContent = 'Logging In...';
+      hideToast();
 
       try {
-        const response = await fetch('/api/auth/verify-pin', {
+        let endpoint = '/api/auth/login';
+        let payload = {};
+
+        if (currentRole === 'STUDENT') {
+          endpoint = '/api/auth/login';
+          payload = {
+            identifier: val1.toUpperCase(),
+            password: val2
+          };
+        } else {
+          endpoint = '/api/auth/login';
+          payload = {
+            identifier: val1,
+            password: val2 || 'Password123'
+          };
+        }
+
+        const res = await fetch(endpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ pin: pin })
+          body: JSON.stringify(payload)
         });
 
-        const data = await response.json();
+        const data = await res.json();
 
-        if (!response.ok) {
-          throw new Error(data.detail || data.message || 'Invalid PIN or Roster Key not found.');
+        if (!res.ok) {
+          throw new Error(data.detail || data.message || 'Authentication failed. Please verify credentials.');
         }
 
-        // If already registered, switch to Sign In tab
-        if (data.status === 'already_registered' || data.status === 'ALREADY_REGISTERED') {
-          alert(`${data.message || 'Account already registered. Redirecting to Student Sign In...'}`);
-          switchTab('signin');
-          document.getElementById('loginIdentifier').value = data.pin || pin;
-          return;
-        }
-
-        verifiedData = data;
-        document.getElementById('displayPin').textContent = data.pin || pin;
-        document.getElementById('displayName').textContent = data.name || 'Verified Student';
-        document.getElementById('displayDept').textContent = data.department || 'Computer Science (CS)';
-        document.getElementById('displaySem').textContent = data.semester || 'Current Semester';
-
-        if (data.email) {
-          document.getElementById('studentEmail').value = data.email;
-        }
-
-        step1.classList.add('hidden');
-        step2.classList.remove('hidden');
-        setTimeout(() => {
-          step2.classList.remove('opacity-0');
-        }, 30);
-
-      } catch (err) {
-        showInlineError(pinError, err.message || 'Failed to verify PIN. Please try again.');
-      } finally {
-        verifyPinBtn.disabled = false;
-        loadingSpinner.classList.add('hidden');
-        verifyBtnLabel.textContent = "Verify & Fetch Profile";
-      }
-    });
-
-    studentPinInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        verifyPinBtn.click();
-      }
-    });
-
-    document.getElementById('btnBackToPin').addEventListener('click', () => {
-      step2.classList.add('opacity-0');
-      setTimeout(() => {
-        step2.classList.add('hidden');
-        step1.classList.remove('hidden');
-      }, 150);
-    });
-
-    const completeSignUpBtn = document.getElementById('completeSignUpBtn');
-    const studentEmailInput = document.getElementById('studentEmail');
-    const studentPasswordInput = document.getElementById('studentPassword');
-    const registerError = document.getElementById('registerError');
-    const registerSpinner = document.getElementById('registerSpinner');
-    const completeBtnLabel = document.getElementById('completeBtnLabel');
-
-    completeSignUpBtn.addEventListener('click', async () => {
-      const pin = verifiedData?.pin || studentPinInput.value.trim().toUpperCase();
-      const email = studentEmailInput.value.trim();
-      const password = studentPasswordInput.value;
-
-      if (!email) {
-        showInlineError(registerError, 'Please enter your official or personal email address.');
-        studentEmailInput.focus();
-        return;
-      }
-      if (!password || password.length < 6) {
-        showInlineError(registerError, 'Password must be at least 6 characters long.');
-        studentPasswordInput.focus();
-        return;
-      }
-
-      completeSignUpBtn.disabled = true;
-      registerSpinner.classList.remove('hidden');
-      completeBtnLabel.textContent = "Creating Account...";
-      hideError(registerError);
-
-      try {
-        const response = await fetch('/api/auth/register', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ pin: pin, email: email, password: password })
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data.detail || data.message || 'Registration failed.');
-        }
-
-        persistSession(data, pin, email, 'STUDENT');
-        const redirectUrl = data.redirect_url || '/screens/02-student-portal/dashboard.html';
-        window.location.href = redirectUrl;
-
-      } catch (err) {
-        showInlineError(registerError, err.message || 'Registration failed.');
-      } finally {
-        completeSignUpBtn.disabled = false;
-        registerSpinner.classList.add('hidden');
-        completeBtnLabel.textContent = "Complete Registration →";
-      }
-    });
-
-    // ========================================================
-    // 5. HOD LOGIN INTEGRATION (POST /api/auth/hod-login)
-    // ========================================================
-    const hodLoginBtn = document.getElementById('hodLoginBtn');
-    const hodIdInput = document.getElementById('hodId');
-    const hodPasswordInput = document.getElementById('hodPassword');
-    const hodError = document.getElementById('hodError');
-    const hodSpinner = document.getElementById('hodSpinner');
-    const hodBtnLabel = document.getElementById('hodBtnLabel');
-
-    hodLoginBtn.addEventListener('click', async () => {
-      const hodId = hodIdInput.value.trim();
-      const password = hodPasswordInput.value;
-
-      if (!hodId) {
-        showInlineError(hodError, 'Please enter your HOD identifier.');
-        hodIdInput.focus();
-        return;
-      }
-      if (!password) {
-        showInlineError(hodError, 'Please enter the HOD password.');
-        hodPasswordInput.focus();
-        return;
-      }
-
-      hodLoginBtn.disabled = true;
-      hodSpinner.classList.remove('hidden');
-      hodBtnLabel.textContent = "Authenticating HOD...";
-      hideError(hodError);
-
-      try {
-        const response = await fetch('/api/auth/hod-login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ hod_id: hodId, password: password })
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data.detail || data.message || 'Invalid HOD credentials.');
-        }
-
-        // Purge student cache
-        localStorage.removeItem('student_pin');
-        localStorage.removeItem('user_role');
-        localStorage.removeItem('dc_user');
-        localStorage.removeItem('user_name');
-        localStorage.removeItem('auth_token');
-        localStorage.removeItem('dc_auth_token');
-        localStorage.removeItem('hod_branch');
-        localStorage.removeItem('hod_id');
-        sessionStorage.clear();
-
-        const isAiml = hodId.toUpperCase().includes('AIML') || (data.user && (data.user.role === 'HOD_AIML' || data.user.branch === 'AIML'));
-        const hodUser = data.user || {
-          pin: hodId,
-          name: isAiml ? "Prof. Padmini" : "Dr. J. Vamshi Krishna",
-          role: isAiml ? "HOD_AIML" : "HOD_CS",
-          department: isAiml ? "Artificial Intelligence & Machine Learning" : "Computer Science & Engineering",
-          branch: isAiml ? "AIML" : "CS",
-          scheme: "C-24",
-          semester: "5th Sem",
-          total_intake: isAiml ? 127 : 180,
-          collegeCode: "259",
+        // Persist session tokens & user information
+        const token = data.token || `tok_${Date.now()}`;
+        const userObj = data.user || {
+          pin: val1.toUpperCase(),
+          name: data.name || (currentRole === 'HOD' ? val1 : 'Student'),
+          role: currentRole === 'HOD' ? 'HOD' : 'STUDENT',
+          department: currentRole === 'HOD' ? 'Computer Science & Engineering' : 'Computer Science & Engineering',
+          branch: currentRole === 'HOD' ? 'CS' : 'CS',
           isRegistered: true,
           isActivated: true
         };
 
-        const token = data.token || `tok_hod_${Date.now()}`;
         localStorage.setItem('auth_token', token);
         localStorage.setItem('dc_auth_token', token);
-        localStorage.setItem('dc_user', JSON.stringify(hodUser));
-        localStorage.setItem('user_name', hodUser.name);
-        localStorage.setItem('user_role', hodUser.role);
-        localStorage.setItem('hod_branch', hodUser.branch || (isAiml ? 'AIML' : 'CS'));
-        localStorage.setItem('hod_id', hodId);
+        localStorage.setItem('token', token);
+        localStorage.setItem('smsk_token', token);
+        localStorage.setItem('student_pin', userObj.pin || val1);
+        localStorage.setItem('user_name', userObj.name || val1);
+        localStorage.setItem('user_role', userObj.role || currentRole);
+        localStorage.setItem('dc_user', JSON.stringify(userObj));
+        localStorage.setItem('smsk_user', JSON.stringify(userObj));
 
-        const redirectUrl = data.redirect_url || '/screens/04-hod-portal/hod-dashboard.html';
-        window.location.replace(redirectUrl);
+        showToast(`✓ Welcome, ${userObj.name}! Redirecting to portal...`, 'success');
+
+        setTimeout(() => {
+          if (currentRole === 'HOD') {
+            window.location.href = data.redirect_url || '/screens/04-hod-portal/hod-dashboard.html';
+          } else {
+            window.location.href = data.redirect_url || '/screens/02-student-portal/dashboard.html';
+          }
+        }, 350);
 
       } catch (err) {
-        showInlineError(hodError, err.message || 'HOD Login failed.');
-      } finally {
-        hodLoginBtn.disabled = false;
-        hodSpinner.classList.add('hidden');
-        hodBtnLabel.textContent = "Sign In as Department HOD →";
+        showToast(err.message, 'error');
+        btn.disabled = false;
+        btnSpinner.style.display = 'none';
+        btnArrow.style.display = 'inline-block';
+        btnText.textContent = 'Login to Portal';
       }
-    });
-
-    hodPasswordInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        hodLoginBtn.click();
-      }
-    });
-
-    // ========================================================
-    // 6. PERSIST SESSION HELPER
-    // ========================================================
-    function persistSession(data, pin, email, role) {
-      const token = data.token || `tok_${Date.now()}`;
-      const userRole = role || data.user?.role || 'STUDENT';
-      const isHod = userRole.toUpperCase().includes('HOD');
-
-      const user = data.user || {
-        sbtetPin: pin,
-        rollNumber: pin,
-        name: data.name || verifiedData?.name || 'Student',
-        email: email,
-        department: data.department || verifiedData?.department || (pin.includes('AI') ? 'Artificial Intelligence & Machine Learning' : 'Computer Science & Engineering'),
-        branch: data.branch || (pin.includes('AI') ? 'AIML' : 'CS'),
-        scheme: data.scheme || 'C-24',
-        semester: data.semester || verifiedData?.semester || '5th Sem',
-        role: userRole,
-        collegeCode: '259'
-      };
-
-      localStorage.setItem('auth_token', token);
-      localStorage.setItem('dc_auth_token', token);
-      if (!isHod) {
-        localStorage.setItem('student_pin', pin);
-      } else {
-        localStorage.removeItem('student_pin');
-        localStorage.setItem('hod_id', pin);
-        localStorage.setItem('hod_branch', user.branch || (userRole.includes('AIML') ? 'AIML' : 'CS'));
-      }
-      localStorage.setItem('dc_user', JSON.stringify(user));
-      localStorage.setItem('user_name', user.name);
-      localStorage.setItem('user_role', user.role);
     }
+
+    function showToast(msg, type) {
+      toastBanner.textContent = msg;
+      toastBanner.className = 'auth-toast-banner is-' + type;
+      toastBanner.style.display = 'block';
+    }
+
+    function hideToast() {
+      toastBanner.style.display = 'none';
+    }
+
+    // Role Capsule touch toggle
+    const capsule = document.getElementById('roleCapsule');
+    if (capsule) {
+      capsule.addEventListener('click', (e) => {
+        if (e.target.closest('.role-pill-btn')) return;
+        capsule.classList.toggle('is-expanded');
+      });
+    }
+
+    updateAuthUI();
   </script>
 </body>
 </html>

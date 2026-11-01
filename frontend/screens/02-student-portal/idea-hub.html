@@ -1,97 +1,117 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Idea Hub & Peer Collaboration | Samskruti Digital Campus (Code: 259)</title>
 
-  <!-- Neumorphic Base Styles -->
+  <!-- Web Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet" />
+
   <link rel="stylesheet" href="../../css/reset.css" />
   <link rel="stylesheet" href="../../css/theme-tokens.css" />
-  <link rel="stylesheet" href="../../css/global-layout.css" />
-  <link rel="stylesheet" href="../../css/top-nav.css" />
-  <link rel="stylesheet" href="../../css/animations.css" />
+  <link rel="stylesheet" href="../../css/dc-global-theme.css?v=3.3.0" />
+  <link rel="stylesheet" href="../../css/top-nav.css?v=3.3.0" />
   <link rel="stylesheet" href="./idea-hub.css" />
   <script src="https://unpkg.com/lucide@latest"></script>
-  <script src="../../js/theme-engine.js"></script>
+  <script src="../../js/dc-dynamic-island.js?v=3.3.0"></script>
+
+  <style>
+    /* ============================================================
+       IDEA HUB LUXURY EMERALD GLASS THEME
+       ============================================================ */
+    body.student-portal-body {
+      background: var(--bg-app);
+      color: #f0fdf4 !important;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .portal-viewport-wrapper {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 1360px;
+      margin: 0 auto;
+      padding: 1rem 1.5rem 4rem;
+      box-sizing: border-box;
+    }
+
+    /* Fixed Top-Right Corner Profile Widget */
+    .corner-profile-widget,
+    #ideaHubCornerProfile {
+      position: fixed;
+      top: 14px;
+      right: 20px;
+      z-index: 9998;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(30, 68, 50, 0.55) !important;
+      backdrop-filter: blur(24px) saturate(180%) !important;
+      -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+      border: 1px solid rgba(110, 231, 183, 0.3) !important;
+      border-radius: 9999px;
+      padding: 5px 14px 5px 6px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .my-skills-banner,
+    .neu-card,
+    .peer-card,
+    .idea-card,
+    .post-card {
+      background: rgba(20, 52, 36, 0.48) !important;
+      backdrop-filter: blur(28px) saturate(180%) !important;
+      -webkit-backdrop-filter: blur(28px) saturate(180%) !important;
+      border: 1px solid rgba(110, 231, 183, 0.22) !important;
+      border-radius: 24px !important;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.06) !important;
+      color: #f0fdf4 !important;
+      opacity: 1 !important;
+      visibility: visible !important;
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    }
+
+    .peer-card:hover,
+    .idea-card:hover {
+      background: rgba(28, 70, 48, 0.6) !important;
+      border-color: rgba(110, 231, 183, 0.45) !important;
+      transform: translateY(-3px) !important;
+    }
+
+    .welcome-text h1 {
+      color: #ffffff !important;
+      font-weight: 800 !important;
+    }
+
+    .welcome-text p {
+      color: #a7d9be !important;
+    }
+
+    .neu-btn-primary {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+      color: #041009 !important;
+      border: 1px solid rgba(52, 211, 153, 0.5) !important;
+      font-weight: 800 !important;
+      box-shadow: 0 4px 18px rgba(16, 185, 129, 0.35) !important;
+    }
+
+    .skill-pill {
+      background: rgba(16, 185, 129, 0.2) !important;
+      border: 1px solid rgba(52, 211, 153, 0.35) !important;
+      color: #6ee7b7 !important;
+      border-radius: 9999px !important;
+    }
+  </style>
 </head>
 <body class="student-portal-body">
   <div class="portal-viewport-wrapper">
-    
-    <!-- 1. UNIVERSAL TOP FLOATING CAPSULE NAVIGATION -->
-    <header class="top-nav-capsule-container">
-      <nav class="capsule-nav" aria-label="Campus Connect Navigation">
-        
-        <!-- Brand / Institution Emblem -->
-        <a href="dashboard.html" class="capsule-brand" title="Campus Connect">
-          <div class="brand-emblem-badge">
-            <img 
-              src="/assets/images/samskruti-logo-blue.png" 
-              alt="Campus Connect Logo" 
-              class="brand-logo-img"
-            />
-          </div>
-          <span class="brand-title">CAMPUS <span class="accent-text">CONNECT</span></span>
-        </a>
-
-        <div class="nav-divider"></div>
-
-        <!-- Working Navigation Links -->
-        <div class="capsule-menu-items">
-          <a href="dashboard.html" class="nav-item" data-page="dashboard">
-            <i data-lucide="layout-dashboard" class="nav-icon"></i>
-            <span>Dashboard</span>
-          </a>
-          
-          <a href="attendance.html" class="nav-item" data-page="attendance">
-            <i data-lucide="calendar-check" class="nav-icon"></i>
-            <span>Attendance</span>
-          </a>
-
-          <a href="results.html" class="nav-item" data-page="results">
-            <i data-lucide="graduation-cap" class="nav-icon"></i>
-            <span>Results</span>
-          </a>
-
-          <a href="idea-hub.html" class="nav-item active" data-page="idea-hub">
-            <i data-lucide="lightbulb" class="nav-icon"></i>
-            <span>Idea Hub</span>
-          </a>
-
-          <a href="marketplace.html" class="nav-item" data-page="marketplace">
-            <i data-lucide="shopping-bag" class="nav-icon"></i>
-            <span>Marketplace</span>
-          </a>
-
-          <a href="messages.html" class="nav-item" data-page="messages">
-            <i data-lucide="message-square" class="nav-icon"></i>
-            <span>Messages</span>
-          </a>
-
-          <a href="document-logistics.html" class="nav-item" data-page="document-logistics">
-            <i data-lucide="file-text" class="nav-icon"></i>
-            <span>Requests</span>
-          </a>
-
-          <a href="profile.html" class="nav-item" data-page="profile">
-            <i data-lucide="user" class="nav-icon"></i>
-            <span>Profile</span>
-          </a>
-        </div>
-
-        <!-- Capsule Controls -->
-        <div class="capsule-actions">
-          <button id="theme-toggle-btn" class="util-btn" title="Toggle Theme" aria-label="Toggle Theme">
-            <i data-lucide="sun" class="nav-icon"></i>
-          </button>
-          <a href="/screens/01-auth/login.html" class="util-btn logout" title="Sign Out" aria-label="Sign Out">
-            <i data-lucide="log-out" class="nav-icon"></i>
-          </a>
-        </div>
-
-      </nav>
-    </header>
-
     <main class="main-content">
       
       <!-- Top Bar Header -->
@@ -139,7 +159,7 @@
       <section class="directory-filter-bar">
         <div class="search-input-wrap">
           <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <input type="text" id="skill-search-input" class="neu-input" placeholder="Search by skill (e.g. Poster Design, Python, UI/UX) or student name..." />
+          <input type="text" id="skill-search-input" class="neu-input" placeholder="Search by skill or student name..." />
         </div>
         <div class="filter-pill-row">
           <button class="filter-tag-btn active" data-skill="ALL">All Skills</button>
@@ -233,7 +253,7 @@
         <div class="neu-input-group" style="margin-top: 14px;">
           <label class="neu-input-label">Add Custom Skill Tag:</label>
           <div style="display: flex; gap: 8px;">
-            <input type="text" id="custom-skill-input" class="neu-input" placeholder="Type custom skill tag (e.g. AWS, Cyber Security)" />
+            <input type="text" id="custom-skill-input" class="neu-input" placeholder="Type custom skill tag..." />
             <button type="button" class="neu-btn" id="add-custom-skill-btn">+ Add</button>
           </div>
         </div>
@@ -269,7 +289,7 @@
 
         <div class="neu-input-group" style="margin-top: 16px;">
           <label class="neu-input-label">Project / Competition Topic</label>
-          <input type="text" id="collab-project-title" class="neu-input" placeholder="e.g. Smart India Hackathon UI / Web Dev Project" required />
+          <input type="text" id="collab-project-title" class="neu-input" placeholder="Enter project or competition title..." required />
         </div>
 
         <div class="neu-input-group">

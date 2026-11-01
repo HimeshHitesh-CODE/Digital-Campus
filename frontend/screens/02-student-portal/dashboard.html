@@ -3,315 +3,722 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Student Dashboard | Campus Connect (Code: 259)</title>
-  
-  <!-- Urbanist and JetBrains Mono Fonts -->
+  <title>Student Dashboard | Samskruti College (Code: 259)</title>
+
+  <!-- Google Fonts: Urbanist & JetBrains Mono & Caveat -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Urbanist:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,600&family=JetBrains+Mono:wght@400;500;600;700&family=Caveat:wght@600;700&display=swap" rel="stylesheet" />
 
-  <!-- Base & Modern Styles -->
+  <!-- Master Design System Stylesheets -->
   <link rel="stylesheet" href="../../css/reset.css" />
   <link rel="stylesheet" href="../../css/theme-tokens.css" />
-  <link rel="stylesheet" href="../../css/global-layout.css" />
-  <link rel="stylesheet" href="../../css/top-nav.css" />
-  <link rel="stylesheet" href="../../css/animations.css" />
+  <link rel="stylesheet" href="../../css/dc-global-theme.css?v=3.3.0" />
+  <link rel="stylesheet" href="../../css/top-nav.css?v=3.3.0" />
   <link rel="stylesheet" href="./dashboard.css" />
-  
-  <!-- Lucide Icons & Theme Engine -->
+
+  <!-- Lucide Icons & Global Dynamic Island Engine -->
   <script src="https://unpkg.com/lucide@latest"></script>
-  <script src="../../js/theme-engine.js"></script>
+  <script src="../../js/dc-dynamic-island.js?v=3.3.0"></script>
 </head>
 <body class="student-portal-body">
+
+  <!-- ============================================================ -->
+  <!-- MAIN VIEWPORT CONTENT (Padded below the global header)       -->
+  <!-- ============================================================ -->
   <div class="portal-viewport-wrapper">
-    
-    <!-- 1. UNIVERSAL TOP FLOATING CAPSULE NAVIGATION -->
-    <header class="top-nav-capsule-container">
-      <nav class="capsule-nav" aria-label="Campus Connect Navigation">
+    <main class="homepage-main">
+
+      <!-- ======================================================== -->
+      <!-- 1. HERO SHOWCASE SECTION (Matches Reference 1.png)       -->
+      <!-- ======================================================== -->
+      <section class="hero-showcase-card">
         
-        <!-- Brand / Institution Emblem -->
-        <a href="dashboard.html" class="capsule-brand" title="Campus Connect">
-          <div class="brand-emblem-badge">
-            <img 
-              src="/assets/images/samskruti-logo-blue.png" 
-              alt="Campus Connect Logo" 
-              class="brand-logo-img"
-            />
-          </div>
-          <span class="brand-title">CAMPUS <span class="accent-text">CONNECT</span></span>
-        </a>
-
-        <div class="nav-divider"></div>
-
-        <!-- Working Navigation Links -->
-        <div class="capsule-menu-items" id="capsule-menu-track">
-          <div class="sliding-morph-pill" id="nav-morph-pill"></div>
-          <a href="dashboard.html" class="nav-item active" data-page="dashboard">
-            <i data-lucide="layout-dashboard" class="nav-icon"></i>
-            <span>Dashboard</span>
-          </a>
+        <!-- Left Column: Student Salutation & Action Buttons -->
+        <div class="hero-text-content">
+          <span class="hero-welcome-badge">WELCOME BACK,</span>
           
-          <a href="attendance.html" class="nav-item" data-page="attendance">
-            <i data-lucide="calendar-check" class="nav-icon"></i>
-            <span>Attendance</span>
-          </a>
+          <h1 class="hero-title" id="heroStudentName">
+            Tallapalli Tulasi Ram <span class="accent-name">Goud</span>
+          </h1>
 
-          <a href="results.html" class="nav-item" data-page="results">
-            <i data-lucide="graduation-cap" class="nav-icon"></i>
-            <span>Results</span>
-          </a>
-
-          <a href="idea-hub.html" class="nav-item" data-page="idea-hub">
-            <i data-lucide="lightbulb" class="nav-icon"></i>
-            <span>Idea Hub</span>
-          </a>
-
-          <a href="marketplace.html" class="nav-item" data-page="marketplace">
-            <i data-lucide="shopping-bag" class="nav-icon"></i>
-            <span>Marketplace</span>
-          </a>
-
-          <a href="messages.html" class="nav-item" data-page="messages">
-            <i data-lucide="message-square" class="nav-icon"></i>
-            <span>Messages</span>
-          </a>
-
-          <a href="document-logistics.html" class="nav-item" data-page="document-logistics">
-            <i data-lucide="file-text" class="nav-icon"></i>
-            <span>Requests</span>
-          </a>
-
-          <a href="profile.html" class="nav-item" data-page="profile">
-            <i data-lucide="user" class="nav-icon"></i>
-            <span>Profile</span>
-          </a>
-        </div>
-
-        <!-- Capsule Controls -->
-        <div class="capsule-actions">
-          <button id="theme-toggle-btn" class="util-btn" title="Toggle Theme" aria-label="Toggle Theme">
-            <i data-lucide="sun" class="nav-icon"></i>
-          </button>
-          <a href="/screens/01-auth/login.html" class="util-btn logout" title="Sign Out" aria-label="Sign Out">
-            <i data-lucide="log-out" class="nav-icon"></i>
-          </a>
-        </div>
-
-      </nav>
-    </header>
-
-    <main class="main-content">
-      
-      <!-- Top Navigation & Profile Bar -->
-      <header class="top-bar">
-        <div class="welcome-text">
-          <h1 id="user-greeting">Welcome back, K. Himesh</h1>
-          <p id="academic-status">Samskruti College of Engineering & Technology (Code: 259) • Diploma C-24 • Computer Science & Engineering</p>
-        </div>
-        <div class="top-bar-actions">
-          <div class="user-profile-badge" id="profile-trigger" onclick="window.location.href='./profile.html'">
-            <div class="user-avatar" id="avatar-initials">KH</div>
-            <div class="user-info">
-              <span class="user-name" id="profile-name">K. Himesh</span>
-              <span class="user-role" id="profile-pin">PIN: 24259-CS-025</span>
-            </div>
+          <div class="hero-student-meta" id="heroStudentMeta">
+            Samskruti College (Code: 259) • PIN: 24259-CS-040
           </div>
-        </div>
-      </header>
 
-      <!-- 1. Hero Presentation Section -->
-      <section class="hero-section neu-card">
-        <div class="hero-content">
-          <div class="hero-badge-row">
-            <span class="neu-badge neu-badge-primary">College Code: 259</span>
-            <span class="neu-badge neu-badge-success">Accredited Institution</span>
-            <span class="neu-badge neu-badge-warning">SBTET Diploma & Engineering</span>
-          </div>
-          <h2 class="hero-heading">Empowering Technical Minds with Future-Ready Skills</h2>
-          <p class="hero-subtext">
-            Welcome to Samskruti College of Engineering and Technology. Our unified Digital Campus platform connects verified student identities, real-time SBTET attendance tracking, automated physical document workflows, and peer-to-peer campus ecosystems under one roof.
+          <p class="hero-description">
+            Your gateway to a smarter academic journey — track, manage and explore with ease.
           </p>
-          <div class="hero-cta-group">
-            <a href="./attendance.html" class="neu-btn neu-btn-primary hero-btn">
-              <i data-lucide="calendar-check" class="w-4 h-4"></i>
-              Attendance Portal
-            </a>
-            <a href="./results.html" class="neu-btn hero-btn">
-              <i data-lucide="graduation-cap" class="w-4 h-4"></i>
-              SBTET Results
-            </a>
-          </div>
-        </div>
-      </section>
 
-      <!-- 2. Institutional Overview Stats Grid -->
-      <section class="stats-overview-grid">
-        <div class="neu-card stat-box" onclick="window.location.href='./results.html'" style="cursor: pointer;">
-          <span class="stat-number">259</span>
-          <span class="stat-label">Official College Code</span>
-          <p class="stat-desc">SBTET & JNTUH Recognized Institution</p>
-        </div>
-        <div class="neu-card stat-box" onclick="window.location.href='./attendance.html'" style="cursor: pointer;">
-          <span class="stat-number">8+</span>
-          <span class="stat-label">Engineering & Diploma Branches</span>
-          <p class="stat-desc">Specializations in AI, CSE, AIML, EC, EE, MECH, CIV</p>
-        </div>
-        <div class="neu-card stat-box" onclick="window.location.href='./attendance.html'" style="cursor: pointer;">
-          <span class="stat-number">100%</span>
-          <span class="stat-label">Digital Campus Connected</span>
-          <p class="stat-desc">Real-time attendance sync & document logistics</p>
-        </div>
-      </section>
-
-      <!-- 3. Unified Digital Campus Architecture -->
-      <section class="platform-features-section">
-        <div class="section-heading-center">
-          <h2 class="section-main-title">Unified Digital Campus Architecture</h2>
-          <p class="section-sub-desc">A connected operating ecosystem designed specifically for Samskruti students, faculty, and administration.</p>
-        </div>
-
-        <div class="features-grid">
-          
-          <!-- Feature Card 1: Attendance -->
-          <div class="neu-card feature-card" onclick="window.location.href='./attendance.html'" style="cursor: pointer;">
-            <div class="feature-icon">
+          <div class="hero-btn-row">
+            <a href="./attendance.html" class="btn-hero-primary" id="btnViewAttendance">
               <i data-lucide="calendar-check"></i>
-            </div>
-            <h3>Live SBTET Attendance Tracking</h3>
-            <p>Real-time synchronization with SBTET biometric servers, daily period logs, and automated 75% condonation alert meters.</p>
-          </div>
-
-          <!-- Feature Card 2: Documents -->
-          <div class="neu-card feature-card" onclick="window.location.href='./document-logistics.html'" style="cursor: pointer;">
-            <div class="feature-icon">
-              <i data-lucide="file-text"></i>
-            </div>
-            <h3>Physical Document Handover Logistics</h3>
-            <p>Digitized requests for Bonafide, Custodian, and NOC certificates with HOD approval workflows and 6-digit counter pickup OTPs.</p>
-          </div>
-
-          <!-- Feature Card 3: Surplus Market -->
-          <div class="neu-card feature-card" onclick="window.location.href='./marketplace.html'" style="cursor: pointer;">
-            <div class="feature-icon">
-              <i data-lucide="shopping-bag"></i>
-            </div>
-            <h3>Student Surplus Resale Hub</h3>
-            <p>Campus-exclusive verified peer marketplace to buy and sell engineering drafters, lab coats, textbooks, and calculators safely.</p>
-          </div>
-
-          <!-- Feature Card 4: Results & Backlogs -->
-          <div class="neu-card feature-card" onclick="window.location.href='./results.html'" style="cursor: pointer;">
-            <div class="feature-icon">
+              <span>View Attendance &rarr;</span>
+            </a>
+            <a href="./results.html" class="btn-hero-primary" id="btnViewResult">
               <i data-lucide="graduation-cap"></i>
+              <span>View Result &rarr;</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Right Column: Collegiate Architectural Campus Photo & Slogan -->
+        <div class="hero-visual-side">
+          <div class="hero-script-slogan">Learn • Grow • Achieve</div>
+          <div class="campus-hero-img-wrap">
+            <img src="../../assets/images/campus-hero.png?v=3.3.0" 
+                 alt="Samskruti College Campus Building" 
+                 class="campus-hero-img" 
+                 loading="eager" />
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ======================================================== -->
+      <!-- 2. ATTENDANCE STATISTICS SUMMARY CARD (Matches 1.png)    -->
+      <!-- ======================================================== -->
+      <section class="stats-summary-card" aria-label="Academic Attendance Telemetry">
+        
+        <!-- Metric 1: Overall Attendance (84.5%) -->
+        <div class="stat-metric-col">
+          <div class="stat-metric-icon" aria-hidden="true">
+            <i data-lucide="users"></i>
+          </div>
+          <div class="stat-metric-content">
+            <span class="stat-metric-val" id="valOverallAttendance">84.5%</span>
+            <span class="stat-metric-lbl">Overall Attendance</span>
+          </div>
+          <div class="stat-metric-sparkline" aria-hidden="true">
+            <svg viewBox="0 0 72 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M2 24 C 18 20, 28 22, 42 12 C 54 4, 62 8, 70 2" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" />
+            </svg>
+          </div>
+        </div>
+
+        <!-- Metric 2: Present Days (74) -->
+        <div class="stat-metric-col">
+          <div class="stat-metric-icon" aria-hidden="true">
+            <i data-lucide="calendar-check"></i>
+          </div>
+          <div class="stat-metric-content">
+            <span class="stat-metric-val" id="valPresentDays">74</span>
+            <span class="stat-metric-lbl">Present Days</span>
+          </div>
+          <div class="stat-metric-sparkline" aria-hidden="true">
+            <svg viewBox="0 0 72 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M2 22 C 16 24, 26 18, 38 14 C 50 10, 60 6, 70 2" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" />
+            </svg>
+          </div>
+        </div>
+
+        <!-- Metric 3: Total Working Days (88) -->
+        <div class="stat-metric-col">
+          <div class="stat-metric-icon" aria-hidden="true">
+            <i data-lucide="clock"></i>
+          </div>
+          <div class="stat-metric-content">
+            <span class="stat-metric-val" id="valTotalDays">88</span>
+            <span class="stat-metric-lbl">Total Working Days</span>
+          </div>
+          <div class="stat-metric-sparkline" aria-hidden="true">
+            <svg viewBox="0 0 72 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M2 20 C 14 22, 28 16, 40 12 C 52 8, 62 4, 70 2" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" />
+            </svg>
+          </div>
+        </div>
+
+        <!-- Metric 4: Exam Cutoff Threshold (75%) -->
+        <div class="stat-metric-col">
+          <div class="stat-metric-icon" aria-hidden="true">
+            <i data-lucide="check-circle-2"></i>
+          </div>
+          <div class="stat-metric-content">
+            <span class="stat-metric-val" id="valCutoffThreshold">75%</span>
+            <span class="stat-metric-lbl">Exam Cutoff Threshold</span>
+          </div>
+          <div class="stat-metric-sparkline" aria-hidden="true">
+            <svg viewBox="0 0 72 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M2 24 C 16 18, 30 20, 44 14 C 54 8, 62 4, 70 2" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" />
+            </svg>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ======================================================== -->
+      <!-- 3. TWO-COLUMN SPLIT: INSTITUTIONAL MODULES & UPDATES     -->
+      <!-- ======================================================== -->
+      <div class="dashboard-grid-layout">
+        
+        <!-- Left Column: Institutional Modules (6 cards) -->
+        <div class="modules-column">
+          <div class="grid-section-header">
+            <div class="section-title-wrap">
+              <span class="section-accent-bar" aria-hidden="true"></span>
+              <h2 class="section-heading-text">Institutional Modules</h2>
             </div>
-            <h3>SBTET Grade Sheets & Backlog Tracker</h3>
-            <p>Institutional results engine with instant SGPA/CGPA calculations, backlog status, and verified academic transcripts.</p>
+            <span class="live-endpoints-badge">LIVE ENDPOINTS</span>
           </div>
 
+          <div class="institutional-modules-grid">
+            
+            <!-- Module 1: Biometric Attendance Tracker -->
+            <a href="./attendance.html" class="module-action-card">
+              <div class="module-card-icon">
+                <i data-lucide="fingerprint"></i>
+              </div>
+              <div class="module-card-body">
+                <span class="module-card-title">Biometric Attendance Tracker</span>
+                <span class="module-card-desc">Direct sync with State Board of Technical Education</span>
+              </div>
+              <div class="module-card-chevron">
+                <i data-lucide="chevron-right"></i>
+              </div>
+            </a>
+
+            <!-- Module 2: Bonafide & Bus Pass Logistics -->
+            <a href="./document-logistics.html" class="module-action-card">
+              <div class="module-card-icon">
+                <i data-lucide="bus"></i>
+              </div>
+              <div class="module-card-body">
+                <span class="module-card-title">Bona&iuml;de &amp; Bus Pass Logistics</span>
+                <span class="module-card-desc">Submit requests digitally</span>
+              </div>
+              <div class="module-card-chevron">
+                <i data-lucide="chevron-right"></i>
+              </div>
+            </a>
+
+            <!-- Module 3: Student Surplus Resale Hub -->
+            <a href="./marketplace.html" class="module-action-card">
+              <div class="module-card-icon">
+                <i data-lucide="repeat"></i>
+              </div>
+              <div class="module-card-body">
+                <span class="module-card-title">Student Surplus Resale Hub</span>
+                <span class="module-card-desc">Buy and sell campus items</span>
+              </div>
+              <div class="module-card-chevron">
+                <i data-lucide="chevron-right"></i>
+              </div>
+            </a>
+
+            <!-- Module 4: SBTET Results & Backlog Tracker -->
+            <a href="./results.html" class="module-action-card">
+              <div class="module-card-icon">
+                <i data-lucide="bar-chart-2"></i>
+              </div>
+              <div class="module-card-body">
+                <span class="module-card-title">SBTET Results &amp; Backlog Tracker</span>
+                <span class="module-card-desc">Instant semester results</span>
+              </div>
+              <div class="module-card-chevron">
+                <i data-lucide="chevron-right"></i>
+              </div>
+            </a>
+
+            <!-- Module 5: Academic Disciplines & Branches (Interactive Modal) -->
+            <button type="button" class="module-action-card" id="btnOpenDisciplines" style="text-align: left; background: var(--surface-card); width: 100%;">
+              <div class="module-card-icon">
+                <i data-lucide="graduation-cap"></i>
+              </div>
+              <div class="module-card-body">
+                <span class="module-card-title">Academic Disciplines &amp; Branches (Code: 259)</span>
+                <span class="module-card-desc">Explore Departments &amp; Programs</span>
+              </div>
+              <div class="module-card-chevron">
+                <i data-lucide="chevron-right"></i>
+              </div>
+            </button>
+
+            <!-- Module 6: Official Circulars & Examination Announcements -->
+            <button type="button" class="module-action-card" id="btnOpenCirculars" style="text-align: left; background: var(--surface-card); width: 100%;">
+              <div class="module-card-icon">
+                <i data-lucide="megaphone"></i>
+              </div>
+              <div class="module-card-body">
+                <span class="module-card-title">Official Circulars &amp; Examination Announcements</span>
+                <span class="module-card-desc">Stay updated with the latest</span>
+              </div>
+              <div class="module-card-chevron">
+                <i data-lucide="chevron-right"></i>
+              </div>
+            </button>
+
+          </div>
+        </div>
+
+        <!-- Right Column: Latest Updates -->
+        <div class="updates-column">
+          <div class="grid-section-header">
+            <div class="section-title-wrap">
+              <span class="section-accent-dot" aria-hidden="true"></span>
+              <h2 class="section-heading-text">Latest Updates</h2>
+            </div>
+            <button type="button" class="view-all-link" id="btnViewAllUpdates" style="background: none; border: none; cursor: pointer;">
+              <span>View All</span>
+              <i data-lucide="arrow-right"></i>
+            </button>
+          </div>
+
+          <div class="latest-updates-stack">
+            
+            <!-- Update 1 -->
+            <a href="./results.html" class="update-news-card">
+              <div class="update-thumb-box">
+                <img src="../../assets/images/update-thumb-1.png" alt="Campus Building" loading="lazy" />
+              </div>
+              <div class="update-info-box">
+                <span class="update-news-title">Semester Results Released</span>
+                <span class="update-news-summary">Check your results now from the portal.</span>
+                <span class="update-news-date">
+                  <i data-lucide="calendar"></i>
+                  <span>Oct 26, 2026</span>
+                </span>
+              </div>
+            </a>
+
+            <!-- Update 2 -->
+            <a href="./attendance.html" class="update-news-card">
+              <div class="update-thumb-box">
+                <img src="../../assets/images/update-thumb-2.png" alt="Campus Facilities" loading="lazy" />
+              </div>
+              <div class="update-info-box">
+                <span class="update-news-title">Exam Schedule Updated</span>
+                <span class="update-news-summary">New timetable is now available.</span>
+                <span class="update-news-date">
+                  <i data-lucide="calendar"></i>
+                  <span>Oct 25, 2026</span>
+                </span>
+              </div>
+            </a>
+
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ======================================================== -->
+      <!-- 4. ACADEMIC DISCIPLINES MODAL OVERLAY                    -->
+      <!-- ======================================================== -->
+      <div class="modal-overlay" id="disciplinesModal" role="dialog" aria-modal="true" aria-labelledby="modalDiscTitle">
+        <div class="modal-content-card">
+          <div class="modal-header-row">
+            <div>
+              <h3 class="section-heading-text" id="modalDiscTitle">Academic Disciplines &amp; Branches</h3>
+              <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 4px;">Samskruti College of Engineering &amp; Technology (Code: 259)</p>
+            </div>
+            <button type="button" class="modal-close-btn" id="btnCloseDisciplines" aria-label="Close Modal">
+              <i data-lucide="x"></i>
+            </button>
+          </div>
+
+          <div class="disciplines-grid">
+            <div class="discipline-card">
+              <span class="dept-code-tag">AIML</span>
+              <div>
+                <strong style="display: block; color: var(--text-heading); font-size: 0.92rem;">AI &amp; Machine Learning</strong>
+                <small style="color: var(--text-muted);">Specialized Neural Computing &amp; Data Science</small>
+              </div>
+            </div>
+
+            <div class="discipline-card">
+              <span class="dept-code-tag">CSE</span>
+              <div>
+                <strong style="display: block; color: var(--text-heading); font-size: 0.92rem;">Computer Science &amp; Engg</strong>
+                <small style="color: var(--text-muted);">Core Software Systems &amp; Cloud Labs</small>
+              </div>
+            </div>
+
+            <div class="discipline-card">
+              <span class="dept-code-tag">ECE</span>
+              <div>
+                <strong style="display: block; color: var(--text-heading); font-size: 0.92rem;">Electronics &amp; Communication</strong>
+                <small style="color: var(--text-muted);">Embedded Systems &amp; VLSI Design</small>
+              </div>
+            </div>
+
+            <div class="discipline-card">
+              <span class="dept-code-tag">EEE</span>
+              <div>
+                <strong style="display: block; color: var(--text-heading); font-size: 0.92rem;">Electrical &amp; Electronics</strong>
+                <small style="color: var(--text-muted);">Power Grids &amp; Renewable Energy</small>
+              </div>
+            </div>
+
+            <div class="discipline-card">
+              <span class="dept-code-tag">MECH</span>
+              <div>
+                <strong style="display: block; color: var(--text-heading); font-size: 0.92rem;">Mechanical Engineering</strong>
+                <small style="color: var(--text-muted);">Robotics, Automation &amp; Thermal Labs</small>
+              </div>
+            </div>
+
+            <div class="discipline-card">
+              <span class="dept-code-tag">CIVIL</span>
+              <div>
+                <strong style="display: block; color: var(--text-heading); font-size: 0.92rem;">Civil Engineering</strong>
+                <small style="color: var(--text-muted);">Smart Infrastructure &amp; Geotech</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ======================================================== -->
+      <!-- 5. CIRCULARS MODAL OVERLAY                              -->
+      <!-- ======================================================== -->
+      <div class="modal-overlay" id="circularsModal" role="dialog" aria-modal="true" aria-labelledby="modalCircTitle">
+        <div class="modal-content-card">
+          <div class="modal-header-row">
+            <div>
+              <h3 class="section-heading-text" id="modalCircTitle">Official Circulars &amp; Announcements</h3>
+              <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 4px;">Verified SBTET Examination Cell Bulletins</p>
+            </div>
+            <button type="button" class="modal-close-btn" id="btnCloseCirculars" aria-label="Close Modal">
+              <i data-lucide="x"></i>
+            </button>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 14px;">
+            <div style="padding: 14px; border-radius: 14px; background: var(--surface-subtle); border-left: 4px solid var(--brand-accent);">
+              <span style="font-size: 0.72rem; font-weight: 800; color: var(--brand-primary); letter-spacing: 0.04em;">SBTET REGULAR &amp; SUPPLY</span>
+              <strong style="display: block; color: var(--text-heading); font-size: 0.95rem; margin: 4px 0;">Diploma Regular &amp; Supplementary Hall Tickets Released</strong>
+              <p style="font-size: 0.82rem; color: var(--text-muted); margin: 0;">Students can verify exam centers and download hall tickets via the Student Portal.</p>
+              <small style="color: var(--text-subtle); font-size: 0.72rem; display: block; margin-top: 6px;">Published: Today</small>
+            </div>
+
+            <div style="padding: 14px; border-radius: 14px; background: var(--surface-subtle); border-left: 4px solid var(--brand-accent);">
+              <span style="font-size: 0.72rem; font-weight: 800; color: var(--brand-primary); letter-spacing: 0.04em;">ACADEMIC REQUIREMENT</span>
+              <strong style="display: block; color: var(--text-heading); font-size: 0.95rem; margin: 4px 0;">Mandatory 75% Attendance Requirement for Semester Examinations</strong>
+              <p style="font-size: 0.82rem; color: var(--text-muted); margin: 0;">Students with attendance below 75% must contact department mentors immediately.</p>
+              <small style="color: var(--text-subtle); font-size: 0.72rem; display: block; margin-top: 6px;">Published: 2 days ago</small>
+            </div>
+
+            <div style="padding: 14px; border-radius: 14px; background: var(--surface-subtle); border-left: 4px solid var(--brand-accent);">
+              <span style="font-size: 0.72rem; font-weight: 800; color: var(--brand-primary); letter-spacing: 0.04em;">INNOVATION HACKATHON</span>
+              <strong style="display: block; color: var(--text-heading); font-size: 0.95rem; margin: 4px 0;">IdeaHub Annual Engineering Innovation Hackathon Announced</strong>
+              <p style="font-size: 0.82rem; color: var(--text-muted); margin: 0;">Submit project abstracts for robotics, AI edge apps, and green energy innovations.</p>
+              <small style="color: var(--text-subtle); font-size: 0.72rem; display: block; margin-top: 6px;">Published: 5 days ago</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ======================================================== -->
+      <!-- 6. FOOTER BRANDING                                       -->
+      <!-- ======================================================== -->
+      
+      <!-- ======================================================== -->
+      <!-- 5. ACADEMIC DISCIPLINES & BRANCHES (CODE: 259)           -->
+      <!-- ======================================================== -->
+      <section class="branches-section" aria-label="Academic Disciplines & Programs">
+        <div class="grid-section-header">
+          <div class="section-title-wrap">
+            <span class="section-accent-dot" aria-hidden="true"></span>
+            <h2 class="section-heading-text">Academic Disciplines &amp; Engineering Branches</h2>
+          </div>
+          <span class="live-status-pill">6 ACCREDITED BRANCHES</span>
+        </div>
+
+        <div class="branches-grid">
+          <!-- CSE -->
+          <div class="branch-card">
+            <div class="branch-card-header">
+              <span class="branch-badge">CSE · CODE: 05</span>
+              <span class="branch-intake">180 Intake</span>
+            </div>
+            <h3 class="branch-title">Computer Science &amp; Engineering</h3>
+            <p class="branch-desc">Full-Stack Development, Cloud Systems, Operating Systems, Algorithmics &amp; High-Performance Computing under State Scheme C-24.</p>
+            <div class="branch-meta-row">
+              <span>HOD: <strong>Dr. J. Vamshi Krishna</strong></span>
+              <span class="branch-tag">Tier-1 Labs</span>
+            </div>
+          </div>
+
+          <!-- AIML -->
+          <div class="branch-card">
+            <div class="branch-card-header">
+              <span class="branch-badge">AIML · CODE: 66</span>
+              <span class="branch-intake">120 Intake</span>
+            </div>
+            <h3 class="branch-title">Artificial Intelligence &amp; Machine Learning</h3>
+            <p class="branch-desc">Deep Learning, Computer Vision, Neural Networks, Natural Language Processing &amp; Edge Device Intelligence.</p>
+            <div class="branch-meta-row">
+              <span>HOD: <strong>Prof. Padmini</strong></span>
+              <span class="branch-tag">AI Center</span>
+            </div>
+          </div>
+
+          <!-- ECE -->
+          <div class="branch-card">
+            <div class="branch-card-header">
+              <span class="branch-badge">ECE · CODE: 04</span>
+              <span class="branch-intake">120 Intake</span>
+            </div>
+            <h3 class="branch-title">Electronics &amp; Communication</h3>
+            <p class="branch-desc">VLSI Design, Microcontrollers, Embedded IoT, Digital Signal Processing &amp; RF Telecommunications.</p>
+            <div class="branch-meta-row">
+              <span>HOD: <strong>Dr. K. Srinivas</strong></span>
+              <span class="branch-tag">VLSI Lab</span>
+            </div>
+          </div>
+
+          <!-- EEE -->
+          <div class="branch-card">
+            <div class="branch-card-header">
+              <span class="branch-badge">EEE · CODE: 02</span>
+              <span class="branch-intake">60 Intake</span>
+            </div>
+            <h3 class="branch-title">Electrical &amp; Electronics</h3>
+            <p class="branch-desc">Power Grid Systems, Industrial Drives, Renewable Energy, Power Electronics &amp; Microgrid Automation.</p>
+            <div class="branch-meta-row">
+              <span>HOD: <strong>Prof. M. Ramesh</strong></span>
+              <span class="branch-tag">Power Lab</span>
+            </div>
+          </div>
+
+          <!-- MECH -->
+          <div class="branch-card">
+            <div class="branch-card-header">
+              <span class="branch-badge">MECH · CODE: 03</span>
+              <span class="branch-intake">60 Intake</span>
+            </div>
+            <h3 class="branch-title">Mechanical Engineering</h3>
+            <p class="branch-desc">Solid Mechanics, CAD/CAM Drafting, Thermal Dynamics, Robotics, Fluid Machines &amp; Mechatronics.</p>
+            <div class="branch-meta-row">
+              <span>HOD: <strong>Dr. S. K. Verma</strong></span>
+              <span class="branch-tag">CAD/CAM</span>
+            </div>
+          </div>
+
+          <!-- CIVIL -->
+          <div class="branch-card">
+            <div class="branch-card-header">
+              <span class="branch-badge">CIVIL · CODE: 01</span>
+              <span class="branch-intake">60 Intake</span>
+            </div>
+            <h3 class="branch-title">Civil Engineering</h3>
+            <p class="branch-desc">Structural Analysis, Concrete Tech, Geotechnical Surveying, Environmental Systems &amp; BIM Modelling.</p>
+            <div class="branch-meta-row">
+              <span>HOD: <strong>Prof. B. Naidu</strong></span>
+              <span class="branch-tag">Survey Lab</span>
+            </div>
+          </div>
         </div>
       </section>
 
-      <!-- 4. Academic Disciplines & Branches -->
-      <section class="departments-section neu-card">
-        <div class="section-header">
-          <h2 class="section-title">Academic Disciplines & Branches (Code: 259)</h2>
-          <span class="neu-badge neu-badge-primary">Diploma & B.Tech</span>
+      <!-- ======================================================== -->
+      <!-- 6. TODAY'S LECTURE TIMETABLE & OFFICIAL CIRCULARS        -->
+      <!-- ======================================================== -->
+      <section class="schedule-and-circulars-grid" aria-label="Schedule and Announcements">
+        
+        <!-- Left: Today's Class Schedule -->
+        <div class="schedule-column">
+          <div class="grid-section-header">
+            <div class="section-title-wrap">
+              <span class="section-accent-dot" aria-hidden="true"></span>
+              <h2 class="section-heading-text">Today's Academic Schedule</h2>
+            </div>
+            <span class="live-status-pill">SEMESTER V · C-24</span>
+          </div>
+
+          <div class="schedule-stack">
+            <div class="schedule-item completed">
+              <div class="schedule-time">09:30 AM &ndash; 10:25 AM</div>
+              <div class="schedule-details">
+                <div class="schedule-subject">CS-501 Software Engineering &amp; Agile Methods</div>
+                <div class="schedule-room">Lecture Hall 304 &bull; Dr. J. Vamshi Krishna</div>
+              </div>
+              <span class="schedule-tag done">Passed</span>
+            </div>
+
+            <div class="schedule-item completed">
+              <div class="schedule-time">10:30 AM &ndash; 11:25 AM</div>
+              <div class="schedule-details">
+                <div class="schedule-subject">CS-502 Web Technologies &amp; Cloud Frameworks</div>
+                <div class="schedule-room">Lecture Hall 304 &bull; Prof. Ananya Sharma</div>
+              </div>
+              <span class="schedule-tag done">Passed</span>
+            </div>
+
+            <div class="schedule-item completed">
+              <div class="schedule-time">11:30 AM &ndash; 12:25 PM</div>
+              <div class="schedule-details">
+                <div class="schedule-subject">CS-503 Cryptography &amp; Network Security</div>
+                <div class="schedule-room">Lecture Hall 305 &bull; Prof. K. Ramesh</div>
+              </div>
+              <span class="schedule-tag done">Passed</span>
+            </div>
+
+            <div class="schedule-item current">
+              <div class="schedule-time">01:15 PM &ndash; 03:00 PM</div>
+              <div class="schedule-details">
+                <div class="schedule-subject">CS-508 Full-Stack Web Development Practical Lab</div>
+                <div class="schedule-room">Systems Computing Lab 2 &bull; Faculty Batch A</div>
+              </div>
+              <span class="schedule-tag active">Live Now</span>
+            </div>
+
+            <div class="schedule-item upcoming">
+              <div class="schedule-time">03:05 PM &ndash; 04:00 PM</div>
+              <div class="schedule-details">
+                <div class="schedule-subject">CS-509 Capstone Project Mentorship &amp; Innovation</div>
+                <div class="schedule-room">Idea Hub Center &bull; Project Review Guides</div>
+              </div>
+              <span class="schedule-tag next">Next</span>
+            </div>
+          </div>
         </div>
-        <div class="dept-pills-grid">
-          
-          <div class="dept-pill">
-            <span class="dept-code">AI</span>
-            <div class="dept-info">
-              <strong>Artificial Intelligence</strong>
-              <small>Diploma & Undergraduate Engineering</small>
+
+        <!-- Right: Official Circulars & Notices -->
+        <div class="circulars-column">
+          <div class="grid-section-header">
+            <div class="section-title-wrap">
+              <span class="section-accent-dot" aria-hidden="true"></span>
+              <h2 class="section-heading-text">Official Circulars &amp; Notices</h2>
+            </div>
+            <span class="live-status-pill">OFFICIAL SBTET</span>
+          </div>
+
+          <div class="circulars-stack">
+            <div class="circular-card">
+              <div class="circular-top">
+                <span class="circular-badge red">URGENT</span>
+                <span class="circular-date">Nov 01, 2026</span>
+              </div>
+              <h4 class="circular-title">SBTET Diploma C-24 Semester V Examination Fee Notification</h4>
+              <p class="circular-snippet">All students must complete semester examination fee payment before Nov 15 without penalty. Mandatory 75% biometric attendance strictly enforced.</p>
+              <div class="circular-action-row">
+                <code>REF: SBTET/ACAD/2026/C24-V</code>
+                <a href="./results.html" class="circular-link">View Details &rarr;</a>
+              </div>
+            </div>
+
+            <div class="circular-card">
+              <div class="circular-top">
+                <span class="circular-badge emerald">ACADEMIC</span>
+                <span class="circular-date">Oct 28, 2026</span>
+              </div>
+              <h4 class="circular-title">Mid-Semester Practical Assessment &amp; Project Abstract Review</h4>
+              <p class="circular-snippet">Internal practical assessments commence from Nov 8. Students must submit capstone project abstracts via Idea Hub and obtain HOD digital endorsement.</p>
+              <div class="circular-action-row">
+                <code>REF: SCET/EXAM/LAB-09</code>
+                <a href="./idea-hub.html" class="circular-link">Open Idea Hub &rarr;</a>
+              </div>
+            </div>
+
+            <div class="circular-card">
+              <div class="circular-top">
+                <span class="circular-badge amber">SCHOLARSHIP</span>
+                <span class="circular-date">Oct 24, 2026</span>
+              </div>
+              <h4 class="circular-title">State ePASS Scholarship Renewal &amp; Biometric Authentication</h4>
+              <p class="circular-snippet">Eligible students requiring Bonafide and Custodian clearance must request through Document Logistics before Nov 10 for counter pickup.</p>
+              <div class="circular-action-row">
+                <code>REF: SCET/EPASS/2026-B</code>
+                <a href="./document-logistics.html" class="circular-link">Request Bonafide &rarr;</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ======================================================== -->
+      <!-- 7. CAMPUS QUICK SERVICES & DIRECTORY                     -->
+      <!-- ======================================================== -->
+      <section class="services-directory-section" aria-label="Campus Services">
+        <div class="grid-section-header">
+          <div class="section-title-wrap">
+            <span class="section-accent-dot" aria-hidden="true"></span>
+            <h2 class="section-heading-text">Campus Administrative &amp; Student Helpdesk</h2>
+          </div>
+          <span class="live-status-pill">OFFICIAL COUNTERS</span>
+        </div>
+
+        <div class="services-grid">
+          <div class="service-tile">
+            <div class="service-icon">🏛️</div>
+            <div class="service-info">
+              <h4>Examination Branch</h4>
+              <p>Admin Block, Ground Floor · Counter 2</p>
+              <span>Hall tickets, marks memos &amp; SBTET forms</span>
             </div>
           </div>
 
-          <div class="dept-pill">
-            <span class="dept-code">AIML</span>
-            <div class="dept-info">
-              <strong>AI & Machine Learning</strong>
-              <small>Specialized Data & Neural Computing</small>
+          <div class="service-tile">
+            <div class="service-icon">📜</div>
+            <div class="service-info">
+              <h4>Certificate Logistics</h4>
+              <p>Student Service Hall · Counter 3 &amp; 4</p>
+              <span>Bonafide, Custodian &amp; NOC 6-digit OTP pickup</span>
             </div>
           </div>
 
-          <div class="dept-pill">
-            <span class="dept-code">CS / CSE</span>
-            <div class="dept-info">
-              <strong>Computer Science & Engineering</strong>
-              <small>Core Software Systems & Cloud Infrastructure</small>
+          <div class="service-tile">
+            <div class="service-icon">🚀</div>
+            <div class="service-info">
+              <h4>Placement &amp; T-Hub Cell</h4>
+              <p>Block B, 2nd Floor · Career Wing</p>
+              <span>Campus placements, internships &amp; CRT training</span>
             </div>
           </div>
 
-          <div class="dept-pill">
-            <span class="dept-code">EC</span>
-            <div class="dept-info">
-              <strong>Electronics & Communication</strong>
-              <small>Embedded Systems, IoT & Telecommunications</small>
+          <div class="service-tile">
+            <div class="service-icon">📚</div>
+            <div class="service-info">
+              <h4>Central Library &amp; Reading Hall</h4>
+              <p>Block C · 8:30 AM to 6:00 PM</p>
+              <span>Standard textbooks, journals &amp; book bank</span>
             </div>
           </div>
-
-          <div class="dept-pill">
-            <span class="dept-code">EE</span>
-            <div class="dept-info">
-              <strong>Electrical & Electronics</strong>
-              <small>Power Systems, Grid & Electric Vehicles</small>
-            </div>
-          </div>
-
-          <div class="dept-pill">
-            <span class="dept-code">M</span>
-            <div class="dept-info">
-              <strong>Mechanical Engineering</strong>
-              <small>Robotics, CAD/CAM & Thermal Systems</small>
-            </div>
-          </div>
-
-          <div class="dept-pill">
-            <span class="dept-code">CIV</span>
-            <div class="dept-info">
-              <strong>Civil Engineering</strong>
-              <small>Structural Engineering & Smart City Infrastructure</small>
-            </div>
-          </div>
-
         </div>
       </section>
 
-      <!-- 5. Official Circulars & Examination Announcements -->
-      <section class="notices-section neu-card">
-        <div class="section-header">
-          <h2 class="section-title">Official Circulars & Examination Announcements</h2>
-          <a href="./results.html" class="neu-btn" style="font-size: 0.82rem; padding: 6px 16px;">View All in Portal →</a>
+      <footer class="app-footer">
+        <div class="footer-divider-row">
+          <span class="footer-line" aria-hidden="true"></span>
+          <span>Samskruti College &bull; Empowering Minds, Shaping Tomorrow</span>
+          <span class="footer-star" aria-hidden="true">&starf;</span>
+          <span class="footer-line" aria-hidden="true"></span>
         </div>
-        <div class="circulars-list">
-          
-          <div class="circular-row">
-            <span class="circular-badge">SBTET EXAM</span>
-            <div class="circular-text">
-              <strong>SBTET Diploma Regular & Supplementary Examination Schedule Released</strong>
-              <p>Students can verify exam centers and download hall tickets via the Student Portal.</p>
-            </div>
-            <span class="circular-date">Today</span>
-          </div>
-
-          <div class="circular-row">
-            <span class="circular-badge">ACADEMIC</span>
-            <div class="circular-text">
-              <strong>Mandatory 75% Attendance Requirement for Semester End Examinations</strong>
-              <p>Students with attendance below 75% must meet with respective department mentors immediately.</p>
-            </div>
-            <span class="circular-date">2 days ago</span>
-          </div>
-
-        </div>
-      </section>
+      </footer>
 
     </main>
   </div>
 
-  <!-- Screen Scripts -->
-  <script type="module" src="../../js/top-nav.js"></script>
+  <!-- Screen Controller Module -->
   <script type="module" src="./dashboard.js"></script>
+
+  <script>
+    // Modal Interaction Listeners
+    document.addEventListener('DOMContentLoaded', () => {
+      const discModal = document.getElementById('disciplinesModal');
+      const circModal = document.getElementById('circularsModal');
+      
+      document.getElementById('btnOpenDisciplines')?.addEventListener('click', () => discModal?.classList.add('is-open'));
+      document.getElementById('btnCloseDisciplines')?.addEventListener('click', () => discModal?.classList.remove('is-open'));
+      
+      document.getElementById('btnOpenCirculars')?.addEventListener('click', () => circModal?.classList.add('is-open'));
+      document.getElementById('btnViewAllUpdates')?.addEventListener('click', () => circModal?.classList.add('is-open'));
+      document.getElementById('btnCloseCirculars')?.addEventListener('click', () => circModal?.classList.remove('is-open'));
+
+      [discModal, circModal].forEach(m => {
+        m?.addEventListener('click', (e) => {
+          if (e.target === m) m.classList.remove('is-open');
+        });
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          discModal?.classList.remove('is-open');
+          circModal?.classList.remove('is-open');
+        }
+      });
+    });
+  </script>
 </body>
 </html>

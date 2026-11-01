@@ -548,3 +548,182 @@
 .chat-input-bar .neu-input {
   flex: 1;
 }
+
+
+/* ==========================================================================
+   PILL BUTTONS, LUXURY STATUS BADGES & EMERALD MODALS
+   ========================================================================== */
+
+.neu-btn,
+#open-my-skills-btn,
+#view-requests-btn,
+.collab-req-btn,
+.direct-msg-btn,
+.filter-tag-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  padding: 9px 20px !important;
+  border-radius: 9999px !important;
+  font-family: inherit !important;
+  font-size: 0.85rem !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  background: rgba(20, 52, 36, 0.65) !important;
+  color: #f0fdf4 !important;
+  border: 1px solid rgba(110, 231, 183, 0.3) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25) !important;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  outline: none !important;
+}
+
+.neu-btn:hover,
+#open-my-skills-btn:hover,
+#view-requests-btn:hover,
+.collab-req-btn:hover {
+  transform: translateY(-2px) !important;
+  border-color: #34d399 !important;
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.35) !important;
+  color: #ffffff !important;
+}
+
+.neu-btn-primary,
+#open-my-skills-btn {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(110, 231, 183, 0.5) !important;
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.35) !important;
+}
+
+.neu-btn-primary:hover,
+#open-my-skills-btn:hover {
+  filter: brightness(1.1) !important;
+  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.5) !important;
+}
+
+/* Status Badges - Rounded Pill & Glowing Status Dot */
+.neu-badge,
+#my-status-badge {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 7px !important;
+  padding: 6px 18px !important;
+  border-radius: 9999px !important;
+  font-size: 0.80rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.02em !important;
+  cursor: pointer !important;
+  transition: all 0.25s ease !important;
+  user-select: none !important;
+}
+
+.neu-badge::before,
+#my-status-badge::before {
+  content: "" !important;
+  display: inline-block !important;
+  width: 8px !important;
+  height: 8px !important;
+  border-radius: 50% !important;
+  background: currentColor !important;
+  box-shadow: 0 0 10px currentColor !important;
+}
+
+.neu-badge-success,
+.status-available {
+  background: rgba(16, 185, 129, 0.20) !important;
+  color: #34d399 !important;
+  border: 1px solid rgba(52, 211, 153, 0.45) !important;
+}
+
+.neu-badge-muted,
+.status-offline {
+  background: rgba(148, 163, 184, 0.18) !important;
+  color: #94a3b8 !important;
+  border: 1px solid rgba(148, 163, 184, 0.35) !important;
+}
+
+.neu-badge-primary {
+  background: rgba(16, 185, 129, 0.25) !important;
+  color: #6ee7b7 !important;
+  border: 1px solid rgba(110, 231, 183, 0.4) !important;
+}
+
+/* Skill Pills */
+.skill-pill {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  padding: 5px 14px !important;
+  border-radius: 9999px !important;
+  font-size: 0.78rem !important;
+  font-weight: 600 !important;
+  background: rgba(16, 185, 129, 0.16) !important;
+  color: #6ee7b7 !important;
+  border: 1px solid rgba(52, 211, 153, 0.32) !important;
+  transition: all 0.2s ease !important;
+}
+
+.skill-pill:hover {
+  background: rgba(16, 185, 129, 0.28) !important;
+  border-color: #34d399 !important;
+}
+
+/* Modal styling */
+.neu-modal-overlay {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background: rgba(2, 14, 9, 0.78) !important;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+  display: none;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 10000 !important;
+  padding: 20px !important;
+}
+
+.neu-modal-card {
+  background: rgba(14, 40, 28, 0.92) !important;
+  backdrop-filter: blur(28px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(180%) !important;
+  border: 1px solid rgba(110, 231, 183, 0.35) !important;
+  border-radius: 24px !important;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.65) !important;
+  width: 100% !important;
+  max-width: 560px !important;
+  padding: 28px !important;
+  color: #f0fdf4 !important;
+  box-sizing: border-box !important;
+}
+
+.neu-input,
+#custom-skill-input,
+#skill-search-input,
+#collab-project-title,
+#collab-project-message {
+  width: 100% !important;
+  padding: 11px 16px !important;
+  border-radius: 14px !important;
+  background: rgba(20, 52, 36, 0.6) !important;
+  border: 1px solid rgba(110, 231, 183, 0.25) !important;
+  color: #f0fdf4 !important;
+  font-family: inherit !important;
+  font-size: 0.90rem !important;
+  outline: none !important;
+  box-sizing: border-box !important;
+}
+
+.neu-input:focus,
+#custom-skill-input:focus,
+#skill-search-input:focus,
+#collab-project-title:focus,
+#collab-project-message:focus {
+  border-color: #34d399 !important;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.22) !important;
+}

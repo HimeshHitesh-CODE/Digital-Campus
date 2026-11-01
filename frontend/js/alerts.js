@@ -10,6 +10,12 @@ class AlertManager {
 
   initContainer() {
     if (!this.container) {
+      if (!document.body) {
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', () => this.initContainer());
+        }
+        return;
+      }
       this.container = document.createElement('div');
       this.container.id = 'dc-toast-container';
       Object.assign(this.container.style, {

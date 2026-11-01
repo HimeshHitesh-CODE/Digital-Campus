@@ -31,6 +31,7 @@ const myName = user.name || 'Student';
 
 document.addEventListener('DOMContentLoaded', () => {
   setupUserHeader();
+  setupStatusToggle();
   setupSkillsModal();
   setupCollabModal();
   setupInvitesDrawer();
@@ -113,17 +114,36 @@ function updateStatusBadge() {
   const badge = document.getElementById('my-status-badge');
   if (!badge) return;
 
+  const currentStatus = localStorage.getItem(`status_${myPin}`) || 'AVAILABLE';
+
   if (mySkills.length === 0) {
-    badge.className = 'neu-badge neu-badge-muted';
-    badge.style.background = '#94a3b8';
-    badge.style.color = '#ffffff';
+    badge.className = 'neu-badge neu-badge-muted status-offline';
     badge.textContent = 'Inactive — Skills Not Set';
+    badge.title = 'Click Edit My Skills to publish your skills';
+  } else if (currentStatus === 'OFFLINE') {
+    badge.className = 'neu-badge neu-badge-muted status-offline';
+    badge.textContent = 'Offline / Busy';
+    badge.title = 'Click to switch to Available for Projects';
   } else {
-    badge.className = 'neu-badge neu-badge-success';
-    badge.style.background = '#10b981';
-    badge.style.color = '#ffffff';
+    badge.className = 'neu-badge neu-badge-success status-available';
     badge.textContent = 'Available for Projects';
+    badge.title = 'Click to switch to Offline / Busy';
   }
+}
+
+function setupStatusToggle() {
+  const badge = document.getElementById('my-status-badge');
+  badge?.addEventListener('click', () => {
+    if (mySkills.length === 0) {
+      document.getElementById('open-my-skills-btn')?.click();
+      return;
+    }
+    const current = localStorage.getItem(`status_${myPin}`) || 'AVAILABLE';
+    const newStatus = current === 'AVAILABLE' ? 'OFFLINE' : 'AVAILABLE';
+    localStorage.setItem(`status_${myPin}`, newStatus);
+    updateStatusBadge();
+    alerts.info('Status Updated', `You are now marked as "${newStatus === 'AVAILABLE' ? 'Available for Projects' : 'Offline / Busy'}".`);
+  });
 }
 
 /**
@@ -380,10 +400,10 @@ function renderPeerGrid() {
         </div>
 
         <div class="peer-card-footer" style="display: flex; gap: 8px; margin-top: 10px; border-top: 1px dashed rgba(150,150,150,0.15); padding-top: 10px;">
-          <button class="neu-btn neu-btn-primary collab-req-btn" data-peer='${JSON.stringify(peer)}' style="flex: 1; padding: 8px 12px; font-size: 0.8rem; font-weight: 700;">
+          <button class="neu-btn neu-btn-primary collab-req-btn" data-peer-pin="${escapeHtml(peer.pin)}" style="flex: 1; padding: 8px 14px; font-size: 0.82rem; font-weight: 700;">
             🤝 Invite to Project
           </button>
-          <button class="neu-btn direct-msg-btn" data-peer='${JSON.stringify(peer)}' style="padding: 8px 12px; font-size: 0.8rem;" title="Direct Message">
+          <button class="neu-btn direct-msg-btn" data-peer-pin="${escapeHtml(peer.pin)}" style="padding: 8px 14px; font-size: 0.82rem;" title="Direct Message">
             💬
           </button>
         </div>
@@ -394,16 +414,20 @@ function renderPeerGrid() {
   // Attach Invite handlers
   grid.querySelectorAll('.collab-req-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      const peer = JSON.parse(btn.getAttribute('data-peer'));
-      openCollabRequestModal(peer);
+      const pin = btn.getAttribute('data-peer-pin');
+      const peer = allPeers.find(p => p.pin === pin);
+      if (peer) openCollabRequestModal(peer);
     });
   });
 
   // Attach Direct Message handlers
   grid.querySelectorAll('.direct-msg-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      const peer = JSON.parse(btn.getAttribute('data-peer'));
-      window.location.href = `messages.html?tab=idea_hub&chatWith=${encodeURIComponent(peer.pin)}&peerName=${encodeURIComponent(peer.name)}`;
+      const pin = btn.getAttribute('data-peer-pin');
+      const peer = allPeers.find(p => p.pin === pin);
+      if (peer) {
+        window.location.href = `messages.html?tab=idea_hub&chatWith=${encodeURIComponent(peer.pin)}&peerName=${encodeURIComponent(peer.name)}`;
+      }
     });
   });
 }
@@ -461,7 +485,9 @@ function setupCollabModal() {
         to_name: targetCollabPeer.name
       });
 
-      alerts.success('Invite Dispatched!', `Collaboration invite delivered in real time to ${targetCollabPeer.name}.`);
+      alerts.success('Invite Dispatched! 🚀', `Collaboration invite delivered in real time to ${targetCollabPeer.name} (${targetCollabPeer.pin}).`);
+      document.getElementById('collab-project-title').value = '';
+      document.getElementById('collab-project-message').value = '';
       closeModal();
     } catch (err) {
       alerts.error('Delivery Error', err.message || 'Could not deliver invite.');
@@ -528,16 +554,16 @@ async function renderInvitesList() {
     const res = await api.get('/ideahub/invites', { pin: myPin });
     if (res && res.success && Array.isArray(res.invites) && res.invites.length > 0) {
       container.innerHTML = res.invites.map(inv => `
-        <div class="neu-card" style="margin-bottom: 12px; padding: 14px;">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-            <strong style="color: var(--primary-color, #4f46e5); font-size: 0.95rem;">${escapeHtml(inv.project_title || 'Project Collaboration')}</strong>
-            <span class="neu-badge neu-badge-primary" style="font-size: 0.7rem;">${escapeHtml(inv.status)}</span>
+        <div class="neu-card" style="margin-bottom: 14px; padding: 16px; border-radius: 16px; background: rgba(20, 52, 36, 0.65);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <strong style="color: #34d399; font-size: 0.96rem;">${escapeHtml(inv.project_title || 'Project Collaboration')}</strong>
+            <span class="neu-badge neu-badge-primary" style="font-size: 0.72rem;">${escapeHtml(inv.status || 'PENDING')}</span>
           </div>
-          <p style="font-size: 0.85rem; margin: 4px 0 8px 0; color: var(--text-main);">${escapeHtml(inv.message || 'Wants to collaborate with you.')}</p>
-          <div style="font-size: 0.78rem; color: var(--text-muted); display: flex; justify-content: space-between; align-items: center;">
-            <span>From: <strong>${escapeHtml(inv.from_name)}</strong> (${escapeHtml(inv.from_pin)})</span>
-            <button class="neu-btn neu-btn-primary accept-invite-btn" data-from-pin="${inv.from_pin}" data-from-name="${escapeHtml(inv.from_name)}" style="padding: 4px 10px; font-size: 0.75rem;">
-              Chat & Accept
+          <p style="font-size: 0.86rem; margin: 4px 0 10px 0; color: #f0fdf4; line-height: 1.45;">${escapeHtml(inv.message || 'Wants to collaborate with you.')}</p>
+          <div style="font-size: 0.8rem; color: #a7d9be; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; border-top: 1px solid rgba(110, 231, 183, 0.15); padding-top: 10px;">
+            <span>From: <strong>${escapeHtml(inv.from_name)}</strong> (<code>${escapeHtml(inv.from_pin)}</code>)</span>
+            <button class="neu-btn neu-btn-primary accept-invite-btn" data-from-pin="${escapeHtml(inv.from_pin)}" data-from-name="${escapeHtml(inv.from_name)}" data-project="${escapeHtml(inv.project_title || 'Project')}" style="padding: 5px 14px; font-size: 0.76rem;">
+              Chat & Accept ✓
             </button>
           </div>
         </div>
@@ -547,7 +573,8 @@ async function renderInvitesList() {
         btn.addEventListener('click', () => {
           const fromPin = btn.getAttribute('data-from-pin');
           const fromName = btn.getAttribute('data-from-name');
-          window.location.href = `messages.html?tab=idea_hub&chatWith=${encodeURIComponent(fromPin)}&peerName=${encodeURIComponent(fromName)}`;
+          const project = btn.getAttribute('data-project');
+          window.location.href = `messages.html?tab=idea_hub&chatWith=${encodeURIComponent(fromPin)}&peerName=${encodeURIComponent(fromName)}&item=${encodeURIComponent(project)}`;
         });
       });
     } else {

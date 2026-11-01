@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -10,19 +10,18 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet" />
 
-  <!-- Stylesheets Matching Document Approvals & Universal HOD Theme -->
+  <!-- Stylesheets -->
   <link rel="stylesheet" href="../../css/reset.css" />
   <link rel="stylesheet" href="../../css/variables.css" />
-  <link rel="stylesheet" href="../../css/neumorphic.css" />
-  <link rel="stylesheet" href="../../css/dock.css" />
-  <link rel="stylesheet" href="../../css/top-nav.css" />
+  <link rel="stylesheet" href="../../css/top-nav.css?v=3.3.0" />
   <link rel="stylesheet" href="../../css/animations.css" />
-  <link rel="stylesheet" href="../../css/theme.css" />
-  <link rel="stylesheet" href="../../css/global.css" />
+  <link rel="stylesheet" href="../../css/dc-global-theme.css?v=3.3.0" />
   <link rel="stylesheet" href="../../css/hod-theme.css" />
 
-  <!-- Lucide Icons -->
+  <!-- Lucide Icons & Dynamic Island -->
   <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="../../js/theme-engine.js"></script>
+  <script src="../../js/dc-dynamic-island.js?v=3.3.0"></script>
 
   <!-- jsPDF & AutoTable for High-Quality Institutional PDF Generation -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -262,55 +261,19 @@
   </style>
 </head>
 <body class="hod-executive">
-  <div class="app-layout">
-    
-    <!-- Universal Top Navigation Capsule Dock (Identical to Document Approvals) -->
-    <header class="top-nav-capsule-container" style="position: sticky; top: 12px; z-index: 1000; width: 100%; max-width: 1400px; margin: 0 auto 20px auto; padding: 0 16px;">
-      <nav class="capsule-nav" aria-label="HOD Executive Navigation">
-        <!-- Brand Emblem -->
-        <a href="hod-dashboard.html" class="capsule-brand" style="text-decoration: none;">
-          <div class="brand-emblem-badge flex-shrink-0" title="Samskruti Institutions (259) • HOD Console" style="width: 40px !important; height: 40px !important; min-width: 40px !important; min-height: 40px !important; max-width: 40px !important; max-height: 40px !important; border-radius: 50% !important; overflow: hidden !important; display: flex !important; align-items: center !important; justify-content: center !important; flex-shrink: 0 !important;">
-            <img src="/assets/images/samskruti-logo-blue.png" alt="Campus Connect Logo" class="brand-logo-img flex-shrink-0" style="width: 28px !important; height: 28px !important; max-width: 28px !important; max-height: 28px !important; object-fit: contain !important; display: block !important; flex-shrink: 0 !important;" />
-          </div>
-          <span class="brand-title">HOD <span class="accent-text" id="brand-accent-text" style="color: #60a5fa;">CONSOLE</span></span>
-        </a>
+  <!-- Live Moving Background with Aura Orbs -->
+  <div class="dc-orb-bg" aria-hidden="true">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+    <div class="orb orb-4"></div>
+  </div>
 
-        <div class="nav-divider"></div>
-
-        <!-- Menu Items (Student Roster Active) -->
-        <div class="capsule-menu-items">
-          <a href="hod-dashboard.html" class="nav-item">
-            <i data-lucide="layout-dashboard"></i>
-            <span>Dashboard</span>
-          </a>
-          <a href="students-info.html" class="nav-item active">
-            <i data-lucide="users"></i>
-            <span>Student Roster</span>
-          </a>
-          <a href="document-approvals.html" class="nav-item">
-            <i data-lucide="file-check"></i>
-            <span>Document Approvals</span>
-          </a>
-          <a href="security-roster.html" class="nav-item">
-            <i data-lucide="shield-check"></i>
-            <span>Security Keys</span>
-          </a>
-        </div>
-
-        <!-- Utility Actions -->
-        <div class="capsule-actions">
-          <button type="button" id="theme-toggle-btn" class="util-btn" title="Toggle Theme" aria-label="Toggle Theme">
-            <i data-lucide="sun"></i>
-          </button>
-          <a href="/screens/01-auth/login.html" class="util-btn logout" title="Sign Out" aria-label="Sign Out" onclick="localStorage.clear(); sessionStorage.clear();">
-            <i data-lucide="log-out"></i>
-          </a>
-        </div>
-      </nav>
-    </header>
+  <!-- Dynamic Top-Right Corner Profile Widget -->
+  <div class="app-layout" style="position: relative; z-index: 10;">
 
     <!-- Main Content Area -->
-    <main class="main-content" style="margin-left: 0; width: 100%; max-width: 1600px; margin: auto; padding: 24px 28px;">
+    <main class="main-content" style="margin-left: 0; width: 100%; max-width: 1600px; margin: auto; padding: 70px 28px 24px;">
       <!-- Header -->
       <header class="content-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 26px;">
         <div class="header-titles">
@@ -428,7 +391,7 @@
               type="text"
               id="student-search-input"
               class="neu-input"
-              placeholder="Search by PIN (e.g. 019, 025) or Name..."
+              placeholder="Search by Student PIN or Name..."
               style="width: 340px; font-size: 0.85rem;"
             />
           </div>

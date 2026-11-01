@@ -12,90 +12,211 @@
   
   <link rel="stylesheet" href="../../css/reset.css" />
   <link rel="stylesheet" href="../../css/theme-tokens.css" />
-  <link rel="stylesheet" href="../../css/global-layout.css" />
-  <link rel="stylesheet" href="../../css/top-nav.css" />
-  <link rel="stylesheet" href="../../css/animations.css" />
+  <link rel="stylesheet" href="../../css/dc-global-theme.css?v=3.3.0" />
+  <link rel="stylesheet" href="../../css/top-nav.css?v=3.3.0" />
   <link rel="stylesheet" href="attendance.css" />
   
-  <!-- Lucide Icons, Chart.js & Theme Engine -->
+  <!-- Lucide Icons, Chart.js & Dynamic Island -->
   <script src="https://unpkg.com/lucide@latest"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="../../js/theme-engine.js"></script>
+  <script src="../../js/dc-dynamic-island.js?v=3.3.0"></script>
+
+  <style>
+    /* ============================================================
+       ATTENDANCE PORTAL LUXURY EMERALD GLASS THEME
+       ============================================================ */
+    body.student-portal-body {
+      background: var(--bg-app);
+      color: #f0fdf4 !important;
+      min-height: 100vh;
+      line-height: 1.6;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    .portal-viewport-wrapper {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 1360px;
+      margin: 0 auto;
+      padding: 1rem 1.5rem 4rem;
+      box-sizing: border-box;
+    }
+
+    /* Fixed Top-Right Corner Profile Widget */
+    .corner-profile-widget,
+    #attendanceCornerProfile {
+      position: fixed;
+      top: 14px;
+      right: 20px;
+      z-index: 9998;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(30, 68, 50, 0.55) !important;
+      backdrop-filter: blur(24px) saturate(180%) !important;
+      -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+      border: 1px solid rgba(110, 231, 183, 0.3) !important;
+      border-radius: 9999px;
+      padding: 5px 14px 5px 6px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .corner-profile-widget:hover {
+      background: rgba(45, 95, 70, 0.75) !important;
+      border-color: rgba(110, 231, 183, 0.6) !important;
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6), 0 0 20px rgba(16, 185, 129, 0.35);
+    }
+
+    /* ALL CARDS IN LUXURY TRANSLUCENT EMERALD GLASS */
+    .chart-section-card,
+    .identity-card-neumorphic,
+    .hero-card,
+    .kpi-card,
+    .calendar-section-card,
+    .neu-card {
+      background: rgba(20, 52, 36, 0.48) !important;
+      backdrop-filter: blur(28px) saturate(180%) !important;
+      -webkit-backdrop-filter: blur(28px) saturate(180%) !important;
+      border: 1px solid rgba(110, 231, 183, 0.22) !important;
+      border-radius: 24px !important;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.06) !important;
+      color: #f0fdf4 !important;
+      opacity: 1 !important;
+      visibility: visible !important;
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    }
+
+    .chart-section-card:hover,
+    .identity-card-neumorphic:hover,
+    .hero-card:hover,
+    .kpi-card:hover,
+    .calendar-section-card:hover {
+      background: rgba(28, 70, 48, 0.6) !important;
+      border-color: rgba(110, 231, 183, 0.45) !important;
+      transform: translateY(-3px) !important;
+      box-shadow: 0 20px 48px rgba(0, 0, 0, 0.6), 0 0 25px rgba(16, 185, 129, 0.2) !important;
+    }
+
+    /* Page title and headers */
+    .page-title {
+      color: #ffffff !important;
+      font-weight: 800 !important;
+      font-size: 1.85rem !important;
+    }
+
+    .page-subtitle {
+      color: #a7d9be !important;
+    }
+
+    .chart-heading,
+    .student-name,
+    .card-title {
+      color: #ffffff !important;
+      font-weight: 800 !important;
+    }
+
+    .student-pin-badge {
+      background: linear-gradient(135deg, #10b981, #059669) !important;
+      color: #041009 !important;
+      font-weight: 800 !important;
+      padding: 3px 12px !important;
+    }
+
+    .info-chip {
+      background: rgba(255, 255, 255, 0.06) !important;
+      border: 1px solid rgba(110, 231, 183, 0.25) !important;
+      border-radius: 12px !important;
+      color: #e2fbe8 !important;
+    }
+
+    .chip-k { color: #a7d9be !important; }
+    .chip-v { color: #ffffff !important; font-weight: 700 !important; }
+
+    .kpi-label { color: #a7d9be !important; font-weight: 700 !important; }
+    .kpi-val { color: #34d399 !important; font-weight: 900 !important; }
+    .kpi-subtext { color: #6ee7b7 !important; }
+
+    /* Calendar month switch and matrix */
+    .cal-month-switch {
+      background: rgba(0, 0, 0, 0.35) !important;
+      border: 1px solid rgba(110, 231, 183, 0.25) !important;
+      border-radius: 9999px !important;
+      padding: 4px !important;
+    }
+
+    .month-pill-btn {
+      color: #a7d9be !important;
+      border-radius: 9999px !important;
+      font-weight: 700 !important;
+      padding: 6px 16px !important;
+    }
+
+    .month-pill-btn.active {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+      color: #041009 !important;
+      box-shadow: 0 0 16px rgba(16, 185, 129, 0.4) !important;
+    }
+
+    .calendar-week-header span {
+      color: #6ee7b7 !important;
+      font-weight: 800 !important;
+    }
+
+    .cal-day-cell {
+      background: rgba(255, 255, 255, 0.04) !important;
+      border: 1px solid rgba(110, 231, 183, 0.15) !important;
+      border-radius: 14px !important;
+      color: #f0fdf4 !important;
+    }
+
+    .cal-day-cell:hover {
+      background: rgba(16, 185, 129, 0.2) !important;
+      border-color: rgba(52, 211, 153, 0.5) !important;
+      transform: scale(1.04) !important;
+    }
+
+    /* Gauge and Radial readout */
+    .gauge-track {
+      stroke: rgba(255, 255, 255, 0.1) !important;
+    }
+
+    .gauge-number {
+      color: #34d399 !important;
+      font-weight: 900 !important;
+    }
+
+    .gauge-sub {
+      color: #a7d9be !important;
+    }
+
+    .stat-lbl { color: #a7d9be !important; }
+    .stat-val { color: #ffffff !important; }
+
+    /* Button Re-sync */
+    .btn-resync-pill {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+      color: #041009 !important;
+      font-weight: 800 !important;
+      border: 1px solid rgba(52, 211, 153, 0.5) !important;
+      box-shadow: 0 4px 18px rgba(16, 185, 129, 0.35) !important;
+    }
+  </style>
 </head>
 <body class="student-portal-body">
   <div class="portal-viewport-wrapper">
-
-    <!-- 1. TOP FLOATING CAPSULE NAVIGATION SYSTEM -->
-    <header class="top-nav-capsule-container">
-      <nav class="capsule-nav" aria-label="Campus Connect Navigation">
-        
-        <!-- Brand / Emblem -->
-        <a href="dashboard.html" class="capsule-brand" style="text-decoration: none;">
-          <div class="brand-emblem-badge" title="Samskruti Institutions (259)">
-            <img src="/assets/images/samskruti-logo-blue.png" alt="Campus Connect Logo" class="brand-logo-img" />
-          </div>
-          <span class="brand-title">CAMPUS <span class="accent-text">CONNECT</span></span>
-        </a>
-
-        <div class="nav-divider"></div>
-
-        <!-- Working Navigation Links with Sliding Morph Pill -->
-        <div class="capsule-menu-items" id="capsule-menu-track">
-          <div class="sliding-morph-pill" id="nav-morph-pill"></div>
-          <a href="dashboard.html" class="nav-item">
-            <i data-lucide="layout-dashboard"></i>
-            <span>Dashboard</span>
-          </a>
-          <a href="attendance.html" class="nav-item active">
-            <i data-lucide="calendar-check"></i>
-            <span>Attendance</span>
-          </a>
-          <a href="results.html" class="nav-item">
-            <i data-lucide="graduation-cap"></i>
-            <span>Results</span>
-          </a>
-          <a href="idea-hub.html" class="nav-item">
-            <i data-lucide="lightbulb"></i>
-            <span>Idea Hub</span>
-          </a>
-          <a href="marketplace.html" class="nav-item">
-            <i data-lucide="shopping-bag"></i>
-            <span>Marketplace</span>
-          </a>
-          <a href="messages.html" class="nav-item">
-            <i data-lucide="message-square"></i>
-            <span>Messages</span>
-          </a>
-          <a href="document-logistics.html" class="nav-item">
-            <i data-lucide="file-text"></i>
-            <span>Requests</span>
-          </a>
-          <a href="profile.html" class="nav-item">
-            <i data-lucide="user"></i>
-            <span>Profile</span>
-          </a>
-        </div>
-
-        <!-- Utilities -->
-        <div class="capsule-actions">
-          <button type="button" id="theme-toggle-btn" class="util-btn" title="Toggle Theme" aria-label="Toggle Theme">
-            <i data-lucide="sun"></i>
-          </button>
-          <a href="/screens/01-auth/login.html" class="util-btn logout" title="Sign Out" aria-label="Sign Out" onclick="localStorage.clear(); sessionStorage.clear();">
-            <i data-lucide="log-out"></i>
-          </a>
-        </div>
-      </nav>
-    </header>
-
-    <!-- MAIN DASHBOARD CONTENT CANVAS -->
     <main class="dashboard-canvas">
       
       <!-- 2. PAGE HEADER & SYNC CONTROLLER -->
       <section class="page-header-row">
         <div class="header-titles">
-          <h1 class="page-title" id="greeting-title">Good morning, Kakarla Rakesh</h1>
-          <p class="page-subtitle" id="student-meta-subtitle">Samskruti College of Engineering &amp; Technology (Code: 259) • PIN: 24259-CS-039</p>
+          <h1 class="page-title" id="greeting-title">Live Biometric Telemetry</h1>
+          <p class="page-subtitle" id="student-meta-subtitle">Samskruti College (Code: 259) • Real-Time SBTET Gateways</p>
         </div>
         <div class="header-sync-container">
           <button id="re-sync-trigger" class="btn-resync-pill">
