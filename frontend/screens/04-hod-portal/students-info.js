@@ -1,6 +1,7 @@
 /**
  * Samskruti College HOD Master Students Info & Dossier Controller
- * Continuous Scroll for 180 Students, Real-Time Cohort Filters, Interactive Backlog Pop-Up Modal
+ * Complete 180 Students Table with PIN, Name, Branch, CGPA, Attendance, Days, Backlogs
+ * Interactive Ascending/Descending Sorting, Azure Portal Live Mass Sync, and Backlog Pop-Up Modal
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -12,15 +13,171 @@ let currentStudentsList = [];
 let activeCohortFilter = 'All';
 let selectedStudentForModal = null;
 
+// Sorting state
+let currentSort = {
+  column: 'pin',
+  direction: 'asc' // 'asc' or 'desc'
+};
+
 function initStudentsInfo() {
   currentStudentsList = (typeof window.CampusRoster !== 'undefined') ? window.CampusRoster.getAll() : [];
-  render180Students(currentStudentsList);
+  
+  // Sort initial list
+  sortAndRenderStudents();
+
+  bindSortableHeaders();
+  bindQuickSortDropdown();
   bindCohortFilterPills();
   bindStudentSearch();
+  bindAzureMassSync();
   bindModalActions();
   bindGeneralActions();
 }
 
+/**
+ * 1. Sorting Engine
+ */
+function sortAndRenderStudents() {
+  const all = (typeof window.CampusRoster !== 'undefined') ? window.CampusRoster.getAll() : currentStudentsList;
+
+  // 1. Filter by Cohort & Search
+  const search = document.querySelector('input[placeholder*="Search student PIN"]') || 
+                 document.querySelector('input[type="text"]');
+  const query = search ? search.value.toLowerCase().trim() : '';
+
+  let filtered = all.filter(s => {
+    const matchesSearch = !query || 
+      s.pin.toLowerCase().includes(query) || 
+      s.name.toLowerCase().includes(query) || 
+      s.branch.toLowerCase().includes(query) ||
+      String(s.cgpa).includes(query);
+
+    let matchesCohort = true;
+    if (activeCohortFilter === 'Critical') {
+      matchesCohort = s.attendance < 65;
+    } else if (activeCohortFilter === 'Warning') {
+      matchesCohort = s.attendance >= 65 && s.attendance < 75;
+    } else if (activeCohortFilter === 'Eligible') {
+      matchesCohort = s.attendance >= 75;
+    } else if (activeCohortFilter === 'Backlogs') {
+      matchesCohort = s.backlogCount > 0;
+    }
+
+    return matchesSearch && matchesCohort;
+  });
+
+  // 2. Sort by currentSort
+  filtered.sort((a, b) => {
+    let valA, valB;
+
+    switch (currentSort.column) {
+      case 'pin':
+        valA = a.roll;
+        valB = b.roll;
+        break;
+      case 'name':
+        valA = a.name.toLowerCase();
+        valB = b.name.toLowerCase();
+        break;
+      case 'branch':
+        valA = (a.branch + a.section).toLowerCase();
+        valB = (b.branch + b.section).toLowerCase();
+        break;
+      case 'days':
+        valA = a.presentDays;
+        valB = b.presentDays;
+        break;
+      case 'attendance':
+        valA = a.attendance;
+        valB = b.attendance;
+        break;
+      case 'cgpa':
+        valA = a.cgpa;
+        valB = b.cgpa;
+        break;
+      case 'backlogs':
+        valA = a.backlogCount;
+        valB = b.backlogCount;
+        break;
+      default:
+        valA = a.roll;
+        valB = b.roll;
+    }
+
+    if (valA < valB) return currentSort.direction === 'asc' ? -1 : 1;
+    if (valA > valB) return currentSort.direction === 'asc' ? 1 : -1;
+    return 0;
+  });
+
+  render180Students(filtered);
+  updateSortIconsUI();
+}
+
+function updateSortIconsUI() {
+  document.querySelectorAll('.sortable-header').forEach(th => {
+    const col = th.getAttribute('data-sort');
+    const icon = th.querySelector('.sort-icon');
+    if (!icon) return;
+
+    if (col === currentSort.column) {
+      th.classList.add('text-emerald-950', 'bg-emerald-50/60');
+      icon.textContent = currentSort.direction === 'asc' ? 'arrow_upward' : 'arrow_downward';
+      icon.className = 'material-symbols-outlined text-[16px] text-emerald-700 font-bold sort-icon';
+    } else {
+      th.classList.remove('text-emerald-950', 'bg-emerald-50/60');
+      icon.textContent = 'unfold_more';
+      icon.className = 'material-symbols-outlined text-[16px] text-slate-400 group-hover:text-emerald-700 transition-transform sort-icon';
+    }
+  });
+
+  // Sync quick sort dropdown value
+  const select = document.getElementById('quickSortSelect');
+  if (select) {
+    const key = `${currentSort.column}-${currentSort.direction}`;
+    const matchOpt = Array.from(select.options).find(opt => opt.value === key || (opt.value.startsWith(currentSort.column) && opt.value.endsWith(currentSort.direction)));
+    if (matchOpt) select.value = matchOpt.value;
+  }
+}
+
+function bindSortableHeaders() {
+  document.querySelectorAll('.sortable-header').forEach(th => {
+    th.addEventListener('click', () => {
+      const col = th.getAttribute('data-sort');
+      if (currentSort.column === col) {
+        currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+      } else {
+        currentSort.column = col;
+        // Default to desc for performance metrics
+        currentSort.direction = (col === 'cgpa' || col === 'attendance' || col === 'days') ? 'desc' : 'asc';
+      }
+
+      if (navigator.vibrate) navigator.vibrate(8);
+      sortAndRenderStudents();
+      showToast(`Sorted table by ${col.toUpperCase()} (${currentSort.direction === 'asc' ? 'Ascending ↑' : 'Descending ↓'})`);
+    });
+  });
+}
+
+function bindQuickSortDropdown() {
+  const select = document.getElementById('quickSortSelect');
+  if (!select) return;
+
+  select.addEventListener('change', () => {
+    const val = select.value; // e.g. "cgpa-desc", "pin-asc", etc.
+    const [col, dir] = val.split('-');
+
+    if (col && dir) {
+      currentSort.column = col === 'att' ? 'attendance' : col;
+      currentSort.direction = dir;
+      sortAndRenderStudents();
+      showToast(`Applied sort: ${select.options[select.selectedIndex].text}`);
+    }
+  });
+}
+
+/**
+ * 2. Render Student Rows
+ */
 function render180Students(students) {
   const tbody = document.getElementById('masterStudentsTbody');
   const countEl = document.getElementById('studentsVisibleCount');
@@ -31,7 +188,7 @@ function render180Students(students) {
   if (students.length === 0) {
     tbody.innerHTML = `
       <tr>
-        <td colspan="6" class="px-6 py-12 text-center text-slate-500 font-sans text-base">
+        <td colspan="9" class="px-6 py-12 text-center text-slate-500 font-sans text-base">
           <span class="material-symbols-outlined text-4xl text-slate-400 block mb-2">search_off</span>
           No students found matching your cohort or search criteria.
         </td>
@@ -51,6 +208,16 @@ function render180Students(students) {
     } else if (s.attendance < 75) {
       attBadge = 'text-amber-700 bg-amber-50 border-amber-200';
       statusBadge = 'bg-amber-100 text-amber-800 border-amber-200';
+    }
+
+    // CGPA styling
+    let cgpaBadge = 'bg-emerald-50 text-emerald-800 border-emerald-200';
+    if (s.cgpa < 6.0) {
+      cgpaBadge = 'bg-rose-50 text-rose-800 border-rose-200';
+    } else if (s.cgpa < 7.0) {
+      cgpaBadge = 'bg-amber-50 text-amber-800 border-amber-200';
+    } else if (s.cgpa < 8.5) {
+      cgpaBadge = 'bg-teal-50 text-teal-800 border-teal-200';
     }
 
     // Backlog pill
@@ -76,49 +243,95 @@ function render180Students(students) {
     const initials = s.name.split(' ').map(n => n[0]).slice(0, 2).join('');
 
     return `
-      <tr class="hover:bg-emerald-50/30 transition-colors group">
-        <td class="px-5 py-3.5 whitespace-nowrap">
+      <tr class="hover:bg-emerald-50/40 transition-colors group">
+        <!-- 1. PIN -->
+        <td class="py-3 px-4 whitespace-nowrap">
+          <span class="font-mono text-xs font-bold text-slate-800 bg-slate-100 px-2.5 py-1 rounded-md border border-slate-200/80 select-all cursor-pointer hover:bg-emerald-100 hover:border-emerald-300 transition copy-pin-btn"
+                data-pin="${s.pin}" title="Click to copy PIN">
+            ${s.pin}
+          </span>
+        </td>
+
+        <!-- 2. Student Name -->
+        <td class="py-3 px-4 whitespace-nowrap">
           <div class="flex items-center gap-3">
             <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-900 flex items-center justify-center font-bold text-xs shrink-0 font-mono">
               ${initials}
             </div>
             <div>
               <div class="font-bold text-slate-900 group-hover:text-emerald-950 transition-colors">${escapeHtml(s.name)}</div>
-              <div class="font-mono text-xs text-slate-500">${s.pin} &bull; ${s.section}</div>
+              <div class="text-[11px] text-slate-500 font-mono">Roll #${s.roll} &bull; ${s.scheme}</div>
             </div>
           </div>
         </td>
-        <td class="px-4 py-3.5 whitespace-nowrap">
-          <span class="font-mono text-xs font-bold px-2 py-0.5 rounded ${attBadge} border">
+
+        <!-- 3. Branch -->
+        <td class="py-3 px-3 whitespace-nowrap">
+          <span class="px-2.5 py-0.5 rounded-full font-mono text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200">
+            ${s.branch} &bull; ${s.section}
+          </span>
+        </td>
+
+        <!-- 4. Days (Pres/Elap) -->
+        <td class="py-3 px-4 whitespace-nowrap">
+          <div class="font-mono text-xs font-bold text-slate-800">${s.presentDays} / ${s.totalDays} Days</div>
+          <div class="w-20 bg-slate-100 rounded-full h-1.5 mt-1 overflow-hidden">
+            <div class="bg-emerald-600 h-1.5 rounded-full" style="width: ${Math.round((s.presentDays / s.totalDays) * 100)}%"></div>
+          </div>
+        </td>
+
+        <!-- 5. Attendance % -->
+        <td class="py-3 px-4 whitespace-nowrap">
+          <span class="font-mono text-xs font-bold px-2 py-0.5 rounded ${attBadge} border inline-block">
             ${s.attendance}%
           </span>
         </td>
-        <td class="px-4 py-3.5 whitespace-nowrap">
+
+        <!-- 6. Status -->
+        <td class="py-3 px-3 whitespace-nowrap">
           <span class="px-2.5 py-0.5 rounded-full text-xs font-bold border ${statusBadge}">
             ${s.status}
           </span>
         </td>
-        <td class="px-4 py-3.5 whitespace-nowrap">
+
+        <!-- 7. CGPA -->
+        <td class="py-3 px-3 whitespace-nowrap">
+          <span class="font-mono text-xs font-bold px-2.5 py-1 rounded-full ${cgpaBadge} border inline-flex items-center gap-1">
+            <span class="material-symbols-outlined text-[13px]">grade</span>
+            ${s.cgpa.toFixed(2)}
+          </span>
+        </td>
+
+        <!-- 8. Backlogs -->
+        <td class="py-3 px-4 whitespace-nowrap">
           ${backlogHtml}
         </td>
-        <td class="px-4 py-3.5 whitespace-nowrap font-mono text-xs text-slate-500">
-          ${s.lastSynced}
-        </td>
-        <td class="px-4 py-3.5 whitespace-nowrap text-right">
-          <button class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 text-xs font-semibold shadow-2xs transition active:scale-95 cursor-pointer student-sync-btn"
-                  data-pin="${s.pin}">
-            <span class="material-symbols-outlined text-[15px]">sync</span>
-            <span>Sync</span>
-          </button>
+
+        <!-- 9. Actions -->
+        <td class="py-3 px-4 whitespace-nowrap text-right">
+          <div class="inline-flex items-center gap-1.5">
+            <button class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-white hover:bg-emerald-50 border border-slate-200 text-slate-700 hover:text-emerald-800 text-xs font-semibold shadow-2xs transition active:scale-95 cursor-pointer row-sync-btn"
+                    data-pin="${s.pin}" title="Live sync biometric punches from Azure SBTET node">
+              <span class="material-symbols-outlined text-[15px]">sync</span>
+              <span>Sync</span>
+            </button>
+            <button class="w-7 h-7 rounded-full bg-slate-100 hover:bg-emerald-100 text-slate-600 hover:text-emerald-800 flex items-center justify-center transition cursor-pointer row-chat-btn"
+                    data-pin="${s.pin}" data-name="${s.name}" title="Send encrypted message to student">
+              <span class="material-symbols-outlined text-[14px]">chat</span>
+            </button>
+          </div>
         </td>
       </tr>
     `;
   }).join('');
 
   bindBacklogModalButtons();
-  bindRowSyncButtons();
+  bindRowActionButtons();
 }
 
+/**
+ * 3. Row Actions & Backlog Pop-Up Modal
+ */
 function bindBacklogModalButtons() {
   document.querySelectorAll('.open-backlog-modal-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
@@ -141,13 +354,11 @@ function openBacklogModal(pin) {
   const card = document.getElementById('backlogModalCard');
   if (!modal) return;
 
-  // Populate Header
   document.getElementById('modalStudentAvatar').textContent = student.name.split(' ').map(n => n[0]).slice(0, 2).join('');
   document.getElementById('modalStudentName').textContent = student.name;
   document.getElementById('modalStudentPin').textContent = student.pin;
-  document.getElementById('modalStudentSubtitle').textContent = `Department of Computer Science & Engineering • Section ${student.section} • Scheme C-24`;
+  document.getElementById('modalStudentSubtitle').textContent = `Department of Computer Science & Engineering • CGPA: ${student.cgpa.toFixed(2)} • Present: ${student.presentDays}/${student.totalDays} Days`;
 
-  // Populate Summary
   const countEl = document.getElementById('modalBacklogCount');
   const attEl = document.getElementById('modalAttendanceVal');
   const eligEl = document.getElementById('modalExamEligibility');
@@ -167,7 +378,6 @@ function openBacklogModal(pin) {
     }
   }
 
-  // Populate Table
   const tbody = document.getElementById('modalBacklogTbody');
   if (tbody) {
     if (student.backlogCount === 0) {
@@ -175,7 +385,7 @@ function openBacklogModal(pin) {
         <tr>
           <td colspan="5" class="px-5 py-8 text-center text-emerald-800 font-bold">
             <span class="material-symbols-outlined text-3xl text-emerald-600 block mb-1">verified</span>
-            All Curricular Units Cleared &bull; 0 Active Backlogs Recorded in SBTET Ledger.
+            All Curricular Units Cleared &bull; 0 Active Backlogs Recorded in SBTET Ledger &bull; CGPA: ${student.cgpa.toFixed(2)}
           </td>
         </tr>
       `;
@@ -213,7 +423,7 @@ function openBacklogModal(pin) {
   }, 20);
 
   if (navigator.vibrate) navigator.vibrate(10);
-  showToast(`Opened detailed backlog record for ${student.name} (${student.pin})`);
+  showToast(`Opened detailed backlog dossier for ${student.name} (${student.pin})`);
 }
 
 function closeBacklogModal() {
@@ -229,25 +439,149 @@ function closeBacklogModal() {
   }, 200);
 }
 
-function bindModalActions() {
-  document.getElementById('closeBacklogModal')?.addEventListener('click', closeBacklogModal);
+function bindRowActionButtons() {
+  // Individual student sync
+  document.querySelectorAll('.row-sync-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const pin = btn.getAttribute('data-pin');
+      const icon = btn.querySelector('.material-symbols-outlined');
+      if (icon) icon.classList.add('animate-spin');
 
-  // Print Dossier PDF
-  document.getElementById('printModalDossierBtn')?.addEventListener('click', () => {
-    window.print();
+      if (navigator.vibrate) navigator.vibrate(10);
+
+      setTimeout(() => {
+        if (icon) icon.classList.remove('animate-spin');
+        if (typeof window.CampusRoster !== 'undefined') {
+          window.CampusRoster.syncStudent(pin);
+        }
+        showToast(`Live SBTET punch synchronized for ${pin} from Azure Gateway.`);
+      }, 500);
+    });
   });
 
-  // Dispatch Directive (Message Student)
-  document.getElementById('messageStudentFromModalBtn')?.addEventListener('click', () => {
-    if (!selectedStudentForModal) return;
-    closeBacklogModal();
-    showToast(`Redirecting to encrypted communication terminal for ${selectedStudentForModal.name}...`);
-    setTimeout(() => {
-      window.location.href = `./messages.html?pin=${encodeURIComponent(selectedStudentForModal.pin)}&name=${encodeURIComponent(selectedStudentForModal.name)}`;
-    }, 400);
+  // Chat button
+  document.querySelectorAll('.row-chat-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const pin = btn.getAttribute('data-pin');
+      const name = btn.getAttribute('data-name');
+      showToast(`Opening encrypted relay for ${name} (${pin})...`);
+      setTimeout(() => {
+        window.location.href = `./messages.html?pin=${encodeURIComponent(pin)}&name=${encodeURIComponent(name)}`;
+      }, 350);
+    });
+  });
+
+  // Copy PIN button
+  document.querySelectorAll('.copy-pin-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const pin = btn.getAttribute('data-pin');
+      if (!pin) return;
+      navigator.clipboard?.writeText(pin).catch(() => {});
+      showToast(`Copied PIN ${pin} to clipboard!`);
+    });
   });
 }
 
+/**
+ * 4. Azure Portal Mass Live Sync
+ */
+function bindAzureMassSync() {
+  const massBtn = document.getElementById('azureMassSyncBtn');
+  const modal = document.getElementById('azureSyncProgressModal');
+  const card = document.getElementById('azureSyncModalCard');
+  const progressBar = document.getElementById('azureModalProgressBar');
+  const counterEl = document.getElementById('azureModalCounter');
+  const pctEl = document.getElementById('azureModalPercentage');
+  const currentPinEl = document.getElementById('azureModalCurrentPin');
+  const consoleEl = document.getElementById('azureStreamConsole');
+  const closeBtn = document.getElementById('closeAzureSyncModal');
+
+  closeBtn?.addEventListener('click', () => {
+    modal?.classList.add('hidden', 'opacity-0', 'pointer-events-none');
+  });
+
+  if (!massBtn || !modal) return;
+
+  massBtn.addEventListener('click', () => {
+    if (navigator.vibrate) navigator.vibrate(15);
+
+    // Open Modal
+    modal.classList.remove('hidden', 'opacity-0', 'pointer-events-none');
+    setTimeout(() => {
+      card?.classList.remove('scale-95');
+      card?.classList.add('scale-100');
+    }, 20);
+
+    const students = (typeof window.CampusRoster !== 'undefined') ? window.CampusRoster.getAll() : [];
+    let current = 12;
+    const total = 180;
+
+    if (consoleEl) {
+      consoleEl.innerHTML = `
+        <div>[AZURE-TLS1.3] Initiating mass endpoint handshake...</div>
+        <div>[SBTET-GATEWAY] Node 259 verified: C-24 Scheme Ledger Active.</div>
+      `;
+    }
+
+    const interval = setInterval(() => {
+      current += 8;
+      if (current > total) current = total;
+
+      const pct = Math.round((current / total) * 100);
+      if (progressBar) progressBar.style.width = `${pct}%`;
+      if (counterEl) counterEl.textContent = `${current} / ${total} Nodes`;
+      if (pctEl) pctEl.textContent = `${pct}%`;
+
+      const st = students[current - 1] || { pin: `24259-CS-${String(current).padStart(3, '0')}`, name: 'STUDENT' };
+      if (currentPinEl) currentPinEl.textContent = st.pin;
+
+      if (consoleEl && current % 16 === 0) {
+        const line = document.createElement('div');
+        line.textContent = `[AZURE-STREAM] Node ${st.pin} (${st.name}) punch hashes validated.`;
+        consoleEl.appendChild(line);
+        consoleEl.scrollTop = consoleEl.scrollHeight;
+      }
+
+      if (current >= total) {
+        clearInterval(interval);
+        
+        // Execute mass sync
+        if (typeof window.CampusRoster !== 'undefined') {
+          window.CampusRoster.massSyncFromAzure();
+        }
+
+        const badge = document.getElementById('azureModalStatusBadge');
+        if (badge) {
+          badge.textContent = 'Verified 100%';
+          badge.className = 'px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-500 text-white font-mono';
+        }
+
+        if (consoleEl) {
+          const fin = document.createElement('div');
+          fin.className = 'text-white font-bold';
+          fin.textContent = '[SUCCESS] All 180 department nodes synchronized against Azure SBTET ledger.';
+          consoleEl.appendChild(fin);
+          consoleEl.scrollTop = consoleEl.scrollHeight;
+        }
+
+        if (navigator.vibrate) navigator.vibrate([20, 50, 20]);
+
+        setTimeout(() => {
+          modal.classList.add('hidden', 'opacity-0', 'pointer-events-none');
+          sortAndRenderStudents();
+          showToast('Azure Mass Sync Complete: All 180 student records synchronized from SBTET Cloud Gateway.');
+        }, 900);
+      }
+    }, 60);
+  });
+}
+
+/**
+ * 5. Cohort Filter Pills & Search
+ */
 function bindCohortFilterPills() {
   document.querySelectorAll('button').forEach(btn => {
     const txt = btn.textContent || '';
@@ -268,7 +602,7 @@ function bindCohortFilterPills() {
         else if (txt.includes('With Backlogs')) activeCohortFilter = 'Backlogs';
         else activeCohortFilter = 'All';
 
-        filterStudents();
+        sortAndRenderStudents();
       });
     }
   });
@@ -280,52 +614,24 @@ function bindStudentSearch() {
   if (!search) return;
 
   search.addEventListener('input', () => {
-    filterStudents();
+    sortAndRenderStudents();
   });
 }
 
-function filterStudents() {
-  const search = document.querySelector('input[placeholder*="Search student PIN"]') || 
-                 document.querySelector('input[type="text"]');
-  const query = search ? search.value.toLowerCase().trim() : '';
+function bindModalActions() {
+  document.getElementById('closeBacklogModal')?.addEventListener('click', closeBacklogModal);
 
-  const all = (typeof window.CampusRoster !== 'undefined') ? window.CampusRoster.getAll() : currentStudentsList;
-
-  const filtered = all.filter(s => {
-    const matchesSearch = !query || s.pin.toLowerCase().includes(query) || s.name.toLowerCase().includes(query);
-    let matchesCohort = true;
-
-    if (activeCohortFilter === 'Critical') {
-      matchesCohort = s.attendance < 65;
-    } else if (activeCohortFilter === 'Warning') {
-      matchesCohort = s.attendance >= 65 && s.attendance < 75;
-    } else if (activeCohortFilter === 'Eligible') {
-      matchesCohort = s.attendance >= 75;
-    } else if (activeCohortFilter === 'Backlogs') {
-      matchesCohort = s.backlogCount > 0;
-    }
-
-    return matchesSearch && matchesCohort;
+  document.getElementById('printModalDossierBtn')?.addEventListener('click', () => {
+    window.print();
   });
 
-  render180Students(filtered);
-}
-
-function bindRowSyncButtons() {
-  document.querySelectorAll('.student-sync-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const pin = btn.getAttribute('data-pin');
-      const icon = btn.querySelector('.material-symbols-outlined');
-      if (icon) icon.classList.add('animate-spin');
-
-      if (navigator.vibrate) navigator.vibrate(10);
-
-      setTimeout(() => {
-        if (icon) icon.classList.remove('animate-spin');
-        showToast(`Live SBTET biometric punch synchronized for ${pin}.`);
-      }, 500);
-    });
+  document.getElementById('messageStudentFromModalBtn')?.addEventListener('click', () => {
+    if (!selectedStudentForModal) return;
+    closeBacklogModal();
+    showToast(`Redirecting to encrypted communication terminal for ${selectedStudentForModal.name}...`);
+    setTimeout(() => {
+      window.location.href = `./messages.html?pin=${encodeURIComponent(selectedStudentForModal.pin)}&name=${encodeURIComponent(selectedStudentForModal.name)}`;
+    }, 400);
   });
 }
 
@@ -340,38 +646,15 @@ function bindGeneralActions() {
   document.getElementById('exportStudentsCsvBtn')?.addEventListener('click', () => {
     exportStudentsCsv();
   });
-
-  // Live Sync on top
-  document.querySelectorAll('button').forEach(btn => {
-    const txt = btn.textContent || '';
-    if (txt.includes('Live Sync') || txt.includes('Sync All')) {
-      btn.addEventListener('click', () => {
-        const icon = btn.querySelector('.material-symbols-outlined');
-        if (icon) icon.classList.add('animate-spin');
-        setTimeout(() => {
-          if (icon) icon.classList.remove('animate-spin');
-          showToast('Live biometric synchronization complete for all 180 department nodes.');
-        }, 800);
-      });
-    } else if (txt.includes('Export CSV') || txt.includes('CSV')) {
-      btn.addEventListener('click', () => {
-        exportStudentsCsv();
-      });
-    } else if (txt.includes('Export PDF') || txt.includes('PDF')) {
-      btn.addEventListener('click', () => {
-        window.print();
-      });
-    }
-  });
 }
 
 function exportStudentsCsv() {
   const students = (typeof window.CampusRoster !== 'undefined') ? window.CampusRoster.getAll() : currentStudentsList;
-  let csv = 'Roll,PIN,Student Name,Section,Scheme,Attendance %,Status,Backlog Count,Backlog Subjects,Last Synced\\n';
+  let csv = 'Roll,PIN,Student Name,Branch,Section,Scheme,CGPA,Present Days,Total Days,Attendance %,Status,Backlog Count,Backlogs,Last Synced\\n';
 
   students.forEach(s => {
     const backlogsStr = s.backlogs.map(b => b.code).join('; ') || 'None';
-    csv += `"${s.roll}","${s.pin}","${s.name}","${s.section}","${s.scheme}","${s.attendance}%","${s.status}","${s.backlogCount}","${backlogsStr}","${s.lastSynced}"\\n`;
+    csv += `"${s.roll}","${s.pin}","${s.name}","${s.branch}","${s.section}","${s.scheme}","${s.cgpa}","${s.presentDays}","${s.totalDays}","${s.attendance}%","${s.status}","${s.backlogCount}","${backlogsStr}","${s.lastSynced}"\\n`;
   });
 
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
