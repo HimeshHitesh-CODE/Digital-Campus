@@ -22,6 +22,32 @@
   <script src="https://unpkg.com/lucide@latest"></script>
   <script src="/js/stitch-state.js"></script>
   <script src="/js/dc-dynamic-island.js" defer></script>
+
+  <style>
+    @media print {
+      body * {
+        visibility: hidden !important;
+      }
+      #printableMemoCard, #printableMemoCard * {
+        visibility: visible !important;
+      }
+      #printableMemoCard {
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 100% !important;
+        background: #ffffff !important;
+        color: #000000 !important;
+        border: 2px solid #047857 !important;
+        box-shadow: none !important;
+        padding: 24px !important;
+      }
+      .app-global-header, .dc-floating-island-wrapper, footer, button {
+        display: none !important;
+      }
+    }
+  </style>
+
 </head>
 
 <body class="bg-surface font-sans text-neutral-900 min-h-screen flex flex-col antialiased selection:bg-emerald-200 selection:text-emerald-950" 
@@ -189,7 +215,7 @@
 </div>
 </div>
 <!-- Semester IV Subject Breakdown Table Card -->
-<section class="glass-card rounded-[30px] p-6 md:p-8 flex flex-col gap-6">
+<section class="glass-card rounded-[30px] p-6 md:p-8 flex flex-col gap-6" id="printableMemoCard">
 <!-- Tabs & Status Pill Bar -->
 <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-2 border-b border-emerald-900/10">
 <div class="flex items-center gap-2 overflow-x-auto pb-1">
@@ -521,9 +547,9 @@
 </div>
 </div>
 <div class="flex flex-col gap-2">
-<a class="inline-flex items-center justify-center gap-2 w-full px-5 py-2.5 rounded-full bg-gradient-to-r from-emerald-700 to-teal-600 text-white font-bold text-lg shadow-md hover:brightness-105 transition-all" href="javascript:void(0)">
-<span>Apply for Recounting</span>
-<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+<a class="inline-flex items-center justify-center gap-2 w-full px-5 py-2.5 rounded-full bg-gradient-to-r from-emerald-700 to-teal-600 text-white font-bold text-lg shadow-md hover:brightness-105 transition-all cursor-pointer" href="https://www.sbtet.telangana.gov.in/index.html#!/index/DiplomaStudentServices" target="_blank" rel="noopener noreferrer">
+<span>Apply for SBTET Re-evaluation / Recounting &rarr;</span>
+<span class="material-symbols-outlined text-[18px]">open_in_new</span>
 </a>
 <span class="text-center text-sm md:text-base font-bold text-neutral-500">
         Officer-in-Charge: Exam Cell • Room G-08

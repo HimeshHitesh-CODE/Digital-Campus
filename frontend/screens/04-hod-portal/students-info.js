@@ -21,15 +21,16 @@ let currentSort = {
 };
 
 function getActiveDepartment() {
-  const stored = localStorage.getItem('hod_active_dept');
-  if (stored === 'CS' || stored === 'AIML') return stored;
   try {
     const userStr = localStorage.getItem('dc_user');
     if (userStr) {
       const u = JSON.parse(userStr);
       if (u.branch === 'CS' || (u.pin && u.pin.includes('CS'))) return 'CS';
+      if (u.branch === 'AIML' || (u.pin && u.pin.includes('AIML'))) return 'AIML';
     }
   } catch (_) {}
+  const stored = localStorage.getItem('hod_active_dept');
+  if (stored === 'CS' || stored === 'AIML') return stored;
   return 'AIML';
 }
 
@@ -540,7 +541,7 @@ function renderContinuousStudents(students) {
         </td>
 
         <!-- 10. Actions (Sync & Chat) -->
-        <td class="py-2.5 px-3 whitespace-nowrap text-right">
+        <td class="py-2.5 pl-2 pr-4 whitespace-nowrap text-right">
           <div class="inline-flex items-center gap-1.5 justify-end">
             <button class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white hover:bg-emerald-50 border border-slate-200 text-slate-700 hover:text-emerald-800 text-xs font-semibold shadow-2xs transition active:scale-95 cursor-pointer row-sync-btn"
                     data-pin="${s.pin}" title="Live sync biometric punches from Azure SBTET node">

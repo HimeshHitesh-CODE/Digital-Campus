@@ -54,8 +54,14 @@
   }
 
   function detectRole() {
+    if (window.location.pathname.includes('/04-hod-portal/')) {
+      return 'HOD';
+    }
+    if (window.location.pathname.includes('/02-student-portal/')) {
+      return 'STUDENT';
+    }
     const user = getActiveUser();
-    if (user.role === 'HOD' || window.location.pathname.includes('/04-hod-portal/')) {
+    if (user && user.role === 'HOD') {
       return 'HOD';
     }
     return 'STUDENT';
@@ -107,12 +113,12 @@
       document.body.insertBefore(header, document.body.firstChild);
     }
 
-    const activeDept = localStorage.getItem('hod_active_dept') || (user && user.branch === 'AIML' ? 'AIML' : ((user && user.pin && user.pin.includes('AIML')) ? 'AIML' : 'AIML'));
+    const activeDept = localStorage.getItem('hod_active_dept') || (user && user.branch === 'AIML' ? 'AIML' : ((user && user.pin && user.pin.includes('AIML')) ? 'AIML' : 'CS'));
     const isAiml = isHod && (activeDept === 'AIML' || (user && user.branch === 'AIML') || (user && user.pin && user.pin.includes('AIML')));
-    const displayName = user.name || (isAiml ? 'Prof. Ramesh' : (isHod ? 'Dr. J. Vamshi Krishna' : 'KARNATI HIMESH'));
+    const displayName = user.name || (isAiml ? 'Prof. Padma' : (isHod ? 'Dr. J. Vamshi Krishna' : 'KARNATI HIMESH'));
     const displayPin = user.pin || user.sbtetPin || (isAiml ? 'AIML-HOD' : (isHod ? 'HOD CSE' : '24259-CS-025'));
-    const avatarInitials = isAiml ? 'PR' : (isHod ? 'VK' : getInitials(displayName));
-    const lastName = isAiml ? 'RAMESH' : (isHod ? 'VAMSHI' : getLastName(displayName));
+    const avatarInitials = isAiml ? 'PA' : (isHod ? 'VK' : getInitials(displayName));
+    const lastName = isAiml ? 'PADMA' : (isHod ? 'VAMSHI' : getLastName(displayName));
     const deptTitle = isHod ? (isAiml ? 'HOD Artificial Intelligence & Machine Learning' : 'HOD Computer Science') : 'Student';
 
     header.innerHTML = `
@@ -161,12 +167,6 @@
                    class="dropdown-menu-item" role="menuitem">
                   <i data-lucide="${isHod ? 'shield-check' : 'user'}"></i>
                   <span>${isHod ? 'HOD Executive Console' : 'My Profile'}</span>
-                </a>
-
-                <a href="/screens/02-student-portal/helpdesk.html" 
-                   class="dropdown-menu-item" role="menuitem">
-                  <i data-lucide="help-circle"></i>
-                  <span>Campus Help Desk</span>
                 </a>
 
                 <div class="dropdown-theme-row">

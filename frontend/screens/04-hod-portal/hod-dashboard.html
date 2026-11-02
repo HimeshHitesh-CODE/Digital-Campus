@@ -84,7 +84,7 @@
           </div>
 <div>
 <div id="heroHodName" class="text-base font-bold leading-tight text-white">
-              Prof. Ramesh
+              Prof. Padma
             </div>
 <div id="heroHodRole" class="text-[11px] font-semibold text-emerald-200 tracking-wide uppercase mt-0.5">
               Official HOD (AIML)
@@ -112,9 +112,9 @@
         </span>
       </div>
       <p class="text-xs text-slate-600 font-medium">
-        Active worker stream: <span class="text-slate-800 font-semibold font-mono" id="syncSummaryText">Processed 12 / 180 students</span>. Currently auditing: 
-        <span class="font-mono text-emerald-800 font-semibold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200/60" id="currentSyncPin">24259-CS-012</span>
-        <span class="text-slate-500 font-medium ml-1" id="currentSyncName">(K. SAI MANIDEEP)</span>
+        Active worker stream: <span class="text-slate-800 font-semibold font-mono" id="syncSummaryText">Processed 0 / 180 students</span>. Currently auditing: 
+        <span class="font-mono text-emerald-800 font-semibold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200/60" id="currentSyncPin">Standby</span>
+        <span class="text-slate-500 font-medium ml-1" id="currentSyncName"></span>
       </p>
     </div>
 
@@ -139,10 +139,10 @@
           <span class="material-symbols-outlined text-emerald-700 text-[16px]">fingerprint</span>
           Biometric Hardware Stream
         </span>
-        <span class="font-mono text-emerald-800 font-bold" id="bar1Counter">12 / 180 (6%)</span>
+        <span class="font-mono text-emerald-800 font-bold" id="bar1Counter">0 / 180 (0%)</span>
       </div>
       <div class="w-full bg-slate-200 rounded-full h-2.5 overflow-hidden">
-        <div id="progressBar1" class="bg-gradient-to-r from-[#047857] to-[#10b981] h-2.5 rounded-full w-[6%] transition-all duration-300 ease-out shadow-xs"></div>
+        <div id="progressBar1" class="bg-gradient-to-r from-[#047857] to-[#10b981] h-2.5 rounded-full w-[0%]" style="width: 0%;" transition-all duration-300 ease-out shadow-xs"></div>
       </div>
       <div class="flex items-center justify-between text-[11px] text-slate-500">
         <span>Sensor Nodes: 8 Gateways</span>
@@ -157,10 +157,10 @@
           <span class="material-symbols-outlined text-[#003519] text-[16px]">verified</span>
           SBTET Scheme C-24 Ledger Audit
         </span>
-        <span class="font-mono text-slate-800 font-bold" id="bar2Counter">8 / 180 (4%)</span>
+        <span class="font-mono text-slate-800 font-bold" id="bar2Counter">0 / 180 (0%)</span>
       </div>
       <div class="w-full bg-slate-200 rounded-full h-2.5 overflow-hidden">
-        <div id="progressBar2" class="bg-gradient-to-r from-[#003519] to-[#047857] h-2.5 rounded-full w-[4%] transition-all duration-300 ease-out shadow-xs"></div>
+        <div id="progressBar2" class="bg-gradient-to-r from-[#003519] to-[#047857] h-2.5 rounded-full w-[0%]" style="width: 0%;" transition-all duration-300 ease-out shadow-xs"></div>
       </div>
       <div class="flex items-center justify-between text-[11px] text-slate-500">
         <span>Central Ledger: Node 259</span>
@@ -189,7 +189,7 @@
 <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Department Avg Attendance</span>
 <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-700 uppercase tracking-tight">Critical Alert</span>
 </div>
-<div class="text-3xl font-extrabold text-rose-600 mt-2 font-display tracking-tight">36.8%</div>
+<div class="text-3xl font-extrabold text-slate-900 mt-2 font-display tracking-tight" id="kpiAvgAttendance">0.0%</div>
 </div>
 <p class="text-xs font-medium text-slate-500 mt-3 pt-3 border-t border-slate-100">
           Real-time aggregate across synced students
@@ -199,10 +199,10 @@
 <article class="glass-card rounded-[24px] p-5 flex flex-col justify-between hover:border-emerald-300 transition-colors">
 <div>
 <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Exam Clearance Rate</span>
-<div class="text-3xl font-extrabold text-amber-600 mt-2 font-display tracking-tight">2.2%</div>
+<div class="text-3xl font-extrabold text-slate-900 mt-2 font-display tracking-tight" id="kpiClearanceRate">0.0%</div>
 </div>
 <p class="text-xs font-medium text-slate-500 mt-3 pt-3 border-t border-slate-100">
-<strong class="text-slate-700 font-semibold">4 / 180</strong> students ≥ 75% SBTET line
+<strong class="text-slate-700 font-semibold" id="kpiClearanceCount">0 / 180</strong> students ≥ 75% SBTET line
         </p>
 </article>
 <!-- Metric 4: Document Approvals -->

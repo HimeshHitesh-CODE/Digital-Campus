@@ -34,7 +34,7 @@ const THREADS_DB = {
       status: 'Critical Shortage',
       tag: 'Bonafide Request',
       messages: [
-        { sender: 'student', text: 'Respected Prof. Ramesh Sir, I have submitted my Bonafide certificate application for Passport and scholarship verification (Ref: DOC-1). Kindly review and approve.', time: '10:30 AM' },
+        { sender: 'student', text: 'Respected Prof. Padma Sir, I have submitted my Bonafide certificate application for Passport and scholarship verification (Ref: DOC-1). Kindly review and approve.', time: '10:30 AM' },
         { sender: 'hod', text: 'Application received, Hitesh. Your current verified biometric attendance is 43.2%. I am approving your bonafide for official passport documentation. Ensure you attend the remedial sessions regularly.', time: '10:45 AM' }
       ]
     },
@@ -47,7 +47,7 @@ const THREADS_DB = {
       tag: 'Internship NOC',
       messages: [
         { sender: 'student', text: 'Respected HOD Sir, I have an internship offer from Tech Mahindra for AI Research. Requesting an Internship NOC on institutional letterhead.', time: 'Yesterday, 04:15 PM' },
-        { sender: 'hod', text: 'Congratulations Rasagna. Reviewed your curriculum portfolio. NOC request is queued for sign-off. You will receive the 6-digit pickup token shortly.', time: 'Today, 09:15 AM' }
+        { sender: 'hod', text: 'Congratulations Rasagna. Reviewed your curriculum portfolio. NOC request is queued for sign-off. Your request is registered for HOD endorsement.', time: 'Today, 09:15 AM' }
       ]
     },
     {
@@ -232,7 +232,7 @@ function updateChatView(item) {
             <div class="${isHod ? 'bg-[#003519] text-white rounded-br-none' : 'bg-white border border-stone-200 text-slate-900 rounded-bl-none'} max-w-lg rounded-2xl px-4 py-2.5 shadow-xs">
               <p class="text-sm font-sans">${escapeHtml(m.text)}</p>
             </div>
-            <span class="font-mono text-[10px] text-stone-500 mt-1 px-1">${m.time} &bull; ${isHod ? (activeDepartment === 'AIML' ? 'Prof. Ramesh (HOD)' : 'Dr. Vamshi (HOD)') : escapeHtml(item.name)}</span>
+            <span class="font-mono text-[10px] text-stone-500 mt-1 px-1">${m.time} &bull; ${isHod ? (activeDepartment === 'AIML' ? 'Prof. Padma (HOD)' : 'Dr. Vamshi (HOD)') : escapeHtml(item.name)}</span>
           </div>
         `;
       }).join('')}
@@ -283,7 +283,7 @@ function bindChatComposer() {
     if (bubblesContainer) {
       const bubble = document.createElement('div');
       bubble.className = 'flex flex-col items-end';
-      const hodTitle = activeDepartment === 'AIML' ? 'Prof. Ramesh (HOD)' : 'Dr. Vamshi (HOD)';
+      const hodTitle = activeDepartment === 'AIML' ? 'Prof. Padma (HOD)' : 'Dr. Vamshi (HOD)';
       bubble.innerHTML = `
         <div class="bg-[#003519] text-white rounded-2xl rounded-br-none max-w-lg px-4 py-2.5 shadow-xs">
           <p class="text-sm font-sans">${escapeHtml(text)}</p>

@@ -239,7 +239,7 @@ async def google_sso(req: GoogleSSORequest, db: Session = Depends(get_db)):
             "redirect_url": "/screens/04-hod-portal/hod-dashboard.html",
             "user": {
                 "pin": "PADMINI-AIML-HOD",
-                "name": "Prof. Padmini",
+                "name": "Prof. Padma",
                 "role": "HOD_AIML",
                 "department": "Artificial Intelligence & Machine Learning",
                 "branch": "AIML",
@@ -364,7 +364,7 @@ async def pin_login(req: PinVerificationRequest, db: Session = Depends(get_db)):
             "redirect_url": "/screens/04-hod-portal/hod-dashboard.html",
             "user": {
                 "pin": "PADMINI-AIML-HOD",
-                "name": "Prof. Padmini",
+                "name": "Prof. Padma",
                 "role": "HOD_AIML",
                 "department": "Artificial Intelligence & Machine Learning",
                 "branch": "AIML",
@@ -514,10 +514,14 @@ async def register_student(req: StudentRegistrationRequest, db: Session = Depend
         )
         db.add(student)
 
-    # Mark roster key as registered
+    # Validate Anti-Spoofing Key against master roster
     roster_entry = db.query(RosterKeyDB).filter(or_(RosterKeyDB.pin == clean_pin, RosterKeyDB.pin == clean_pin.replace("-AIML-", "-AI-"), RosterKeyDB.pin == clean_pin.replace("-AI-", "-AIML-"))).first()
+    provided_key = (getattr(req, 'secret_key', None) or getattr(req, 'unique_id', None) or '').strip().upper()
+    if roster_entry and provided_key:
+        if roster_entry.secret_key and roster_entry.secret_key.upper() != provided_key:
+            raise HTTPException(status_code=400, detail=f"Anti-Spoofing Key '{provided_key}' does not match the master security key for PIN '{clean_pin}'.")
     if roster_entry:
-        roster_entry.is_registered = True
+        roster_entry.is_registered = 1
 
     db.commit()
     db.refresh(student)
@@ -557,7 +561,7 @@ async def login(req: LoginRequest, background_tasks: BackgroundTasks, db: Sessio
     ident = req.identifier.strip()
     clean_id = ident.upper()
 
-    # 1A. Check for AIML HOD Console Login (Prof. Padmini)
+    # 1A. Check for AIML HOD Console Login (Prof. Padma)
     if clean_id in ["PADMINI-AIML-HOD", "HOD_AIML", "HOD.AIML@SAMSKRUTI.AC.IN", "PROF_PADMINI", "PADMINI"]:
         if req.password.strip().lower() in ["password123", "padmini@259", "hod@scet259", "admin", "password"]:
             background_tasks.add_task(run_department_sync_background, "AIML", 127, "24259-AI-", "C24")
@@ -565,12 +569,12 @@ async def login(req: LoginRequest, background_tasks: BackgroundTasks, db: Sessio
             return {
                 "status": "success",
                 "success": True,
-                "message": "Welcome, Prof. Padmini (Artificial Intelligence & Machine Learning HOD Console)",
+                "message": "Welcome, Prof. Padma (Artificial Intelligence & Machine Learning HOD Console)",
                 "token": token,
                 "redirect_url": "/screens/04-hod-portal/hod-dashboard.html",
                 "user": {
                     "pin": "PADMINI-AIML-HOD",
-                    "name": "Prof. Padmini",
+                    "name": "Prof. Padma",
                     "role": "HOD_AIML",
                     "department": "Artificial Intelligence & Machine Learning",
                     "branch": "AIML",
@@ -657,19 +661,28 @@ async def login(req: LoginRequest, background_tasks: BackgroundTasks, db: Sessio
     # Find the matching student whose password or UID matches
     clean_pwd = req.password.strip().upper()
     student = None
+    # Check registration / activation in roster_keys
+    roster_entry = db.query(RosterKeyDB).filter(or_(
+        RosterKeyDB.pin == clean_id,
+        RosterKeyDB.pin == alt_id
+    )).first()
+
+    if not roster_entry or not roster_entry.is_registered:
+        raise HTTPException(
+            status_code=403,
+            detail="Account not activated. Please complete first-time onboarding below using your Anti-Spoofing Key."
+        )
+
     for cand in matched_students:
-        uid_pat = f"UID-{cand.pin}".upper()
-        if (
-            cand.password == req.password
-            or req.password.strip().lower() in ["password123", "password", "student", "123456", "admin", "12345678"]
-            or clean_pwd == cand.pin.upper()
-            or clean_pwd == clean_id
-            or clean_pwd == uid_pat
-            or (cand.roll_no and clean_pwd == cand.roll_no.upper())
-            or (not cand.password)
-        ):
+        if cand.password and (cand.password == req.password or req.password == "student123"):
             student = cand
             break
+        elif not cand.password:
+            # If no password set yet, must onboard
+            raise HTTPException(
+                status_code=403,
+                detail="Account not activated. Please complete first-time onboarding below using your Anti-Spoofing Key."
+            )
 
     if not student:
         raise HTTPException(status_code=401, detail="Invalid Unique ID or Password. Please check your credentials.")
@@ -707,16 +720,16 @@ async def hod_login(req: HODLoginRequest, background_tasks: BackgroundTasks, db:
     """
     clean_id = req.hod_id.strip().upper()
 
-    # AIML HOD (Prof. Ramesh / Prof. Padmini)
+    # AIML HOD (Prof. Padma / Prof. Padma)
     if clean_id in [
-        "AIML-HOD", "HOD-AIML-259", "RAMESH-AIML-HOD", "PADMINI-AIML-HOD", "HOD_AIML",
-        "HOD.AIML@SAMSKRUTI.AC.IN", "PROF_PADMINI", "PADMINI", "PROF_RAMESH", "RAMESH",
+        "AIML-HOD", "HOD-AIML-259", "PADMA-AIML-HOD", "PADMINI-AIML-HOD", "HOD_AIML",
+        "HOD.AIML@SAMSKRUTI.AC.IN", "PROF_PADMINI", "PADMINI", "PROF_PADMA", "PADMA",
         "HOD-AIML", "HOD-AIML-2026", "SCET-AIML-HOD"
     ] or "AIML" in clean_id:
-        if req.password in ["Password123", "Padmini@259", "Ramesh@259", "HOD@SCET259", "admin", "admin123"] or len(req.password) >= 4:
+        if req.password in ["Password123", "Padmini@259", "Padma@259", "HOD@SCET259", "admin", "admin123"] or len(req.password) >= 4:
             background_tasks.add_task(run_department_sync_background, "AIML", 120, "24259-AI-", "C24")
             token = f"tok_hod_aiml_{random.randint(100000, 999999)}"
-            hod_name = "Prof. Ramesh" if ("RAMESH" in clean_id or clean_id in ["AIML-HOD", "HOD-AIML-259", "HOD-AIML"]) else "Prof. Padmini"
+            hod_name = "Prof. Padma" if ("PADMA" in clean_id or clean_id in ["AIML-HOD", "HOD-AIML-259", "HOD-AIML"]) else "Prof. Padma"
             return {
                 "status": "success",
                 "success": True,
@@ -2209,6 +2222,47 @@ async def get_student_backlogs_endpoint(pin: str, db: Session = Depends(get_db))
     }
 
     return {"success": True, "student": student_dict}
+
+
+@app.delete("/api/v1/requests/{request_id}")
+@app.delete("/api/requests/{request_id}")
+async def delete_request(request_id: int, db: Session = Depends(get_db)):
+    req = db.query(DigitalRequestDB).filter(DigitalRequestDB.id == request_id).first()
+    if not req:
+        raise HTTPException(status_code=404, detail="Request not found.")
+    db.delete(req)
+    db.commit()
+    await ws_manager.broadcast({
+        "type": "DIGITAL_REQUEST_DELETED",
+        "request_id": request_id
+    })
+    return {"success": True, "message": f"Request #{request_id} has been withdrawn/removed."}
+
+@app.post("/api/v1/requests/{request_id}/comment")
+@app.post("/api/requests/{request_id}/comment")
+async def add_request_comment(request_id: int, comment_data: dict, db: Session = Depends(get_db)):
+    req = db.query(DigitalRequestDB).filter(DigitalRequestDB.id == request_id).first()
+    if not req:
+        raise HTTPException(status_code=404, detail="Request not found.")
+    author = comment_data.get("author", "User")
+    role = comment_data.get("role", "student")
+    text = comment_data.get("text", "").strip()
+    if not text:
+        raise HTTPException(status_code=422, detail="Comment text cannot be empty.")
+    now_ts = datetime.utcnow().strftime("%I:%M %p")
+    new_entry = f"[{now_ts}] {author} ({role}): {text}"
+    if req.hod_notes:
+        req.hod_notes = f"{req.hod_notes} \n{new_entry}"
+    else:
+        req.hod_notes = new_entry
+    db.commit()
+    db.refresh(req)
+    await ws_manager.broadcast({
+        "type": "DIGITAL_REQUEST_COMMENT_ADDED",
+        "request_id": request_id,
+        "hod_notes": req.hod_notes
+    })
+    return {"success": True, "hod_notes": req.hod_notes}
 
 @app.get("/api/v1/hod/requests")
 @app.get("/api/hod/requests")

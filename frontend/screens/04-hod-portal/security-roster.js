@@ -12,15 +12,16 @@ let currentRosterList = [];
 let activeDepartment = 'AIML';
 
 function getActiveDepartment() {
-  const stored = localStorage.getItem('hod_active_dept');
-  if (stored === 'CS' || stored === 'AIML') return stored;
   try {
     const userStr = localStorage.getItem('dc_user');
     if (userStr) {
       const u = JSON.parse(userStr);
       if (u.branch === 'CS' || (u.pin && u.pin.includes('CS'))) return 'CS';
+      if (u.branch === 'AIML' || (u.pin && u.pin.includes('AIML'))) return 'AIML';
     }
   } catch (_) {}
+  const stored = localStorage.getItem('hod_active_dept');
+  if (stored === 'CS' || stored === 'AIML') return stored;
   return 'AIML';
 }
 
@@ -33,24 +34,29 @@ function initSecurityRoster() {
   bindActionButtons();
 }
 
-function loadDepartmentRoster(dept) {
+async function loadDepartmentRoster(dept) {
   activeDepartment = dept;
   if (dept === 'AIML' || dept === 'CS') {
     localStorage.setItem('hod_active_dept', dept);
   }
 
-  const aimlStudents = (typeof window.CampusAimlRoster !== 'undefined') ? 
-                       window.CampusAimlRoster.getAll() : [];
-  const csStudents = (typeof window.CampusRoster !== 'undefined') ? 
-                     window.CampusRoster.getAll() : [];
-
-  if (dept === 'AIML') {
-    currentRosterList = [...aimlStudents];
-  } else if (dept === 'CS') {
-    currentRosterList = [...csStudents];
-  } else {
-    // All
-    currentRosterList = [...aimlStudents, ...csStudents];
+  try {
+    const res = await fetch(`/api/v1/hod/security-roster?branch=${encodeURIComponent(dept)}`);
+    if (res.ok) {
+      const data = await res.json();
+      if (data && data.roster) {
+        currentRosterList = data.roster.map(r => ({
+          roll: r.rollNumber || r.roll || 1,
+          pin: r.pin,
+          name: r.name,
+          branch: r.branch || dept,
+          securityKey: r.secretKey || r.key || 'STD-KEYGEN',
+          is_registered: r.is_registered
+        }));
+      }
+    }
+  } catch (err) {
+    console.error('Failed to load security roster from API:', err);
   }
 
   updateHeaderUI();
@@ -68,7 +74,7 @@ function updateHeaderUI() {
   const count = currentRosterList.length;
 
   if (activeDepartment === 'AIML') {
-    if (hodNameEl) hodNameEl.textContent = 'PROF. RAMESH';
+    if (hodNameEl) hodNameEl.textContent = 'PROF. PADMA';
     if (hodPinEl) hodPinEl.textContent = 'PIN: AIML-HOD';
     if (kpiDeptBadge) kpiDeptBadge.textContent = 'AIML Department';
   } else if (activeDepartment === 'CS') {
@@ -137,8 +143,11 @@ function renderRosterRows(students) {
   tbody.innerHTML = students.map((s) => {
     const rollPadded = `#${String(s.roll).padStart(3, '0')}`;
     const branchLabel = s.branch === 'AIML' ? 'Artificial Intelligence & Machine Learning (C-24)' : 'Computer Science & Engineering (C-24)';
-    const secKey = s.securityKey || 'STD-KEYGEN';
-    const mfa = s.mfaStatus || 'Active FIDO2';
+    const secKey = s.securityKey || s.secretKey || s.key || 'STD-KEYGEN';
+    const isActivated = s.is_registered === true || s.is_registered === 1 || localStorage.getItem(`activated_${s.pin}`) === 'true';
+    const statusText = isActivated ? 'VERIFIED & ACTIVE' : 'PRE-ALLOCATED';
+    const statusClass = isActivated ? 'bg-emerald-100 text-emerald-900 border-emerald-300' : 'bg-amber-50 text-amber-900 border-amber-200/80';
+    const dotClass = isActivated ? 'bg-emerald-600' : 'bg-amber-500';
 
     return `
       <tr class="hover:bg-stone-50/80 transition-colors group">
@@ -161,9 +170,9 @@ function renderRosterRows(students) {
           ${branchLabel}
         </td>
         <td class="py-4 px-4">
-          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300 font-dg text-xs font-bold uppercase tracking-wider shadow-2xs">
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-700 animate-pulse"></span>
-            ${mfa}
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full ${statusClass} border font-dg text-xs font-bold uppercase tracking-wider shadow-2xs">
+            <span class="w-1.5 h-1.5 rounded-full ${dotClass}"></span>
+            ${statusText}
           </span>
         </td>
       </tr>

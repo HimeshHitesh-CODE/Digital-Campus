@@ -54,28 +54,7 @@
   <div class="fixed inset-0 pointer-events-none radial-mesh-top z-0"></div>
   <div class="fixed inset-0 pointer-events-none radial-mesh-bottom z-0"></div>
 
-  <!-- Minimal Institutional Top Bar -->
-  <header class="w-full relative z-20 px-4 sm:px-8 py-4 flex items-center justify-between border-b border-emerald-900/10 bg-white/70 backdrop-blur-md">
-    <div class="flex items-center gap-3">
-      <div class="w-10 h-10 rounded-full bg-emerald-900 text-white flex items-center justify-center font-editorial font-bold text-lg shadow-sm">
-        SC
-      </div>
-      <div class="flex flex-col">
-        <span class="font-title-editorial text-xl sm:text-2xl font-bold text-emerald-950 leading-tight">Samskruti College</span>
-        <span class="font-dg text-xs font-bold text-emerald-700 tracking-wide">College Code: 259 &bull; Autonomous SBTET Node</span>
-      </div>
-    </div>
-    <div class="flex items-center gap-2">
-      <div class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200/80 text-emerald-800 font-dg text-xs font-bold">
-        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-        <span>Relay Node 259: Active</span>
-      </div>
-      <a href="/screens/02-student-portal/dashboard.html" class="inline-flex items-center gap-1 px-4 py-1.5 rounded-full bg-white hover:bg-emerald-50 border border-emerald-900/15 text-emerald-900 font-dg text-sm font-bold shadow-sm transition-all">
-        <span>Explore Portal</span>
-        <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
-      </a>
-    </div>
-  </header>
+  <!-- Top Header removed for clean centered glassmorphic card -->
 
   <!-- Main Content Gateway -->
   <main class="relative z-10 flex-grow flex items-center justify-center px-4 py-8">
@@ -119,7 +98,7 @@
               <label class="block font-dg text-base font-bold text-emerald-950" for="studentPin">State Board PIN / Roll Number</label>
               <div class="relative">
                 <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-emerald-700/70 text-[20px]">badge</span>
-                <input class="w-full pl-11 pr-4 py-3 rounded-full bg-[#f8fcf9] border border-emerald-900/15 font-mono text-base text-emerald-950 placeholder:text-stone-400 placeholder:font-sans focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500 transition-all shadow-xs" id="studentPin" placeholder="e.g. 24259-CS-025" required="" type="text" value="24259-CS-025"/>
+                <input class="w-full pl-11 pr-4 py-3 rounded-full bg-[#f8fcf9] border border-emerald-900/15 font-mono text-base text-emerald-950 placeholder:text-stone-400 placeholder:font-sans focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500 transition-all shadow-xs" id="studentPin" placeholder="Enter Student PIN" required="" type="text" />
               </div>
             </div>
 
@@ -131,7 +110,7 @@
               </div>
               <div class="relative">
                 <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-emerald-700/70 text-[20px]">lock</span>
-                <input class="w-full pl-11 pr-12 py-3 rounded-full bg-[#f8fcf9] border border-emerald-900/15 font-sans text-base text-emerald-950 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500 transition-all shadow-xs" id="password" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;" required="" type="password" value="student123"/>
+                <input class="w-full pl-11 pr-12 py-3 rounded-full bg-[#f8fcf9] border border-emerald-900/15 font-sans text-base text-emerald-950 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500 transition-all shadow-xs" id="password" placeholder="Enter Password" required="" type="password" />
                 <!-- Eye Toggle -->
                 <button aria-label="Toggle password visibility" class="absolute right-4 top-1/2 -translate-y-1/2 text-stone-500 hover:text-emerald-700 transition-colors focus:outline-none" id="togglePasswordVisibility" type="button">
                   <span class="material-symbols-outlined text-[20px]" id="eyeIcon">visibility</span>
@@ -162,7 +141,7 @@
               <div class="flex items-start justify-between gap-3">
                 <div class="flex flex-col">
                   <span class="font-dg text-sm font-extrabold uppercase tracking-wider text-emerald-800">First-Time Student Onboarding</span>
-                  <p class="font-dg text-base text-stone-700 font-medium leading-snug">Activate account with your HOD Anti-Spoofing Key (<code class="font-mono font-bold text-xs bg-white px-1.5 py-0.5 rounded border border-emerald-300 text-emerald-950">STD-3472C6</code>)</p>
+                  <p class="font-dg text-base text-stone-700 font-medium leading-snug">Activate account with your HOD Anti-Spoofing Key</p>
                 </div>
                 <button class="shrink-0 inline-flex items-center gap-1 px-3.5 py-1.5 rounded-full bg-emerald-800 hover:bg-emerald-900 text-white font-dg text-sm font-bold shadow-xs hover:shadow-sm transition-all active:scale-95" id="openOnboardingBtn" type="button" onclick="toggleOnboardingDrawer()">
                   <span>Activate Key</span>
@@ -173,14 +152,22 @@
               <!-- Collapsible First-Time Activation Drawer -->
               <div class="hidden pt-3 border-t border-emerald-900/10 flex flex-col gap-3 transition-all" id="onboardingDrawer">
                 <div class="space-y-1">
-                  <label class="block font-dg text-sm font-bold text-emerald-950">Anti-Spoofing Key</label>
-                  <input class="w-full px-3.5 py-2 rounded-xl bg-white border border-emerald-900/20 font-mono text-sm text-emerald-950 uppercase placeholder:text-stone-400 placeholder:font-sans focus:outline-none focus:ring-2 focus:ring-emerald-500" id="onboardKey" placeholder="e.g. STD-3472C6" type="text" value="STD-3472C6"/>
+                  <label class="block font-dg text-sm font-bold text-emerald-950">Student PIN</label>
+                  <input class="w-full px-3.5 py-2 rounded-xl bg-white border border-emerald-900/20 font-mono text-sm text-emerald-950 uppercase placeholder:text-stone-400 placeholder:font-sans focus:outline-none focus:ring-2 focus:ring-emerald-500" id="onboardPin" placeholder="Enter Student PIN" type="text" />
+                </div>
+                <div class="space-y-1">
+                  <label class="block font-dg text-sm font-bold text-emerald-950">Anti-Spoofing Security Key</label>
+                  <input class="w-full px-3.5 py-2 rounded-xl bg-white border border-emerald-900/20 font-mono text-sm text-emerald-950 uppercase placeholder:text-stone-400 placeholder:font-sans focus:outline-none focus:ring-2 focus:ring-emerald-500" id="onboardKey" placeholder="Enter Unique Security Key" type="text" />
                 </div>
                 <div class="space-y-1">
                   <label class="block font-dg text-sm font-bold text-emerald-950">Create New Password</label>
-                  <input class="w-full px-3.5 py-2 rounded-xl bg-white border border-emerald-900/20 font-sans text-sm text-emerald-950 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-emerald-500" id="onboardPass" placeholder="At least 6 characters" type="password" value="student123"/>
+                  <input class="w-full px-3.5 py-2 rounded-xl bg-white border border-emerald-900/20 font-sans text-sm text-emerald-950 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-emerald-500" id="onboardPass" placeholder="Enter New Password (min 6 chars)" type="password" />
                 </div>
-                <button class="w-full py-2.5 px-4 rounded-full bg-gradient-to-r from-emerald-700 to-teal-600 text-white font-dg text-base font-bold shadow-sm hover:opacity-95 active:scale-95 transition-all" type="button" onclick="handleActivateAccount()">
+                <div class="space-y-1">
+                  <label class="block font-dg text-sm font-bold text-emerald-950">Confirm New Password</label>
+                  <input class="w-full px-3.5 py-2 rounded-xl bg-white border border-emerald-900/20 font-sans text-sm text-emerald-950 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-emerald-500" id="onboardPassConfirm" placeholder="Confirm Password" type="password" />
+                </div>
+                <button class="w-full py-2.5 px-4 rounded-full bg-gradient-to-r from-emerald-700 to-teal-600 text-white font-dg text-base font-bold shadow-sm hover:opacity-95 active:scale-95 transition-all cursor-pointer" type="button" onclick="handleActivateAccount()">
                   Verify Key &amp; Set Password &rarr;
                 </button>
               </div>
@@ -207,14 +194,13 @@
               <div class="flex items-center justify-between">
                 <label class="block font-dg text-base font-bold text-emerald-950" for="hodIdInput">Executive / HOD Credential ID</label>
                 <div class="flex items-center gap-1.5">
-                  <button type="button" class="hod-preset-pill px-2 py-0.5 rounded-full bg-emerald-100 hover:bg-emerald-200 text-emerald-900 font-mono text-[10px] font-bold border border-emerald-300 transition" data-id="AIML-HOD">AIML-HOD</button>
-                  <button type="button" class="hod-preset-pill px-2 py-0.5 rounded-full bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-mono text-[10px] font-bold border border-emerald-200 transition" data-id="HOD-AIML-259">HOD-AIML-259</button>
-                  <button type="button" class="hod-preset-pill px-2 py-0.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-mono text-[10px] font-bold border border-slate-300 transition" data-id="VAMSHI-CS-HOD">CS-HOD</button>
+                  <button type="button" class="hod-preset-pill px-2.5 py-0.5 rounded-full bg-emerald-100 hover:bg-emerald-200 text-emerald-900 font-mono text-[10px] font-bold border border-emerald-300 transition cursor-pointer" data-id="PADMA-AIML-HOD">Prof. Padma (AIML)</button>
+                  <button type="button" class="hod-preset-pill px-2.5 py-0.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-mono text-[10px] font-bold border border-slate-300 transition cursor-pointer" data-id="VAMSHI-CS-HOD">Dr. Vamshi (CSE)</button>
                 </div>
               </div>
               <div class="relative">
                 <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-emerald-700/70 text-[20px]">badge</span>
-                <input class="w-full pl-11 pr-4 py-3 rounded-full bg-[#f8fcf9] border border-emerald-900/15 font-mono text-base text-emerald-950 placeholder:text-stone-400 placeholder:font-sans focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500 transition-all shadow-xs" id="hodIdInput" placeholder="e.g. AIML-HOD, HOD-AIML-259, or VAMSHI-CS-HOD" required="" type="text" value="AIML-HOD"/>
+                <input class="w-full pl-11 pr-4 py-3 rounded-full bg-[#f8fcf9] border border-emerald-900/15 font-mono text-base text-emerald-950 placeholder:text-stone-400 placeholder:font-sans focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500 transition-all shadow-xs" id="hodIdInput" placeholder="Enter Executive / HOD ID" required="" type="text" />
               </div>
             </div>
 
@@ -226,7 +212,7 @@
               </div>
               <div class="relative">
                 <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-emerald-700/70 text-[20px]">vpn_key</span>
-                <input class="w-full pl-11 pr-12 py-3 rounded-full bg-[#f8fcf9] border border-emerald-900/15 font-sans text-base text-emerald-950 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500 transition-all shadow-xs" id="passwordInput" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;" required="" type="password" value="hod123"/>
+                <input class="w-full pl-11 pr-12 py-3 rounded-full bg-[#f8fcf9] border border-emerald-900/15 font-sans text-base text-emerald-950 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500 transition-all shadow-xs" id="passwordInput" placeholder="Enter Password" required="" type="password" />
                 <!-- Eye Toggle -->
                 <button aria-label="Toggle password visibility" class="absolute right-4 top-1/2 -translate-y-1/2 text-stone-500 hover:text-emerald-700 transition-colors focus:outline-none" id="togglePasswordBtn" type="button">
                   <span class="material-symbols-outlined text-[20px]" id="hodEyeIcon">visibility</span>

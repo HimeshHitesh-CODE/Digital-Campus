@@ -45,7 +45,7 @@ function initDashboardContext() {
   if (activeDepartment === 'AIML') {
     if (heroSubtitle) heroSubtitle.textContent = 'Department of Artificial Intelligence & Machine Learning • Scheme: C-24';
     if (heroAvatar) heroAvatar.textContent = 'PR';
-    if (heroName) heroName.textContent = 'Prof. Ramesh';
+    if (heroName) heroName.textContent = 'Prof. Padma';
     if (heroRole) heroRole.textContent = 'Official HOD (Artificial Intelligence & Machine Learning)';
     if (syncTitle) syncTitle.textContent = '120-Student Automated Department Sync & Biometric Ledger';
     if (syncBtnText) syncBtnText.textContent = '⚡ Sync All 120 Now';

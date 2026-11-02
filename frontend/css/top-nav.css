@@ -8,16 +8,16 @@
 :root {
   --dock-h: 56px;
   --dock-collapsed-w: 72px;
-  --dock-bg: rgba(255, 255, 255, 0.94);
-  --dock-border: rgba(81, 53, 90, 0.15);
-  --dock-border-hover: rgba(158, 43, 37, 0.40);
-  --dock-shadow: 0 10px 30px rgba(42, 12, 78, 0.08), 0 2px 8px rgba(0, 0, 0, 0.03);
-  --dock-shadow-hover: 0 16px 44px rgba(42, 12, 78, 0.14), 0 0 24px rgba(138, 151, 32, 0.18);
-  --dock-active-bg: #8A9720;
+  --dock-bg: rgba(255, 255, 255, 0.90);
+  --dock-border: rgba(16, 185, 129, 0.24);
+  --dock-border-hover: rgba(16, 185, 129, 0.45);
+  --dock-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.15), 0 8px 10px -6px rgba(16, 185, 129, 0.1);
+  --dock-shadow-hover: 0 20px 35px -5px rgba(16, 185, 129, 0.25), 0 10px 10px -5px rgba(16, 185, 129, 0.15);
+  --dock-active-bg: linear-gradient(135deg, #003519 0%, #047857 100%);
   --dock-active-text: #ffffff;
-  --dock-item-text: #51355A;
-  --dock-item-hover: #2A0C4E;
-  --dock-divider: rgba(81, 53, 90, 0.12);
+  --dock-item-text: #064e3b;
+  --dock-item-hover: #065f46;
+  --dock-divider: rgba(16, 185, 129, 0.18);
   --dock-badge-bg: #9E2B25;
   --dock-badge-text: #ffffff;
 }
@@ -246,8 +246,9 @@
 /* Hover state */
 .dock-nav-link:hover,
 .dock-item-btn:hover {
-  color: var(--dock-item-hover);
-  background: rgba(138, 151, 32, 0.12);
+  color: #065f46;
+  background: #ecfdf5;
+  border-radius: 9999px;
 }
 
 [data-theme="dark"] .dock-nav-link:hover,
@@ -259,10 +260,11 @@
 /* ACTIVE STATE: Filled olive pill + dot beneath */
 .dock-nav-link.active,
 .dock-item-btn.active {
-  background: var(--dock-active-bg) !important;
-  color: var(--dock-active-text) !important;
+  background: linear-gradient(135deg, #003519 0%, #047857 100%) !important;
+  color: #ffffff !important;
   font-weight: 800;
-  box-shadow: 0 4px 16px rgba(138, 151, 32, 0.35);
+  border-radius: 9999px;
+  box-shadow: 0 4px 16px rgba(4, 120, 87, 0.35);
 }
 
 [data-theme="light"] .dock-nav-link.active i,
@@ -278,19 +280,38 @@
 /* Small accent dot beneath active item */
 .active-dot {
   position: absolute;
-  bottom: 2px;
+  bottom: 3px;
   left: 50%;
   transform: translateX(-50%);
-  width: 4px;
-  height: 4px;
+  width: 5px;
+  height: 5px;
   border-radius: 50%;
-  background: var(--color-terracotta);
-  display: block;
+  background: #34d399;
+  box-shadow: 0 0 6px #34d399;
+  animation: mintPulse 1.8s infinite;
+}
+
+@keyframes mintPulse {
+  0%, 100% { opacity: 1; transform: translateX(-50%) scale(1); }
+  50% { opacity: 0.45; transform: translateX(-50%) scale(0.75); }
 }
 
 [data-theme="dark"] .active-dot {
-  background: var(--color-apricot);
-  box-shadow: 0 0 6px var(--color-apricot);
+  position: absolute;
+  bottom: 3px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #34d399;
+  box-shadow: 0 0 6px #34d399;
+  animation: mintPulse 1.8s infinite;
+}
+
+@keyframes mintPulse {
+  0%, 100% { opacity: 1; transform: translateX(-50%) scale(1); }
+  50% { opacity: 0.45; transform: translateX(-50%) scale(0.75); }
 }
 
 /* Thin vertical divider between items */

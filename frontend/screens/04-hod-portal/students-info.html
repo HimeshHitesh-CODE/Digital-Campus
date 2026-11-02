@@ -65,14 +65,10 @@
 </div>
 <div class="flex flex-wrap items-center gap-2">
 <!-- Department filter pills -->
-<div class="inline-flex p-1 rounded-full bg-white border border-[#003519]/10 shadow-xs gap-1">
-<button id="deptAimlBtn" class="px-4 py-1.5 rounded-full bg-[#003519] text-white font-dg text-xs font-bold uppercase tracking-wide flex items-center gap-1.5 shadow-xs cursor-pointer transition" type="button">
-<span class="material-symbols-outlined text-[15px]">smart_toy</span> AIML Dept (120)
-            </button>
-<button id="deptCsBtn" class="px-4 py-1.5 rounded-full bg-transparent text-slate-600 hover:text-slate-900 font-dg text-xs font-bold tracking-wide flex items-center gap-1.5 transition cursor-pointer" type="button">
-<span class="material-symbols-outlined text-[15px]">computer</span> CS Dept (180)
-            </button>
-</div>
+<div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-emerald-900/15 shadow-2xs">
+          <span class="w-2.5 h-2.5 rounded-full bg-emerald-600 animate-pulse"></span>
+          <span class="font-dg text-xs font-black uppercase tracking-wider text-emerald-950" id="currentDeptDisplayTitle">DEPARTMENT LEDGER</span>
+        </div>
 <button class="px-4 py-1.5 rounded-full bg-[#00875a] text-white font-dg text-xs font-bold uppercase tracking-wide hover:bg-[#00704a] shadow-xs flex items-center gap-1.5 transition" type="button">
 <span class="material-symbols-outlined text-[15px]">bolt</span> Live Sync
           </button>
@@ -238,7 +234,7 @@
     </div>
 
 <div class="overflow-x-auto max-h-[660px] overflow-y-auto rounded-[22px] border border-slate-200/80 bg-white shadow-inner custom-scrollbar" id="studentsScrollContainer">
-<table class="w-full text-left border-collapse min-w-[1080px]">
+<table class="w-full text-left border-collapse min-w-[1180px]">
 <thead class="sticky top-0 z-20 bg-[#e8f5ee] backdrop-blur-md border-b border-slate-200/80 shadow-xs">
   <tr class="text-slate-700 font-dg text-xs font-bold uppercase tracking-wider select-none">
     <th class="py-3 px-3 w-[115px] cursor-pointer hover:text-emerald-900 transition-colors sortable-header group" data-sort="pin" title="Click to sort by PIN">
@@ -285,7 +281,7 @@
       </div>
     </th>
     <th class="py-3 px-2 w-[95px]">LAST SYNCED</th>
-    <th class="py-3 px-3 w-[115px] text-right">ACTIONS</th>
+    <th class="py-3 pl-2 pr-4 w-[125px] text-right">ACTIONS</th>
   </tr>
 </thead>
 <tbody id="masterStudentsTbody" class="divide-y divide-slate-100 font-sans text-sm">

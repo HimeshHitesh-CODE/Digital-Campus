@@ -130,10 +130,30 @@
 <option value="buspass">State Road Transport Bus Pass Endorsement</option>
 <option value="noc">No Objection Certificate (Internship / Industrial Visit)</option>
 <option value="transcript">Official Semester Transcript Excerpt</option>
+<option value="custom">Custom / Other Request</option>
 </select>
 <span class="material-symbols-outlined pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-emerald-700 text-[22px]">
                 expand_more
               </span>
+
+<!-- Custom Request Title Container (hidden by default) -->
+<div class="space-y-1.5 hidden" id="customTitleContainer">
+  <label class="text-[16px] font-bold text-emerald-950 tracking-wide" for="customTitleInput">Custom Request Title <span class="text-rose-600">*</span></label>
+  <input class="w-full h-12 px-4 rounded-2xl bg-white/90 border border-emerald-200 text-emerald-950 text-[15px] font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-emerald-500 shadow-sm" id="customTitleInput" placeholder="Enter custom certificate or application title" type="text" />
+</div>
+
+<!-- Residential / Permanent Address (Required) -->
+<div class="space-y-1.5">
+  <label class="text-[16px] font-bold text-emerald-950 tracking-wide" for="reqAddress">Residential / Permanent Address <span class="text-rose-600">*</span></label>
+  <textarea class="w-full bg-white/90 rounded-2xl border border-emerald-200 p-3.5 text-[15px] font-medium text-emerald-950 placeholder:text-emerald-900/40 focus:outline-none focus:ring-2 focus:ring-emerald-400 leading-relaxed resize-none shadow-sm" id="reqAddress" required rows="2" placeholder="Full residential street address, mandal, district, and PIN code"></textarea>
+</div>
+
+<!-- Parent / Guardian Contact Number (Required) -->
+<div class="space-y-1.5">
+  <label class="text-[16px] font-bold text-emerald-950 tracking-wide" for="reqParentContact">Parent / Guardian Contact Number <span class="text-rose-600">*</span></label>
+  <input class="w-full h-12 px-4 rounded-2xl bg-white/90 border border-emerald-200 text-emerald-950 text-[15px] font-mono font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-emerald-500 shadow-sm" id="reqParentContact" required type="tel" placeholder="+91 9876543210" />
+</div>
+
 </div>
 </div>
 <!-- Purpose of Request Textarea -->
@@ -165,22 +185,8 @@
 </div>
 </div>
 </div>
-<!-- Urgent Priority & Biometric Callout -->
-<div class="p-3.5 rounded-2xl bg-emerald-50/80 border border-emerald-200/80 flex items-center justify-between gap-3">
-<div class="flex items-center gap-2.5">
-<div class="w-9 h-9 rounded-xl bg-emerald-600/15 flex items-center justify-center text-emerald-800">
-<span class="material-symbols-outlined text-[20px]">bolt</span>
-</div>
-<div>
-<p class="text-[15px] font-bold text-emerald-950 leading-tight">Urgent Processing Priority</p>
-<p class="text-[13px] font-medium text-emerald-800/80 leading-tight">Priority counter clearance within 24h</p>
-</div>
-</div>
-<label class="relative inline-flex items-center cursor-pointer">
-<input class="sr-only peer" id="urgentToggle" type="checkbox"/>
-<div class="w-11 h-6 bg-emerald-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
-</label>
-</div>
+
+
 <div class="p-3.5 rounded-2xl bg-emerald-100/50 border border-emerald-300/80 flex items-start gap-2.5">
 <span class="material-symbols-outlined text-emerald-700 text-[20px] mt-0.5">verified_user</span>
 <div class="text-[13px] leading-tight text-emerald-900">
@@ -201,159 +207,20 @@
 <span class="uppercase tracking-wider">CSE Dept • SCET</span>
 </div>
 </section>
-<!-- RIGHT CARD: Active Requests & Pickup OTP -->
+<!-- RIGHT CARD: Active Document Requests -->
 <section class="lg:col-span-7 space-y-6">
 <div class="flex items-center justify-between px-1">
 <div class="flex items-center gap-2">
-<h2 class="text-[28px] font-extrabold text-emerald-950 tracking-tight leading-none">Active Requests &amp; Pickup OTP</h2>
+<h2 class="text-[28px] font-extrabold text-emerald-950 tracking-tight leading-none">Active Document Requests</h2>
 </div>
-<span class="px-3 py-1 rounded-full text-[13px] font-bold text-emerald-800 bg-emerald-100/80 border border-emerald-200">2 Processing Units</span>
+<span class="px-3 py-1 rounded-full text-[13px] font-bold text-emerald-800 bg-emerald-100/80 border border-emerald-200" id="requestsCountBadge">Live Queue</span>
 </div>
-<!-- Request #1: APPROVED + High Visibility Institutional Counter Pickup OTP -->
-<div class="glass-card rounded-[32px] p-6 sm:p-7 space-y-5 relative overflow-hidden">
-<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-<div>
-<div class="flex items-center gap-2">
-<span class="font-mono text-[12px] font-bold text-emerald-800">REF #REQ-24259-082</span>
-<span class="text-emerald-400">•</span>
-<span class="text-[13px] font-semibold text-emerald-700">Issued Today, 09:40 AM</span>
+
+<!-- Dynamic Real-Time Request Container -->
+<div id="activeRequestsContainer" class="space-y-4">
+  <!-- Dynamic cards loaded via document-logistics.js -->
 </div>
-<h3 class="text-[24px] font-extrabold text-emerald-950 mt-1 leading-tight">
-                Bonafide &amp; Custodian Certificate
-              </h3>
-</div>
-<!-- Live Status Pill: APPROVED -->
-<span class="self-start sm:self-center px-4 py-1.5 rounded-full text-[14px] font-black tracking-wider uppercase flex items-center gap-1.5 border border-emerald-400 bg-emerald-100 text-emerald-900 shadow-sm">
-<span class="w-2.5 h-2.5 rounded-full bg-emerald-600 animate-pulse"></span>
-              APPROVED
-            </span>
-</div>
-<!-- Purpose Details & Attendance Snapshot -->
-<div class="flex flex-wrap gap-2 text-emerald-900 text-[14px] font-medium">
-<span class="px-3 py-1 rounded-full bg-white/80 border border-emerald-200 shadow-xs">
-              Purpose: Official Passport verification at RPO Hyderabad
-            </span>
-<span class="px-3 py-1 rounded-full bg-emerald-100/70 border border-emerald-300 font-bold text-emerald-900">
-              Attendance Snapshot: 38.64%
-            </span>
-<span class="px-3 py-1 rounded-full bg-teal-100/70 border border-teal-300 font-bold text-teal-900">
-              Condonation Cleared
-            </span>
-<span class="px-3 py-1 rounded-full bg-white/80 border border-emerald-200 text-emerald-800">
-              Sign-off: Dr. K. Srinivas (HOD)
-            </span>
-<span class="px-3 py-1 rounded-full bg-white/80 border border-emerald-200 text-emerald-800">
-              Dispatch: Counter Desk
-            </span>
-</div>
-<!-- HIGH-VISIBILITY 'INSTITUTIONAL COUNTER PICKUP OTP' HIGHLIGHT BOX -->
-<div class="rounded-3xl p-5 sm:p-6 otp-box-glow border-2 border-emerald-400/80 relative overflow-hidden" style="background: linear-gradient(145deg, #ecfdf5 0%, #d1fae5 60%, #a7f3d0 100%);">
-<!-- Background Radial Watermark Accent -->
-<div class="absolute -right-8 -bottom-8 w-40 h-40 bg-emerald-400/20 rounded-full blur-2xl pointer-events-none"></div>
-<div class="flex flex-col md:flex-row md:items-center justify-between gap-5 relative z-10">
-<div class="space-y-1.5">
-<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-900 text-emerald-100 text-[12px] font-extrabold uppercase tracking-widest shadow-sm">
-<span class="material-symbols-outlined text-[15px] text-emerald-300">verified</span>
-                  INSTITUTIONAL COUNTER PICKUP OTP
-                </div>
-<div class="flex items-center gap-2">
-<span class="material-symbols-outlined text-emerald-800 text-[20px]">desk</span>
-<span class="text-[18px] font-extrabold text-emerald-950">Counter 2 (Academic Section)</span>
-</div>
-<p class="text-[14px] font-semibold text-emerald-900/80 leading-snug">
-                  Present your Physical ID Card and verbalize this clearance code to collect attested copy.
-                </p>
-<div class="flex items-center gap-2 pt-1 text-[13px] font-bold text-emerald-800">
-<span class="w-2 h-2 rounded-full bg-emerald-600 animate-ping"></span>
-<span>Valid for 48 Hours</span>
-<span class="text-emerald-400">•</span>
-<span>Physical Student ID Required</span>
-</div>
-</div>
-<!-- Large Bold OTP Code styled with luminous mint/emerald accent -->
-<div class="flex flex-col items-start md:items-end justify-center gap-1.5 flex-shrink-0">
-<span class="text-[12px] font-extrabold text-emerald-800 uppercase tracking-widest">CLEARANCE CODE</span>
-<div class="px-6 py-3 rounded-2xl bg-white/95 border-2 border-emerald-400 text-emerald-900 flex items-center gap-2.5 font-mono text-[34px] sm:text-[38px] font-black tracking-[0.25em] shadow-[0_8px_24px_rgba(16,185,129,0.25)] select-all leading-none">
-<span>5</span><span>8</span><span>4</span><span>3</span><span>8</span><span>6</span>
-</div>
-<button class="inline-flex items-center gap-1 text-[13px] font-bold text-emerald-800 hover:text-emerald-950 hover:underline pt-0.5" onclick="navigator.clipboard?.writeText('584386'); alert('Clearance OTP copied: 584386');" type="button">
-<span class="material-symbols-outlined text-[15px]">content_copy</span>
-<span>Copy Token</span>
-</button>
-</div>
-</div>
-</div>
-<!-- Document Preview Download Ribbon -->
-<div class="rounded-2xl p-3 bg-white/80 border border-emerald-200/80 flex items-center justify-between gap-3 shadow-xs">
-<div class="flex items-center gap-3">
-<div class="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-800">
-<span class="material-symbols-outlined text-[22px]">description</span>
-</div>
-<div>
-<p class="text-[15px] font-bold text-emerald-950">SCET-BONAFIDE-24259025.pdf</p>
-<p class="text-[12px] font-mono text-emerald-700">1.4 MB • Cryptographically Signed by Registrar</p>
-</div>
-</div>
-<a class="px-4 py-1.5 rounded-full bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-900 text-[14px] font-bold inline-flex items-center gap-1.5 transition-colors" href="javascript:void(0)">
-<span>View Preview</span>
-<span class="material-symbols-outlined text-[16px]">visibility</span>
-</a>
-</div>
-</div>
-<!-- Request #2: PENDING HOD SIGN-OFF -->
-<div class="glass-card rounded-[32px] p-6 sm:p-7 space-y-4">
-<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-<div>
-<div class="flex items-center gap-2">
-<span class="font-mono text-[12px] font-bold text-emerald-800">REF #REQ-24259-094</span>
-<span class="text-emerald-400">•</span>
-<span class="text-[13px] font-semibold text-emerald-700">Submitted Yesterday, 04:15 PM</span>
-</div>
-<h3 class="text-[22px] font-extrabold text-emerald-950 mt-1 leading-tight">
-                State Bus Pass Recommendation Memo
-              </h3>
-</div>
-<span class="self-start sm:self-center px-3.5 py-1 rounded-full text-[13px] font-bold bg-amber-100/90 text-amber-900 border border-amber-300 flex items-center gap-1.5">
-<span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
-              PENDING HOD SIGN-OFF
-            </span>
-</div>
-<div class="flex flex-wrap gap-2 text-[14px] font-medium text-emerald-900">
-<span class="px-3 py-1 rounded-full bg-white/80 border border-emerald-200">
-              Route: ECIL X Roads → Samskruti Campus (Ghatkesar)
-            </span>
-<span class="px-3 py-1 rounded-full bg-white/80 border border-emerald-200">
-              Pass Type: Student Monthly Ordinary / Metro Express
-            </span>
-<span class="px-3 py-1 rounded-full bg-emerald-100/70 border border-emerald-300 font-bold text-emerald-900">
-              Queue Position #3
-            </span>
-</div>
-<!-- Workflow Clearance Progression -->
-<div class="rounded-2xl p-4 bg-white/70 border border-emerald-200/70 space-y-2">
-<div class="flex items-center justify-between text-[13px] font-bold uppercase tracking-wider text-emerald-800">
-<span>Workflow Clearance Progression</span>
-<span>Step 2 of 3</span>
-</div>
-<div class="w-full bg-emerald-100 h-2.5 rounded-full overflow-hidden p-0.5">
-<div class="h-full rounded-full transition-all duration-500" style="width: 66%; background: linear-gradient(90deg, #10b981, #34d399);"></div>
-</div>
-<div class="grid grid-cols-3 text-center pt-1 text-[14px]">
-<div class="text-emerald-950 font-bold flex items-center justify-center gap-1">
-<span class="material-symbols-outlined text-[16px] text-emerald-600">check_circle</span>
-<span>Verification</span>
-</div>
-<div class="text-emerald-700 font-extrabold flex items-center justify-center gap-1">
-<span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
-<span>HOD Desk</span>
-</div>
-<div class="text-emerald-800/60 font-semibold flex items-center justify-center gap-1">
-<span class="material-symbols-outlined text-[16px]">schedule</span>
-<span>Counter Desk</span>
-</div>
-</div>
-</div>
-</div>
+
 <!-- Collapsible Accordion: Archived Logs -->
 <div class="glass-card rounded-[28px] p-4 shadow-sm overflow-hidden">
 <button aria-expanded="false" class="w-full flex items-center justify-between p-2 rounded-2xl hover:bg-emerald-50/70 transition-colors text-left" id="toggleArchiveBtn" type="button">
@@ -500,12 +367,12 @@
           <div><span class="font-bold">BRANCH:</span> Computer Science & Engineering (Diploma)</div>
           <div><span class="font-bold">ACADEMIC YEAR:</span> 2024-25 · 4th Semester</div>
           <div><span class="font-bold">PURPOSE:</span> Official Passport verification at RPO Hyderabad</div>
-          <div><span class="font-bold">CLEARANCE OTP:</span> 5 8 4 3 8 6 (Counter 2 Academic Section)</div>
+          <div><span class="font-bold">CLEARANCE OTP:</span> SCET-259-AUTH (Counter 2 Academic Section)</div>
           <div><span class="font-bold">SIGN-OFF:</span> Dr. K. Srinivas (HOD) & Controller of Examinations</div>
         </div>
       </div>
       <div class="flex items-center justify-between">
-        <span class="text-xs text-stone-500 font-medium">Present your Student ID & OTP to collect stamped physical copy.</span>
+        <span class="text-xs text-stone-500 font-medium">Present your Student ID & Attestation Reference to collect stamped physical copy.</span>
         <button type="button" onclick="window.print()" class="px-6 py-2 rounded-full bg-primary hover:bg-emerald-800 text-white font-bold inline-flex items-center gap-2">
           <span class="material-symbols-outlined text-[18px]">print</span>
           <span>Print Attestation</span>
