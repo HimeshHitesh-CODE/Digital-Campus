@@ -27,7 +27,7 @@
     { label: 'Idea Hub', file: 'idea-hub.html', icon: 'lightbulb', url: '/screens/02-student-portal/idea-hub.html', badgeId: 'badgeIdeaHub' },
     { label: 'Requests', file: 'document-logistics.html', icon: 'file-text', url: '/screens/02-student-portal/document-logistics.html', badgeId: 'badgeRequests' },
     { label: 'Market', file: 'marketplace.html', icon: 'shopping-bag', url: '/screens/02-student-portal/marketplace.html' },
-    { label: 'Messages', file: 'messages.html', icon: 'message-square', url: '/screens/02-student-portal/messages.html', badgeId: 'badgeMessages' }
+    { label: 'Messages', file: 'messages.html', icon: 'message-square', url: '/screens/04-hod-portal/messages.html', badgeId: 'badgeMessages' }
   ];
 
   const HOD_NAV = [
@@ -35,7 +35,7 @@
     { label: 'Approvals', file: 'document-approvals.html', icon: 'file-check', url: '/screens/04-hod-portal/document-approvals.html', badgeId: 'badgeRequests' },
     { label: 'Roster', file: 'security-roster.html', icon: 'users', url: '/screens/04-hod-portal/security-roster.html' },
     { label: 'Students', file: 'students-info.html', icon: 'graduation-cap', url: '/screens/04-hod-portal/students-info.html' },
-    { label: 'Messages', file: 'messages.html', icon: 'message-square', url: '/screens/02-student-portal/messages.html', badgeId: 'badgeMessages' }
+    { label: 'Messages', file: 'messages.html', icon: 'message-square', url: '/screens/04-hod-portal/messages.html', badgeId: 'badgeMessages' }
   ];
 
   function getActiveUser() {
@@ -107,10 +107,13 @@
       document.body.insertBefore(header, document.body.firstChild);
     }
 
-    const displayName = user.name || (isHod ? 'Dr. J. Vamshi Krishna' : 'KARNATI HIMESH');
-    const displayPin = user.pin || user.sbtetPin || (isHod ? 'HOD CSE' : '24259-CS-025');
-    const avatarInitials = isHod ? 'VK' : getInitials(displayName);
-    const lastName = isHod ? 'VAMSHI' : getLastName(displayName);
+    const activeDept = localStorage.getItem('hod_active_dept') || (user && user.branch === 'AIML' ? 'AIML' : ((user && user.pin && user.pin.includes('AIML')) ? 'AIML' : 'AIML'));
+    const isAiml = isHod && (activeDept === 'AIML' || (user && user.branch === 'AIML') || (user && user.pin && user.pin.includes('AIML')));
+    const displayName = user.name || (isAiml ? 'Prof. Ramesh' : (isHod ? 'Dr. J. Vamshi Krishna' : 'KARNATI HIMESH'));
+    const displayPin = user.pin || user.sbtetPin || (isAiml ? 'AIML-HOD' : (isHod ? 'HOD CSE' : '24259-CS-025'));
+    const avatarInitials = isAiml ? 'PR' : (isHod ? 'VK' : getInitials(displayName));
+    const lastName = isAiml ? 'RAMESH' : (isHod ? 'VAMSHI' : getLastName(displayName));
+    const deptTitle = isHod ? (isAiml ? 'HOD Artificial Intelligence & Machine Learning' : 'HOD Computer Science') : 'Student';
 
     header.innerHTML = `
       <div class="app-global-header-inner">
@@ -147,7 +150,7 @@
                 <span class="dropdown-user-avatar">${avatarInitials}</span>
                 <div class="dropdown-user-meta">
                   <span class="dropdown-user-name">${escapeHtml(displayName)}</span>
-                  <span class="dropdown-user-sub">${isHod ? 'HOD Computer Science' : 'Student'} &bull; ${escapeHtml(displayPin)}</span>
+                  <span class="dropdown-user-sub">${deptTitle} &bull; ${escapeHtml(displayPin)}</span>
                 </div>
               </div>
 

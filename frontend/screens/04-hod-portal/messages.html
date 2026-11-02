@@ -306,6 +306,19 @@
 </div>
 </div>
 <!-- Bottom Message Input Dock -->
+<footer class="pt-3 border-t border-stone-200/70 flex items-center gap-3">
+  <div class="relative flex-1">
+    <input type="text" id="chatComposerInput" placeholder="Type an official directive or reply to student..." 
+           class="w-full bg-[#f8f6f0] border border-stone-200 text-slate-800 text-sm font-sans rounded-full pl-5 pr-12 py-3 focus:outline-none focus:ring-2 focus:ring-[#003519]/30 focus:bg-white shadow-xs transition"/>
+    <button type="button" class="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-600 flex items-center justify-center transition">
+      <span class="material-symbols-outlined text-[18px]">attach_file</span>
+    </button>
+  </div>
+  <button type="button" id="sendMessageBtn" class="px-5 py-3 rounded-full bg-[#003519] hover:bg-[#022c22] text-white font-dg text-sm font-black uppercase tracking-wider shadow-sm hover:shadow-md transition flex items-center gap-2 cursor-pointer active:scale-95 shrink-0">
+    <span>Dispatch</span>
+    <span class="material-symbols-outlined text-[18px]">send</span>
+  </button>
+</footer>
 
 </section>
 </div>

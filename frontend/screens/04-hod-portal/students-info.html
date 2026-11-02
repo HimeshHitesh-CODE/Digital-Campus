@@ -23,6 +23,7 @@
   <link rel="stylesheet" href="/css/top-nav.css"/>
 
   <!-- Client State Engine & Dynamic Island Dock -->
+  <script src="/js/campus-aiml-120-roster.js"></script>
   <script src="/js/campus-180-roster.js"></script>
   <script src="/js/stitch-state.js"></script>
   <script src="/js/dc-dynamic-island.js"></script>
@@ -65,11 +66,11 @@
 <div class="flex flex-wrap items-center gap-2">
 <!-- Department filter pills -->
 <div class="inline-flex p-1 rounded-full bg-white border border-[#003519]/10 shadow-xs gap-1">
-<button class="px-4 py-1.5 rounded-full bg-[#003519] text-white font-dg text-xs font-bold uppercase tracking-wide flex items-center gap-1.5 shadow-xs" type="button">
-<span class="material-symbols-outlined text-[15px]">computer</span> CS Dept (180)
-            </button>
-<button class="px-4 py-1.5 rounded-full bg-transparent text-slate-600 hover:text-slate-900 font-dg text-xs font-bold tracking-wide flex items-center gap-1.5 transition" type="button">
+<button id="deptAimlBtn" class="px-4 py-1.5 rounded-full bg-[#003519] text-white font-dg text-xs font-bold uppercase tracking-wide flex items-center gap-1.5 shadow-xs cursor-pointer transition" type="button">
 <span class="material-symbols-outlined text-[15px]">smart_toy</span> AIML Dept (120)
+            </button>
+<button id="deptCsBtn" class="px-4 py-1.5 rounded-full bg-transparent text-slate-600 hover:text-slate-900 font-dg text-xs font-bold tracking-wide flex items-center gap-1.5 transition cursor-pointer" type="button">
+<span class="material-symbols-outlined text-[15px]">computer</span> CS Dept (180)
             </button>
 </div>
 <button class="px-4 py-1.5 rounded-full bg-[#00875a] text-white font-dg text-xs font-bold uppercase tracking-wide hover:bg-[#00704a] shadow-xs flex items-center gap-1.5 transition" type="button">
@@ -88,13 +89,13 @@
 <!-- Card 1: Total Intake -->
 <div class="tactile-tile rounded-[24px] p-5 flex flex-col justify-between">
 <div class="flex items-start justify-between">
-<span class="font-dg text-[13px] font-bold uppercase tracking-wider text-slate-500">Total Allocated CS Intake</span>
+<span class="font-dg text-[13px] font-bold uppercase tracking-wider text-slate-500" id="kpiIntakeLabel">Total Allocated AIML Intake</span>
 <span class="w-8 h-8 rounded-full bg-[#e3efe8] text-[#003519] flex items-center justify-center">
 <span class="material-symbols-outlined text-[18px]">group</span>
 </span>
 </div>
 <div class="my-3">
-<span class="font-dg text-5xl font-black text-[#003519] leading-none">180</span>
+<span class="font-dg text-5xl font-black text-[#003519] leading-none" id="kpiIntakeVal">120</span>
 </div>
 <div class="flex items-center justify-between font-dg text-xs text-slate-500 pt-3 border-t border-slate-100">
 <span>Diploma C-24 Computer Science</span>
@@ -110,7 +111,7 @@
 </span>
 </div>
 <div class="my-3 flex items-baseline gap-2">
-<span class="font-dg text-5xl font-black text-rose-700 leading-none">37.1%</span>
+<span class="font-dg text-5xl font-black text-rose-700 leading-none" id="kpiAvgAttVal">42.2%</span>
 <span class="font-mono text-xs text-rose-600 font-semibold">Alert &lt;65%</span>
 </div>
 <div class="flex items-center justify-between font-dg text-xs text-slate-500 pt-3 border-t border-slate-100">
@@ -127,7 +128,7 @@
 </span>
 </div>
 <div class="my-3 flex items-baseline gap-2">
-<span class="font-dg text-5xl font-black text-[#003519] leading-none">6</span>
+<span class="font-dg text-5xl font-black text-[#003519] leading-none" id="kpiEligibleVal">0</span>
 <span class="font-dg text-lg font-bold text-slate-500">Students</span>
 </div>
 <div class="flex items-center justify-between font-dg text-xs text-slate-500 pt-3 border-t border-slate-100">
@@ -144,7 +145,7 @@
 </span>
 </div>
 <div class="my-3 flex items-baseline gap-2">
-<span class="font-dg text-5xl font-black text-slate-900 leading-none">24</span>
+<span class="font-dg text-5xl font-black text-slate-900 leading-none" id="kpiWarningVal">1</span>
 <span class="font-dg text-lg font-bold text-slate-500">Students</span>
 </div>
 <div class="flex items-center justify-between font-dg text-xs text-slate-500 pt-3 border-t border-slate-100">
@@ -161,7 +162,7 @@
 </span>
 </div>
 <div class="my-3 flex items-baseline gap-2">
-<span class="font-dg text-5xl font-black text-rose-700 leading-none">150</span>
+<span class="font-dg text-5xl font-black text-rose-700 leading-none" id="kpiDetentionVal">119</span>
 <span class="font-dg text-lg font-bold text-rose-600">In Danger</span>
 </div>
 <div class="flex items-center justify-between font-dg text-xs text-slate-500 pt-3 border-t border-slate-100">
@@ -178,11 +179,11 @@
 </span>
 </div>
 <div class="my-3 flex items-baseline gap-2">
-<span class="font-dg text-5xl font-black text-slate-900 leading-none">94</span>
-<span class="font-dg text-lg font-bold text-slate-500">Of 180 Students</span>
+<span class="font-dg text-5xl font-black text-slate-900 leading-none" id="kpiBacklogsVal">58</span>
+<span class="font-dg text-lg font-bold text-slate-500" id="kpiBacklogsSub">Of 120 Students</span>
 </div>
 <div class="flex items-center justify-between font-dg text-xs text-slate-500 pt-3 border-t border-slate-100">
-<span>Total Active: 573 Papers</span>
+<span id="kpiBacklogsTotal">Total Active: 309 Papers</span>
 <span class="px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 font-mono text-[11px] font-bold">Avg 6.1 / Std</span>
 </div>
 </div>
@@ -238,52 +239,53 @@
 
 <div class="overflow-x-auto max-h-[660px] overflow-y-auto rounded-[22px] border border-slate-200/80 bg-white shadow-inner custom-scrollbar" id="studentsScrollContainer">
 <table class="w-full text-left border-collapse min-w-[1080px]">
-<thead class="sticky top-0 z-10 bg-[#f5f8f6] backdrop-blur-md border-b border-slate-200/80 shadow-xs">
-  <tr class="text-slate-600 font-dg text-xs font-bold uppercase tracking-wider select-none">
-    <th class="py-3 px-3 w-[120px] cursor-pointer hover:text-emerald-900 transition-colors sortable-header group" data-sort="pin" title="Click to sort by PIN (Asc/Desc)">
+<thead class="sticky top-0 z-20 bg-[#e8f5ee] backdrop-blur-md border-b border-slate-200/80 shadow-xs">
+  <tr class="text-slate-700 font-dg text-xs font-bold uppercase tracking-wider select-none">
+    <th class="py-3 px-3 w-[115px] cursor-pointer hover:text-emerald-900 transition-colors sortable-header group" data-sort="pin" title="Click to sort by PIN">
       <div class="flex items-center gap-1">
         <span># PIN</span>
         <span class="material-symbols-outlined text-[15px] text-slate-400 group-hover:text-emerald-700 transition-transform sort-icon" id="sort-icon-pin">unfold_more</span>
       </div>
     </th>
-    <th class="py-3 px-3 min-w-[210px] cursor-pointer hover:text-emerald-900 transition-colors sortable-header group" data-sort="name" title="Click to sort by Name (A-Z/Z-A)">
+    <th class="py-3 px-3 min-w-[190px] cursor-pointer hover:text-emerald-900 transition-colors sortable-header group" data-sort="name" title="Click to sort by Name">
       <div class="flex items-center gap-1">
-        <span>Student Name</span>
+        <span>STUDENT NAME</span>
         <span class="material-symbols-outlined text-[15px] text-slate-400 group-hover:text-emerald-700 transition-transform sort-icon" id="sort-icon-name">unfold_more</span>
       </div>
     </th>
-    <th class="py-3 px-2 w-[95px] cursor-pointer hover:text-emerald-900 transition-colors sortable-header group" data-sort="branch" title="Click to sort by Branch">
+    <th class="py-3 px-2 w-[85px] cursor-pointer hover:text-emerald-900 transition-colors sortable-header group" data-sort="branch" title="Click to sort by Branch">
       <div class="flex items-center gap-1">
-        <span>Branch</span>
+        <span>BRANCH</span>
         <span class="material-symbols-outlined text-[15px] text-slate-400 group-hover:text-emerald-700 transition-transform sort-icon" id="sort-icon-branch">unfold_more</span>
       </div>
     </th>
-    <th class="py-3 px-3 w-[125px] cursor-pointer hover:text-emerald-900 transition-colors sortable-header group" data-sort="days" title="Click to sort by Present Days">
+    <th class="py-3 px-2 w-[120px] cursor-pointer hover:text-emerald-900 transition-colors sortable-header group" data-sort="days" title="Click to sort by Present Days">
       <div class="flex items-center gap-1">
-        <span>Days (Pres/Elap)</span>
+        <span>DAYS (PRES / ELAP)</span>
         <span class="material-symbols-outlined text-[15px] text-slate-400 group-hover:text-emerald-700 transition-transform sort-icon" id="sort-icon-days">unfold_more</span>
       </div>
     </th>
     <th class="py-3 px-2 w-[105px] cursor-pointer hover:text-emerald-900 transition-colors sortable-header group" data-sort="attendance" title="Click to sort by Attendance %">
       <div class="flex items-center gap-1">
-        <span>Attendance %</span>
+        <span>ATTENDANCE %</span>
         <span class="material-symbols-outlined text-[15px] text-slate-400 group-hover:text-emerald-700 transition-transform sort-icon" id="sort-icon-attendance">unfold_more</span>
       </div>
     </th>
-    <th class="py-3 px-2 w-[115px]">Status</th>
-    <th class="py-3 px-2 w-[90px] cursor-pointer hover:text-emerald-900 transition-colors sortable-header group" data-sort="cgpa" title="Click to sort by CGPA">
+    <th class="py-3 px-2 w-[110px]">STATUS</th>
+    <th class="py-3 px-2 w-[85px] cursor-pointer hover:text-emerald-900 transition-colors sortable-header group" data-sort="cgpa" title="Click to sort by CGPA">
       <div class="flex items-center gap-1">
         <span>CGPA</span>
         <span class="material-symbols-outlined text-[15px] text-slate-400 group-hover:text-emerald-700 transition-transform sort-icon" id="sort-icon-cgpa">unfold_more</span>
       </div>
     </th>
-    <th class="py-3 px-3 w-[125px] cursor-pointer hover:text-emerald-900 transition-colors sortable-header group" data-sort="backlogs" title="Click to sort by Backlog Count">
+    <th class="py-3 px-2 w-[115px] cursor-pointer hover:text-emerald-900 transition-colors sortable-header group" data-sort="backlogs" title="Click to sort by Backlogs">
       <div class="flex items-center gap-1">
-        <span>Backlogs</span>
+        <span>BACKLOGS</span>
         <span class="material-symbols-outlined text-[15px] text-slate-400 group-hover:text-emerald-700 transition-transform sort-icon" id="sort-icon-backlogs">unfold_more</span>
       </div>
     </th>
-    <th class="py-3 px-3 w-[135px] text-right">Actions</th>
+    <th class="py-3 px-2 w-[95px]">LAST SYNCED</th>
+    <th class="py-3 px-3 w-[115px] text-right">ACTIONS</th>
   </tr>
 </thead>
 <tbody id="masterStudentsTbody" class="divide-y divide-slate-100 font-sans text-sm">
@@ -303,7 +305,7 @@
   <div class="flex items-center gap-2.5">
     <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
     <span class="font-mono text-xs text-slate-700">
-      Displaying all <strong class="text-emerald-950 font-bold" id="studentsVisibleCount">180</strong> students registered in Batch 2024–25 (Scheme C-24)
+      Displaying all <strong class="text-emerald-950 font-bold" id="studentsVisibleCount">120</strong> of <strong class="text-emerald-950 font-bold" id="studentsTotalCount">120</strong> <span id="studentsDeptLabel">AIML</span> students registered in Batch 2024–25 (Scroll to view all)
     </span>
   </div>
   <div class="flex items-center gap-3">
@@ -427,13 +429,16 @@
           Official SBTET Scheme C-24 Academic Audit Ledger
         </span>
         <div class="flex items-center gap-3 w-full sm:w-auto">
+          <button id="modalResyncBtn" class="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-full bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-900 text-xs font-bold transition cursor-pointer" type="button">
+            <span class="material-symbols-outlined text-[16px]">sync</span>
+            <span>🔄 Re-Sync Student</span>
+          </button>
           <button id="printModalDossierBtn" class="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-semibold transition cursor-pointer" type="button">
             <span class="material-symbols-outlined text-[16px]">print</span>
-            <span>Print Dossier PDF</span>
+            <span>🖨️ Print Form</span>
           </button>
-          <button id="messageStudentFromModalBtn" class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-[#003519] to-[#047857] hover:opacity-95 text-white text-xs font-bold tracking-wide shadow-md transition active:scale-95 cursor-pointer" type="button">
-            <span class="material-symbols-outlined text-[16px]">chat</span>
-            <span>Dispatch Directive →</span>
+          <button id="modalCloseActionBtn" class="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-full bg-stone-200 hover:bg-stone-300 text-stone-800 text-xs font-bold transition cursor-pointer" type="button">
+            <span>Close ✕</span>
           </button>
         </div>
       </div>

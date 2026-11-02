@@ -23,6 +23,7 @@
   <link rel="stylesheet" href="/css/top-nav.css"/>
 
   <!-- Client State Engine & Dynamic Island Dock -->
+  <script src="/js/campus-aiml-120-roster.js"></script>
   <script src="/js/campus-180-roster.js"></script>
   <script src="/js/stitch-state.js"></script>
   <script src="/js/dc-dynamic-island.js"></script>
@@ -60,8 +61,8 @@
 <div class="space-y-3">
 <!-- Status Pills -->
 <div class="flex flex-wrap items-center gap-2.5">
-<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider bg-white/15 backdrop-blur-md border border-white/20 text-emerald-50">
-              Department of Computer Science &amp; Engineering • Scheme: C-24
+<span id="heroDeptSubtitle" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider bg-white/15 backdrop-blur-md border border-white/20 text-emerald-50">
+              Department of Artificial Intelligence &amp; Machine Learning • Scheme: C-24
             </span>
 <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-400/20 border border-emerald-300/30 text-emerald-100">
 <span class="w-2 h-2 rounded-full bg-emerald-300 animate-pulse"></span>
@@ -78,13 +79,15 @@
 </div>
 <!-- HOD Profile Card Pill -->
 <div class="flex items-center gap-3.5 bg-black/20 backdrop-blur-md border border-white/20 p-2.5 pr-5 rounded-full shadow-lg self-stretch md:self-auto">
-<div class="w-12 h-12 rounded-full bg-[#003519] text-white flex items-center justify-center font-bold text-base shadow-inner">
-            VK
+<div id="heroHodAvatar" class="w-12 h-12 rounded-full bg-[#003519] text-white flex items-center justify-center font-bold text-base shadow-inner">
+            PR
           </div>
 <div>
-<div class="text-base font-bold leading-tight text-white">Dr. J. Vamshi Krishna</div>
-<div class="text-[11px] font-semibold text-emerald-200 tracking-wide uppercase mt-0.5">
-              Official HOD (Computer Science)
+<div id="heroHodName" class="text-base font-bold leading-tight text-white">
+              Prof. Ramesh
+            </div>
+<div id="heroHodRole" class="text-[11px] font-semibold text-emerald-200 tracking-wide uppercase mt-0.5">
+              Official HOD (AIML)
             </div>
 </div>
 </div>
@@ -101,8 +104,8 @@
           <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" id="syncPingBeacon"></span>
           <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500" id="syncDotBeacon"></span>
         </span>
-        <h3 class="text-base sm:text-lg font-bold text-slate-900 font-display">
-          180-Student Automated Department Sync &amp; Biometric Ledger
+        <h3 id="syncCardTitle" class="text-base sm:text-lg font-bold text-slate-900 font-display">
+          120-Student Automated Department Sync &amp; Biometric Ledger
         </h3>
         <span id="syncStageBadge" class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 border border-emerald-200 transition-all">
           Standby: 180 Nodes Ready
@@ -244,7 +247,7 @@
 <th class="py-2.5 px-3 rounded-r-2xl text-right">Action</th>
 </tr>
 </thead>
-<tbody class="text-xs">
+<tbody id="dashboardRequestsTbody" class="text-xs">
 <!-- Row 1 -->
 <tr class="bg-white/60 hover:bg-white transition-colors shadow-sm rounded-xl">
 <td class="py-3 px-3 font-mono font-bold text-[#047857] rounded-l-xl">24259-CS-025</td>
@@ -325,7 +328,7 @@
 <th class="py-2.5 px-3 rounded-r-2xl text-right">Status</th>
 </tr>
 </thead>
-<tbody class="text-xs">
+<tbody id="dashboardRequestsTbody" class="text-xs">
 <!-- Key Row 1 -->
 <tr class="bg-white/60 hover:bg-white transition-colors shadow-sm rounded-xl">
 <td class="py-3 px-3 font-mono font-bold text-[#047857] rounded-l-xl">24259-CS-001</td>

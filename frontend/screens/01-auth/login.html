@@ -198,16 +198,23 @@
               <span>Institutional Level 3 Clearance</span>
             </div>
             <h2 class="font-dg text-3xl font-extrabold text-emerald-950 tracking-tight leading-tight">Executive Gateway</h2>
-            <p class="font-dg text-base text-stone-600 font-medium mt-0.5">Department of Computer Science &bull; HOD Node</p>
+            <p class="font-dg text-base text-stone-600 font-medium mt-0.5">Computer Science &amp; AIML Departments &bull; Executive Node</p>
           </div>
 
           <form id="hodLoginForm" class="space-y-4" onsubmit="event.preventDefault(); handleHodSubmit();">
             <!-- Faculty / HOD ID Input -->
             <div class="space-y-1.5">
-              <label class="block font-dg text-base font-bold text-emerald-950" for="hodIdInput">Executive / HOD Credential ID</label>
+              <div class="flex items-center justify-between">
+                <label class="block font-dg text-base font-bold text-emerald-950" for="hodIdInput">Executive / HOD Credential ID</label>
+                <div class="flex items-center gap-1.5">
+                  <button type="button" class="hod-preset-pill px-2 py-0.5 rounded-full bg-emerald-100 hover:bg-emerald-200 text-emerald-900 font-mono text-[10px] font-bold border border-emerald-300 transition" data-id="AIML-HOD">AIML-HOD</button>
+                  <button type="button" class="hod-preset-pill px-2 py-0.5 rounded-full bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-mono text-[10px] font-bold border border-emerald-200 transition" data-id="HOD-AIML-259">HOD-AIML-259</button>
+                  <button type="button" class="hod-preset-pill px-2 py-0.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-mono text-[10px] font-bold border border-slate-300 transition" data-id="VAMSHI-CS-HOD">CS-HOD</button>
+                </div>
+              </div>
               <div class="relative">
                 <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-emerald-700/70 text-[20px]">badge</span>
-                <input class="w-full pl-11 pr-4 py-3 rounded-full bg-[#f8fcf9] border border-emerald-900/15 font-mono text-base text-emerald-950 placeholder:text-stone-400 placeholder:font-sans focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500 transition-all shadow-xs" id="hodIdInput" placeholder="e.g. VAMSHI-CS-HOD" required="" type="text" value="VAMSHI-CS-HOD"/>
+                <input class="w-full pl-11 pr-4 py-3 rounded-full bg-[#f8fcf9] border border-emerald-900/15 font-mono text-base text-emerald-950 placeholder:text-stone-400 placeholder:font-sans focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500 transition-all shadow-xs" id="hodIdInput" placeholder="e.g. AIML-HOD, HOD-AIML-259, or VAMSHI-CS-HOD" required="" type="text" value="AIML-HOD"/>
               </div>
             </div>
 

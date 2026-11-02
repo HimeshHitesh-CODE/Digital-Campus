@@ -23,6 +23,7 @@
   <link rel="stylesheet" href="/css/top-nav.css"/>
 
   <!-- Client State Engine & Dynamic Island Dock -->
+  <script src="/js/campus-aiml-120-roster.js"></script>
   <script src="/js/campus-180-roster.js"></script>
   <script src="/js/stitch-state.js"></script>
   <script src="/js/dc-dynamic-island.js"></script>
@@ -60,7 +61,7 @@
           Anti-Spoofing Security Keys Roster
         </h1>
 <p class="font-dg text-[17px] text-stone-600 font-semibold tracking-wide">
-          Samskruti College (Code: 259) • <span class="font-black text-on-surface">DR. J. VAMSHI KRISHNA</span> (<span class="font-mono text-xs font-semibold text-stone-700">PIN: VAMSHI-CS-HOD</span>) • Hardware Biometric Enrolments 2024–2025
+          Samskruti College (Code: 259) • <span class="font-black text-on-surface" id="rosterHodName">PROF. RAMESH</span> (<span class="font-mono text-xs font-semibold text-stone-700" id="rosterHodPin">PIN: AIML-HOD</span>) • Hardware Biometric Enrolments 2024–2025
         </p>
 </div>
 <!-- Right Status Pills -->
@@ -71,7 +72,7 @@
         </div>
 <div class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-primary text-white shadow-xs font-dg text-xs font-black uppercase tracking-wider">
 <span class="material-symbols-outlined text-[15px]">key</span>
-          180 Keys Active
+          <span id="activeKeysCountBadge">120 Keys Active</span>
         </div>
 <div class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-emerald-50 border border-emerald-200/70 text-emerald-900 font-mono text-xs font-semibold shadow-xs">
 <span class="material-symbols-outlined text-[16px] text-emerald-700">verified_user</span>
@@ -88,8 +89,8 @@
 <div class="flex flex-col">
 <span class="font-dg text-sm font-bold text-stone-500 uppercase tracking-wider">Total Keys Enrolled</span>
 <div class="flex items-baseline gap-2 mt-1">
-<span class="font-dg text-4xl font-black text-primary leading-none">180</span>
-<span class="font-dg text-sm font-bold text-emerald-800 bg-emerald-100/70 px-2 py-0.5 rounded-full">CS Department</span>
+<span class="font-dg text-4xl font-black text-primary leading-none" id="kpiTotalKeys">120</span>
+<span class="font-dg text-sm font-bold text-emerald-800 bg-emerald-100/70 px-2 py-0.5 rounded-full" id="kpiDeptBadge">AIML Department</span>
 </div>
 <span class="font-dg text-xs font-semibold text-stone-500 mt-1.5">Hardware tokens provisioned</span>
 </div>
@@ -130,13 +131,13 @@
 <div class="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4 bg-[#f8f6f0] border border-stone-200/70 rounded-[24px] p-3 sm:p-3.5">
 <!-- Department Pill Tabs -->
 <div class="flex items-center gap-2 overflow-x-auto pb-1 lg:pb-0">
-<button class="px-4 py-2 rounded-full bg-primary text-white font-dg text-xs font-black uppercase tracking-wider shrink-0 shadow-xs transition-all hover:bg-primary-container" type="button">
-            CS Dept (180 Keys)
-          </button>
-<button class="px-4 py-2 rounded-full bg-white hover:bg-stone-100 text-stone-700 border border-stone-200/70 font-dg text-xs font-bold uppercase tracking-wider shrink-0 transition-all" type="button">
+<button id="filterAimlKeys" class="px-4 py-2 rounded-full bg-primary text-white font-dg text-xs font-black uppercase tracking-wider shrink-0 shadow-xs transition-all cursor-pointer" type="button">
             AIML Dept (120 Keys)
           </button>
-<button class="px-4 py-2 rounded-full bg-white hover:bg-stone-100 text-stone-700 border border-stone-200/70 font-dg text-xs font-bold uppercase tracking-wider shrink-0 transition-all" type="button">
+<button id="filterCsKeys" class="px-4 py-2 rounded-full bg-white hover:bg-stone-100 text-stone-700 border border-stone-200/70 font-dg text-xs font-bold uppercase tracking-wider shrink-0 transition-all cursor-pointer" type="button">
+            CS Dept (180 Keys)
+          </button>
+<button id="filterAllKeys" class="px-4 py-2 rounded-full bg-white hover:bg-stone-100 text-stone-700 border border-stone-200/70 font-dg text-xs font-bold uppercase tracking-wider shrink-0 transition-all cursor-pointer" type="button">
             All Departments (300 Keys)
           </button>
 </div>
@@ -154,7 +155,7 @@
 <!-- Security Keys Roster Table with rounded-2xl headers and crisp pill badges -->
 <div class="overflow-x-auto max-h-[640px] overflow-y-auto rounded-[24px] border border-stone-200/70 bg-white shadow-inner" id="rosterScrollContainer">
 <table class="w-full text-left border-collapse" id="rosterTable">
-<thead>
+<thead class="sticky top-0 z-10 shadow-xs">
 <tr class="bg-primary text-white">
 <th class="py-4 px-4 font-mono text-xs font-semibold tracking-wider rounded-tl-[24px]" scope="col"># ROLL</th>
 <th class="py-4 px-4 font-mono text-xs font-semibold tracking-wider" scope="col">DIPLOMA PIN</th>
