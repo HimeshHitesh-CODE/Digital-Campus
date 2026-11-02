@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Darker+Grotesque:wght@400;500;600;700;800;900&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}
+.font-dg { font-family: 'Darker Grotesque', sans-serif; }
+</style><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script><script id="tailwind-config">tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+          "on-surface-variant": "#404941",
+          "on-error-container": "#93000a",
+          "error": "#ba1a1a",
+          "on-tertiary-container": "#a5b3a7",
+          "primary-container": "#0f4d2a",
+          "on-primary-fixed": "#00210d",
+          "secondary-container": "#d5e7db",
+          "surface-container-highest": "#e6e2d9",
+          "on-primary-container": "#81bd90",
+          "error-container": "#ffdad6",
+          "on-secondary-fixed": "#101f17",
+          "inverse-primary": "#97d4a6",
+          "surface-bright": "#fdf9f0",
+          "tertiary-fixed": "#d7e6d8",
+          "tertiary": "#233027",
+          "surface-dim": "#dddad1",
+          "surface-container-lowest": "#ffffff",
+          "primary-fixed-dim": "#97d4a6",
+          "primary-fixed": "#b3f1c1",
+          "surface-container-low": "#f7f3ea",
+          "inverse-on-surface": "#f4f0e7",
+          "surface-container": "#f1eee5",
+          "tertiary-fixed-dim": "#bbcabd",
+          "surface-container-high": "#ece8df",
+          "on-primary-fixed-variant": "#14512e",
+          "secondary-fixed": "#d5e7db",
+          "outline": "#717971",
+          "background": "#fdf9f0",
+          "tertiary-container": "#39463c",
+          "on-error": "#ffffff",
+          "surface-tint": "#306a44",
+          "on-secondary-fixed-variant": "#3a4a42",
+          "primary": "#003519",
+          "on-primary": "#ffffff",
+          "outline-variant": "#c0c9bf",
+          "on-surface": "#1c1c16",
+          "on-background": "#1c1c16",
+          "on-tertiary-fixed": "#121e16",
+          "surface": "#fdf9f0",
+          "on-secondary": "#ffffff",
+          "secondary-fixed-dim": "#b9cbbf",
+          "on-tertiary-fixed-variant": "#3d4a40",
+          "inverse-surface": "#31302b",
+          "on-secondary-container": "#58685f",
+          "surface-variant": "#e6e2d9",
+          "secondary": "#526259",
+          "on-tertiary": "#ffffff"
+        },
+        "fontFamily": {
+          "dg": ["Darker Grotesque", "sans-serif"],
+          "display-hero": ["Newsreader"],
+          "label-ui": ["Darker Grotesque", "sans-serif"],
+          "body-lg": ["Darker Grotesque", "sans-serif"],
+          "body-sm": ["Darker Grotesque", "sans-serif"],
+          "label-code": ["Darker Grotesque", "sans-serif"],
+          "label-code-sm": ["Darker Grotesque", "sans-serif"],
+          "headline-lg": ["Darker Grotesque", "sans-serif"],
+          "body-md": ["Darker Grotesque", "sans-serif"],
+          "headline-md": ["Darker Grotesque", "sans-serif"],
+          "headline-sm": ["Darker Grotesque", "sans-serif"],
+          "title-editorial": ["Newsreader"]
+        }
+      },
+    },
+  }</script></head><body class="bg-[#faf6ee] font-dg text-on-surface min-h-screen flex flex-col relative overflow-x-hidden selection:bg-emerald-100 selection:text-emerald-900">
+<!-- Atmospheric Radial Meshes & Glowing Emerald Auras -->
+<div class="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
+<div class="absolute -top-[18%] -left-[10%] w-[680px] h-[680px] rounded-full bg-gradient-to-br from-emerald-200/45 via-teal-100/30 to-transparent blur-[120px]"></div>
+<div class="absolute top-[28%] -right-[12%] w-[720px] h-[720px] rounded-full bg-gradient-to-bl from-emerald-300/35 via-mint-200/25 to-transparent blur-[140px]"></div>
+<div class="absolute -bottom-[20%] left-[25%] w-[600px] h-[600px] rounded-full bg-gradient-to-tr from-emerald-200/30 via-emerald-100/20 to-transparent blur-[130px]"></div>
+<!-- Hairline Grid Texture Overlay -->
+<div class="absolute inset-0 bg-[radial-gradient(#10b981_0.75px,transparent_0.75px)] [background-size:28px_28px] opacity-[0.04]"></div>
+</div>
+<main class="w-full flex-grow py-6 relative z-10"><div class="flex flex-col w-full">
+<div class="max-w-[1240px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col gap-6">
+<!-- PAGE HEADER RIBBON -->
+<header class="bg-surface-container-lowest/85 backdrop-blur-md rounded-full px-6 py-4 shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-2">
+<span class="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-secondary-container text-primary font-dg text-xs font-bold tracking-wider uppercase">
+<span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+            Real-Time Campus Network &amp; Peer Threads
+          </span>
+<span class="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-label-code-sm text-label-code-sm">
+            NODE 259:RELAY-HOD
+          </span>
+</div>
+<h1 class="font-dg text-[38px] leading-[40px] font-black text-primary tracking-tight">
+          Campus Messages &amp; Peer Threads
+        </h1>
+<p class="font-dg text-sm text-secondary font-medium">
+          Samskruti College (Code: 259) • <span class="font-bold text-on-surface">DR. J. VAMSHI KRISHNA</span> (<span class="font-label-code-sm text-label-code-sm">PIN: VAMSHI-CS-HOD</span>) • Synchronized Institutional Relay
+        </p>
+</div>
+<!-- Right Status Pills -->
+<div class="flex flex-wrap items-center gap-2 self-start lg:self-center">
+<div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-surface-container-low text-primary shadow-sm font-label-code-sm text-label-code-sm font-semibold">
+<span class="w-2 h-2 rounded-full bg-primary-container animate-ping"></span>
+          Socket: Active
+        </div>
+<div class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-primary text-on-primary shadow-sm font-dg text-xs font-bold uppercase tracking-wider">
+<span class="material-symbols-outlined text-[15px]">mark_chat_unread</span>
+          4 Unread
+        </div>
+<div class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-surface-container text-on-surface-variant font-label-code-sm text-label-code-sm">
+<span class="material-symbols-outlined text-[15px] text-primary">verified_user</span>
+          TLS 1.3 End-to-End
+        </div>
+</div>
+</header>
+<!-- TWO-PANEL GLASSMORPHIC MESSENGER (4 Cols / 8 Cols) -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 bg-surface-container-lowest/80 backdrop-blur-xl p-4 sm:p-5 rounded-[32px] shadow-sm">
+<!-- LEFT CONVERSATION PANEL (Col 1-4) -->
+<aside class="lg:col-span-4 bg-surface-container-low/90 backdrop-blur-md rounded-[28px] p-5 flex flex-col gap-4">
+<!-- Header row -->
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<h2 class="font-dg text-2xl font-black text-on-surface">Conversations</h2>
+<span class="px-2.5 py-0.5 rounded-full bg-primary-container text-on-primary-container font-label-code-sm text-label-code-sm font-bold">
+              4 Active
+            </span>
+</div>
+<button class="w-9 h-9 rounded-full bg-primary text-on-primary flex items-center justify-center shadow-sm hover:bg-primary-container transition-colors" title="New Dispatch" type="button">
+<span class="material-symbols-outlined text-[18px]">edit_note</span>
+</button>
+</div>
+<!-- Search Bar Pill -->
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-outline text-[18px]">search</span>
+<input class="w-full bg-surface-container-lowest text-on-surface placeholder:text-outline font-dg text-base font-semibold rounded-full pl-10 pr-4 py-2 focus:outline-none focus:bg-surface-container-lowest shadow-sm" placeholder="Search conversations or peers..." type="text"/>
+</div>
+<!-- Category Filter Pills -->
+<div class="flex items-center gap-1.5 overflow-x-auto pb-1 -mx-1 px-1">
+<button class="px-3.5 py-1 rounded-full bg-primary text-on-primary font-dg text-xs font-bold uppercase tracking-wider shrink-0 shadow-sm" type="button">
+            All (4)
+          </button>
+<button class="px-3 py-1 rounded-full bg-surface-container text-on-surface-variant font-dg text-xs font-bold shrink-0 hover:bg-surface-container-high transition-colors" type="button">
+            Direct &amp; HOD
+          </button>
+<button class="px-3 py-1 rounded-full bg-surface-container text-on-surface-variant font-dg text-xs font-bold shrink-0 hover:bg-surface-container-high transition-colors" type="button">
+            Idea Hub
+          </button>
+<button class="px-3 py-1 rounded-full bg-surface-container text-on-surface-variant font-dg text-xs font-bold shrink-0 hover:bg-surface-container-high transition-colors" type="button">
+            Marketplace
+          </button>
+</div>
+<!-- Thread List -->
+<div class="flex flex-col gap-2.5 overflow-y-auto max-h-[580px] pr-1">
+<!-- Item 1 (Selected Active) -->
+<article class="bg-surface-container-lowest rounded-2xl p-3.5 cursor-pointer shadow-sm relative transition-all group">
+<div class="flex items-start gap-3">
+<div class="relative shrink-0">
+<div class="w-11 h-11 rounded-full bg-primary-container text-on-primary-container font-dg text-lg font-black flex items-center justify-center shadow-inner">
+                  GL
+                </div>
+<span class="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-primary ring-2 ring-surface-container-lowest"></span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between gap-1">
+<h3 class="font-dg text-lg font-bold text-on-surface truncate">
+                    Gona Laxmi Narasimha Swami
+                  </h3>
+<span class="font-label-code-sm text-label-code-sm text-secondary shrink-0 font-medium">08:51 AM</span>
+</div>
+<div class="flex items-center gap-1.5 mb-1">
+<span class="font-label-code-sm text-label-code-sm text-outline">PIN: 24259-CS-001</span>
+<span class="w-1 h-1 rounded-full bg-outline-variant"></span>
+<span class="px-2 py-0.2 rounded-full bg-secondary-container text-primary font-dg text-[11px] font-bold uppercase tracking-wider">
+                    Idea Hub Collab
+                  </span>
+</div>
+<p class="font-dg text-sm text-on-surface-variant line-clamp-1 font-medium">
+                  Don't worry, submit the bonafide request in the portal right away...
+                </p>
+</div>
+</div>
+</article>
+<!-- Item 2 -->
+<article class="bg-surface-container-lowest/60 hover:bg-surface-container-lowest rounded-2xl p-3.5 cursor-pointer transition-all">
+<div class="flex items-start gap-3">
+<div class="relative shrink-0">
+<div class="w-11 h-11 rounded-full bg-surface-container-high text-on-surface-variant font-dg text-lg font-black flex items-center justify-center">
+                  KH
+                </div>
+<span class="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-secondary ring-2 ring-surface-container-lowest"></span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between gap-1">
+<h3 class="font-dg text-lg font-bold text-on-surface truncate">
+                    Karnati Himesh
+                  </h3>
+<span class="font-label-code-sm text-label-code-sm text-secondary shrink-0 font-medium">Yesterday</span>
+</div>
+<div class="flex items-center gap-1.5 mb-1">
+<span class="font-label-code-sm text-label-code-sm text-outline">PIN: 24259-CS-025</span>
+<span class="w-1 h-1 rounded-full bg-outline-variant"></span>
+<span class="px-2 py-0.2 rounded-full bg-error-container text-on-error-container font-dg text-[11px] font-bold uppercase tracking-wider">
+                    Condonation Request
+                  </span>
+</div>
+<p class="font-dg text-sm text-secondary line-clamp-1 font-medium">
+                  Student KARNATI HIMESH: For formal leave app condonation signoff...
+                </p>
+</div>
+</div>
+</article>
+<!-- Item 3 -->
+<article class="bg-surface-container-lowest/60 hover:bg-surface-container-lowest rounded-2xl p-3.5 cursor-pointer transition-all">
+<div class="flex items-start gap-3">
+<div class="relative shrink-0">
+<div class="w-11 h-11 rounded-full bg-surface-container-high text-on-surface-variant font-dg text-lg font-black flex items-center justify-center">
+                  DT
+                </div>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between gap-1">
+<h3 class="font-dg text-lg font-bold text-on-surface truncate">
+                    Dulipudi Tarun
+                  </h3>
+<span class="font-label-code-sm text-label-code-sm text-secondary shrink-0 font-medium">23 Feb</span>
+</div>
+<span class="font-label-code-sm text-label-code-sm text-outline block mb-1">PIN: 24259-CS-002</span>
+<p class="font-dg text-sm text-secondary line-clamp-1 font-medium">
+                  Clarification regarding C-24 exam clearance and Hall Ticket generation...
+                </p>
+</div>
+</div>
+</article>
+<!-- Item 4 -->
+<article class="bg-surface-container-lowest/60 hover:bg-surface-container-lowest rounded-2xl p-3.5 cursor-pointer transition-all">
+<div class="flex items-start gap-3">
+<div class="relative shrink-0">
+<div class="w-11 h-11 rounded-full bg-surface-container-high text-on-surface-variant font-dg text-lg font-black flex items-center justify-center">
+                  AD
+                </div>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between gap-1">
+<h3 class="font-dg text-lg font-bold text-on-surface truncate">
+                    Anaboina Dilip
+                  </h3>
+<span class="font-label-code-sm text-label-code-sm text-secondary shrink-0 font-medium">21 Feb</span>
+</div>
+<span class="font-label-code-sm text-label-code-sm text-outline block mb-1">PIN: 24259-CS-003</span>
+<p class="font-dg text-sm text-secondary line-clamp-1 font-medium">
+                  Submission of project team details for Idea Hub campus hackathon...
+                </p>
+</div>
+</div>
+</article>
+</div>
+<!-- Network Integrity Health Bar -->
+<div class="mt-auto pt-2">
+<div class="bg-surface-container-lowest/90 rounded-2xl p-3 flex items-center justify-between shadow-sm">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[18px]">dns</span>
+<span class="font-label-code-sm text-label-code-sm text-secondary">Campus Socket Latency</span>
+</div>
+<span class="font-label-code-sm text-label-code-sm text-primary font-bold">12ms • Sync 100%</span>
+</div>
+</div>
+</aside>
+<!-- RIGHT ACTIVE CHAT PANEL (Col 5-12) -->
+<section class="lg:col-span-8 bg-surface-container-low/90 backdrop-blur-md rounded-[28px] p-5 sm:p-6 flex flex-col justify-between min-h-[660px]">
+<!-- Active Chat Header -->
+<header class="bg-surface-container-lowest rounded-2xl p-3 sm:p-4 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+<div class="flex items-center gap-3">
+<div class="relative shrink-0">
+<div class="w-12 h-12 rounded-full bg-primary-container text-on-primary-container font-dg text-xl font-black flex items-center justify-center shadow-inner">
+                GL
+              </div>
+<span class="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-primary ring-2 ring-surface-container-lowest"></span>
+</div>
+<div class="flex flex-col">
+<div class="flex flex-wrap items-center gap-2">
+<h2 class="font-dg text-xl sm:text-2xl font-black text-on-surface leading-tight">
+                  GONA LAXMI NARASIMHA SWAMI
+                </h2>
+<span class="px-2.5 py-0.5 rounded-full bg-secondary-container text-primary font-dg text-xs font-bold uppercase tracking-wider">
+                  Idea Hub Collab
+                </span>
+</div>
+<div class="flex items-center gap-2 text-secondary">
+<span class="font-label-code-sm text-label-code-sm">PIN: 24259-CS-001</span>
+<span class="w-1 h-1 rounded-full bg-outline-variant"></span>
+<span class="font-label-code-sm text-label-code-sm text-primary font-semibold flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span> Online
+                </span>
+<span class="w-1 h-1 rounded-full bg-outline-variant"></span>
+<span class="font-dg text-xs">Section IV-A CSE</span>
+</div>
+</div>
+</div>
+<!-- Action buttons -->
+<div class="flex items-center gap-2 self-end sm:self-center">
+<button class="inline-flex items-center gap-1 px-3.5 py-1.5 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface font-dg text-xs font-bold uppercase tracking-wide transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px]">call</span> Call
+            </button>
+<button class="inline-flex items-center gap-1 px-3.5 py-1.5 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface font-dg text-xs font-bold uppercase tracking-wide transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px]">person</span> Profile
+            </button>
+<button class="w-8 h-8 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface flex items-center justify-center transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">more_vert</span>
+</button>
+</div>
+</header>
+<!-- Chat Thread Stream -->
+<div class="flex-1 py-5 flex flex-col gap-4 overflow-y-auto max-h-[460px] pr-2">
+<!-- Date Pill Divider -->
+<div class="flex items-center justify-center my-1">
+<span class="px-4 py-1 rounded-full bg-surface-container text-secondary font-label-code-sm text-label-code-sm font-semibold uppercase tracking-wider shadow-sm">
+              Today • 24 February 2026
+            </span>
+</div>
+<!-- Incoming Message (Student) -->
+<div class="flex flex-col items-start gap-1 max-w-[85%] sm:max-w-[70%]">
+<div class="flex items-center gap-2 pl-2">
+<span class="font-dg text-xs font-bold text-secondary">Gona Laxmi N.</span>
+<span class="font-label-code-sm text-label-code-sm text-outline">08:48 AM</span>
+</div>
+<div class="bg-surface-container-lowest text-on-surface rounded-2xl rounded-tl-sm px-4 py-2.5 shadow-sm">
+<p class="font-dg text-base font-semibold">Hiii sir</p>
+</div>
+</div>
+<!-- Incoming Message (Student) -->
+<div class="flex flex-col items-start gap-1 max-w-[85%] sm:max-w-[70%]">
+<div class="bg-surface-container-lowest text-on-surface rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm">
+<p class="font-dg text-base font-semibold leading-snug">
+                Sir, did you check the SBTET attendance portal update today? My metric in Lab slot has not synced since the biometric offline reset yesterday.
+              </p>
+</div>
+<span class="font-label-code-sm text-label-code-sm text-outline pl-2">08:49 AM • SBTET Sync Pending</span>
+</div>
+<!-- Outgoing Message (HOD Dr. Vamshi Krishna) -->
+<div class="flex flex-col items-end gap-1 self-end max-w-[88%] sm:max-w-[74%]">
+<div class="flex items-center gap-2 pr-2">
+<span class="font-dg text-xs font-bold text-primary">Dr. J. Vamshi Krishna (HOD)</span>
+<span class="font-label-code-sm text-label-code-sm text-outline">08:50 AM</span>
+</div>
+<div class="bg-primary text-on-primary rounded-2xl rounded-tr-sm px-4 py-3 shadow-sm">
+<p class="font-dg text-base font-medium leading-snug">
+                Yeah, attendance dropped to 27.78% deficit on system logs... need condonation sign-off from HOD Dr. Vamshi Krishna. Don't worry, submit the bonafide request in the portal right now and I will counter-sign from the departmental console.
+              </p>
+</div>
+<div class="flex items-center gap-1 text-primary pr-2">
+<span class="font-label-code-sm text-label-code-sm">Delivered</span>
+<span class="material-symbols-outlined text-[14px]">done_all</span>
+</div>
+</div>
+<!-- Embedded Interactive Card inside chat -->
+<div class="self-end w-full max-w-[92%] sm:max-w-[80%] my-1">
+<div class="bg-surface-container-lowest rounded-2xl p-4 shadow-sm flex flex-col gap-3">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-8 h-8 rounded-full bg-error-container text-on-error-container flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]">warning</span>
+</span>
+<div>
+<h4 class="font-dg text-lg font-black text-on-surface leading-tight">
+                      Bonafide / Condonation Application #SC-COND-041
+                    </h4>
+<p class="font-label-code-sm text-label-code-sm text-outline">
+                      PIN: 24259-CS-025 • KARNATI HIMESH • C-24 CURRICULUM
+                    </p>
+</div>
+</div>
+<span class="px-2.5 py-0.5 rounded-full bg-secondary-container text-primary font-dg text-xs font-black uppercase tracking-wider">
+                  Pending HOD Sign
+                </span>
+</div>
+<!-- Metrics inside card -->
+<div class="grid grid-cols-2 sm:grid-cols-3 gap-2 bg-surface-container-low rounded-xl p-3">
+<div class="flex flex-col">
+<span class="font-dg text-xs text-secondary font-bold">Recorded Biometric</span>
+<span class="font-label-code text-label-code font-bold text-error">38.64%</span>
+</div>
+<div class="flex flex-col">
+<span class="font-dg text-xs text-secondary font-bold">Regulatory Minimum</span>
+<span class="font-label-code text-label-code font-bold text-on-surface">65.00%</span>
+</div>
+<div class="flex flex-col col-span-2 sm:col-span-1">
+<span class="font-dg text-xs text-secondary font-bold">Medical Certificate</span>
+<span class="font-dg text-sm font-black text-primary flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">verified</span> Attached (PDF)
+                  </span>
+</div>
+</div>
+<!-- Action button inside chat -->
+<div class="flex flex-col sm:flex-row items-center justify-between gap-2 pt-1">
+<span class="font-label-code-sm text-label-code-sm text-outline">
+                  SBTET Statute 14-B Compliance Required
+                </span>
+<button class="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-full bg-primary text-on-primary font-dg text-sm font-black hover:bg-primary-container transition-colors shadow-sm" type="button">
+                  Review &amp; Sign Off in Console
+                  <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Message Input Dock -->
+<footer class="mt-3 pt-3">
+<form class="flex items-center gap-2 bg-surface-container-lowest rounded-full p-2 pl-4 shadow-sm" onsubmit="event.preventDefault();">
+<button class="w-8 h-8 rounded-full text-outline hover:text-on-surface flex items-center justify-center transition-colors" title="Attach Document / PDF" type="button">
+<span class="material-symbols-outlined text-[20px]">attach_file</span>
+</button>
+<button class="w-8 h-8 rounded-full text-outline hover:text-on-surface flex items-center justify-center transition-colors" title="Institutional Forms" type="button">
+<span class="material-symbols-outlined text-[20px]">description</span>
+</button>
+<!-- Pill Input -->
+<input class="flex-1 bg-transparent text-on-surface placeholder:text-outline font-dg text-base font-semibold px-2 py-1.5 focus:outline-none" placeholder="Type your message... (Press Enter to send)" type="text"/>
+<!-- Send Circular Pill Button -->
+<button class="w-10 h-10 rounded-full bg-primary text-on-primary flex items-center justify-center shadow-sm hover:bg-primary-container transition-all shrink-0" title="Send Message" type="submit">
+<span class="material-symbols-outlined text-[18px]">send</span>
+</button>
+</form>
+<div class="flex items-center justify-between px-4 pt-2">
+<span class="font-label-code-sm text-label-code-sm text-outline">
+              Press Enter ↵ to dispatch • Shift + Enter for new line
+            </span>
+<span class="font-label-code-sm text-label-code-sm text-primary font-semibold">
+              PIN Authorized: VAMSHI-CS-HOD
+            </span>
+</div>
+</footer>
+</section>
+</div>
+</div>
+</div></main>
+<!-- Institutional Branding Footer -->
+<footer class="w-full bg-[#f3efe6]/90 border-t border-emerald-900/10 mt-12 relative z-10"><div class="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 py-8"><div class="flex flex-col md:flex-row items-center justify-between gap-4 pb-6 border-b border-emerald-900/10"><div class="flex flex-col gap-1 text-center md:text-left"><div class="flex items-center justify-center md:justify-start gap-2"><span class="font-title-editorial text-2xl text-emerald-950 font-bold">Samskruti College of Engineering &amp; Technology</span><span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-dg text-sm font-bold">Code 259</span></div><p class="font-dg text-base text-stone-600 font-medium">Permanent SBTET &amp; AICTE Affiliation. Autonomous Campus Registry &amp; Academic Management Portal.</p></div><div class="flex flex-wrap items-center justify-center gap-2"><div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/90 border border-emerald-900/10 shadow-sm"><span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span><span class="font-dg text-sm text-on-surface font-bold">Biometric Sync Online</span></div><div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/90 border border-emerald-900/10 shadow-sm"><span class="material-symbols-outlined text-emerald-700 text-[16px]">verified</span><span class="font-dg text-sm text-on-surface font-bold">SBTET Verified Hub</span></div></div></div><div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-4 text-stone-600"><span class="font-dg text-base">© 2025 Samskruti College. PIN 24259-CS-025 Registry. All rights reserved.</span><div class="flex items-center gap-4"><a class="font-dg text-base font-semibold hover:text-emerald-800 transition-colors" href="#">Academic Regulations</a><a class="font-dg text-base font-semibold hover:text-emerald-800 transition-colors" href="#">Attendance Mandates</a><a class="font-dg text-base font-semibold hover:text-emerald-800 transition-colors" href="#">Campus Support</a></div></div></div></footer>
+</body></html>

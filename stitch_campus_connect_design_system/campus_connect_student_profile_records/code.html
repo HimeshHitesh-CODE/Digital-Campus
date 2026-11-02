@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Campus Connect - Student Profile &amp; Academic Records</title>
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind Custom Configuration -->
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            parchment: {
+              50: '#fdfbf7',
+              100: '#fcfaf6',
+              200: '#f5efe6',
+            },
+            emerald: {
+              DEFAULT: '#059669',
+              dark: '#047857',
+              deep: '#064e3b',
+              glow: '#10b981',
+            }
+          }
+        }
+      }
+    }
+  </script>
+<!-- Custom Styles for Glassmorphism & Pattern Background -->
+<style data-purpose="background-and-glass">
+    body {
+      background-color: #fcfaf6;
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(16, 185, 129, 0.08) 0%, transparent 45%),
+        radial-gradient(circle at 90% 80%, rgba(5, 150, 105, 0.07) 0%, transparent 50%),
+        radial-gradient(rgba(180, 160, 140, 0.18) 1.2px, transparent 1.2px);
+      background-size: 100% 100%, 100% 100%, 24px 24px;
+      background-attachment: fixed;
+    }
+
+    .glass-card {
+      background: rgba(255, 255, 255, 0.78);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.95);
+      box-shadow: 0 10px 30px -10px rgba(70, 60, 50, 0.06), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+    }
+
+    .glass-nav {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(220, 215, 205, 0.6);
+    }
+  </style>
+</head>
+<body class="font-sans text-stone-800 antialiased min-h-screen flex flex-col justify-between">
+<!-- BEGIN: TopHeader -->
+<header class="sticky top-0 z-50 glass-nav px-4 sm:px-8 py-3.5" data-purpose="top-navigation-bar">
+<div class="max-w-[1240px] mx-auto flex items-center justify-between">
+<!-- Institution Branding & Identification -->
+<div class="flex items-center space-x-3">
+<div>
+<h1 class="text-emerald-800 font-bold text-lg leading-tight tracking-tight">Samskruti College</h1>
+<p class="text-xs text-stone-500 font-medium">
+            Code: <span class="text-stone-700 font-semibold">259</span> • PIN: <span class="font-mono text-stone-700 font-semibold">24259-CS-025</span>
+</p>
+</div>
+</div>
+<!-- Center Logo / Emblem Pill -->
+<div class="w-12 h-12 rounded-full bg-white shadow-sm border border-stone-200/80 flex items-center justify-center font-bold text-emerald-700 text-lg tracking-wider" title="Campus Connect">
+        CC
+      </div>
+<!-- User Profile & Action Controls -->
+<div class="flex items-center space-x-3">
+<!-- Theme Toggle Button -->
+<button aria-label="Toggle theme" class="w-10 h-10 rounded-full bg-white border border-stone-200/80 flex items-center justify-center text-stone-600 hover:text-emerald-700 hover:border-emerald-300 transition-all shadow-sm" type="button">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"></path>
+</svg>
+</button>
+<!-- User Identity Chip Button -->
+<div class="flex items-center bg-white border border-stone-200/90 rounded-full pl-1.5 pr-4 py-1 shadow-sm space-x-2.5">
+<div class="w-8 h-8 rounded-full bg-emerald-800 text-white flex items-center justify-center font-bold text-xs">
+            KH
+          </div>
+<span class="text-xs font-bold tracking-wide text-stone-800">HIMESH</span>
+<svg class="w-4 h-4 text-stone-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+</div>
+</div>
+</header>
+<!-- END: TopHeader -->
+<!-- BEGIN: MainContent -->
+<main class="max-w-[1240px] mx-auto px-4 sm:px-6 w-full py-8 space-y-6 flex-grow">
+<!-- BEGIN: TitleHeaderRow -->
+<div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4" data-purpose="page-title-section">
+<div>
+<h2 class="text-2xl sm:text-3xl font-extrabold text-[#1c1917] tracking-tight">Student Profile &amp; Academic Records</h2>
+<p class="text-sm sm:text-base text-stone-500 font-medium mt-0.5">Samskruti College of Engineering &amp; Technology (Institution Code: 259)</p>
+</div>
+<!-- Edit Contact Info Trigger Button -->
+<div>
+<button class="inline-flex items-center space-x-2 bg-white/90 hover:bg-white text-stone-800 border border-stone-200/90 rounded-full px-5 py-2.5 shadow-sm text-sm font-semibold hover:shadow transition-all" type="button">
+<svg class="w-4 h-4 text-rose-500" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span>Edit Contact Info</span>
+</button>
+</div>
+</div>
+<!-- END: TitleHeaderRow -->
+<!-- BEGIN: StudentIdentityHeroCard -->
+<section class="glass-card rounded-[32px] p-6 sm:p-8" data-purpose="student-identity-hero">
+<div class="flex flex-col md:flex-row items-start md:items-center gap-6">
+<!-- Large Avatar Squircle/Circle -->
+<div class="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-[#f4ebe1] border-4 border-emerald-500/30 flex items-center justify-center shrink-0 shadow-inner">
+<span class="text-3xl sm:text-4xl font-extrabold text-[#872e1e] tracking-tight">KH</span>
+</div>
+<!-- Student Meta and Name -->
+<div class="space-y-3 flex-1">
+<div>
+<h3 class="text-2xl sm:text-3xl font-black text-stone-900 tracking-tight">KARNATI HIMESH</h3>
+<p class="text-stone-500 text-sm sm:text-base font-medium mt-0.5">
+              Computer Science &amp; Engineering (CS) • Samskruti College (259)
+            </p>
+</div>
+<!-- Status and Info Pills -->
+<div class="flex flex-wrap items-center gap-2.5 pt-1">
+<span class="px-4 py-1.5 rounded-full text-xs font-semibold bg-rose-50/80 border border-rose-200 text-rose-800 font-mono">
+              PIN: 24259-CS-025
+            </span>
+<span class="px-4 py-1.5 rounded-full text-xs font-semibold bg-emerald-50 border border-emerald-300 text-emerald-800 flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              Active Enrolled
+            </span>
+<span class="px-4 py-1.5 rounded-full text-xs font-semibold bg-orange-50/70 border border-orange-200 text-amber-900">
+              Scheme: <span class="font-bold text-rose-700">C-24</span>
+</span>
+</div>
+</div>
+</div>
+</section>
+<!-- END: StudentIdentityHeroCard -->
+<!-- BEGIN: DetailsGrid -->
+<section class="grid grid-cols-1 lg:grid-cols-12 gap-6" data-purpose="academic-and-contact-details">
+<!-- Academic Details Card -->
+<div class="lg:col-span-6 glass-card rounded-[28px] p-6 sm:p-7 flex flex-col justify-between">
+<div>
+<!-- Header with Institutional Lock Badge -->
+<div class="flex items-center justify-between border-b border-stone-100 pb-4 mb-4">
+<h4 class="text-lg font-bold text-stone-900">Academic Details</h4>
+<span class="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-orange-50 border border-orange-200 text-amber-800">
+<span>🔒</span>
+<span>Institutional Lock</span>
+</span>
+</div>
+<!-- Structured Rows -->
+<dl class="space-y-4 text-sm divide-y divide-stone-100/70">
+<div class="flex justify-between items-center pt-2">
+<dt class="text-stone-500 font-medium">Curriculum Scheme</dt>
+<dd class="font-bold text-stone-900">C–24</dd>
+</div>
+<div class="flex justify-between items-center pt-3">
+<dt class="text-stone-500 font-medium">Branch / Department</dt>
+<dd class="font-bold text-stone-900 text-right">Computer Science &amp; Engineering (CS)</dd>
+</div>
+<div class="flex justify-between items-center pt-3">
+<dt class="text-stone-500 font-medium">Diploma Roll PIN</dt>
+<dd class="font-mono font-bold text-stone-900">24259 - CS - 025</dd>
+</div>
+<div class="flex justify-between items-center pt-3">
+<dt class="text-stone-500 font-medium">Ongoing Semester</dt>
+<dd class="font-bold text-stone-900">Semester V (3rd Year • 5th Sem)</dd>
+</div>
+<div class="flex justify-between items-center pt-3">
+<dt class="text-stone-500 font-medium">Admission Batch</dt>
+<dd class="font-bold text-stone-900 font-mono">2024 – 2027</dd>
+</div>
+<div class="flex justify-between items-center pt-3">
+<dt class="text-stone-500 font-medium">Institution</dt>
+<dd class="font-bold text-stone-900 text-right">Samskruti College of Engg &amp; Tech (259)</dd>
+</div>
+</dl>
+</div>
+</div>
+<!-- Contact & Security Card -->
+<div class="lg:col-span-6 glass-card rounded-[28px] p-6 sm:p-7 flex flex-col justify-between">
+<div>
+<!-- Header with Verified Session Pill -->
+<div class="flex items-center justify-between border-b border-stone-100 pb-4 mb-4">
+<h4 class="text-lg font-bold text-stone-900">Contact &amp; Security</h4>
+<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 border border-emerald-300 text-emerald-800">
+              Verified Session
+            </span>
+</div>
+<!-- Structured Rows -->
+<dl class="space-y-4 text-sm divide-y divide-stone-100/70">
+<div class="flex justify-between items-center pt-2">
+<dt class="text-stone-500 font-medium">Institutional Email</dt>
+<dd class="font-semibold text-stone-900 text-right hover:text-emerald-700 transition">himesh.k@samskruti.ac.in</dd>
+</div>
+<div class="flex justify-between items-center pt-3">
+<dt class="text-stone-500 font-medium">Registered Student Mobile</dt>
+<dd class="font-mono font-bold text-stone-900">+91 98765 43239</dd>
+</div>
+<div class="flex justify-between items-center pt-3">
+<dt class="text-stone-500 font-medium">Emergency Parent Contact</dt>
+<dd class="font-mono font-bold text-stone-900">+91 98765 43299</dd>
+</div>
+<div class="flex justify-between items-center pt-3">
+<dt class="text-stone-500 font-medium">Active Session State</dt>
+<dd class="font-bold text-emerald-700 flex items-center space-x-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+<span>Verified (JWT Bearer)</span>
+</dd>
+</div>
+<div class="flex justify-between items-center pt-3">
+<dt class="text-stone-500 font-medium">Anti-Spoofing Security Key</dt>
+<dd class="font-mono text-xs font-bold px-2 py-1 rounded-md bg-stone-100 text-stone-600 border border-stone-200">
+                STD-3472C6
+              </dd>
+</div>
+</dl>
+</div>
+<!-- Full-Width Bottom Pill Button -->
+<div class="pt-6">
+<button class="w-full py-3 px-4 rounded-full border border-stone-200 hover:border-emerald-400 bg-white hover:bg-emerald-50/40 text-stone-800 hover:text-emerald-800 text-sm font-semibold transition-all shadow-sm flex items-center justify-center space-x-2" type="button">
+<svg class="w-4 h-4 text-emerald-700" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span>Update Contact Phone Numbers</span>
+</button>
+</div>
+</div>
+</section>
+<!-- END: DetailsGrid -->
+<!-- BEGIN: CurricularEnrolmentSection -->
+<section class="glass-card rounded-[28px] p-6 sm:p-7" data-purpose="curricular-enrolment-table">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between pb-5 border-b border-stone-100 gap-2">
+<div>
+<h4 class="text-lg font-bold text-stone-900">Enrolled Curricular Units — Semester V</h4>
+<p class="text-xs text-stone-500 font-medium">State Board of Technical Education &amp; Training (SBTET) C-24 Syllabus</p>
+</div>
+<div class="flex items-center space-x-2">
+<span class="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200">
+            Total Credits: 22.0
+          </span>
+<span class="px-3 py-1 rounded-full text-xs font-semibold bg-stone-100 text-stone-700">
+            Term Attendance: 88.4%
+          </span>
+</div>
+</div>
+<!-- Courses Table -->
+<div class="mt-4 overflow-x-auto">
+<table class="w-full text-left text-sm">
+<thead>
+<tr class="bg-stone-100/70 text-stone-600 rounded-2xl text-xs font-bold uppercase tracking-wider">
+<th class="py-3 px-4 rounded-l-2xl" scope="col">Course Code</th>
+<th class="py-3 px-4" scope="col">Subject Title</th>
+<th class="py-3 px-4 text-center" scope="col">Type</th>
+<th class="py-3 px-4 text-center" scope="col">Credits</th>
+<th class="py-3 px-4 rounded-r-2xl text-right" scope="col">Biometric Eligibility</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-stone-100">
+<tr>
+<td class="py-3.5 px-4 font-mono font-bold text-stone-900 text-xs">CS-501</td>
+<td class="py-3.5 px-4 font-semibold text-stone-800">Advanced Java &amp; Cloud Computing</td>
+<td class="py-3.5 px-4 text-center"><span class="px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-stone-100 text-stone-700">Theory</span></td>
+<td class="py-3.5 px-4 text-center font-semibold text-stone-700">4.0</td>
+<td class="py-3.5 px-4 text-right">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
+                  Eligible (91%)
+                </span>
+</td>
+</tr>
+<tr>
+<td class="py-3.5 px-4 font-mono font-bold text-stone-900 text-xs">CS-502</td>
+<td class="py-3.5 px-4 font-semibold text-stone-800">Software Engineering &amp; Agile Practices</td>
+<td class="py-3.5 px-4 text-center"><span class="px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-stone-100 text-stone-700">Theory</span></td>
+<td class="py-3.5 px-4 text-center font-semibold text-stone-700">4.0</td>
+<td class="py-3.5 px-4 text-right">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
+                  Eligible (86%)
+                </span>
+</td>
+</tr>
+<tr>
+<td class="py-3.5 px-4 font-mono font-bold text-stone-900 text-xs">CS-503</td>
+<td class="py-3.5 px-4 font-semibold text-stone-800">Computer Networks &amp; Cyber Security</td>
+<td class="py-3.5 px-4 text-center"><span class="px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-stone-100 text-stone-700">Theory</span></td>
+<td class="py-3.5 px-4 text-center font-semibold text-stone-700">4.0</td>
+<td class="py-3.5 px-4 text-right">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
+                  Eligible (89%)
+                </span>
+</td>
+</tr>
+<tr>
+<td class="py-3.5 px-4 font-mono font-bold text-stone-900 text-xs">CS-508</td>
+<td class="py-3.5 px-4 font-semibold text-stone-800">Web Technologies &amp; Frameworks Lab</td>
+<td class="py-3.5 px-4 text-center"><span class="px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-amber-50 text-amber-800 border border-amber-200">Practical</span></td>
+<td class="py-3.5 px-4 text-center font-semibold text-stone-700">3.0</td>
+<td class="py-3.5 px-4 text-right">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
+                  Eligible (94%)
+                </span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<!-- END: CurricularEnrolmentSection -->
+</main>
+<!-- END: MainContent -->
+<!-- BEGIN: InstitutionalFooter -->
+<footer class="mt-8 border-t border-stone-200/70 bg-white/60 py-5 px-4" data-purpose="institutional-status-footer">
+<div class="max-w-[1240px] mx-auto flex flex-col sm:flex-row items-center justify-between text-xs text-stone-500 gap-3">
+<div class="flex items-center space-x-2">
+<span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+<span class="font-medium">Campus Connect Portal • Samskruti College of Engineering &amp; Technology (259)</span>
+</div>
+<div class="flex items-center space-x-3">
+<span class="px-3 py-1 rounded-full bg-stone-100 font-semibold text-stone-600 border border-stone-200">
+          Biometric Sync Online
+        </span>
+<span class="px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 font-semibold">
+          SBTET Verified Hub
+        </span>
+</div>
+</div>
+</footer>
+<!-- END: InstitutionalFooter -->
+</body></html>

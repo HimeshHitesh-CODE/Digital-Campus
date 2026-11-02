@@ -1,0 +1,129 @@
+<USER_REQUEST>
+# ROLE & OBJECTIVE
+You are a Principal Full-Stack Architect and UI/UX Systems Engineer. We are conducting the final comprehensive debugging, logic-hardening, and UI polish across our entire **Campus Connect** platform (Login/Onboarding, Student Portal, CS HOD Console, and AIML HOD Console).
+
+Execute the following **8 Sequential Phases** with 100% precision. Every single item below is a strict requirement. Do not skip any detail, and ensure zero regressions across the application.
+
+---
+
+# PHASE 1: Login Page Cleanup, Mandatory First-Time Password Setup & Global Navbar Theme
+1. **Login Page UI Cleanup (`Student Login` & `HOD Executive Login`):**
+   - **Remove Top Toolbar:** Completely remove the top header/toolbar from the Login screen so the glassmorphic Login card sits cleanly centered on the warm parchment canvas.
+   - **Remove Pre-Filled & Example Values:** Remove all pre-filled input values (such as `value="24259-CS-025"`) and remove all example strings from labels, placeholders, and onboarding callouts (remove `(e.g., 24259-CS-025)`, `(e.g., VAMSHI-CS-HOD)`, and `(STD-3472C6)`). Leave all inputs completely blank with clean placeholders (`"Enter Student PIN"`, `"Enter Password"`, `"Enter Unique Security Key"`).
+2. **Reset Login Status & Mandatory First-Time Password Creation:**
+   - Reset the activation status of all students (`24259-CS-001`..`180` and `24259-AIML-001`..`120`) to `PRE-ALLOCATED` (unactivated).
+   - Enforce a strict **First-Time Onboarding Flow**: Every student MUST first enter their **Student PIN** + their HOD-assigned **Unique Anti-Spoofing Security Key (`STD-XXXXXX`)** and **create their own new password** (with Confirm Password) before they can log into the Student Dashboard. Once activated, their status in the HOD's `Roster` tab updates in real time to `VERIFIED & ACTIVE`.
+3. **Top-Right Profile Dropdown & Navigation Bar / Pill Theme Integration:**
+   - **Remove Campus Helpdesk from Dropdown:** In the top-right user profile dropdown menu, remove the `"Campus Helpdesk"` item.
+   - **Theme the Navigation Bar / Floating Pill:** Style the navigation bar / floating dynamic island pill to match our **Luminous Emerald & Warm Parchment** theme (`rgba(255, 255, 255, 0.90)` frosted backdrop, `1px solid rgba(16, 185, 129, 0.24)` border, volumetric emerald shadow, active tab pill in `linear-gradient(135deg, #003519 0%, #047857 100%)` with white bold text and a pulsing mint dot, and inactive tabs with smooth `#ecfdf5` hover transitions).
+
+---
+
+# PHASE 2: Strict Role & Department Isolation (CS HOD vs AIML HOD vs Student) & Message Routing Fix
+1. **Fix HOD Identities (Dr. J. Vamshi Krishna for CS vs Prof. Padma for AIML):**
+   - **CS HOD Login (`VAMSHI-CS-HOD`):** Display **Dr. J. Vamshi Krishna** (`VK` avatar initials, top-right profile chip `VAMSHI`, `Official HOD • Computer Science & Engineering`).
+   - **AIML HOD Login (`PADMA-AIML-HOD` / `AIML-HOD`):** Display **Prof. Padma** (`PA` avatar initials, top-right profile chip `PADMA`, `Official HOD • Artificial Intelligence & Machine Learning`). **Remove "Professor Ramesh" completely from the codebase.**
+2. **Strict Department Isolation (Zero Cross-Branch Leakage):**
+   - When **AIML HOD (Prof. Padma)** logs in, lock all 5 HOD tabs (`Console`, `Approvals`, `Roster`, `Students`, `Messages`) strictly to **AIML Department only (120 Students: `24259-AIML-001` to `24259-AIML-120`)**. She must NEVER see any CS students (`24259-CS-XXX`), CS certificate requests, CS security keys, or CS student messages.
+   - When **CS HOD (Dr. J. Vamshi Krishna)** logs in, lock all 5 HOD tabs strictly to **CS Department only (180 Students: `24259-CS-001` to `24259-CS-180`)**. He must NEVER see any AIML students, AIML requests, AIML security keys, or AIML student messages.
+   - Remove the `CS Dept / AIML Dept` switcher buttons inside the HOD Console/Roster/Students tabs so each HOD only manages their own department.
+3. **CRITICAL BUG FIX — Separate Student Messages from HOD Messages:**
+   - Currently, clicking `Messages` in the Student Portal redirects to the HOD Message Portal, and clicking `Messages` in the HOD Portal redirects to the Student Message Portal.
+   - **Fix the router and view state immediately:**
+     * Student `Messages` tab MUST stay inside the **Student Environment**, bound to the logged-in Student's PIN and Name, showing only that student's peer chats, marketplace chats, and chat with their own branch HOD.
+     * HOD `Messages` tab MUST stay inside the **HOD Environment**, bound to the logged-in HOD (`Dr. J. Vamshi Krishna` for CS or `Prof. Padma` for AIML), showing only message threads from students belonging to that HOD's specific branch.
+
+---
+
+# PHASE 3: Student Home Dashboard Cleanup & Live SBTET Links
+1. **Hero Section Cleanup:**
+   - Inside the green rounded Hero Banner on the Student Home page, **remove the right-side campus photo card** and **remove the text `"Block-B Engineering Wing"` / `"Central Campus Grounds"`**. Expand the welcome typography cleanly across the hero card.
+2. **Live Notice Board via `https://sbtetconnect.app/`:**
+   - Populate the `Notice Board` dynamically by fetching live circulars, exam notifications, and updates from `https://sbtetconnect.app/` / official SBTET feeds.
+3. **Student Helpdesk Redirect to Official SBTET Contact Page:**
+   - In the `Student Helpdesk` card at the bottom-right of the Home page, wire the `"Schedule Appointment"` button so clicking it opens the official SBTET Telangana Contact Us page (`https://www.sbtet.telangana.gov.in/index.html#!/index/ContactUs`) in a new tab (`target="_blank" rel="noopener noreferrer"`).
+
+---
+
+# PHASE 4: Student Attendance & Marks Portals (Live `sbtetconnect.app` Data, Animated Graphs & Isolated Print)
+1. **Student Attendance Portal Fixes:**
+   - **Correct Semester Display:** Dynamically display the student's **actual current semester** fetched from `https://sbtetconnect.app/` (fix the wrong hardcoded semester badge across the header, hero, and attendance page).
+   - **Remove Buttons & Sections:**
+     * Remove the `"File Medical Appeal"` / `"Submit Medical Excuse"` buttons.
+     * Remove the entire `"Institutional Registry — Subject-Wise Biometric Audit & Condonability"` table section.
+     * Remove the entire bottom `"Discrepancy Rectification Desk — Biometric Grievance Helpdesk & SBTET Appeals"` banner.
+   - **Live Attendance Data, Animated Graph & Live Calendar:**
+     * Fetch and display the student's true attendance %, present days, absent days, and working days in real time from `https://sbtetconnect.app/`.
+     * Add smooth entry and path-drawing animations to the Circular SVG Gauge and the `Semester Trajectory & Cutoff Boundary` SVG line chart.
+     * Make the `Monthly Registry Calendar` 100% live and accurate: align dates with the real days of the week (`M T W T F S S`), highlight the real current date (`Today`), and make all month pills (`Jun`, `Jul`, `Aug`, `Sep`, `Oct`, `Nov`, etc.) switch live to show accurate daily attendance statuses and monthly summary counts.
+2. **Student Marks & Results Portal Fixes:**
+   - **True Semester Progression & Marks:** Fetch and display the student's **true SGPA for each semester, CGPA, secured credits, active backlogs, and subject-wise marks** from `https://sbtetconnect.app/`. Fix the `Semester Progression (SGPA Trajectory)` pills and semester tabs (`1st Sem`, `2nd Sem`, `3rd Sem`, etc.) so every semester displays its real SGPA and real subjects.
+   - **Isolated Memo Printing (Only Print the Marks Memo Sheet):**
+     * When clicking `"Download Consolidated Memo"` or `"Print Memo"`, do NOT print the entire website chrome. Use a dedicated `@media print` rule or isolated print template that **prints ONLY the Student Summary Header + Official Semester Subject Marks Table & Signature Seal** on a clean A4 sheet.
+   - **Re-Evaluation Official Redirect:**
+     * Wire the `"Apply for Recounting"` / `"Apply for Re-evaluation"` button at the bottom of the Marks page to redirect to the official SBTET portal (`https://www.sbtet.telangana.gov.in/` / `https://sbtetconnect.app/`).
+
+---
+
+# PHASE 5: Real-Time Document Requests & Bidirectional HOD Approval/Comment System
+1. **Student Certificate Request Form Upgrades:**
+   - **Document Type & Custom Input:** In `Document Type`, allow selecting standard certificates OR `"Custom / Other Request"` where the student can type their exact custom request title and details.
+   - **Add Residential Address Field:** Add a required `"Residential / Permanent Address"` input field.
+   - **Add Parent / Guardian Mobile Number Field:** Add a required `"Parent / Guardian Contact Number"` (`+91 XXXXXXXXXX`) input field so it is sent directly to the HOD with the request.
+   - **Remove Urgent Toggle & OTP System:**
+     * Remove the `"Urgent Processing Priority"` toggle box completely.
+     * **Remove the entire OTP system** (`Institutional Counter Pickup OTP` / `5 8 4 3 8 6` box) from both the Student and HOD sides.
+     * Remove the hardcoded `"State Bus Pass Recommendation Memo"` and archived dummy cards so only real student requests are shown.
+2. **Real-Time Status, Bidirectional Comments & Request Deletion:**
+   - Show the live request count in the queue and live status badge (`PENDING HOD SIGN-OFF`, `APPROVED BY HOD`, or `REJECTED BY HOD`).
+   - **Real-Time Comment Thread on Every Request:**
+     * When the HOD approves or rejects a request (or while it is pending), the HOD can write a **Comment / Remark** (explaining why it was approved/rejected or when to collect it).
+     * The Student can also **reply/comment** on the request card in real time!
+   - **Delete / Withdraw Request Button:** Add a `"Remove / Withdraw Request"` button on the student's request card so the student can delete their request, immediately removing it from both the Student list and the HOD's approval queue in real time.
+
+---
+
+# PHASE 6: Idea Hub & Marketplace Real-Time Upgrades
+1. **Idea Hub Fixes & Real-Time Inbox Notifications:**
+   - **Remove Unwanted Buttons & Tiles:**
+     * Remove the `"Sync GitHub / Portfolio"` button from the top header.
+     * Remove the 3 Bento Metric tiles (`34 Squads`, `8 Branches`, `12 Finalists`).
+     * Remove the bottom `"Flagship Collegiate Challenge — SBTET State Hackathon 2025"` banner.
+   - **Fix Green Banner Button Alignment:** In the green Student Profile Highlight Banner (`Karnati Himesh`), fix the flex/grid layout of the `"Available for Projects"` pill, `"Ready"` toggle switch, `Squads | Invites | Response` counters, and `Published Skills` row so all pills and buttons are 100% aligned horizontally and vertically with zero overlap.
+   - **Real-Time Online Filter (Hide Offline Peers):** Track online presence in real time and **only display peers who are currently Online** in the Idea Hub peer directory (hide offline users).
+   - **Fix `"Invite Sent"` Button UI & Real-Time Accept/Decline Inbox Notification:**
+     * Style the `"Invite Sent ✓"` button cleanly (`rounded-full bg-emerald-50 text-emerald-800 border border-emerald-300 font-bold px-5 py-2.5 shadow-xs`).
+     * When Student A sends a project invite to Student B, Student B receives it in real time with **Accept** and **Decline** buttons.
+     * When Student B clicks **Accept** or **Decline**, automatically dispatch a **real-time message into Student A's `Messages` Inbox** (under the `Idea Hub` category) notifying them: `"{Student B Name} ({PIN}) has ACCEPTED / DECLINED your Idea Hub project invitation."`
+2. **Marketplace Real-Time Buy/Sell & Accurate Student Details:**
+   - **Remove Badge:** Remove the `"Campus Verifier On"` badge from the search/filter bar.
+   - **Fix Seller Details:** Ensure all marketplace items display valid, accurate `CS` / `AIML` student names, PINs (`24259-CS-XXX` or `24259-AIML-XXX`), and branches from our real student registry.
+   - **Real-Time Buy, Sell & DM Seller:**
+     * Any student can list an item (`+ Sell an Item`), buy/request an item, or mark their listed item as Sold/Removed in real time.
+     * Clicking `"DM Seller"` opens/creates a real-time chat thread with that seller in the Student `Messages` section, automatically tagged and sorted under the **`Marketplace`** filter tab.
+
+---
+
+# PHASE 7: HOD Console, Roster & Master Students Table Overhaul (CS & AIML)
+1. **Reset Initial Sync Counters to Zero (No Hardcoded `6%` or `12 / 180`):**
+   - On both the CS HOD (`180 students`) and AIML HOD (`120 students`) consoles, **remove the hardcoded default numbers** (`Syncing: 6%`, `Processed 12 / 180`, `Currently fetching PIN: 24259-CS-012`, `36.8%`, `2.2%`, `4 / 180`).
+   - Initialize the sync state cleanly from **0** (`0%`, `Processed 0 / 180` for CS or `Processed 0 / 120` for AIML).
+   - When the HOD triggers Live Sync (or per-row Sync), count up live from `0` as each student's record is fetched from `https://sbtetconnect.app/` (`24259-CS-001`..`180` for CS HOD; `24259-AIML-001`..`120` for AIML HOD), and compute all KPI cards (`Dept Avg Attendance`, `Exam Clearance Rate`, `Eligible ≥75%`, `Warning 65–74.9%`, `Critical <65%`, `Students With Backlogs`) dynamically from the true synced records.
+2. **Fix the `ACTIONS` Column UI & Continuous Scroll in HOD `Students` Tab:**
+   - Remove the `1 2 3 ... 12` pagination bar so all 180 CS students (for CS HOD) or 120 AIML students (for AIML HOD) render in a **continuous smooth-scroll table** (`max-h-[680px] overflow-y-auto`) with a sticky header.
+   - **Fix the right-side column clipping:** Adjust column widths and padding so the `BACKLOGS` pill, `LAST SYNCED` timestamp, and the **`ACTIONS` column (`🔄 Sync` button)** are 100% visible, aligned, and never cut off on the right edge.
+   - Clicking any student's backlog badge opens their **Backlog Dossier** drawer/modal showing the exact backlog Subject Codes, Subject Names, Semester, Internal, External, Total Marks, and Grade fetched from `https://sbtetconnect.app/`.
+
+---
+
+# PHASE 8: Global High-DPI Crispness, Micro-Animations & Final Zero-Bug QA
+1. **High-DPI Visual Sharpness & Zero Overlap:**
+   - Apply crisp font-smoothing (`antialiased`), high-DPI SVG/canvas rendering, and proper flex/grid wrapping across all pages so there is zero text overlapping, zero clipped tables, and zero misaligned buttons.
+2. **Universal Micro-Animations & Hover Reflexes:**
+   - Add smooth entrance animations (`fade-in`, `slide-in-from-bottom-2`), card hover elevation lifts (`hover:-translate-y-1 transition-all duration-300`), button press reflexes (`active:scale-[0.97]`), and animated progress bars across every single screen.
+3. **Final End-to-End Verification:**
+   - Test Login -> First-Time Key Activation -> Student Portal (Home, Attendance, Marks, Idea Hub, Marketplace, Requests, Student Messages) -> CS HOD Portal -> AIML HOD Portal (Prof. Padma) to verify 100% real-time synchronization and zero bugs.
+</USER_REQUEST>
+<ADDITIONAL_METADATA>
+The current local time is: 2026-11-02T23:35:46+05:30.
+</ADDITIONAL_METADATA>

@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>HOD Executive Console - Samskruti College</title>
+<!-- Google Fonts: Darker Grotesque, Plus Jakarta Sans, IBM Plex Mono / JetBrains Mono -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Darker+Grotesque:wght@400;500;600;700;800;900&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=IBM+Plex+Mono:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS v3 -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: {
+          dg: ['"Darker Grotesque"', 'sans-serif'],
+          sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          mono: ['"IBM Plex Mono"', 'monospace'],
+        },
+        colors: {
+          parchment: '#f5f3eb',
+          'primary-dark': '#0f291e',
+          'primary-forest': '#003519',
+          'emerald-brand': '#00875a',
+          'emerald-surface': '#dff0e6',
+          'border-soft': 'rgba(15, 41, 30, 0.08)',
+          'surface-card': '#ffffff',
+          'surface-tile': '#fbfaf6',
+        }
+      }
+    }
+  }
+</script>
+<style>
+  body {
+    background-color: #edf2ed;
+    background-image: 
+      radial-gradient(at 15% 12%, rgba(0, 135, 90, 0.12) 0px, transparent 45%),
+      radial-gradient(at 85% 18%, rgba(2, 66, 39, 0.10) 0px, transparent 50%),
+      radial-gradient(at 50% 88%, rgba(0, 53, 25, 0.08) 0px, transparent 55%);
+    min-height: 100vh;
+  }
+  .dot-matrix-bg {
+    background-image: radial-gradient(rgba(0, 53, 25, 0.1) 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+  .tactile-sheet {
+    background: #ffffff;
+    box-shadow: 0 16px 40px -8px rgba(15, 41, 30, 0.07), 0 4px 12px -2px rgba(15, 41, 30, 0.04);
+    border: 1px solid rgba(15, 41, 30, 0.07);
+  }
+  .tactile-tile {
+    background: #ffffff;
+    border: 1px solid rgba(15, 41, 30, 0.07);
+    box-shadow: 0 4px 14px -3px rgba(15, 41, 30, 0.04);
+    transition: all 0.2s ease;
+  }
+  .tactile-tile:hover {
+    box-shadow: 0 8px 20px -4px rgba(15, 41, 30, 0.08);
+    border-color: rgba(0, 135, 90, 0.22);
+  }
+</style>
+</head>
+<body class="text-slate-800 font-sans antialiased relative min-h-screen selection:bg-emerald-800 selection:text-white pb-12">
+<!-- Background decorative glows & dot grid -->
+<div class="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
+<div class="absolute -top-[15%] -left-[10%] w-[680px] h-[680px] rounded-full bg-emerald-200/40 blur-[130px]"></div>
+<div class="absolute top-[35%] -right-[15%] w-[720px] h-[720px] rounded-full bg-teal-200/35 blur-[150px]"></div>
+<div class="absolute -bottom-[20%] left-[20%] w-[640px] h-[640px] rounded-full bg-emerald-100/40 blur-[140px]"></div>
+<div class="absolute inset-0 dot-matrix-bg opacity-35"></div>
+</div>
+<div class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+<!-- 1. TOP INSTITUTIONAL HEADER RIBBON -->
+<header class="tactile-sheet rounded-[36px] px-7 sm:px-9 py-5 flex flex-col lg:flex-row lg:items-center justify-between gap-5 border border-primary-forest/10">
+<div class="flex flex-col gap-1.5">
+<div class="flex flex-wrap items-center gap-2">
+<span class="inline-flex items-center gap-1.5 px-3.5 py-0.5 rounded-full bg-[#e3efe8] text-[#003519] font-dg text-xs sm:text-[13px] font-bold tracking-wider uppercase">
+<span class="w-2 h-2 rounded-full bg-[#00875a] animate-pulse"></span>
+            DEPARTMENT OF COMPUTER SCIENCE &amp; ENGINEERING
+          </span>
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 font-mono text-[11px] font-semibold">
+            NODE 259:REGISTRY-HOD
+          </span>
+</div>
+<h1 class="font-dg text-3xl sm:text-[40px] leading-[42px] font-extrabold text-[#003519] tracking-tight">
+          CS Master Students Info &amp; Dossier
+        </h1>
+<p class="font-dg text-sm sm:text-[15px] text-stone-600 font-medium">
+          Samskruti College (Code: 259) • <span class="font-bold text-slate-900">DR. J. VAMSHI KRISHNA</span> (<span class="font-mono text-xs">PIN: VAMSHI-CS-HOD</span>) • Scheme: C-24 Ledger
+        </p>
+</div>
+<div class="flex flex-wrap items-center gap-2.5 self-start lg:self-center shrink-0">
+<div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#f2f7f4] border border-[#003519]/10 text-[#003519] font-mono text-xs font-semibold shadow-xs">
+<span class="w-2 h-2 rounded-full bg-emerald-600 animate-ping"></span>
+          Live Sync: Ready
+        </div>
+<div class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-[#003519] text-white shadow-sm font-dg text-xs sm:text-[13px] font-bold uppercase tracking-wider">
+<span class="material-symbols-outlined text-[16px]">groups</span>
+          180 Enrolled
+        </div>
+<div class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#eef3f0] text-slate-700 font-mono text-xs font-semibold border border-black/5">
+<span class="material-symbols-outlined text-[16px] text-[#00875a]">verified</span>
+          SBTET C-24
+        </div>
+</div>
+</header>
+<!-- 2. MAIN ELEVATED CONTENT SHEET CONTAINER -->
+<main class="tactile-sheet rounded-[36px] p-6 sm:p-8 space-y-6">
+<!-- Control / Subheader Strip inside sheet -->
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 p-4 sm:p-5 rounded-[26px] bg-[#f7f9f7] border border-[#003519]/5">
+<div class="flex items-center gap-3.5">
+<div class="w-11 h-11 rounded-2xl bg-[#003519] text-emerald-200 flex items-center justify-center font-bold shadow-sm">
+<span class="material-symbols-outlined text-2xl">account_balance</span>
+</div>
+<div>
+<h2 class="font-dg text-2xl font-black text-slate-900 leading-tight">Centralized Biometric Attendance Ledger</h2>
+<p class="font-dg text-sm text-stone-600 font-medium">Risk analytics &amp; real-time backlog adjudication console for Batch 2024–25</p>
+</div>
+</div>
+<div class="flex flex-wrap items-center gap-2">
+<!-- Department filter pills -->
+<div class="inline-flex p-1 rounded-full bg-white border border-[#003519]/10 shadow-xs gap-1">
+<button class="px-4 py-1.5 rounded-full bg-[#003519] text-white font-dg text-xs font-bold uppercase tracking-wide flex items-center gap-1.5 shadow-xs" type="button">
+<span class="material-symbols-outlined text-[15px]">computer</span> CS Dept (180)
+            </button>
+<button class="px-4 py-1.5 rounded-full bg-transparent text-slate-600 hover:text-slate-900 font-dg text-xs font-bold tracking-wide flex items-center gap-1.5 transition" type="button">
+<span class="material-symbols-outlined text-[15px]">smart_toy</span> AIML Dept (120)
+            </button>
+</div>
+<button class="px-4 py-1.5 rounded-full bg-[#00875a] text-white font-dg text-xs font-bold uppercase tracking-wide hover:bg-[#00704a] shadow-xs flex items-center gap-1.5 transition" type="button">
+<span class="material-symbols-outlined text-[15px]">bolt</span> Live Sync
+          </button>
+<button class="px-3.5 py-1.5 rounded-full bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 font-dg text-xs font-bold uppercase tracking-wide flex items-center gap-1.5 transition" type="button">
+<span class="material-symbols-outlined text-[15px]">file_download</span> CSV
+          </button>
+<button class="px-3.5 py-1.5 rounded-full bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 font-dg text-xs font-bold uppercase tracking-wide flex items-center gap-1.5 transition" type="button">
+<span class="material-symbols-outlined text-[15px]">description</span> PDF
+          </button>
+</div>
+</div>
+<!-- 6-Card KPI Bento Grid of tactile tiles (rounded-[24px]) -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+<!-- Card 1: Total Intake -->
+<div class="tactile-tile rounded-[24px] p-5 flex flex-col justify-between">
+<div class="flex items-start justify-between">
+<span class="font-dg text-[13px] font-bold uppercase tracking-wider text-slate-500">Total Allocated CS Intake</span>
+<span class="w-8 h-8 rounded-full bg-[#e3efe8] text-[#003519] flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]">group</span>
+</span>
+</div>
+<div class="my-3">
+<span class="font-dg text-5xl font-black text-[#003519] leading-none">180</span>
+</div>
+<div class="flex items-center justify-between font-dg text-xs text-slate-500 pt-3 border-t border-slate-100">
+<span>Diploma C-24 Computer Science</span>
+<span class="px-2.5 py-0.5 rounded-full bg-[#dff0e6] text-[#003519] font-mono text-[11px] font-bold">100% Filled</span>
+</div>
+</div>
+<!-- Card 2: Avg Attendance -->
+<div class="tactile-tile rounded-[24px] p-5 flex flex-col justify-between">
+<div class="flex items-start justify-between">
+<span class="font-dg text-[13px] font-bold uppercase tracking-wider text-slate-500">Dept Avg Attendance</span>
+<span class="w-8 h-8 rounded-full bg-rose-50 text-rose-700 flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]">bar_chart</span>
+</span>
+</div>
+<div class="my-3 flex items-baseline gap-2">
+<span class="font-dg text-5xl font-black text-rose-700 leading-none">37.1%</span>
+<span class="font-mono text-xs text-rose-600 font-semibold">Alert &lt;65%</span>
+</div>
+<div class="flex items-center justify-between font-dg text-xs text-slate-500 pt-3 border-t border-slate-100">
+<span>Dynamic Biometric Feed</span>
+<span class="px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-800 font-mono text-[11px] font-bold">Critical Dip</span>
+</div>
+</div>
+<!-- Card 3: Eligible -->
+<div class="tactile-tile rounded-[24px] p-5 flex flex-col justify-between">
+<div class="flex items-start justify-between">
+<span class="font-dg text-[13px] font-bold uppercase tracking-wider text-slate-500">Eligible (≥75%)</span>
+<span class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]">verified_user</span>
+</span>
+</div>
+<div class="my-3 flex items-baseline gap-2">
+<span class="font-dg text-5xl font-black text-[#003519] leading-none">6</span>
+<span class="font-dg text-lg font-bold text-slate-500">Students</span>
+</div>
+<div class="flex items-center justify-between font-dg text-xs text-slate-500 pt-3 border-t border-slate-100">
+<span>Direct Hall Ticket Clearance</span>
+<span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-mono text-[11px] font-bold">3.3% Cohort</span>
+</div>
+</div>
+<!-- Card 4: Condonation Warning -->
+<div class="tactile-tile rounded-[24px] p-5 flex flex-col justify-between">
+<div class="flex items-start justify-between">
+<span class="font-dg text-[13px] font-bold uppercase tracking-wider text-slate-500">Condonation Warning (65–74.9%)</span>
+<span class="w-8 h-8 rounded-full bg-amber-50 text-amber-700 flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]">warning</span>
+</span>
+</div>
+<div class="my-3 flex items-baseline gap-2">
+<span class="font-dg text-5xl font-black text-slate-900 leading-none">24</span>
+<span class="font-dg text-lg font-bold text-slate-500">Students</span>
+</div>
+<div class="flex items-center justify-between font-dg text-xs text-slate-500 pt-3 border-t border-slate-100">
+<span>Requires Formal SBTET Fine</span>
+<span class="px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 font-mono text-[11px] font-bold">13.3% Cohort</span>
+</div>
+</div>
+<!-- Card 5: Critical Detention -->
+<div class="tactile-tile rounded-[24px] p-5 flex flex-col justify-between">
+<div class="flex items-start justify-between">
+<span class="font-dg text-[13px] font-bold uppercase tracking-wider text-slate-500">Critical Detention (&lt;65%)</span>
+<span class="w-8 h-8 rounded-full bg-rose-100 text-rose-700 flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]">dangerous</span>
+</span>
+</div>
+<div class="my-3 flex items-baseline gap-2">
+<span class="font-dg text-5xl font-black text-rose-700 leading-none">150</span>
+<span class="font-dg text-lg font-bold text-rose-600">In Danger</span>
+</div>
+<div class="flex items-center justify-between font-dg text-xs text-slate-500 pt-3 border-t border-slate-100">
+<span>Detention Threshold Alert</span>
+<span class="px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-800 font-mono text-[11px] font-bold">83.3% Cohort</span>
+</div>
+</div>
+<!-- Card 6: Backlogs -->
+<div class="tactile-tile rounded-[24px] p-5 flex flex-col justify-between">
+<div class="flex items-start justify-between">
+<span class="font-dg text-[13px] font-bold uppercase tracking-wider text-slate-500">Students With Backlogs</span>
+<span class="w-8 h-8 rounded-full bg-slate-100 text-slate-800 flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]">history_edu</span>
+</span>
+</div>
+<div class="my-3 flex items-baseline gap-2">
+<span class="font-dg text-5xl font-black text-slate-900 leading-none">94</span>
+<span class="font-dg text-lg font-bold text-slate-500">Of 180 Students</span>
+</div>
+<div class="flex items-center justify-between font-dg text-xs text-slate-500 pt-3 border-t border-slate-100">
+<span>Total Active: 573 Papers</span>
+<span class="px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 font-mono text-[11px] font-bold">Avg 6.1 / Std</span>
+</div>
+</div>
+</div>
+<!-- Filter bar and search strip -->
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 pt-2">
+<div class="flex items-center gap-1.5 overflow-x-auto pb-1 text-slate-700">
+<button class="px-4 py-1.5 rounded-full bg-[#003519] text-white font-dg text-xs font-bold uppercase tracking-wider shrink-0 shadow-xs" type="button">All (180)</button>
+<button class="px-3.5 py-1.5 rounded-full bg-[#f3f5f3] hover:bg-slate-200 text-slate-700 font-dg text-xs font-bold shrink-0 transition" type="button">Critical (&lt;65%)</button>
+<button class="px-3.5 py-1.5 rounded-full bg-[#f3f5f3] hover:bg-slate-200 text-slate-700 font-dg text-xs font-bold shrink-0 transition" type="button">Warning (65–74.9%)</button>
+<button class="px-3.5 py-1.5 rounded-full bg-[#f3f5f3] hover:bg-slate-200 text-slate-700 font-dg text-xs font-bold shrink-0 transition" type="button">Eligible (≥75%)</button>
+<button class="px-3.5 py-1.5 rounded-full bg-[#f3f5f3] hover:bg-slate-200 text-slate-700 font-dg text-xs font-bold shrink-0 transition" type="button">With Backlogs</button>
+</div>
+<div class="relative w-full lg:w-80">
+<span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-[18px]">search</span>
+<input class="w-full bg-[#f9faf8] text-slate-800 placeholder:text-slate-400 font-dg text-base font-semibold rounded-full pl-10 pr-4 py-2 border border-slate-200 focus:border-[#00875a] focus:bg-white focus:outline-none shadow-xs transition" placeholder="Search student PIN or name..." type="text"/>
+</div>
+</div>
+<!-- Master Students Info Table with rounded-2xl headers -->
+<div class="overflow-x-auto rounded-[22px] border border-slate-200/80 bg-white">
+<table class="w-full text-left border-collapse">
+<thead class="bg-[#f5f8f6] border-b border-slate-200/80">
+<tr class="text-slate-500 font-dg text-xs font-bold uppercase tracking-wider">
+<th class="py-3.5 px-4"># PIN</th>
+<th class="py-3.5 px-4">Student Name</th>
+<th class="py-3.5 px-3">Branch</th>
+<th class="py-3.5 px-4">Days (Pres/Elap)</th>
+<th class="py-3.5 px-4">Attendance %</th>
+<th class="py-3.5 px-3">Status</th>
+<th class="py-3.5 px-3">CGPA</th>
+<th class="py-3.5 px-4">Backlogs</th>
+<th class="py-3.5 px-4 text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-100 font-dg text-sm">
+<!-- Student 001 -->
+<tr class="hover:bg-slate-50/80 transition-colors">
+<td class="py-3.5 px-4 font-mono text-xs font-bold text-[#003519]">24259-CS-001</td>
+<td class="py-3.5 px-4 font-bold text-slate-900">Gona Laxmi Narasimha Swami</td>
+<td class="py-3.5 px-3">
+<span class="px-2 py-0.5 rounded-full bg-[#e3efe8] text-[#003519] font-dg text-[11px] font-bold">CS (C-24)</span>
+</td>
+<td class="py-3.5 px-4 font-mono text-xs text-slate-500">50 / 180 days</td>
+<td class="py-3.5 px-4">
+<div class="flex items-center gap-2">
+<span class="font-mono text-xs font-bold text-rose-600">27.8%</span>
+<div class="w-14 h-1.5 rounded-full bg-slate-200 overflow-hidden">
+<div class="bg-rose-500 h-full rounded-full" style="width: 27.8%"></div>
+</div>
+</div>
+</td>
+<td class="py-3.5 px-3">
+<span class="px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-700 font-dg text-[11px] font-bold uppercase tracking-wider">Critical</span>
+</td>
+<td class="py-3.5 px-3 font-mono text-xs font-bold text-slate-800">7.12</td>
+<td class="py-3.5 px-4">
+<span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-dg text-[11px] font-bold">✓ 0 Cleared</span>
+</td>
+<td class="py-3.5 px-4 text-right">
+<button class="px-3 py-1 rounded-full bg-[#f0f4f1] hover:bg-[#e2ede5] text-[#003519] font-dg text-xs font-bold inline-flex items-center gap-1 transition" type="button">
+<span class="material-symbols-outlined text-[14px]">sync</span> Sync
+                </button>
+</td>
+</tr>
+<!-- Student 002 -->
+<tr class="hover:bg-slate-50/80 transition-colors">
+<td class="py-3.5 px-4 font-mono text-xs font-bold text-[#003519]">24259-CS-002</td>
+<td class="py-3.5 px-4 font-bold text-slate-900">Dulipudi Tarun</td>
+<td class="py-3.5 px-3">
+<span class="px-2 py-0.5 rounded-full bg-[#e3efe8] text-[#003519] font-dg text-[11px] font-bold">CS (C-24)</span>
+</td>
+<td class="py-3.5 px-4 font-mono text-xs text-slate-500">51 / 180 days</td>
+<td class="py-3.5 px-4">
+<div class="flex items-center gap-2">
+<span class="font-mono text-xs font-bold text-rose-600">28.3%</span>
+<div class="w-14 h-1.5 rounded-full bg-slate-200 overflow-hidden">
+<div class="bg-rose-500 h-full rounded-full" style="width: 28.3%"></div>
+</div>
+</div>
+</td>
+<td class="py-3.5 px-3">
+<span class="px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-700 font-dg text-[11px] font-bold uppercase tracking-wider">Critical</span>
+</td>
+<td class="py-3.5 px-3 font-mono text-xs font-bold text-slate-800">5.48</td>
+<td class="py-3.5 px-4">
+<span class="px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-800 font-dg text-[11px] font-bold">✕ 4 Backlogs</span>
+</td>
+<td class="py-3.5 px-4 text-right">
+<button class="px-3 py-1 rounded-full bg-[#f0f4f1] hover:bg-[#e2ede5] text-[#003519] font-dg text-xs font-bold inline-flex items-center gap-1 transition" type="button">
+<span class="material-symbols-outlined text-[14px]">sync</span> Sync
+                </button>
+</td>
+</tr>
+<!-- Student 003 -->
+<tr class="hover:bg-slate-50/80 transition-colors">
+<td class="py-3.5 px-4 font-mono text-xs font-bold text-[#003519]">24259-CS-003</td>
+<td class="py-3.5 px-4 font-bold text-slate-900">Anaboina Dilip</td>
+<td class="py-3.5 px-3">
+<span class="px-2 py-0.5 rounded-full bg-[#e3efe8] text-[#003519] font-dg text-[11px] font-bold">CS (C-24)</span>
+</td>
+<td class="py-3.5 px-4 font-mono text-xs text-slate-500">56 / 180 days</td>
+<td class="py-3.5 px-4">
+<div class="flex items-center gap-2">
+<span class="font-mono text-xs font-bold text-rose-600">31.1%</span>
+<div class="w-14 h-1.5 rounded-full bg-slate-200 overflow-hidden">
+<div class="bg-rose-500 h-full rounded-full" style="width: 31.1%"></div>
+</div>
+</div>
+</td>
+<td class="py-3.5 px-3">
+<span class="px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-700 font-dg text-[11px] font-bold uppercase tracking-wider">Critical</span>
+</td>
+<td class="py-3.5 px-3 font-mono text-xs font-bold text-slate-800">6.80</td>
+<td class="py-3.5 px-4">
+<span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-dg text-[11px] font-bold">✓ 0 Cleared</span>
+</td>
+<td class="py-3.5 px-4 text-right">
+<button class="px-3 py-1 rounded-full bg-[#f0f4f1] hover:bg-[#e2ede5] text-[#003519] font-dg text-xs font-bold inline-flex items-center gap-1 transition" type="button">
+<span class="material-symbols-outlined text-[14px]">sync</span> Sync
+                </button>
+</td>
+</tr>
+<!-- Student 012 (Active Viewing) -->
+<tr class="bg-emerald-50/50 border-l-4 border-l-[#003519]">
+<td class="py-3.5 px-4 font-mono text-xs font-bold text-[#003519]">24259-CS-012</td>
+<td class="py-3.5 px-4 font-bold text-slate-900">
+<div class="flex items-center gap-2">
+<span>Dharavath Bhaskar</span>
+<span class="px-2 py-0.5 rounded-full bg-[#003519] text-white font-dg text-[10px] font-bold uppercase tracking-wider">Active Dossier</span>
+</div>
+</td>
+<td class="py-3.5 px-3">
+<span class="px-2 py-0.5 rounded-full bg-[#e3efe8] text-[#003519] font-dg text-[11px] font-bold">CS (C-24)</span>
+</td>
+<td class="py-3.5 px-4 font-mono text-xs text-slate-500">50 / 180 days</td>
+<td class="py-3.5 px-4">
+<div class="flex items-center gap-2">
+<span class="font-mono text-xs font-bold text-rose-600">27.8%</span>
+<div class="w-14 h-1.5 rounded-full bg-slate-200 overflow-hidden">
+<div class="bg-rose-500 h-full rounded-full" style="width: 27.8%"></div>
+</div>
+</div>
+</td>
+<td class="py-3.5 px-3">
+<span class="px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-700 font-dg text-[11px] font-bold uppercase tracking-wider">Critical</span>
+</td>
+<td class="py-3.5 px-3 font-mono text-xs font-bold text-rose-600">4.20</td>
+<td class="py-3.5 px-4">
+<span class="px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-800 font-dg text-[11px] font-bold">✕ 18 Backlogs</span>
+</td>
+<td class="py-3.5 px-4 text-right">
+<button class="px-3 py-1 rounded-full bg-[#003519] text-white font-dg text-xs font-bold inline-flex items-center gap-1 shadow-xs" type="button">
+<span class="material-symbols-outlined text-[14px]">visibility</span> Viewing
+                </button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination row -->
+<div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-1">
+<span class="font-mono text-xs text-slate-500">Displaying rows 001–015 of 180 students registered in Batch 2024–25</span>
+<div class="inline-flex items-center gap-1.5">
+<button class="p-1.5 rounded-full bg-slate-100 text-slate-600 hover:text-slate-900 transition" type="button">
+<span class="material-symbols-outlined text-sm">chevron_left</span>
+</button>
+<span class="w-7 h-7 flex items-center justify-center rounded-full bg-[#003519] text-white font-mono text-xs font-bold">1</span>
+<button class="w-7 h-7 flex items-center justify-center rounded-full bg-slate-100 text-slate-600 hover:text-slate-900 font-mono text-xs" type="button">2</button>
+<button class="w-7 h-7 flex items-center justify-center rounded-full bg-slate-100 text-slate-600 hover:text-slate-900 font-mono text-xs" type="button">3</button>
+<span class="text-slate-400 px-1 font-mono text-xs">...</span>
+<button class="w-7 h-7 flex items-center justify-center rounded-full bg-slate-100 text-slate-600 hover:text-slate-900 font-mono text-xs" type="button">12</button>
+<button class="p-1.5 rounded-full bg-slate-100 text-slate-600 hover:text-slate-900 transition" type="button">
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+</button>
+</div>
+</div>
+<!-- Bottom elevated Dossier Drawer / Card for Dharavath Bhaskar -->
+<div class="rounded-[28px] bg-[#fbfcfb] p-5 sm:p-6 border border-[#003519]/15 shadow-sm space-y-4" id="backlogDossierDrawer">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-2xl bg-rose-100 text-rose-700 flex items-center justify-center">
+<span class="material-symbols-outlined text-xl">warning</span>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<h3 class="font-dg text-2xl font-black text-slate-900 leading-tight">Dharavath Bhaskar</h3>
+<span class="px-2.5 py-0.5 rounded-full bg-[#e3efe8] text-[#003519] font-mono text-xs font-bold">PIN: 24259-CS-012</span>
+</div>
+<p class="font-dg text-sm text-slate-500 font-medium">Diploma C-24 • Active Backlogs Breakdown (18 Papers Recorded in SBTET Datahub)</p>
+</div>
+</div>
+<div class="flex items-center gap-2 self-end sm:self-center">
+<span class="px-3 py-1 rounded-full bg-rose-100 text-rose-800 font-dg text-xs font-bold uppercase tracking-wider">Cumulative: 18</span>
+<button class="px-3.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-dg text-xs font-bold uppercase tracking-wider flex items-center gap-1 transition" onclick="document.getElementById('backlogDossierDrawer').classList.add('hidden')" type="button">
+              Close <span class="material-symbols-outlined text-sm">close</span>
+</button>
+</div>
+</div>
+<div class="overflow-x-auto rounded-[18px] border border-slate-200 bg-white">
+<table class="w-full text-left border-collapse">
+<thead class="bg-[#f5f8f6] border-b border-slate-200">
+<tr class="text-slate-500 font-dg text-xs font-bold uppercase tracking-wider">
+<th class="py-3 px-4">SEM</th>
+<th class="py-3 px-4">Subject Code</th>
+<th class="py-3 px-5">Subject Title</th>
+<th class="py-3 px-4 text-center">Internal</th>
+<th class="py-3 px-4 text-center">External</th>
+<th class="py-3 px-4 text-center">Total</th>
+<th class="py-3 px-4 text-center">Grade</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-100 font-dg text-sm">
+<tr class="hover:bg-slate-50 transition">
+<td class="py-2.5 px-4 font-mono text-xs font-bold">SEM-I</td>
+<td class="py-2.5 px-4 font-mono text-xs text-[#003519] font-bold">SC-101</td>
+<td class="py-2.5 px-5 font-bold text-slate-900">Engineering Mathematics - I</td>
+<td class="py-2.5 px-4 font-mono text-xs text-center text-slate-600">08 / 30</td>
+<td class="py-2.5 px-4 font-mono text-xs text-center text-rose-600 font-bold">12 / 70</td>
+<td class="py-2.5 px-4 font-mono text-xs text-center text-rose-600 font-bold">20 / 100</td>
+<td class="py-2.5 px-4 text-center">
+<span class="px-2 py-0.5 rounded-full bg-rose-100 text-rose-800 font-mono text-[11px] font-bold">F</span>
+</td>
+</tr>
+<tr class="hover:bg-slate-50 transition">
+<td class="py-2.5 px-4 font-mono text-xs font-bold">SEM-I</td>
+<td class="py-2.5 px-4 font-mono text-xs text-[#003519] font-bold">SC-102</td>
+<td class="py-2.5 px-5 font-bold text-slate-900">Engineering Physics</td>
+<td class="py-2.5 px-4 font-mono text-xs text-center text-slate-600">11 / 30</td>
+<td class="py-2.5 px-4 font-mono text-xs text-center text-rose-600 font-bold">14 / 70</td>
+<td class="py-2.5 px-4 font-mono text-xs text-center text-rose-600 font-bold">25 / 100</td>
+<td class="py-2.5 px-4 text-center">
+<span class="px-2 py-0.5 rounded-full bg-rose-100 text-rose-800 font-mono text-[11px] font-bold">F</span>
+</td>
+</tr>
+<tr class="hover:bg-slate-50 transition">
+<td class="py-2.5 px-4 font-mono text-xs font-bold">SEM-I</td>
+<td class="py-2.5 px-4 font-mono text-xs text-[#003519] font-bold">SC-103</td>
+<td class="py-2.5 px-5 font-bold text-slate-900">Engineering Chemistry &amp; Env. Studies</td>
+<td class="py-2.5 px-4 font-mono text-xs text-center text-slate-600">09 / 30</td>
+<td class="py-2.5 px-4 font-mono text-xs text-center text-rose-600 font-bold">18 / 70</td>
+<td class="py-2.5 px-4 font-mono text-xs text-center text-rose-600 font-bold">27 / 100</td>
+<td class="py-2.5 px-4 text-center">
+<span class="px-2 py-0.5 rounded-full bg-rose-100 text-rose-800 font-mono text-[11px] font-bold">F</span>
+</td>
+</tr>
+<tr class="hover:bg-slate-50 transition">
+<td class="py-2.5 px-4 font-mono text-xs font-bold">SEM-II</td>
+<td class="py-2.5 px-4 font-mono text-xs text-[#003519] font-bold">SC-201</td>
+<td class="py-2.5 px-5 font-bold text-slate-900">Engineering Mathematics - II</td>
+<td class="py-2.5 px-4 font-mono text-xs text-center text-slate-600">06 / 30</td>
+<td class="py-2.5 px-4 font-mono text-xs text-center text-rose-600 font-bold">09 / 70</td>
+<td class="py-2.5 px-4 font-mono text-xs text-center text-rose-600 font-bold">15 / 100</td>
+<td class="py-2.5 px-4 text-center">
+<span class="px-2 py-0.5 rounded-full bg-rose-100 text-rose-800 font-mono text-[11px] font-bold">F</span>
+</td>
+</tr>
+<tr class="hover:bg-slate-50 transition">
+<td class="py-2.5 px-4 font-mono text-xs font-bold">SEM-II</td>
+<td class="py-2.5 px-4 font-mono text-xs text-[#003519] font-bold">SC-202</td>
+<td class="py-2.5 px-5 font-bold text-slate-900">Data Structures through C</td>
+<td class="py-2.5 px-4 font-mono text-xs text-center text-slate-600">12 / 30</td>
+<td class="py-2.5 px-4 font-mono text-xs text-center text-rose-600 font-bold">19 / 70</td>
+<td class="py-2.5 px-4 font-mono text-xs text-center text-rose-600 font-bold">31 / 100</td>
+<td class="py-2.5 px-4 text-center">
+<span class="px-2 py-0.5 rounded-full bg-rose-100 text-rose-800 font-mono text-[11px] font-bold">F</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
+<div class="flex items-center gap-2 text-slate-500 font-mono text-xs">
+<span class="material-symbols-outlined text-[17px] text-[#00875a]">cloud_done</span>
+<span>Synced directly from SBTET Exam Records • Token: 259-C24-REGISTRY</span>
+</div>
+<div class="flex items-center gap-2">
+<button class="px-4 py-1.5 rounded-full bg-white hover:bg-slate-50 border border-slate-200 text-slate-800 font-dg text-xs font-bold uppercase tracking-wider transition flex items-center gap-1.5" type="button">
+<span class="material-symbols-outlined text-sm">print</span> Print Form
+            </button>
+<button class="px-5 py-1.5 rounded-full bg-[#003519] hover:bg-[#0f4d2a] text-white font-dg text-xs font-bold uppercase tracking-wider transition" onclick="document.getElementById('backlogDossierDrawer').classList.add('hidden')" type="button">
+              Done
+            </button>
+</div>
+</div>
+</div>
+</main>
+<!-- 4. INSTITUTIONAL FOOTER -->
+<footer class="tactile-sheet rounded-[32px] px-6 sm:px-8 py-6 mt-8">
+<div class="flex flex-col md:flex-row items-center justify-between gap-4 pb-5 border-b border-slate-200/80">
+<div class="flex flex-col gap-1 text-center md:text-left">
+<div class="flex items-center justify-center md:justify-start gap-2">
+<span class="font-dg text-2xl text-[#003519] font-black">Samskruti College of Engineering &amp; Technology</span>
+<span class="px-2.5 py-0.5 rounded-full bg-[#dff0e6] text-[#003519] font-mono text-xs font-bold">Code 259</span>
+</div>
+<p class="font-dg text-sm text-slate-500 font-medium">Permanent SBTET &amp; AICTE Affiliation. Autonomous Campus Registry &amp; Academic Management Portal.</p>
+</div>
+<!-- Institutional Badges -->
+<div class="flex flex-wrap items-center justify-center gap-2">
+<div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-slate-200 shadow-xs">
+<span class="w-2 h-2 rounded-full bg-[#00875a] animate-pulse"></span>
+<span class="font-dg text-sm text-slate-800 font-bold">Biometric Sync Online</span>
+</div>
+<div class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white border border-slate-200 shadow-xs">
+<span class="material-symbols-outlined text-[#00875a] text-[17px]">verified</span>
+<span class="font-dg text-sm text-slate-800 font-bold">SBTET Verified Hub</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-4 text-slate-500 font-dg text-sm">
+<span>© 2025 Samskruti College. PIN 24259-CS-025 Registry. All rights reserved.</span>
+<div class="flex items-center gap-5 font-semibold">
+<a class="hover:text-[#00875a] transition-colors" href="#">Academic Regulations</a>
+<a class="hover:text-[#00875a] transition-colors" href="#">Attendance Mandates</a>
+<a class="hover:text-[#00875a] transition-colors" href="#">Campus Support</a>
+</div>
+</div>
+</footer>
+</div>
+</body></html>

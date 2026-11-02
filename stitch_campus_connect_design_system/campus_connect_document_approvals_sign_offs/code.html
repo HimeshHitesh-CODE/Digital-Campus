@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Document Approvals &amp; Sign-Offs - HOD Executive Console</title>
+<!-- Google Fonts: Plus Jakarta Sans / Newsreader / JetBrains Mono -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400&amp;family=JetBrains+Mono:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS v3 -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            newsreader: ['"Newsreader"', 'serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            brand: {
+              parchment: '#fcfaf5',
+              cardBg: '#ffffff',
+              emerald: '#003519',
+              emeraldContainer: '#0f4d2a',
+              emeraldLight: '#e8f5ec',
+              emeraldMuted: '#2a5a3d',
+              borderSoft: 'rgba(0, 53, 25, 0.08)',
+              borderPill: 'rgba(0, 53, 25, 0.12)',
+            }
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    /* Warm parchment background with soft radial emerald glow and dot grid matrix */
+    body {
+      background-color: #f8f5ee;
+      background-image: 
+        radial-gradient(at 10% 8%, rgba(0, 53, 25, 0.07) 0px, transparent 45%),
+        radial-gradient(at 90% 12%, rgba(15, 77, 42, 0.06) 0px, transparent 48%),
+        radial-gradient(at 50% 95%, rgba(0, 53, 25, 0.04) 0px, transparent 55%);
+      min-height: 100vh;
+    }
+  </style>
+<meta content="web_standard" name="shell-type"/>
+</head>
+<body class="bg-[#f8f5ee] font-sans text-stone-900 min-h-screen flex flex-col relative overflow-x-hidden selection:bg-emerald-100 selection:text-emerald-950">
+<!-- Ambient Background Glow & Dot Grid Matrix Overlay -->
+<div class="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
+<div class="absolute -top-[15%] -left-[10%] w-[680px] h-[680px] rounded-full bg-gradient-to-br from-emerald-200/40 via-teal-100/25 to-transparent blur-[130px]"></div>
+<div class="absolute top-[25%] -right-[12%] w-[700px] h-[700px] rounded-full bg-gradient-to-bl from-emerald-300/30 via-emerald-100/20 to-transparent blur-[140px]"></div>
+<div class="absolute -bottom-[20%] left-[25%] w-[620px] h-[620px] rounded-full bg-gradient-to-tr from-emerald-200/25 via-emerald-100/15 to-transparent blur-[130px]"></div>
+<!-- Subtle dot grid matrix -->
+<div class="absolute inset-0 bg-[radial-gradient(#003519_0.75px,transparent_0.75px)] [background-size:28px_28px] opacity-[0.035]"></div>
+</div>
+<!-- BEGIN: MainContent -->
+<main class="max-w-[1280px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6 flex-1 relative z-10">
+<!-- 1. TOP INSTITUTIONAL HEADER RIBBON (Encapsulated rounded-[36px] white card ribbon) -->
+<header class="bg-white/95 backdrop-blur-md border border-[#003519]/10 rounded-[36px] px-6 sm:px-8 py-5 shadow-[0_4px_24px_-4px_rgba(0,53,25,0.06)] flex flex-col lg:flex-row lg:items-center justify-between gap-5 transition-all">
+<div class="flex flex-col gap-2">
+<div class="flex flex-wrap items-center gap-2">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#e8f3ec] text-[#003519] font-mono text-[11px] font-bold tracking-wider uppercase border border-[#003519]/10">
+<span class="w-2 h-2 rounded-full bg-[#003519] animate-pulse"></span>
+            INSTITUTIONAL ZERO-TRUST • HOD NODE 259
+          </span>
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-stone-100 text-stone-600 font-mono text-[11px] font-medium border border-stone-200">
+            SECURE RELAY C-24
+          </span>
+</div>
+<div>
+<h1 class="font-newsreader text-3xl sm:text-4xl text-[#003519] font-bold tracking-tight">
+            Document Approvals &amp; Sign-Offs
+          </h1>
+<p class="text-xs sm:text-sm text-stone-600 font-medium mt-0.5">
+            Samskruti College (Code: 259) • <span class="font-bold text-stone-900">DR. J. VAMSHI KRISHNA</span> (<span class="font-mono text-xs">PIN: VAMSHI-CS-HOD</span>) • Physical Certificate &amp; NOC Gateway
+          </p>
+</div>
+</div>
+<!-- Right status pills -->
+<div class="flex flex-wrap items-center gap-2.5 self-start lg:self-center shrink-0">
+<div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-stone-50 border border-stone-200/90 text-[#003519] shadow-sm font-mono text-xs font-semibold">
+<span class="w-2 h-2 rounded-full bg-emerald-600 animate-ping"></span>
+          Socket: Active
+        </div>
+<div class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#003519] text-white shadow-sm text-xs font-bold uppercase tracking-wider">
+<span class="material-symbols-outlined text-[15px]">pending_actions</span>
+          3 Pending Queue
+        </div>
+<div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-stone-50 border border-stone-200/90 text-stone-700 font-mono text-xs">
+<span class="material-symbols-outlined text-[16px] text-[#003519]">verified_user</span>
+          TLS 1.3 End-to-End
+        </div>
+</div>
+</header>
+<!-- 2. MAIN CONTENT SHEET CONTAINER (large rounded-[36px] white tactile card sheet with soft border and shadow) -->
+<section class="bg-white/95 backdrop-blur-xl border border-[#003519]/10 rounded-[36px] p-6 sm:p-8 shadow-[0_12px_36px_-6px_rgba(0,53,25,0.06)] flex flex-col gap-6">
+<!-- Top Row of 3 tactile KPI metric tiles -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<!-- Tile 1: Pending Queue -->
+<div class="bg-[#fcfbf7] border border-[#003519]/10 rounded-[24px] p-5 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="text-xs font-bold uppercase tracking-wider text-stone-600">Pending Document Queue</span>
+<span class="w-8 h-8 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]">pending_actions</span>
+</span>
+</div>
+<div class="my-3 flex items-baseline gap-2">
+<span class="font-newsreader text-4xl sm:text-5xl font-bold text-amber-600 leading-none">3</span>
+<span class="text-xs text-stone-500 font-medium">submissions pending review</span>
+</div>
+<div class="pt-2.5 border-t border-[#003519]/5 flex items-center justify-between">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-800 font-mono text-[11px] font-semibold border border-amber-200/60">
+<span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+              Awaiting HOD Sign-Off
+            </span>
+<span class="text-[11px] font-mono text-stone-400">P1 Highest</span>
+</div>
+</div>
+<!-- Tile 2: Total Approved -->
+<div class="bg-[#fcfbf7] border border-[#003519]/10 rounded-[24px] p-5 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="text-xs font-bold uppercase tracking-wider text-stone-600">Total Approved This Term</span>
+<span class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]">task_alt</span>
+</span>
+</div>
+<div class="my-3 flex items-baseline gap-2">
+<span class="font-newsreader text-4xl sm:text-5xl font-bold text-emerald-700 leading-none">6</span>
+<span class="text-xs text-stone-500 font-medium">issued &amp; dispatched</span>
+</div>
+<div class="pt-2.5 border-t border-[#003519]/5 flex items-center justify-between">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 font-mono text-[11px] font-semibold border border-emerald-200/60">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+              Dispatched to Counter
+            </span>
+<span class="text-[11px] font-mono text-stone-400">100% Cleared</span>
+</div>
+</div>
+<!-- Tile 3: Rejected -->
+<div class="bg-[#fcfbf7] border border-[#003519]/10 rounded-[24px] p-5 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="text-xs font-bold uppercase tracking-wider text-stone-600">Rejected Due to Attendance</span>
+<span class="w-8 h-8 rounded-full bg-stone-100 text-stone-600 flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]">block</span>
+</span>
+</div>
+<div class="my-3 flex items-baseline gap-2">
+<span class="font-newsreader text-4xl sm:text-5xl font-bold text-gray-500 leading-none">0</span>
+<span class="text-xs text-stone-500 font-medium">hard SBTET disqualifications</span>
+</div>
+<div class="pt-2.5 border-t border-[#003519]/5 flex items-center justify-between">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-stone-100 text-stone-700 font-mono text-[11px] font-medium border border-stone-200">
+<span class="w-1.5 h-1.5 rounded-full bg-stone-400"></span>
+              Below 65% Mandate
+            </span>
+<span class="text-[11px] font-mono text-stone-400">SBTET 14-B</span>
+</div>
+</div>
+</div>
+<!-- Action & Filter Bar with Pill Buttons and Full-Pill Search -->
+<div class="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3 pt-2">
+<!-- Quick Filter Pills -->
+<div class="flex items-center gap-2 overflow-x-auto pb-1 -mx-1 px-1 scrollbar-none">
+<button class="px-4 py-2 rounded-full bg-[#003519] text-white text-xs font-bold tracking-wide uppercase shadow-sm shrink-0 hover:bg-[#0f4d2a] transition-colors" type="button">
+            All Requests (3)
+          </button>
+<button class="px-4 py-2 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-semibold tracking-wide shrink-0 transition-colors border border-stone-200/80" type="button">
+            Bonafide Certificates (2)
+          </button>
+<button class="px-4 py-2 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-semibold tracking-wide shrink-0 transition-colors border border-stone-200/80" type="button">
+            Internship NOC (1)
+          </button>
+<button class="px-3.5 py-2 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-semibold shrink-0 transition-colors border border-stone-200/80 flex items-center gap-1.5" type="button">
+<span class="material-symbols-outlined text-[16px]">tune</span>
+            Filter
+          </button>
+</div>
+<!-- Full-pill search bar -->
+<div class="relative w-full lg:w-80 shrink-0">
+<span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-stone-400 text-[18px]">search</span>
+<input class="w-full pl-10 pr-4 py-2 rounded-full bg-stone-50 border border-[#003519]/15 text-xs text-stone-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-[#003519]/20 focus:border-[#003519] transition-all" placeholder="Search by PIN, Student, Req ID..." type="text"/>
+</div>
+</div>
+<!-- Interactive Approval Queue Sheet / Table -->
+<div class="bg-[#fcfbf7] border border-[#003519]/10 rounded-2xl p-4 sm:p-5 flex flex-col gap-4 shadow-sm">
+<div class="flex items-center justify-between flex-wrap gap-2 pb-1 border-b border-[#003519]/5">
+<div class="flex items-center gap-2.5">
+<span class="material-symbols-outlined text-[#003519] text-[22px]">assignment_turned_in</span>
+<h2 class="font-newsreader text-xl font-bold text-stone-900">Certificate &amp; NOC Approval Registry</h2>
+<span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-900 font-mono text-[11px] font-bold">3 Actionable</span>
+</div>
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-stone-100 text-stone-600 font-mono text-xs border border-stone-200">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse"></span>
+            Sync Protocol SBTET C-24 Active
+          </div>
+</div>
+<div class="w-full overflow-x-auto rounded-xl">
+<table class="w-full text-left border-collapse min-w-[1020px]">
+<thead>
+<tr class="bg-[#003519] text-white">
+<th class="py-3.5 px-4 font-mono text-[11px] font-semibold uppercase tracking-wider rounded-l-xl" scope="col">REQ ID</th>
+<th class="py-3.5 px-4 font-mono text-[11px] font-semibold uppercase tracking-wider" scope="col">Student PIN</th>
+<th class="py-3.5 px-4 text-xs font-bold uppercase tracking-wider" scope="col">Student Name</th>
+<th class="py-3.5 px-4 text-xs font-bold uppercase tracking-wider" scope="col">Document Type</th>
+<th class="py-3.5 px-4 text-xs font-bold uppercase tracking-wider" scope="col">Stated Purpose</th>
+<th class="py-3.5 px-4 text-xs font-bold uppercase tracking-wider" scope="col">Live Attendance %</th>
+<th class="py-3.5 px-4 font-mono text-[11px] font-semibold uppercase tracking-wider" scope="col">Submitted</th>
+<th class="py-3.5 px-4 text-xs font-bold uppercase tracking-wider text-right rounded-r-xl" scope="col">Action</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-[#003519]/5">
+<!-- Row 1 -->
+<tr class="bg-white hover:bg-emerald-50/40 transition-colors">
+<td class="py-4 px-4 font-mono text-xs font-bold text-[#003519]">#DOC-5</td>
+<td class="py-4 px-4 font-mono text-xs text-stone-700 font-medium">24259-CS-025</td>
+<td class="py-4 px-4">
+<div class="flex items-center gap-2.5">
+<div class="w-8 h-8 rounded-full bg-[#003519] text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-sm">
+                      KH
+                    </div>
+<span class="font-bold text-stone-900 text-sm">KARNATI HIMESH</span>
+</div>
+</td>
+<td class="py-4 px-4">
+<span class="inline-block px-2.5 py-1 rounded-full bg-emerald-50 text-[#003519] border border-emerald-200/80 text-xs font-bold tracking-wide">
+                    Bonafide Certificate (1 Copy)
+                  </span>
+</td>
+<td class="py-4 px-4 text-sm text-stone-600 max-w-xs truncate" title="Passport &amp; Scholarship Verification">
+                  Passport &amp; Scholarship
+                </td>
+<td class="py-4 px-4">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-rose-50 text-rose-700 border border-rose-200 font-mono text-xs font-bold">
+<span class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse"></span>
+                    27.8% (Critical)
+                  </span>
+</td>
+<td class="py-4 px-4 font-mono text-xs text-stone-500">11/1/2026</td>
+<td class="py-4 px-4 text-right">
+<button class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#003519] text-white hover:bg-[#0f4d2a] active:scale-95 transition-all text-xs font-bold tracking-wide shadow-sm" onclick="alert('Reviewing application for #DOC-5 (KARNATI HIMESH)')" type="button">
+<span>Review &amp; Sign</span>
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="bg-[#faf9f5] hover:bg-emerald-50/40 transition-colors">
+<td class="py-4 px-4 font-mono text-xs font-bold text-[#003519]">#DOC-3</td>
+<td class="py-4 px-4 font-mono text-xs text-stone-700 font-medium">24259-CS-037</td>
+<td class="py-4 px-4">
+<div class="flex items-center gap-2.5">
+<div class="w-8 h-8 rounded-full bg-stone-200 text-stone-700 font-bold text-xs flex items-center justify-center shrink-0">
+                      ES
+                    </div>
+<span class="font-bold text-stone-900 text-sm">EDAMANAPALLY SAMISAAC</span>
+</div>
+</td>
+<td class="py-4 px-4">
+<span class="inline-block px-2.5 py-1 rounded-full bg-stone-100 text-stone-700 border border-stone-200 text-xs font-bold tracking-wide">
+                    Internship NOC
+                  </span>
+</td>
+<td class="py-4 px-4 text-sm text-stone-600 max-w-xs truncate" title="6-Month Tech Mahindra Clearance">
+                  6-Month Tech Mahindra Clearance
+                </td>
+<td class="py-4 px-4">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-rose-50 text-rose-700 border border-rose-200 font-mono text-xs font-bold">
+<span class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse"></span>
+                    21.1% (Critical)
+                  </span>
+</td>
+<td class="py-4 px-4 font-mono text-xs text-stone-500">10/31/2026</td>
+<td class="py-4 px-4 text-right">
+<button class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#003519] text-white hover:bg-[#0f4d2a] active:scale-95 transition-all text-xs font-bold tracking-wide shadow-sm" onclick="alert('Reviewing application for #DOC-3 (EDAMANAPALLY SAMISAAC)')" type="button">
+<span>Review &amp; Sign</span>
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="bg-white hover:bg-emerald-50/40 transition-colors">
+<td class="py-4 px-4 font-mono text-xs font-bold text-[#003519]">#DOC-1</td>
+<td class="py-4 px-4 font-mono text-xs text-stone-700 font-medium">24259-AIML-019</td>
+<td class="py-4 px-4">
+<div class="flex items-center gap-2.5">
+<div class="w-8 h-8 rounded-full bg-stone-200 text-stone-700 font-bold text-xs flex items-center justify-center shrink-0">
+                      KH
+                    </div>
+<span class="font-bold text-stone-900 text-sm">KARNATI HITESH</span>
+</div>
+</td>
+<td class="py-4 px-4">
+<span class="inline-block px-2.5 py-1 rounded-full bg-stone-100 text-stone-700 border border-stone-200 text-xs font-bold tracking-wide">
+                    Bonafide Certificate
+                  </span>
+</td>
+<td class="py-4 px-4 text-sm text-stone-600 max-w-xs truncate" title="AI Hackathon &amp; State Project Grant">
+                  AI Hackathon &amp; State Project Grant
+                </td>
+<td class="py-4 px-4">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-rose-50 text-rose-700 border border-rose-200 font-mono text-xs font-bold">
+<span class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse"></span>
+                    0.0% (Critical)
+                  </span>
+</td>
+<td class="py-4 px-4 font-mono text-xs text-stone-500">10/31/2026</td>
+<td class="py-4 px-4 text-right">
+<button class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#003519] text-white hover:bg-[#0f4d2a] active:scale-95 transition-all text-xs font-bold tracking-wide shadow-sm" onclick="alert('Reviewing application for #DOC-1 (KARNATI HITESH)')" type="button">
+<span>Review &amp; Sign</span>
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Protocol Banner strip at the base of the table -->
+<div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-3 border-t border-[#003519]/5">
+<div class="inline-flex items-center gap-2 text-stone-600 font-mono text-xs">
+<span class="material-symbols-outlined text-[16px] text-[#003519]">verified_user</span>
+<span>SBTET C-24 Digital Signature Protocol • Pickups verified via 6-digit SMS OTP</span>
+</div>
+<div class="inline-flex items-center gap-2 text-amber-700 font-mono text-xs font-medium">
+<span class="w-2 h-2 rounded-full bg-amber-500"></span>
+<span>Threshold Alert: &lt;65% Condonation Clearance Mandate</span>
+</div>
+</div>
+</div>
+<!-- Bottom Tactile Callout Strip -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-center pt-1">
+<div class="md:col-span-8 bg-[#fcfbf7] border border-[#003519]/10 rounded-[24px] p-4 sm:p-5 flex items-center justify-between shadow-sm">
+<div class="flex items-center gap-3.5">
+<div class="w-10 h-10 rounded-full bg-[#003519] text-white flex items-center justify-center shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-[20px]">policy</span>
+</div>
+<div class="flex flex-col">
+<h3 class="text-sm font-bold text-stone-900 font-newsreader text-base">HOD Executive Standing Orders (Code: 259)</h3>
+<p class="text-xs text-stone-600">Students with &lt;65% biometric attendance require institutional condonation clearance before dispatch.</p>
+</div>
+</div>
+<button class="px-4 py-2 rounded-full bg-white hover:bg-stone-50 border border-stone-200 text-stone-800 font-bold text-xs uppercase tracking-wider transition-colors shrink-0 shadow-sm" type="button">
+            Read Policy
+          </button>
+</div>
+<div class="md:col-span-4 bg-[#fcfbf7] border border-[#003519]/10 rounded-[24px] p-4 sm:p-5 flex items-center justify-between shadow-sm">
+<div class="flex items-center gap-2.5">
+<span class="material-symbols-outlined text-[#003519] text-[20px]">dns</span>
+<span class="font-mono text-xs text-stone-600">Campus Relay Latency</span>
+</div>
+<span class="font-mono text-xs text-[#003519] font-bold bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200/60">
+            12ms • Sync 100%
+          </span>
+</div>
+</div>
+</section>
+</main>
+<!-- END: MainContent -->
+<!-- BEGIN: UniversalFooter -->
+<footer class="w-full bg-[#f3efe6]/90 border-t border-[#003519]/10 mt-12 relative z-10">
+<div class="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+<div class="flex flex-col md:flex-row items-center justify-between gap-4 pb-6 border-b border-[#003519]/10">
+<div class="flex flex-col gap-1 text-center md:text-left">
+<div class="flex items-center justify-center md:justify-start gap-2">
+<span class="font-newsreader text-2xl text-emerald-950 font-bold">Samskruti College of Engineering &amp; Technology</span>
+<span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-sm font-bold">Code 259</span>
+</div>
+<p class="text-base text-stone-600 font-medium">Permanent SBTET &amp; AICTE Affiliation. Autonomous Campus Registry &amp; Academic Management Portal.</p>
+</div>
+<div class="flex flex-wrap items-center justify-center gap-2">
+<div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/90 border border-emerald-900/10 shadow-sm">
+<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+<span class="text-sm text-stone-800 font-bold">Biometric Sync Online</span>
+</div>
+<div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/90 border border-emerald-900/10 shadow-sm">
+<span class="material-symbols-outlined text-emerald-700 text-[16px]">verified</span>
+<span class="text-sm text-stone-800 font-bold">SBTET Verified Hub</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-4 text-stone-600">
+<span class="text-base">© 2025 Samskruti College. PIN 24259-CS-025 Registry. All rights reserved.</span>
+<div class="flex items-center gap-4">
+<a class="text-base font-semibold hover:text-emerald-800 transition-colors" href="#">Academic Regulations</a>
+<a class="text-base font-semibold hover:text-emerald-800 transition-colors" href="#">Attendance Mandates</a>
+<a class="text-base font-semibold hover:text-emerald-800 transition-colors" href="#">Campus Support</a>
+</div>
+</div>
+</div>
+</footer>
+<!-- END: UniversalFooter -->
+</body></html>

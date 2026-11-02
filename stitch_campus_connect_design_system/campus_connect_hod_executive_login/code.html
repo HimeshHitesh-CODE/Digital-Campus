@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Campus Connect - HOD Executive Login | Samskruti College</title>
+<!-- Google Fonts: Plus Jakarta Sans & Darker Grotesque -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Darker+Grotesque:wght@700;800;900&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS v3 -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            parchment: '#fcfaf6',
+            emeraldDeep: '#064e3b',
+            emeraldMid: '#047857',
+            emeraldBright: '#10b981',
+            mintSoft: '#d1fae5',
+            inputBg: '#f8fcf9',
+            darkText: '#122017'
+          },
+          fontFamily: {
+            heading: ['"Darker Grotesque"', 'sans-serif'],
+            body: ['"Plus Jakarta Sans"', 'sans-serif']
+          },
+          boxShadow: {
+            'glow-emerald': '0 20px 45px -12px rgba(16, 185, 129, 0.35)',
+            'card-glass': '0 25px 60px -15px rgba(6, 78, 59, 0.12), 0 0 0 1px rgba(16, 185, 129, 0.18)'
+          }
+        }
+      }
+    }
+  </script>
+<!-- BEGIN: Custom Background and Utility Styles -->
+<style data-purpose="background-and-effects">
+    /* Subtle dot grid pattern on warm parchment */
+    body {
+      background-color: #fcfaf6;
+      background-image: radial-gradient(rgba(6, 78, 59, 0.08) 1.2px, transparent 1.2px);
+      background-size: 24px 24px;
+    }
+
+    /* Ambient background emerald glow effects */
+    .ambient-glow {
+      position: absolute;
+      width: 580px;
+      height: 580px;
+      border-radius: 9999px;
+      background: radial-gradient(circle, rgba(16, 185, 129, 0.15) 0%, rgba(5, 150, 105, 0.05) 50%, transparent 70%);
+      filter: blur(48px);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Subtle pulse animation for active indicator */
+    @keyframes mintPulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.45; transform: scale(0.85); }
+    }
+    .pulse-dot {
+      animation: mintPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+  </style>
+<!-- END: Custom Background and Utility Styles -->
+</head>
+<body class="font-body text-[#122017] antialiased min-h-screen flex flex-col justify-between relative overflow-x-hidden selection:bg-emeraldBright selection:text-white">
+<!-- Ambient background glow behind central content -->
+<div aria-hidden="true" class="ambient-glow top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
+<!-- BEGIN: MainHeader -->
+<header class="w-full max-w-[1240px] mx-auto px-6 py-6 relative z-10 flex items-center justify-between">
+<!-- College Identity / Accreditation info -->
+<div class="flex items-center space-x-3.5" data-purpose="college-branding">
+<div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-emeraldMid to-emeraldBright p-0.5 shadow-md shadow-emerald-900/10 flex items-center justify-center">
+<div class="w-full h-full bg-white rounded-[14px] flex items-center justify-center">
+<svg class="w-6 h-6 text-emeraldMid" fill="currentColor" viewbox="0 0 24 24">
+<path d="M12 3L1 9L12 15L21 10.09V17H23V9M5 13.18V17.18L12 21L19 17.18V13.18L12 17L5 13.18Z"></path>
+</svg>
+</div>
+</div>
+<div>
+<h1 class="font-heading font-extrabold text-2xl tracking-tight text-emeraldDeep leading-none">
+          Samskruti College of Engineering &amp; Technology
+        </h1>
+<p class="text-xs font-semibold text-emerald-800/80 tracking-wide mt-1">
+          Code: <span class="text-emerald-900 font-bold">259</span> • Autonomous • Affiliated to JNTUH / SBTET
+        </p>
+</div>
+</div>
+<!-- Centered CC Monogram Emblem -->
+<div class="hidden md:flex items-center justify-center" data-purpose="central-emblem">
+<div class="h-12 px-6 rounded-full bg-white/85 backdrop-blur-md border border-emerald-500/20 shadow-sm flex items-center space-x-2">
+<span class="font-heading font-black text-2xl tracking-tighter text-emeraldMid">CC</span>
+<span class="w-1 h-1 rounded-full bg-emeraldBright"></span>
+<span class="text-xs font-bold uppercase tracking-wider text-emeraldDeep">Campus Connect</span>
+</div>
+</div>
+<!-- Right Controls: Theme Toggle & Support -->
+<div class="flex items-center space-x-3" data-purpose="header-utilities">
+<button aria-label="Toggle Theme" class="w-11 h-11 rounded-full bg-white/80 backdrop-blur border border-emerald-500/20 flex items-center justify-center text-emeraldDeep hover:bg-emerald-50 hover:border-emerald-500/40 transition-all shadow-sm" id="themeToggleBtn" type="button">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</button>
+<div class="hidden sm:flex items-center px-4 py-2 rounded-full bg-emerald-50 border border-emerald-200/70 text-xs font-bold text-emeraldDeep">
+        Academic Portal
+      </div>
+</div>
+</header>
+<!-- END: MainHeader -->
+<!-- BEGIN: MainContent -->
+<main class="w-full flex-1 flex items-center justify-center px-4 py-8 relative z-10">
+<div class="w-full max-w-[460px]" data-purpose="card-wrapper">
+<!-- Elevated Glassmorphic Card -->
+<section class="rounded-[32px] bg-white/85 backdrop-blur-xl border border-emerald-500/20 p-8 sm:p-10 shadow-card-glass relative overflow-hidden" data-purpose="auth-card">
+<!-- Subtle Top Card Shimmer Line -->
+<div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-400 via-emeraldBright to-emeraldDeep"></div>
+<!-- Role Switcher Pill Container -->
+<div class="flex justify-center mb-6" data-purpose="role-switcher">
+<div class="inline-flex p-1 rounded-full bg-emerald-950/5 border border-emerald-600/15 backdrop-blur-sm">
+<!-- Active HOD Pill -->
+<button class="flex items-center space-x-2 px-5 py-1.5 rounded-full bg-gradient-to-r from-emeraldDeep to-emeraldMid text-white shadow-sm text-xs font-bold tracking-wide transition-all" type="button">
+<svg class="w-3.5 h-3.5 text-emerald-300" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2"></path>
+</svg>
+<span>HOD</span>
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-300 pulse-dot"></span>
+</button>
+<!-- Inactive Switch to Student / Faculty -->
+<button class="flex items-center px-4 py-1.5 rounded-full text-xs font-semibold text-emerald-900/70 hover:text-emeraldDeep hover:bg-emerald-100/50 transition-all" onclick="alert('Redirecting to Student / Faculty Portal...')" type="button">
+              Student
+            </button>
+</div>
+</div>
+<!-- Card Heading & Description -->
+<div class="text-center mb-8" data-purpose="card-header">
+<h2 class="font-heading font-black text-[42px] leading-[1.05] tracking-tight text-emeraldDeep">
+            HOD Executive Login
+          </h2>
+<p class="text-sm font-semibold text-emerald-800/80 mt-1">
+            Department Head Administrative Console
+          </p>
+</div>
+<!-- Authentication Form -->
+<form action="#" class="space-y-5" data-purpose="login-form" method="POST" onsubmit="event.preventDefault();">
+<!-- HOD ID Input Field -->
+<div data-purpose="hod-id-group">
+<label class="block text-xs font-bold tracking-wider text-emeraldDeep uppercase mb-2 ml-3" for="hodIdInput">
+              HOD ID
+            </label>
+<div class="relative">
+<input class="w-full h-13 px-5 py-3.5 rounded-full bg-inputBg text-darkText placeholder-emerald-900/35 border-[1.5px] border-emeraldBright/25 focus:border-emeraldMid focus:ring-4 focus:ring-emerald-500/15 text-sm font-medium transition-all shadow-inner outline-none" id="hodIdInput" name="hodId" placeholder="Enter HOD ID (e.g., VAMSHI-CS-HOD)" required="" type="text"/>
+</div>
+</div>
+<!-- Security Password Input Field -->
+<div data-purpose="password-group">
+<div class="flex items-center justify-between mb-2 ml-3 mr-3">
+<label class="text-xs font-bold tracking-wider text-emeraldDeep uppercase" for="passwordInput">
+                Security Password
+              </label>
+<a class="text-xs font-semibold text-emeraldMid hover:text-emeraldDeep hover:underline" href="#">
+                Forgot Key?
+              </a>
+</div>
+<div class="relative">
+<input class="w-full h-13 pl-5 pr-12 py-3.5 rounded-full bg-inputBg text-darkText placeholder-emerald-900/35 border-[1.5px] border-emeraldBright/25 focus:border-emeraldMid focus:ring-4 focus:ring-emerald-500/15 text-sm font-medium transition-all shadow-inner outline-none" id="passwordInput" name="password" placeholder="Enter Security Password" required="" type="password"/>
+<!-- Password Toggle Button -->
+<button aria-label="Toggle password visibility" class="absolute right-4 top-1/2 -translate-y-1/2 text-emerald-800/50 hover:text-emeraldDeep transition-colors p-1" id="togglePasswordBtn" type="button">
+<svg class="w-5 h-5" fill="none" id="eyeIcon" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+<path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</button>
+</div>
+</div>
+<!-- Primary Action CTA -->
+<div class="pt-2" data-purpose="submit-group">
+<button class="w-full h-[54px] rounded-full bg-gradient-to-r from-emeraldMid via-emeraldMid to-emeraldBright text-white font-bold text-base tracking-wide flex items-center justify-center space-x-2 shadow-glow-emerald hover:brightness-105 active:scale-[0.99] transition-all cursor-pointer" type="submit">
+<span>Login to Portal</span>
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M14 5l7 7m0 0l-7 7m7-7H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2"></path>
+</svg>
+</button>
+</div>
+</form>
+<!-- Institutional Security Badge / Footnote -->
+<div class="mt-8 pt-5 border-t border-emerald-900/10 text-center" data-purpose="card-footer-badge">
+<p class="inline-flex items-center text-[11px] font-semibold text-emerald-800/75 tracking-tight">
+<svg class="w-3.5 h-3.5 mr-1.5 text-emeraldMid flex-shrink-0" fill="currentColor" viewbox="0 0 20 20">
+<path clip-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" fill-rule="evenodd"></path>
+</svg>
+            SBTET C-24 Encrypted Authentication • Role-Based Access Control
+          </p>
+</div>
+</section>
+<!-- Sub-card Institutional Support Link -->
+<div class="text-center mt-5 text-xs text-emerald-900/60 font-medium">
+        Trouble accessing? Contact <a class="font-bold text-emeraldDeep hover:underline" href="#">Campus Server Administration</a>
+</div>
+</div>
+</main>
+<!-- END: MainContent -->
+<!-- BEGIN: MainFooter -->
+<footer class="w-full max-w-[1240px] mx-auto px-6 py-5 relative z-10" data-purpose="institutional-footer">
+<div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-emerald-900/10">
+<!-- Status Pills -->
+<div class="flex items-center space-x-3">
+<div class="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-emerald-100/70 border border-emerald-300/40 text-[11px] font-bold text-emeraldDeep">
+<span class="w-2 h-2 rounded-full bg-emeraldBright animate-pulse"></span>
+<span>Biometric Sync Online</span>
+</div>
+<div class="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-white/70 border border-emerald-300/30 text-[11px] font-bold text-emeraldDeep">
+<svg class="w-3 h-3 text-emeraldMid" fill="currentColor" viewbox="0 0 20 20">
+<path clip-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" fill-rule="evenodd"></path>
+</svg>
+<span>SBTET Verified Hub</span>
+</div>
+</div>
+<!-- Copyright & Code Note -->
+<div class="text-[11px] text-emerald-900/60 font-semibold text-center sm:text-right">
+        © 2026 Samskruti College of Engineering &amp; Technology. All rights reserved.
+      </div>
+</div>
+</footer>
+<!-- END: MainFooter -->
+<!-- BEGIN: InteractiveScripts -->
+<script data-purpose="password-visibility-handler">
+    const toggleBtn = document.getElementById('togglePasswordBtn');
+    const passwordInput = document.getElementById('passwordInput');
+    const eyeIcon = document.getElementById('eyeIcon');
+
+    if (toggleBtn && passwordInput) {
+      toggleBtn.addEventListener('click', () => {
+        const isPassword = passwordInput.getAttribute('type') === 'password';
+        passwordInput.setAttribute('type', isPassword ? 'text' : 'password');
+        
+        // Update SVG icon appearance based on state
+        if (isPassword) {
+          eyeIcon.innerHTML = `
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />
+          `;
+        } else {
+          eyeIcon.innerHTML = `
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+          `;
+        }
+      });
+    }
+  </script>
+<!-- END: InteractiveScripts -->
+</body></html>

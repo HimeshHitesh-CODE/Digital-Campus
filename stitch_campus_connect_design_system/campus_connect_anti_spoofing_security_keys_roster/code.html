@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>HOD Executive Console - Samskruti College</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@500;600;700&amp;family=Darker+Grotesque:wght@500;600;700;800;900&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS v3 -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        fontFamily: {
+          dg: ['"Darker Grotesque"', 'sans-serif'],
+          sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          mono: ['"JetBrains Mono"', 'monospace'],
+          editorial: ['"Newsreader"', 'serif'],
+        },
+        colors: {
+          surface: "#fcfaf6",
+          "surface-container-lowest": "#ffffff",
+          "surface-container-low": "#f7f3ea",
+          "surface-container": "#f1eee5",
+          "surface-container-high": "#ece8df",
+          "surface-variant": "#e6e2d9",
+          primary: "#003519",
+          "primary-container": "#0f4d2a",
+          "primary-fixed": "#b3f1c1",
+          "on-primary-fixed": "#00210d",
+          "on-primary": "#ffffff",
+          secondary: "#526259",
+          "secondary-container": "#d5e7db",
+          "on-secondary-container": "#183b27",
+          "on-surface": "#1c1c16",
+          "on-surface-variant": "#404941",
+          outline: "#717971",
+          "outline-variant": "#c0c9bf",
+        }
+      }
+    }
+  }
+</script>
+<style>
+  body {
+    background-color: #fbf9f4;
+  }
+</style>
+<meta content="web_standard" name="shell-type"/></head>
+<body class="bg-[#fbf9f4] font-sans text-on-surface min-h-screen flex flex-col relative overflow-x-hidden selection:bg-emerald-100 selection:text-emerald-900">
+<!-- Atmospheric Canvas Ambient Glows & Dot Grid Background -->
+<div class="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
+<div class="absolute -top-[15%] -left-[10%] w-[700px] h-[700px] rounded-full bg-gradient-to-br from-emerald-200/40 via-teal-100/25 to-transparent blur-[120px]"></div>
+<div class="absolute top-[25%] -right-[10%] w-[750px] h-[750px] rounded-full bg-gradient-to-bl from-emerald-300/30 via-emerald-100/20 to-transparent blur-[140px]"></div>
+<div class="absolute -bottom-[20%] left-[20%] w-[650px] h-[650px] rounded-full bg-gradient-to-tr from-emerald-200/35 via-teal-50/20 to-transparent blur-[130px]"></div>
+<div class="absolute inset-0 bg-[radial-gradient(#003519_0.8px,transparent_0.8px)] [background-size:24px_24px] opacity-[0.035]"></div>
+</div>
+<!-- MAIN CONTAINER -->
+<main class="w-full flex-grow py-7 px-4 sm:px-6 lg:px-8 relative z-10">
+<div class="max-w-[1280px] w-full mx-auto flex flex-col gap-6">
+<!-- 2. TOP INSTITUTIONAL HEADER RIBBON (Encapsulated rounded-[36px] white card ribbon) -->
+<header class="bg-white/95 backdrop-blur-xl border border-stone-200/80 rounded-[36px] px-8 py-5 shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+<div class="flex flex-col gap-1.5">
+<div class="flex flex-wrap items-center gap-2">
+<span class="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-emerald-50 border border-emerald-200/70 text-primary font-dg text-xs font-black tracking-wider uppercase">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse"></span>
+            INSTITUTIONAL ZERO-TRUST NETWORK
+          </span>
+<span class="hidden sm:inline-flex items-center px-2.5 py-0.5 rounded-full bg-stone-100 text-stone-600 font-mono text-[11px] font-semibold tracking-wider">
+            NODE 259:SECURITY-HOD
+          </span>
+</div>
+<h1 class="font-dg text-[38px] sm:text-[42px] leading-[40px] sm:leading-[44px] font-black text-primary tracking-tight">
+          Anti-Spoofing Security Keys Roster
+        </h1>
+<p class="font-dg text-[17px] text-stone-600 font-semibold tracking-wide">
+          Samskruti College (Code: 259) • <span class="font-black text-on-surface">DR. J. VAMSHI KRISHNA</span> (<span class="font-mono text-xs font-semibold text-stone-700">PIN: VAMSHI-CS-HOD</span>) • Hardware Biometric Enrolments 2024–2025
+        </p>
+</div>
+<!-- Right Status Pills -->
+<div class="flex flex-wrap items-center gap-2.5 self-start lg:self-center">
+<div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-stone-50 border border-stone-200/80 text-primary font-mono text-xs font-semibold shadow-xs">
+<span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+          Socket: Active
+        </div>
+<div class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-primary text-white shadow-xs font-dg text-xs font-black uppercase tracking-wider">
+<span class="material-symbols-outlined text-[15px]">key</span>
+          180 Keys Active
+        </div>
+<div class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-emerald-50 border border-emerald-200/70 text-emerald-900 font-mono text-xs font-semibold shadow-xs">
+<span class="material-symbols-outlined text-[16px] text-emerald-700">verified_user</span>
+          SHA-256 Validated
+        </div>
+</div>
+</header>
+<!-- 3. MAIN CONTENT SHEET CONTAINER (Large rounded-[36px] elevated white tactile sheet) -->
+<section class="bg-white/95 backdrop-blur-xl border border-stone-200/80 rounded-[36px] p-6 sm:p-8 shadow-sm flex flex-col gap-6">
+<!-- KPI Metric Tiles Row (rounded-[24px] tiles with delicate borders and shadows) -->
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+<!-- Tile 1 -->
+<div class="bg-stone-50/80 hover:bg-stone-50 border border-stone-200/70 rounded-[24px] p-5 flex items-center justify-between gap-4 transition-all shadow-xs">
+<div class="flex flex-col">
+<span class="font-dg text-sm font-bold text-stone-500 uppercase tracking-wider">Total Keys Enrolled</span>
+<div class="flex items-baseline gap-2 mt-1">
+<span class="font-dg text-4xl font-black text-primary leading-none">180</span>
+<span class="font-dg text-sm font-bold text-emerald-800 bg-emerald-100/70 px-2 py-0.5 rounded-full">CS Department</span>
+</div>
+<span class="font-dg text-xs font-semibold text-stone-500 mt-1.5">Hardware tokens provisioned</span>
+</div>
+<div class="w-12 h-12 rounded-2xl bg-white border border-stone-200/80 text-primary flex items-center justify-center shadow-xs shrink-0">
+<span class="material-symbols-outlined text-2xl">vpn_key</span>
+</div>
+</div>
+<!-- Tile 2 -->
+<div class="bg-stone-50/80 hover:bg-stone-50 border border-stone-200/70 rounded-[24px] p-5 flex items-center justify-between gap-4 transition-all shadow-xs">
+<div class="flex flex-col">
+<span class="font-dg text-sm font-bold text-stone-500 uppercase tracking-wider">Active Multi-Factor Ratio</span>
+<div class="flex items-baseline gap-2 mt-1">
+<span class="font-dg text-4xl font-black text-primary leading-none">100%</span>
+<span class="font-dg text-sm font-bold text-emerald-800 bg-emerald-100/70 px-2 py-0.5 rounded-full">Scheme C-24</span>
+</div>
+<span class="font-dg text-xs font-semibold text-stone-500 mt-1.5">Zero untethered nodes</span>
+</div>
+<div class="w-12 h-12 rounded-2xl bg-white border border-stone-200/80 text-emerald-800 flex items-center justify-center shadow-xs shrink-0">
+<span class="material-symbols-outlined text-2xl">security</span>
+</div>
+</div>
+<!-- Tile 3 -->
+<div class="bg-stone-50/80 hover:bg-stone-50 border border-stone-200/70 rounded-[24px] p-5 flex items-center justify-between gap-4 transition-all shadow-xs">
+<div class="flex flex-col">
+<span class="font-dg text-sm font-bold text-stone-500 uppercase tracking-wider">Drift Expirations</span>
+<div class="flex items-baseline gap-2 mt-1">
+<span class="font-dg text-4xl font-black text-primary leading-none">0</span>
+<span class="font-dg text-sm font-bold text-emerald-800 bg-emerald-100/70 px-2 py-0.5 rounded-full">Zero-Trust Compliant</span>
+</div>
+<span class="font-dg text-xs font-semibold text-stone-500 mt-1.5">No geo-spoofing flags</span>
+</div>
+<div class="w-12 h-12 rounded-2xl bg-white border border-stone-200/80 text-primary flex items-center justify-center shadow-xs shrink-0">
+<span class="material-symbols-outlined text-2xl">verified</span>
+</div>
+</div>
+</div>
+<!-- Filter & Search toolbar -->
+<div class="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4 bg-[#f8f6f0] border border-stone-200/70 rounded-[24px] p-3 sm:p-3.5">
+<!-- Department Pill Tabs -->
+<div class="flex items-center gap-2 overflow-x-auto pb-1 lg:pb-0">
+<button class="px-4 py-2 rounded-full bg-primary text-white font-dg text-xs font-black uppercase tracking-wider shrink-0 shadow-xs transition-all hover:bg-primary-container" type="button">
+            CS Dept (180 Keys)
+          </button>
+<button class="px-4 py-2 rounded-full bg-white hover:bg-stone-100 text-stone-700 border border-stone-200/70 font-dg text-xs font-bold uppercase tracking-wider shrink-0 transition-all" type="button">
+            AIML Dept (120 Keys)
+          </button>
+<button class="px-4 py-2 rounded-full bg-white hover:bg-stone-100 text-stone-700 border border-stone-200/70 font-dg text-xs font-bold uppercase tracking-wider shrink-0 transition-all" type="button">
+            All Departments (300 Keys)
+          </button>
+</div>
+<!-- Search Input & Print Pill -->
+<div class="flex items-center gap-3 shrink-0">
+<div class="relative w-full sm:w-72">
+<span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-stone-400 text-[18px]">search</span>
+<input class="w-full bg-white text-on-surface placeholder:text-stone-400 font-dg text-base font-semibold rounded-full pl-10 pr-4 py-2 border border-stone-200/80 focus:outline-none focus:ring-2 focus:ring-primary/20 shadow-xs" id="rosterSearch" placeholder="Search PIN, Name, or Key..." type="text"/>
+</div>
+<button class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-white hover:bg-stone-100 text-on-surface border border-stone-200/80 font-dg text-xs font-black uppercase tracking-wide transition-all shadow-xs shrink-0" id="printBtn" type="button">
+<span class="material-symbols-outlined text-[16px] text-stone-600">print</span> Print Roster
+          </button>
+</div>
+</div>
+<!-- Security Keys Roster Table with rounded-2xl headers and crisp pill badges -->
+<div class="overflow-x-auto rounded-[24px] border border-stone-200/70 bg-white">
+<table class="w-full text-left border-collapse" id="rosterTable">
+<thead>
+<tr class="bg-primary text-white">
+<th class="py-4 px-4 font-mono text-xs font-semibold tracking-wider rounded-tl-[24px]" scope="col"># ROLL</th>
+<th class="py-4 px-4 font-mono text-xs font-semibold tracking-wider" scope="col">DIPLOMA PIN</th>
+<th class="py-4 px-4 font-dg text-sm font-black uppercase tracking-wider" scope="col">STUDENT NAME</th>
+<th class="py-4 px-4 font-mono text-xs font-semibold tracking-wider" scope="col">ASSIGNED INSTITUTIONAL SECURITY KEY</th>
+<th class="py-4 px-4 font-dg text-sm font-black uppercase tracking-wider" scope="col">BRANCH &amp; SCHEME</th>
+<th class="py-4 px-4 font-dg text-sm font-black uppercase tracking-wider rounded-tr-[24px]" scope="col">VERIFICATION STATUS</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-stone-100 text-stone-800">
+<!-- Row 1 -->
+<tr class="hover:bg-stone-50/80 transition-colors group">
+<td class="py-4 px-4 font-mono text-xs font-bold text-stone-500">#001</td>
+<td class="py-4 px-4 font-mono text-xs font-bold text-on-surface">24259-CS-001</td>
+<td class="py-4 px-4 font-dg text-[17px] font-bold text-on-surface leading-snug">GONA LAXMI NARASIMHA SWAMI</td>
+<td class="py-4 px-4">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-950 font-mono text-xs font-semibold shadow-2xs">
+<span class="material-symbols-outlined text-[14px] text-emerald-800">vpn_key</span>STD-3472C6
+                </span>
+</td>
+<td class="py-4 px-4 font-dg text-base text-stone-600 font-semibold">Computer Science &amp; Engineering (C-24)</td>
+<td class="py-4 px-4">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300 font-dg text-xs font-bold uppercase tracking-wider shadow-2xs">
+<span class="material-symbols-outlined text-sm text-emerald-700">verified</span>VERIFIED &amp; ACTIVE
+                </span>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-stone-50/80 transition-colors group">
+<td class="py-4 px-4 font-mono text-xs font-bold text-stone-500">#002</td>
+<td class="py-4 px-4 font-mono text-xs font-bold text-on-surface">24259-CS-002</td>
+<td class="py-4 px-4 font-dg text-[17px] font-bold text-on-surface leading-snug">DULIPUDI TARUN</td>
+<td class="py-4 px-4">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-stone-100 border border-stone-200 text-stone-800 font-mono text-xs font-semibold">
+<span class="material-symbols-outlined text-[14px] text-stone-500">vpn_key</span>STD-8111F9
+                </span>
+</td>
+<td class="py-4 px-4 font-dg text-base text-stone-600 font-semibold">Computer Science &amp; Engineering (C-24)</td>
+<td class="py-4 px-4">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-50 text-teal-800 border border-teal-200 font-dg text-xs font-bold uppercase tracking-wider">
+<span class="w-1.5 h-1.5 rounded-full bg-teal-600"></span>PRE-ALLOCATED
+                </span>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-stone-50/80 transition-colors group">
+<td class="py-4 px-4 font-mono text-xs font-bold text-stone-500">#003</td>
+<td class="py-4 px-4 font-mono text-xs font-bold text-on-surface">24259-CS-003</td>
+<td class="py-4 px-4 font-dg text-[17px] font-bold text-on-surface leading-snug">ANABOINA DILIP</td>
+<td class="py-4 px-4">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-stone-100 border border-stone-200 text-stone-800 font-mono text-xs font-semibold">
+<span class="material-symbols-outlined text-[14px] text-stone-500">vpn_key</span>STD-6658A0
+                </span>
+</td>
+<td class="py-4 px-4 font-dg text-base text-stone-600 font-semibold">Computer Science &amp; Engineering (C-24)</td>
+<td class="py-4 px-4">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-50 text-teal-800 border border-teal-200 font-dg text-xs font-bold uppercase tracking-wider">
+<span class="w-1.5 h-1.5 rounded-full bg-teal-600"></span>PRE-ALLOCATED
+                </span>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-stone-50/80 transition-colors group">
+<td class="py-4 px-4 font-mono text-xs font-bold text-stone-500">#004</td>
+<td class="py-4 px-4 font-mono text-xs font-bold text-on-surface">24259-CS-004</td>
+<td class="py-4 px-4 font-dg text-[17px] font-bold text-on-surface leading-snug">PITTALA BHAVYA</td>
+<td class="py-4 px-4">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-stone-100 border border-stone-200 text-stone-800 font-mono text-xs font-semibold">
+<span class="material-symbols-outlined text-[14px] text-stone-500">vpn_key</span>STD-07968C
+                </span>
+</td>
+<td class="py-4 px-4 font-dg text-base text-stone-600 font-semibold">Computer Science &amp; Engineering (C-24)</td>
+<td class="py-4 px-4">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-50 text-teal-800 border border-teal-200 font-dg text-xs font-bold uppercase tracking-wider">
+<span class="w-1.5 h-1.5 rounded-full bg-teal-600"></span>PRE-ALLOCATED
+                </span>
+</td>
+</tr>
+<!-- Row 5 -->
+<tr class="hover:bg-stone-50/80 transition-colors group">
+<td class="py-4 px-4 font-mono text-xs font-bold text-stone-500">#005</td>
+<td class="py-4 px-4 font-mono text-xs font-bold text-on-surface">24259-CS-005</td>
+<td class="py-4 px-4 font-dg text-[17px] font-bold text-on-surface leading-snug">CHAGANTI SRIJA</td>
+<td class="py-4 px-4">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-stone-100 border border-stone-200 text-stone-800 font-mono text-xs font-semibold">
+<span class="material-symbols-outlined text-[14px] text-stone-500">vpn_key</span>STD-7F0C06
+                </span>
+</td>
+<td class="py-4 px-4 font-dg text-base text-stone-600 font-semibold">Computer Science &amp; Engineering (C-24)</td>
+<td class="py-4 px-4">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-50 text-teal-800 border border-teal-200 font-dg text-xs font-bold uppercase tracking-wider">
+<span class="w-1.5 h-1.5 rounded-full bg-teal-600"></span>PRE-ALLOCATED
+                </span>
+</td>
+</tr>
+<!-- Row 6 -->
+<tr class="hover:bg-stone-50/80 transition-colors group">
+<td class="py-4 px-4 font-mono text-xs font-bold text-stone-500">#006</td>
+<td class="py-4 px-4 font-mono text-xs font-bold text-on-surface">24259-CS-006</td>
+<td class="py-4 px-4 font-dg text-[17px] font-bold text-on-surface leading-snug">BOLLOJU SATYA PAVANI</td>
+<td class="py-4 px-4">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-stone-100 border border-stone-200 text-stone-800 font-mono text-xs font-semibold">
+<span class="material-symbols-outlined text-[14px] text-stone-500">vpn_key</span>STD-169015
+                </span>
+</td>
+<td class="py-4 px-4 font-dg text-base text-stone-600 font-semibold">Computer Science &amp; Engineering (C-24)</td>
+<td class="py-4 px-4">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-50 text-teal-800 border border-teal-200 font-dg text-xs font-bold uppercase tracking-wider">
+<span class="w-1.5 h-1.5 rounded-full bg-teal-600"></span>PRE-ALLOCATED
+                </span>
+</td>
+</tr>
+<!-- Row 7 -->
+<tr class="hover:bg-stone-50/80 transition-colors group">
+<td class="py-4 px-4 font-mono text-xs font-bold text-stone-500">#007</td>
+<td class="py-4 px-4 font-mono text-xs font-bold text-on-surface">24259-CS-007</td>
+<td class="py-4 px-4 font-dg text-[17px] font-bold text-on-surface leading-snug">KATTA DHANUSH GOUD</td>
+<td class="py-4 px-4">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-stone-100 border border-stone-200 text-stone-800 font-mono text-xs font-semibold">
+<span class="material-symbols-outlined text-[14px] text-stone-500">vpn_key</span>STD-F7C720
+                </span>
+</td>
+<td class="py-4 px-4 font-dg text-base text-stone-600 font-semibold">Computer Science &amp; Engineering (C-24)</td>
+<td class="py-4 px-4">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-50 text-teal-800 border border-teal-200 font-dg text-xs font-bold uppercase tracking-wider">
+<span class="w-1.5 h-1.5 rounded-full bg-teal-600"></span>PRE-ALLOCATED
+                </span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination & Master Hash Bar -->
+<div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-1 border-t border-stone-100">
+<span class="font-dg text-base text-stone-600 font-semibold">
+          Showing <strong class="text-on-surface">1 to 7</strong> of <strong class="text-on-surface">180</strong> Computer Science Pre-Allocations
+        </span>
+<div class="flex items-center gap-1.5">
+<button aria-label="First page" class="w-8 h-8 rounded-full bg-stone-100 text-stone-600 hover:bg-stone-200 flex items-center justify-center transition-colors" type="button">
+<span class="material-symbols-outlined text-sm">chevron_left</span>
+</button>
+<button class="w-8 h-8 rounded-full bg-primary text-white font-mono text-xs font-bold flex items-center justify-center shadow-xs" type="button">1</button>
+<button class="w-8 h-8 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-700 font-mono text-xs font-semibold flex items-center justify-center transition-colors" type="button">2</button>
+<button class="w-8 h-8 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-700 font-mono text-xs font-semibold flex items-center justify-center transition-colors" type="button">3</button>
+<span class="px-1 text-stone-400 font-mono text-xs font-semibold">…</span>
+<button class="w-8 h-8 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-700 font-mono text-xs font-semibold flex items-center justify-center transition-colors" type="button">26</button>
+<button aria-label="Next page" class="w-8 h-8 rounded-full bg-stone-100 text-stone-600 hover:bg-stone-200 flex items-center justify-center transition-colors" type="button">
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+</button>
+</div>
+<button class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-emerald-50 hover:bg-emerald-100 text-primary border border-emerald-200/80 transition-colors font-dg text-xs font-black uppercase tracking-wider shadow-2xs" id="regenHashBtn" type="button">
+<span class="material-symbols-outlined text-[16px] text-emerald-800">sync</span>
+          Regenerate Master Hash
+        </button>
+</div>
+<!-- Bottom verification status card (Biometric Linkage, Anti-Spoof Protocol, Scheme C-24 Sync) -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+<div class="bg-stone-50/90 border border-stone-200/70 rounded-2xl p-4 flex items-center gap-3.5 shadow-2xs">
+<div class="w-11 h-11 rounded-2xl bg-white border border-stone-200 text-primary flex items-center justify-center shrink-0 shadow-2xs">
+<span class="material-symbols-outlined text-[22px]">fingerprint</span>
+</div>
+<div>
+<h4 class="font-dg text-base font-bold text-on-surface">Biometric Linkage</h4>
+<p class="font-dg text-xs text-stone-500 font-semibold">Paired with SBTET Iris &amp; Thumbprint database.</p>
+</div>
+</div>
+<div class="bg-stone-50/90 border border-stone-200/70 rounded-2xl p-4 flex items-center gap-3.5 shadow-2xs">
+<div class="w-11 h-11 rounded-2xl bg-white border border-stone-200 text-emerald-800 flex items-center justify-center shrink-0 shadow-2xs">
+<span class="material-symbols-outlined text-[22px]">enhanced_encryption</span>
+</div>
+<div>
+<h4 class="font-dg text-base font-bold text-on-surface">Anti-Spoof Protocol</h4>
+<p class="font-dg text-xs text-stone-500 font-semibold">Token expires upon unverified location drift.</p>
+</div>
+</div>
+<div class="bg-stone-50/90 border border-stone-200/70 rounded-2xl p-4 flex items-center gap-3.5 shadow-2xs">
+<div class="w-11 h-11 rounded-2xl bg-white border border-stone-200 text-teal-800 flex items-center justify-center shrink-0 shadow-2xs">
+<span class="material-symbols-outlined text-[22px]">verified</span>
+</div>
+<div>
+<h4 class="font-dg text-base font-bold text-on-surface">Scheme C-24 Sync</h4>
+<p class="font-dg text-xs text-stone-500 font-semibold">Audit log compliant with state tech mandates.</p>
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- 4. INSTITUTIONAL FOOTER -->
+<footer class="w-full bg-[#f4efe4]/95 border-t border-emerald-950/10 mt-10 relative z-10 backdrop-blur-sm">
+<div class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+<div class="flex flex-col md:flex-row items-center justify-between gap-5 pb-6 border-b border-stone-300/60">
+<div class="flex flex-col gap-1 text-center md:text-left">
+<div class="flex items-center justify-center md:justify-start gap-2.5">
+<span class="font-editorial text-2xl text-emerald-950 font-bold">Samskruti College of Engineering &amp; Technology</span>
+<span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-900 font-dg text-sm font-black">Code 259</span>
+</div>
+<p class="font-dg text-base text-stone-600 font-semibold">Permanent SBTET &amp; AICTE Affiliation. Autonomous Campus Registry &amp; Academic Management Portal.</p>
+</div>
+<!-- Footer Badges -->
+<div class="flex flex-wrap items-center justify-center gap-2.5">
+<div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-stone-200/90 shadow-2xs">
+<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+<span class="font-dg text-sm text-stone-800 font-bold">Biometric Sync Online</span>
+</div>
+<div class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white border border-stone-200/90 shadow-2xs">
+<span class="material-symbols-outlined text-emerald-700 text-[16px]">verified</span>
+<span class="font-dg text-sm text-stone-800 font-bold">SBTET Verified Hub</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-4 text-stone-600">
+<span class="font-dg text-base font-semibold">© 2025 Samskruti College. PIN 24259-CS-025 Registry. All rights reserved.</span>
+<div class="flex items-center gap-5">
+<a class="font-dg text-base font-bold text-stone-700 hover:text-emerald-900 transition-colors" href="#">Academic Regulations</a>
+<a class="font-dg text-base font-bold text-stone-700 hover:text-emerald-900 transition-colors" href="#">Attendance Mandates</a>
+<a class="font-dg text-base font-bold text-stone-700 hover:text-emerald-900 transition-colors" href="#">Campus Support</a>
+</div>
+</div>
+</div>
+</footer>
+</body></html>
