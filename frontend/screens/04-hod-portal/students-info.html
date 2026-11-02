@@ -49,8 +49,8 @@
   <!-- Dynamic Island Dock mounts via dc-dynamic-island.js -->
 
   <main class="w-full flex-grow pt-[84px] md:pt-[92px]">
-    <div class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
-      <main class="tactile-sheet rounded-[36px] p-6 sm:p-8 space-y-6">
+    <div class="max-w-[1400px] w-full mx-auto px-3 sm:px-6 lg:px-8 py-6 space-y-6">
+      <section class="tactile-sheet rounded-[36px] p-5 sm:p-8 space-y-6">
 <!-- Control / Subheader Strip inside sheet -->
 <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 p-4 sm:p-5 rounded-[26px] bg-[#f7f9f7] border border-[#003519]/5">
 <div class="flex items-center gap-3.5">
@@ -236,201 +236,86 @@
       </div>
     </div>
 
-<div class="overflow-x-auto max-h-[640px] overflow-y-auto rounded-[22px] border border-slate-200/80 bg-white shadow-inner" id="studentsScrollContainer">
-<table class="w-full text-left border-collapse">
+<div class="overflow-x-auto max-h-[660px] overflow-y-auto rounded-[22px] border border-slate-200/80 bg-white shadow-inner custom-scrollbar" id="studentsScrollContainer">
+<table class="w-full text-left border-collapse min-w-[1080px]">
 <thead class="sticky top-0 z-10 bg-[#f5f8f6] backdrop-blur-md border-b border-slate-200/80 shadow-xs">
   <tr class="text-slate-600 font-dg text-xs font-bold uppercase tracking-wider select-none">
-    <th class="py-3.5 px-4 cursor-pointer hover:text-emerald-900 transition-colors sortable-header group" data-sort="pin" title="Click to sort by PIN (Asc/Desc)">
+    <th class="py-3 px-3 w-[120px] cursor-pointer hover:text-emerald-900 transition-colors sortable-header group" data-sort="pin" title="Click to sort by PIN (Asc/Desc)">
       <div class="flex items-center gap-1">
         <span># PIN</span>
-        <span class="material-symbols-outlined text-[16px] text-slate-400 group-hover:text-emerald-700 transition-transform sort-icon" id="sort-icon-pin">unfold_more</span>
+        <span class="material-symbols-outlined text-[15px] text-slate-400 group-hover:text-emerald-700 transition-transform sort-icon" id="sort-icon-pin">unfold_more</span>
       </div>
     </th>
-    <th class="py-3.5 px-4 cursor-pointer hover:text-emerald-900 transition-colors sortable-header group" data-sort="name" title="Click to sort by Name (A-Z/Z-A)">
+    <th class="py-3 px-3 min-w-[210px] cursor-pointer hover:text-emerald-900 transition-colors sortable-header group" data-sort="name" title="Click to sort by Name (A-Z/Z-A)">
       <div class="flex items-center gap-1">
         <span>Student Name</span>
-        <span class="material-symbols-outlined text-[16px] text-slate-400 group-hover:text-emerald-700 transition-transform sort-icon" id="sort-icon-name">unfold_more</span>
+        <span class="material-symbols-outlined text-[15px] text-slate-400 group-hover:text-emerald-700 transition-transform sort-icon" id="sort-icon-name">unfold_more</span>
       </div>
     </th>
-    <th class="py-3.5 px-3 cursor-pointer hover:text-emerald-900 transition-colors sortable-header group" data-sort="branch" title="Click to sort by Branch">
+    <th class="py-3 px-2 w-[95px] cursor-pointer hover:text-emerald-900 transition-colors sortable-header group" data-sort="branch" title="Click to sort by Branch">
       <div class="flex items-center gap-1">
         <span>Branch</span>
-        <span class="material-symbols-outlined text-[16px] text-slate-400 group-hover:text-emerald-700 transition-transform sort-icon" id="sort-icon-branch">unfold_more</span>
+        <span class="material-symbols-outlined text-[15px] text-slate-400 group-hover:text-emerald-700 transition-transform sort-icon" id="sort-icon-branch">unfold_more</span>
       </div>
     </th>
-    <th class="py-3.5 px-4 cursor-pointer hover:text-emerald-900 transition-colors sortable-header group" data-sort="days" title="Click to sort by Present Days">
+    <th class="py-3 px-3 w-[125px] cursor-pointer hover:text-emerald-900 transition-colors sortable-header group" data-sort="days" title="Click to sort by Present Days">
       <div class="flex items-center gap-1">
         <span>Days (Pres/Elap)</span>
-        <span class="material-symbols-outlined text-[16px] text-slate-400 group-hover:text-emerald-700 transition-transform sort-icon" id="sort-icon-days">unfold_more</span>
+        <span class="material-symbols-outlined text-[15px] text-slate-400 group-hover:text-emerald-700 transition-transform sort-icon" id="sort-icon-days">unfold_more</span>
       </div>
     </th>
-    <th class="py-3.5 px-4 cursor-pointer hover:text-emerald-900 transition-colors sortable-header group" data-sort="attendance" title="Click to sort by Attendance %">
+    <th class="py-3 px-2 w-[105px] cursor-pointer hover:text-emerald-900 transition-colors sortable-header group" data-sort="attendance" title="Click to sort by Attendance %">
       <div class="flex items-center gap-1">
         <span>Attendance %</span>
-        <span class="material-symbols-outlined text-[16px] text-slate-400 group-hover:text-emerald-700 transition-transform sort-icon" id="sort-icon-attendance">unfold_more</span>
+        <span class="material-symbols-outlined text-[15px] text-slate-400 group-hover:text-emerald-700 transition-transform sort-icon" id="sort-icon-attendance">unfold_more</span>
       </div>
     </th>
-    <th class="py-3.5 px-3">Status</th>
-    <th class="py-3.5 px-3 cursor-pointer hover:text-emerald-900 transition-colors sortable-header group" data-sort="cgpa" title="Click to sort by CGPA">
+    <th class="py-3 px-2 w-[115px]">Status</th>
+    <th class="py-3 px-2 w-[90px] cursor-pointer hover:text-emerald-900 transition-colors sortable-header group" data-sort="cgpa" title="Click to sort by CGPA">
       <div class="flex items-center gap-1">
         <span>CGPA</span>
-        <span class="material-symbols-outlined text-[16px] text-slate-400 group-hover:text-emerald-700 transition-transform sort-icon" id="sort-icon-cgpa">unfold_more</span>
+        <span class="material-symbols-outlined text-[15px] text-slate-400 group-hover:text-emerald-700 transition-transform sort-icon" id="sort-icon-cgpa">unfold_more</span>
       </div>
     </th>
-    <th class="py-3.5 px-4 cursor-pointer hover:text-emerald-900 transition-colors sortable-header group" data-sort="backlogs" title="Click to sort by Backlog Count">
+    <th class="py-3 px-3 w-[125px] cursor-pointer hover:text-emerald-900 transition-colors sortable-header group" data-sort="backlogs" title="Click to sort by Backlog Count">
       <div class="flex items-center gap-1">
         <span>Backlogs</span>
-        <span class="material-symbols-outlined text-[16px] text-slate-400 group-hover:text-emerald-700 transition-transform sort-icon" id="sort-icon-backlogs">unfold_more</span>
+        <span class="material-symbols-outlined text-[15px] text-slate-400 group-hover:text-emerald-700 transition-transform sort-icon" id="sort-icon-backlogs">unfold_more</span>
       </div>
     </th>
-    <th class="py-3.5 px-4 text-right">Actions</th>
+    <th class="py-3 px-3 w-[135px] text-right">Actions</th>
   </tr>
 </thead>
 <tbody id="masterStudentsTbody" class="divide-y divide-slate-100 font-sans text-sm">
-<!-- Student 001 -->
-<tr class="hover:bg-slate-50/80 transition-colors">
-<td class="py-3.5 px-4 font-mono text-xs font-bold text-[#003519]">24259-CS-001</td>
-<td class="py-3.5 px-4 font-bold text-slate-900">Gona Laxmi Narasimha Swami</td>
-<td class="py-3.5 px-3">
-<span class="px-2 py-0.5 rounded-full bg-[#e3efe8] text-[#003519] font-dg text-[11px] font-bold">CS (C-24)</span>
-</td>
-<td class="py-3.5 px-4 font-mono text-xs text-slate-500">50 / 180 days</td>
-<td class="py-3.5 px-4">
-<div class="flex items-center gap-2">
-<span class="font-mono text-xs font-bold text-rose-600">27.8%</span>
-<div class="w-14 h-1.5 rounded-full bg-slate-200 overflow-hidden">
-<div class="bg-rose-500 h-full rounded-full" style="width: 27.8%"></div>
-</div>
-</div>
-</td>
-<td class="py-3.5 px-3">
-<span class="px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-700 font-dg text-[11px] font-bold uppercase tracking-wider">Critical</span>
-</td>
-<td class="py-3.5 px-3 font-mono text-xs font-bold text-slate-800">7.12</td>
-<td class="py-3.5 px-4">
-<span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-dg text-[11px] font-bold">✓ 0 Cleared</span>
-</td>
-<td class="py-3.5 px-4 text-right">
-<button class="px-3 py-1 rounded-full bg-[#f0f4f1] hover:bg-[#e2ede5] text-[#003519] font-dg text-xs font-bold inline-flex items-center gap-1 transition" type="button">
-<span class="material-symbols-outlined text-[14px]">sync</span> Sync
-                </button>
-</td>
-</tr>
-<!-- Student 002 -->
-<tr class="hover:bg-slate-50/80 transition-colors">
-<td class="py-3.5 px-4 font-mono text-xs font-bold text-[#003519]">24259-CS-002</td>
-<td class="py-3.5 px-4 font-bold text-slate-900">Dulipudi Tarun</td>
-<td class="py-3.5 px-3">
-<span class="px-2 py-0.5 rounded-full bg-[#e3efe8] text-[#003519] font-dg text-[11px] font-bold">CS (C-24)</span>
-</td>
-<td class="py-3.5 px-4 font-mono text-xs text-slate-500">51 / 180 days</td>
-<td class="py-3.5 px-4">
-<div class="flex items-center gap-2">
-<span class="font-mono text-xs font-bold text-rose-600">28.3%</span>
-<div class="w-14 h-1.5 rounded-full bg-slate-200 overflow-hidden">
-<div class="bg-rose-500 h-full rounded-full" style="width: 28.3%"></div>
-</div>
-</div>
-</td>
-<td class="py-3.5 px-3">
-<span class="px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-700 font-dg text-[11px] font-bold uppercase tracking-wider">Critical</span>
-</td>
-<td class="py-3.5 px-3 font-mono text-xs font-bold text-slate-800">5.48</td>
-<td class="py-3.5 px-4">
-<span class="px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-800 font-dg text-[11px] font-bold">✕ 4 Backlogs</span>
-</td>
-<td class="py-3.5 px-4 text-right">
-<button class="px-3 py-1 rounded-full bg-[#f0f4f1] hover:bg-[#e2ede5] text-[#003519] font-dg text-xs font-bold inline-flex items-center gap-1 transition" type="button">
-<span class="material-symbols-outlined text-[14px]">sync</span> Sync
-                </button>
-</td>
-</tr>
-<!-- Student 003 -->
-<tr class="hover:bg-slate-50/80 transition-colors">
-<td class="py-3.5 px-4 font-mono text-xs font-bold text-[#003519]">24259-CS-003</td>
-<td class="py-3.5 px-4 font-bold text-slate-900">Anaboina Dilip</td>
-<td class="py-3.5 px-3">
-<span class="px-2 py-0.5 rounded-full bg-[#e3efe8] text-[#003519] font-dg text-[11px] font-bold">CS (C-24)</span>
-</td>
-<td class="py-3.5 px-4 font-mono text-xs text-slate-500">56 / 180 days</td>
-<td class="py-3.5 px-4">
-<div class="flex items-center gap-2">
-<span class="font-mono text-xs font-bold text-rose-600">31.1%</span>
-<div class="w-14 h-1.5 rounded-full bg-slate-200 overflow-hidden">
-<div class="bg-rose-500 h-full rounded-full" style="width: 31.1%"></div>
-</div>
-</div>
-</td>
-<td class="py-3.5 px-3">
-<span class="px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-700 font-dg text-[11px] font-bold uppercase tracking-wider">Critical</span>
-</td>
-<td class="py-3.5 px-3 font-mono text-xs font-bold text-slate-800">6.80</td>
-<td class="py-3.5 px-4">
-<span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-dg text-[11px] font-bold">✓ 0 Cleared</span>
-</td>
-<td class="py-3.5 px-4 text-right">
-<button class="px-3 py-1 rounded-full bg-[#f0f4f1] hover:bg-[#e2ede5] text-[#003519] font-dg text-xs font-bold inline-flex items-center gap-1 transition" type="button">
-<span class="material-symbols-outlined text-[14px]">sync</span> Sync
-                </button>
-</td>
-</tr>
-<!-- Student 012 (Active Viewing) -->
-<tr class="bg-emerald-50/50 border-l-4 border-l-[#003519]">
-<td class="py-3.5 px-4 font-mono text-xs font-bold text-[#003519]">24259-CS-012</td>
-<td class="py-3.5 px-4 font-bold text-slate-900">
-<div class="flex items-center gap-2">
-<span>Dharavath Bhaskar</span>
-<span class="px-2 py-0.5 rounded-full bg-[#003519] text-white font-dg text-[10px] font-bold uppercase tracking-wider">Active Dossier</span>
-</div>
-</td>
-<td class="py-3.5 px-3">
-<span class="px-2 py-0.5 rounded-full bg-[#e3efe8] text-[#003519] font-dg text-[11px] font-bold">CS (C-24)</span>
-</td>
-<td class="py-3.5 px-4 font-mono text-xs text-slate-500">50 / 180 days</td>
-<td class="py-3.5 px-4">
-<div class="flex items-center gap-2">
-<span class="font-mono text-xs font-bold text-rose-600">27.8%</span>
-<div class="w-14 h-1.5 rounded-full bg-slate-200 overflow-hidden">
-<div class="bg-rose-500 h-full rounded-full" style="width: 27.8%"></div>
-</div>
-</div>
-</td>
-<td class="py-3.5 px-3">
-<span class="px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-700 font-dg text-[11px] font-bold uppercase tracking-wider">Critical</span>
-</td>
-<td class="py-3.5 px-3 font-mono text-xs font-bold text-rose-600">4.20</td>
-<td class="py-3.5 px-4">
-<span class="px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-800 font-dg text-[11px] font-bold">✕ 18 Backlogs</span>
-</td>
-<td class="py-3.5 px-4 text-right">
-<button class="px-3 py-1 rounded-full bg-[#003519] text-white font-dg text-xs font-bold inline-flex items-center gap-1 shadow-xs" type="button">
-<span class="material-symbols-outlined text-[14px]">visibility</span> Viewing
-                </button>
-</td>
-</tr>
+  <!-- Dynamic 180 Students automatically populated by students-info.js with 100% verified SBTET data -->
+  <tr>
+    <td colspan="9" class="px-6 py-12 text-center text-slate-500 font-mono text-sm">
+      <span class="material-symbols-outlined text-3xl text-emerald-700 animate-spin block mb-2">sync</span>
+      Synchronizing complete 180 department nodes from State Board of Technical Education (SBTET)...
+    </td>
+  </tr>
 </tbody>
 </table>
 </div>
-<!-- Pagination row -->
-<div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-1">
-<span class="font-mono text-xs text-slate-500">Displaying rows 001–015 of 180 students registered in Batch 2024–25</span>
-<div class="inline-flex items-center gap-1.5">
-<button class="p-1.5 rounded-full bg-slate-100 text-slate-600 hover:text-slate-900 transition" type="button">
-<span class="material-symbols-outlined text-sm">chevron_left</span>
-</button>
-<span class="w-7 h-7 flex items-center justify-center rounded-full bg-[#003519] text-white font-mono text-xs font-bold">1</span>
-<button class="w-7 h-7 flex items-center justify-center rounded-full bg-slate-100 text-slate-600 hover:text-slate-900 font-mono text-xs" type="button">2</button>
-<button class="w-7 h-7 flex items-center justify-center rounded-full bg-slate-100 text-slate-600 hover:text-slate-900 font-mono text-xs" type="button">3</button>
-<span class="text-slate-400 px-1 font-mono text-xs">...</span>
-<button class="w-7 h-7 flex items-center justify-center rounded-full bg-slate-100 text-slate-600 hover:text-slate-900 font-mono text-xs" type="button">12</button>
-<button class="p-1.5 rounded-full bg-slate-100 text-slate-600 hover:text-slate-900 transition" type="button">
-<span class="material-symbols-outlined text-sm">chevron_right</span>
-</button>
-</div>
-</div>
-<!-- Bottom elevated Dossier Drawer / Card for Dharavath Bhaskar -->
 
-</main>
+<!-- Continuous Scroll Status Bar (Zero Pagination - Continuous Scroll Table) -->
+<div class="flex flex-col sm:flex-row items-center justify-between gap-3 py-3 px-5 rounded-2xl bg-[#f8faf8] border border-slate-200/80 shadow-2xs">
+  <div class="flex items-center gap-2.5">
+    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+    <span class="font-mono text-xs text-slate-700">
+      Displaying all <strong class="text-emerald-950 font-bold" id="studentsVisibleCount">180</strong> students registered in Batch 2024–25 (Scheme C-24)
+    </span>
+  </div>
+  <div class="flex items-center gap-3">
+    <span class="font-mono text-xs text-slate-500 hidden md:inline">Scroll table vertically to navigate all 180 records</span>
+    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 font-dg text-xs font-bold shadow-2xs">
+      <span class="material-symbols-outlined text-[15px] text-emerald-700">all_inclusive</span>
+      Continuous Scroll Active
+    </span>
+  </div>
+</div>
+
+</section>
     </div>
   </main>
 
