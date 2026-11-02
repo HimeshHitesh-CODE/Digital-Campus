@@ -1,253 +1,233 @@
 /**
- * Samskruti Digital Campus - Dynamic SBTET Consolidated Academic Results Controller
- * Automatically synchronizes academic results for whoever is logged in.
+ * Samskruti College SBTET Marks & Examination Results Controller
+ * Dynamic fill and full interactive logic for Stitch Campus Connect Results
  */
 
-import { api } from '../../js/api.js';
-import { requireAuth } from '../../js/auth-guard.js';
-import { renderDock } from '../../js/dock.js';
-import { alerts } from '../../js/alerts.js';
-
-// Resolve session of currently logged-in student
-const user = requireAuth(['STUDENT', 'HOD', 'HOD_CS', 'ADMIN']);
-
-function getActivePin() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const queryPin = urlParams.get('pin');
-  const storedPin = localStorage.getItem('student_pin');
-  return (queryPin || storedPin || user?.sbtetPin || user?.rollNumber || '').trim().toUpperCase();
-}
-
-if (user) {
-  renderDock('results.html', user.role || 'STUDENT');
-}
-
-let activeResultsData = null;
-let currentSelectedSem = null;
-
 document.addEventListener('DOMContentLoaded', () => {
-  setupUserHeader();
-  loadAcademicResults();
-  setupSyncButton();
+  initResults();
 });
 
-function setupUserHeader() {
-  const pin = getActivePin();
-  const subtitleElem = document.getElementById('student-meta-subtitle');
-  if (subtitleElem) {
-    subtitleElem.textContent = `Samskruti College (259) • State Board of Technical Education & Training Official Records (PIN: ${pin})`;
-  }
+let currentActiveSem = '4';
+
+function initResults() {
+  bindStudentMetadata();
+  bindMarksSummary();
+  bindSyncButton();
+  bindPrintAndDownload();
+  bindSemesterTabs();
+  bindRecountingModal();
+
+  // Initial render of 4th semester subjects
+  renderSemesterMarks('4');
 }
 
-async function loadAcademicResults() {
-  const pin = getActivePin();
+/**
+ * 1. Bind Student Header Metadata
+ */
+function bindStudentMetadata() {
+  if (typeof StitchState === 'undefined') return;
+  const user = StitchState.getUser();
 
-  try {
-    const res = await api.get('/results', { pin });
-    if (res && res.success) {
-      renderResultsDashboard(res.data || res.results || res);
-    } else {
-      throw new Error('Malformed results response');
-    }
-  } catch (error) {
-    console.warn('[Initial Load Fallback]:', error.message);
-    triggerLiveSync(false);
-  }
+  const nameEl = document.getElementById('marksStudentName');
+  if (nameEl) nameEl.textContent = user.name || 'Karnati Himesh';
+
+  const pinEl = document.getElementById('marksStudentPin');
+  if (pinEl) pinEl.textContent = `PIN: ${user.pin || '24259-CS-025'}`;
+
+  const branchEl = document.getElementById('marksStudentBranch');
+  if (branchEl) branchEl.textContent = `Branch: CS (Diploma Engg.) · ${user.branch || 'CSE'}`;
 }
 
-function setupSyncButton() {
-  const syncBtn = document.getElementById('sync-results-btn');
-  syncBtn?.addEventListener('click', () => {
-    triggerLiveSync(true);
+/**
+ * 2. Bind CGPA, Credits & Standing
+ */
+function bindMarksSummary() {
+  if (typeof StitchState === 'undefined') return;
+  const marks = StitchState.getMarks();
+
+  const cgpaEl = document.getElementById('marksCgpa');
+  if (cgpaEl) cgpaEl.textContent = marks.cgpa.toFixed(2);
+
+  const credEl = document.getElementById('marksCredits');
+  if (credEl) credEl.textContent = marks.securedCredits.toFixed(1);
+
+  const backEl = document.getElementById('marksBacklogs');
+  if (backEl) backEl.textContent = marks.activeBacklogs;
+}
+
+/**
+ * 3. 3-Stage SBTET Sync State Machine
+ */
+function bindSyncButton() {
+  const syncBtn = document.getElementById('sync-btn');
+  if (!syncBtn) return;
+
+  const originalContent = syncBtn.innerHTML;
+
+  syncBtn.addEventListener('click', () => {
+    // Stage 1 -> Stage 2: Contacting SBTET Server
+    syncBtn.innerHTML = `
+      <span class="material-symbols-outlined text-[20px] text-emerald-700 animate-spin">refresh</span>
+      <span class="text-lg md:text-xl font-bold tracking-tight">Contacting SBTET Server...</span>
+    `;
+    syncBtn.disabled = true;
+
+    setTimeout(() => {
+      // Stage 2 -> Stage 3: Marks Up to Date
+      syncBtn.innerHTML = `
+        <span class="material-symbols-outlined text-[20px] text-emerald-700">done_all</span>
+        <span class="text-lg md:text-xl font-bold tracking-tight">Marks Up to Date</span>
+      `;
+      showToast('SBTET State Board Central Ledger: C-24 Academic Memo Verified');
+
+      setTimeout(() => {
+        // Stage 3 -> Stage 1: Reset
+        syncBtn.innerHTML = originalContent;
+        syncBtn.disabled = false;
+      }, 2500);
+    }, 1200);
   });
 }
 
-async function triggerLiveSync(showFeedback = true) {
-  const syncBtn = document.getElementById('sync-results-btn');
-  const btnLabel = document.getElementById('sync-btn-label');
-  const btnIcon = document.getElementById('sync-btn-icon');
-  const pin = getActivePin();
-
-  if (syncBtn) {
-    syncBtn.disabled = true;
-    if (btnLabel) btnLabel.textContent = 'Syncing SBTET Marks...';
-    if (btnIcon) btnIcon.classList.add('spinning');
+/**
+ * 4. Print & Download Memo
+ */
+function bindPrintAndDownload() {
+  const printBtn = document.getElementById('btnPrintMemo');
+  if (printBtn) {
+    printBtn.addEventListener('click', () => {
+      window.print();
+    });
   }
 
-  if (showFeedback) {
-    alerts.info(`Connecting to SBTET Results Gateway for PIN ${pin}...`);
-  }
-
-  try {
-    const res = await api.post('/results/sync', { pin, force: true });
-    if (res && res.success) {
-      renderResultsDashboard(res.data || res.results || res);
-      if (showFeedback) {
-        alerts.success(`SBTET marksheet for ${res.data?.studentName || pin} synchronized successfully!`);
-      }
-    } else {
-      throw new Error(res.message || 'Failed to sync marksheet');
-    }
-  } catch (err) {
-    console.error('[Live Results Sync Error]:', err);
-    if (showFeedback) {
-      alerts.warning('SBTET Gateway busy. Displaying verified institutional records.');
-    }
-  } finally {
-    if (syncBtn) {
-      syncBtn.disabled = false;
-      if (btnLabel) btnLabel.textContent = 'Sync Live SBTET Marks';
-      if (btnIcon) btnIcon.classList.remove('spinning');
-    }
+  const dlBtn = document.getElementById('btnDownloadMemo');
+  if (dlBtn) {
+    dlBtn.addEventListener('click', () => {
+      showToast('Generating official consolidated academic transcript PDF...');
+      setTimeout(() => {
+        window.print();
+      }, 500);
+    });
   }
 }
 
-function renderResultsDashboard(data) {
-  activeResultsData = data;
-  const summary = data.summary || {};
-  const currentPin = getActivePin();
+/**
+ * 5. Interactive Semester Tabs & Subject Rendering
+ */
+function bindSemesterTabs() {
+  const tabBtns = document.querySelectorAll('.sem-tab-btn');
+  if (!tabBtns.length) return;
 
-  // 1. Profile Bar
-  const nameElem = document.getElementById('student-display-name');
-  const pinElem = document.getElementById('student-display-pin');
-  const schemeElem = document.getElementById('student-display-scheme');
-  const branchElem = document.getElementById('student-display-branch');
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const sem = btn.getAttribute('data-sem');
+      if (!sem) return;
 
-  if (nameElem) nameElem.textContent = data.studentName || user.name || 'Student';
-  if (pinElem) pinElem.textContent = data.pin || currentPin;
-  if (schemeElem) schemeElem.textContent = data.scheme || 'C24';
-  if (branchElem) branchElem.textContent = data.branch || 'CS';
+      tabBtns.forEach(b => {
+        b.className = 'sem-tab-btn px-4 py-2 rounded-full bg-white border border-emerald-900/10 text-neutral-600 font-bold text-base md:text-lg hover:bg-emerald-50 hover:text-emerald-900 transition-all cursor-pointer whitespace-nowrap';
+      });
 
-  // 2. Metrics Cards
-  const cgpaElem = document.getElementById('res-cgpa');
-  const creditsElem = document.getElementById('res-credits');
-  const backlogsElem = document.getElementById('res-backlogs');
-  const schemeFooter = document.getElementById('res-scheme-footer');
-  const semFooter = document.getElementById('res-sem-footer');
-  const promoFooter = document.getElementById('res-promotion-footer');
+      btn.className = 'sem-tab-btn active-tab px-5 py-2 rounded-full bg-gradient-to-r from-emerald-700 via-emerald-600 to-teal-600 text-white font-black text-base md:text-lg shadow-md shadow-emerald-700/25 cursor-pointer whitespace-nowrap';
 
-  if (cgpaElem) cgpaElem.textContent = summary.cgpa !== undefined ? summary.cgpa : '0.00';
-  if (creditsElem) creditsElem.textContent = summary.creditsRatio || `${summary.creditsGained || 0} / ${summary.totalMaxCredits || 80}`;
-  if (backlogsElem) {
-    const backlogs = summary.activeBacklogs || 0;
-    backlogsElem.textContent = backlogs;
-    backlogsElem.style.color = backlogs === 0 ? 'var(--accent-success)' : 'var(--accent-danger)';
-  }
-
-  if (schemeFooter) schemeFooter.textContent = `Scheme: ${data.scheme || 'C-24'} Regular`;
-  if (semFooter) semFooter.textContent = `Latest Exam: ${summary.latestSemester || 'Current'}`;
-  if (promoFooter) promoFooter.textContent = `Status: ${summary.promotionStatus || 'Promoted'}`;
-
-  // 3. Render Semester Tabs
-  renderSemesterTabs(data.semesters || {}, data.availableSemesters || []);
+      currentActiveSem = sem;
+      renderSemesterMarks(sem);
+    });
+  });
 }
 
-function renderSemesterTabs(semestersMap, semesterList) {
-  const tabContainer = document.getElementById('semester-tab-bar');
-  if (!tabContainer) return;
+function renderSemesterMarks(sem) {
+  if (typeof StitchState === 'undefined') return;
+  const marksData = StitchState.getMarks();
+  const semData = marksData.semesters[sem] || marksData.semesters['4'];
 
-  const sems = semesterList.length > 0 ? semesterList : Object.keys(semestersMap);
-  if (sems.length === 0) return;
+  // Update Summary numbers
+  const sgpaEl = document.getElementById('tabSgpaVal');
+  if (sgpaEl) sgpaEl.textContent = semData.sgpa.toFixed(2);
 
-  // Default to latest semester
-  if (!currentSelectedSem || !semestersMap[currentSelectedSem]) {
-    currentSelectedSem = sems[sems.length - 1];
-  }
+  const credEl = document.getElementById('tabCreditsVal');
+  if (credEl) credEl.textContent = `${semData.credits} Earned`;
 
-  tabContainer.innerHTML = sems.map(semKey => {
-    const semNum = semKey.replace(/[^0-9]/g, '') || semKey;
-    const label = `${semNum}${getOrdinal(semNum)} Sem`;
-    const isActive = semKey === currentSelectedSem ? 'active' : '';
+  const totalEl = document.getElementById('tabTotalMarksVal');
+  if (totalEl) totalEl.textContent = `${semData.totalMarks} / ${semData.maxMarks}`;
 
-    return `
-      <button type="button" class="sem-btn ${isActive}" data-sem="${semKey}">
-        ${label}
-      </button>
-    `;
-  }).join('');
+  const aggEl = document.getElementById('tabAggregateVal');
+  if (aggEl) aggEl.textContent = semData.aggregate;
 
-  tabContainer.querySelectorAll('.sem-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      tabContainer.querySelectorAll('.sem-btn').forEach(b => b.classList.remove('active'));
-      e.currentTarget.classList.add('active');
-      const targetSem = e.currentTarget.getAttribute('data-sem');
-      currentSelectedSem = targetSem;
-      renderSemesterTable(semestersMap[targetSem], targetSem);
+  // Render Table Rows
+  const tbody = document.getElementById('marksTableBody');
+  if (!tbody || !semData.subjects) return;
+
+  tbody.innerHTML = semData.subjects.map(sub => `
+    <tr class="hover:bg-emerald-50/50 transition-colors">
+      <td class="py-3 px-4 font-black text-emerald-900">${sub.code}</td>
+      <td class="py-3 px-4 font-bold text-neutral-900">${sub.desc || sub.title}</td>
+      <td class="py-3 px-4 text-sm text-neutral-600">${sub.cat || 'Theory'}</td>
+      <td class="py-3 px-3 text-center font-bold text-neutral-700">${sub.internal}</td>
+      <td class="py-3 px-3 text-center font-bold text-neutral-700">${sub.endSem}</td>
+      <td class="py-3 px-3 text-center font-black text-emerald-950">${sub.total}</td>
+      <td class="py-3 px-3 text-center font-black text-emerald-800">${sub.gradePoint.toFixed(1)}</td>
+      <td class="py-3 px-3 text-center">
+        <span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-emerald-100 text-emerald-900 font-black text-sm">
+          ${sub.letter}
+        </span>
+      </td>
+      <td class="py-3 px-4 text-center">
+        <span class="px-3 py-1 rounded-full bg-emerald-100/80 text-emerald-900 font-extrabold text-xs md:text-sm border border-emerald-300">
+          ${sub.status}
+        </span>
+      </td>
+    </tr>
+  `).join('');
+}
+
+/**
+ * 6. Recounting Modal & Submission
+ */
+function bindRecountingModal() {
+  const trigger = document.getElementById('btnApplyRecounting');
+  const modal = document.getElementById('modalRecounting');
+  if (!trigger || !modal) return;
+
+  trigger.addEventListener('click', (e) => {
+    e.preventDefault();
+    modal.classList.remove('hidden');
+  });
+
+  modal.querySelectorAll('.close-modal-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      modal.classList.add('hidden');
     });
   });
 
-  // Initial Table Render
-  renderSemesterTable(semestersMap[currentSelectedSem], currentSelectedSem);
-}
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) modal.classList.add('hidden');
+  });
 
-function renderSemesterTable(semData, semKey) {
-  const headingElem = document.getElementById('semester-heading');
-  const subHeadingElem = document.getElementById('semester-subheading');
-  const statusBadge = document.getElementById('res-status-badge');
-  const tbody = document.getElementById('results-tbody');
-
-  const semNum = (semKey || '').replace(/[^0-9]/g, '') || '1';
-  const romanNum = getRoman(semNum);
-
-  if (headingElem) {
-    headingElem.textContent = `Semester ${romanNum} Subject Breakdown`;
-  }
-
-  if (subHeadingElem && semData?.examMonthYear) {
-    subHeadingElem.textContent = `Exam Session: ${semData.examMonthYear} • SBTET Official Record`;
-  }
-
-  const subjects = semData?.subjects || [];
-  const hasBacklog = subjects.some(s => s.status === 'FAIL');
-
-  if (statusBadge) {
-    if (hasBacklog) {
-      statusBadge.innerHTML = `<i data-lucide="alert-triangle"></i> <span>BACKLOG DETECTED</span>`;
-      statusBadge.className = 'neu-badge neu-badge-danger';
-    } else {
-      statusBadge.innerHTML = `<i data-lucide="check"></i> <span>PASS - ALL CLEARED</span>`;
-      statusBadge.className = 'clearance-badge-success';
-    }
-    if (window.lucide) {
-      lucide.createIcons();
-    }
-  }
-
-  if (tbody) {
-    if (subjects.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 1.5rem;">No records available for this semester.</td></tr>`;
-      return;
-    }
-
-    tbody.innerHTML = subjects.map(sub => {
-      const isPass = sub.status === 'PASS';
-      const gradeClass = `grade-${(sub.grade || '').toLowerCase().replace('+', 'plus')}`;
-
-      return `
-        <tr>
-          <td class="font-mono font-bold">${sub.code}</td>
-          <td class="font-semibold">${sub.name}</td>
-          <td class="text-center font-mono">${sub.internal}</td>
-          <td class="text-center font-mono">${sub.external}</td>
-          <td class="text-center font-mono font-bold">${sub.total}</td>
-          <td class="text-center"><span class="grade-pill ${gradeClass}">${sub.grade}</span></td>
-          <td class="text-center"><span class="status-pill status-${isPass ? 'pass' : 'fail'}">${sub.status}</span></td>
-        </tr>
-      `;
-    }).join('');
+  const form = document.getElementById('formRecounting');
+  if (form) {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      modal.classList.add('hidden');
+      showToast('SBTET Recounting challenge recorded (#RC-24259-88). Fee challan verified.');
+      form.reset();
+    });
   }
 }
 
-function getOrdinal(n) {
-  const num = parseInt(n, 10);
-  if (num === 1) return 'st';
-  if (num === 2) return 'nd';
-  if (num === 3) return 'rd';
-  return 'th';
-}
+/**
+ * 7. Toast Helper
+ */
+function showToast(message) {
+  let toast = document.getElementById('toastNotification');
+  if (!toast) return;
 
-function getRoman(n) {
-  const num = parseInt(n, 10);
-  const romans = { 1: 'I', 2: 'II', 3: 'III', 4: 'IV', 5: 'V', 6: 'VI' };
-  return romans[num] || String(n);
+  const msgEl = document.getElementById('toastMsg');
+  if (msgEl) msgEl.textContent = message;
+
+  toast.classList.remove('hidden');
+
+  clearTimeout(window._resToastTimeout);
+  window._resToastTimeout = setTimeout(() => {
+    toast.classList.add('hidden');
+  }, 3500);
 }

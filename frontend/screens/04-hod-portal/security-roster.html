@@ -1,446 +1,357 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" class="light">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Anti-Spoofing Security Keys Roster • HOD Executive Console • Samskruti Digital Campus</title>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Anti-Spoofing Security Keys Roster &bull; HOD Console (Code: 259)</title>
 
-  <!-- Web Fonts for Pro UI -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet" />
-
-  <!-- Stylesheets -->
-  <link rel="stylesheet" href="../../css/reset.css" />
-  <link rel="stylesheet" href="../../css/variables.css" />
-  <link rel="stylesheet" href="../../css/top-nav.css?v=3.3.0" />
-  <link rel="stylesheet" href="../../css/animations.css" />
-  <link rel="stylesheet" href="../../css/dc-global-theme.css?v=3.3.0" />
-  <link rel="stylesheet" href="../../css/hod-theme.css" />
-
-  <!-- Lucide Icons & Dynamic Island -->
+  <!-- Google Fonts: Plus Jakarta Sans, Darker Grotesque, Newsreader, IBM Plex Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+  <link href="https://fonts.googleapis.com/css2?family=Darker+Grotesque:wght@600;700;800;900&family=IBM+Plex+Mono:wght@500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,500;0,6..72,700;1,6..72,500&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <!-- Material Symbols Outlined -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
   <script src="https://unpkg.com/lucide@latest"></script>
-  <script src="../../js/theme-engine.js"></script>
-  <script src="../../js/dc-dynamic-island.js?v=3.3.0"></script>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Unified Tailwind Configuration -->
+  <script src="/js/stitch-tailwind-config.js"></script>
+
+  <!-- Master Design System Stylesheets -->
+  <link rel="stylesheet" href="/css/stitch-design-system.css"/>
+  <link rel="stylesheet" href="/css/top-nav.css"/>
+
+  <!-- Client State Engine & Dynamic Island Dock -->
+  <script src="/js/campus-180-roster.js"></script>
+  <script src="/js/stitch-state.js"></script>
+  <script src="/js/dc-dynamic-island.js"></script>
 
   <style>
-    /* Absolute Layout & Logo Sizing Constraints */
-    .app-layout {
-      display: flex !important;
-      flex-direction: column !important;
-      width: 100% !important;
-      min-height: 100vh !important;
-    }
-    .brand-logo-img, img.brand-logo-img, .brand-emblem-badge img, header img, nav img {
-      width: 28px !important;
-      height: 28px !important;
-      max-width: 28px !important;
-      max-height: 28px !important;
-      object-fit: contain !important;
-      display: block !important;
-      flex-shrink: 0 !important;
-    }
-    .brand-emblem-badge {
-      width: 40px !important;
-      height: 40px !important;
-      min-width: 40px !important;
-      min-height: 40px !important;
-      max-width: 40px !important;
-      max-height: 40px !important;
-      border-radius: 50% !important;
-      overflow: hidden !important;
-      display: flex !important;
-      align-items: center !important;
-      justify-content: center !important;
-      flex-shrink: 0 !important;
-    }
-
-    /* Filter Pills */
-    .filter-btn-group {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-    .filter-pill {
-      padding: 7px 16px;
-      font-size: 0.78rem;
-      font-weight: 700;
-      border-radius: 9999px;
-      border: 1px solid var(--hod-border);
-      background: var(--hod-surface-card);
-      color: var(--hod-text-muted);
-      cursor: pointer;
-      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .filter-pill:hover {
-      border-color: var(--hod-border-highlight);
-      color: var(--hod-text-main);
-    }
-    .filter-pill.active {
-      background: linear-gradient(135deg, #2563eb, #3b82f6) !important;
-      color: #ffffff !important;
-      border-color: transparent !important;
-      box-shadow: var(--hod-glow-blue);
-    }
-    .filter-pill.active.aiml-active {
-      background: linear-gradient(135deg, #059669, #10b981) !important;
-      color: #ffffff !important;
-      border-color: transparent !important;
-      box-shadow: 0 0 16px rgba(16, 185, 129, 0.35) !important;
-    }
-
-    /* Security Table Styling */
-    .security-table {
-      width: 100%;
-      border-collapse: separate;
-      border-spacing: 0;
-      font-variant-numeric: tabular-nums;
-    }
-    .security-table th, .security-table td {
-      padding: 0.95rem 1.25rem;
-      text-align: left;
-    }
-    .security-table th {
-      font-size: 0.72rem;
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: #94a3b8;
-      background: rgba(15, 23, 42, 0.95);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      position: sticky;
-      top: 0;
-      z-index: 2;
-    }
-    .security-table td {
-      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-      color: var(--hod-text-main);
-      font-size: 0.88rem;
-    }
-    .security-table tbody tr:hover {
-      background: rgba(59, 130, 246, 0.06);
-    }
-    .mono-code {
-      font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-      font-weight: 700;
-      letter-spacing: 0.02em;
-    }
-    .key-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 4px 10px;
-      border-radius: 6px;
-      font-family: 'JetBrains Mono', 'Fira Code', monospace;
-      font-size: 0.82rem;
-      font-weight: 800;
-      background: rgba(16, 185, 129, 0.15);
-      color: #34d399;
-      border: 1px solid rgba(16, 185, 129, 0.3);
-      box-shadow: 0 0 12px rgba(16, 185, 129, 0.2);
-    }
-    .key-badge-aiml {
-      background: rgba(16, 185, 129, 0.2);
-      color: #34d399;
-      border-color: rgba(16, 185, 129, 0.4);
-    }
-    .key-badge-cs {
-      background: rgba(59, 130, 246, 0.15);
-      color: #60a5fa;
-      border-color: rgba(59, 130, 246, 0.3);
+    .glass-card {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(220, 215, 205, 0.8);
+      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.04);
     }
   </style>
 </head>
-<body class="hod-executive">
-  <!-- Live Moving Background with Aura Orbs -->
-  <div class="dc-orb-bg" aria-hidden="true">
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
-    <div class="orb orb-3"></div>
-    <div class="orb orb-4"></div>
-  </div>
 
-  <!-- Top-Right Corner Profile Widget -->
-  <div class="app-layout" style="position: relative; z-index: 10;">
+<body class="bg-[#fcfaf6] dark:bg-[#020604] text-stone-800 dark:text-stone-100 font-sans antialiased min-h-screen flex flex-col justify-between relative selection:bg-emerald-500 selection:text-white">
+  <!-- Dynamic Island Dock mounts via dc-dynamic-island.js -->
 
-    <!-- Main Content Area -->
-    <main class="main-content" style="margin-left: 0; width: 100%; max-width: 1600px; margin: auto; padding: 70px 28px 24px;">
-      
-      <!-- Top Bar -->
-      <header class="content-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 26px;">
-        <div class="header-titles">
-          <div class="subtitle" id="roster-subtitle" style="color: var(--hod-text-muted);">Samskruti College of Engineering & Technology (Code: 259) • Multi-Department Security Console</div>
-          <h1 class="title" id="roster-main-title" style="font-size: 1.75rem; font-weight: 900; color: var(--hod-text-main);">Anti-Spoofing Security Keys Roster</h1>
+  <main class="w-full flex-grow pt-[84px] md:pt-[92px]">
+    <main class="w-full flex-grow py-7 px-4 sm:px-6 lg:px-8 relative z-10">
+<div class="max-w-[1280px] w-full mx-auto flex flex-col gap-6">
+<!-- 2. TOP INSTITUTIONAL HEADER RIBBON (Encapsulated rounded-[36px] white card ribbon) -->
+<header class="bg-white/95 backdrop-blur-xl border border-stone-200/80 rounded-[36px] px-8 py-5 shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+<div class="flex flex-col gap-1.5">
+<div class="flex flex-wrap items-center gap-2">
+<span class="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-emerald-50 border border-emerald-200/70 text-primary font-dg text-xs font-black tracking-wider uppercase">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse"></span>
+            INSTITUTIONAL ZERO-TRUST NETWORK
+          </span>
+<span class="hidden sm:inline-flex items-center px-2.5 py-0.5 rounded-full bg-stone-100 text-stone-600 font-mono text-[11px] font-semibold tracking-wider">
+            NODE 259:SECURITY-HOD
+          </span>
+</div>
+<h1 class="font-dg text-[38px] sm:text-[42px] leading-[40px] sm:leading-[44px] font-black text-primary tracking-tight">
+          Anti-Spoofing Security Keys Roster
+        </h1>
+<p class="font-dg text-[17px] text-stone-600 font-semibold tracking-wide">
+          Samskruti College (Code: 259) • <span class="font-black text-on-surface">DR. J. VAMSHI KRISHNA</span> (<span class="font-mono text-xs font-semibold text-stone-700">PIN: VAMSHI-CS-HOD</span>) • Hardware Biometric Enrolments 2024–2025
+        </p>
+</div>
+<!-- Right Status Pills -->
+<div class="flex flex-wrap items-center gap-2.5 self-start lg:self-center">
+<div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-stone-50 border border-stone-200/80 text-primary font-mono text-xs font-semibold shadow-xs">
+<span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+          Socket: Active
         </div>
-
-        <div class="header-actions" style="display: flex; gap: 12px; align-items: center;">
-          <button class="neu-btn" onclick="window.print()" style="display: flex; align-items: center; gap: 6px; padding: 10px 18px; border-radius: 10px; font-weight: 700; cursor: pointer;">
-            <span>🖨️ Print / Export Roster</span>
+<div class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-primary text-white shadow-xs font-dg text-xs font-black uppercase tracking-wider">
+<span class="material-symbols-outlined text-[15px]">key</span>
+          180 Keys Active
+        </div>
+<div class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-emerald-50 border border-emerald-200/70 text-emerald-900 font-mono text-xs font-semibold shadow-xs">
+<span class="material-symbols-outlined text-[16px] text-emerald-700">verified_user</span>
+          SHA-256 Validated
+        </div>
+</div>
+</header>
+<!-- 3. MAIN CONTENT SHEET CONTAINER (Large rounded-[36px] elevated white tactile sheet) -->
+<section class="bg-white/95 backdrop-blur-xl border border-stone-200/80 rounded-[36px] p-6 sm:p-8 shadow-sm flex flex-col gap-6">
+<!-- KPI Metric Tiles Row (rounded-[24px] tiles with delicate borders and shadows) -->
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+<!-- Tile 1 -->
+<div class="bg-stone-50/80 hover:bg-stone-50 border border-stone-200/70 rounded-[24px] p-5 flex items-center justify-between gap-4 transition-all shadow-xs">
+<div class="flex flex-col">
+<span class="font-dg text-sm font-bold text-stone-500 uppercase tracking-wider">Total Keys Enrolled</span>
+<div class="flex items-baseline gap-2 mt-1">
+<span class="font-dg text-4xl font-black text-primary leading-none">180</span>
+<span class="font-dg text-sm font-bold text-emerald-800 bg-emerald-100/70 px-2 py-0.5 rounded-full">CS Department</span>
+</div>
+<span class="font-dg text-xs font-semibold text-stone-500 mt-1.5">Hardware tokens provisioned</span>
+</div>
+<div class="w-12 h-12 rounded-2xl bg-white border border-stone-200/80 text-primary flex items-center justify-center shadow-xs shrink-0">
+<span class="material-symbols-outlined text-2xl">vpn_key</span>
+</div>
+</div>
+<!-- Tile 2 -->
+<div class="bg-stone-50/80 hover:bg-stone-50 border border-stone-200/70 rounded-[24px] p-5 flex items-center justify-between gap-4 transition-all shadow-xs">
+<div class="flex flex-col">
+<span class="font-dg text-sm font-bold text-stone-500 uppercase tracking-wider">Active Multi-Factor Ratio</span>
+<div class="flex items-baseline gap-2 mt-1">
+<span class="font-dg text-4xl font-black text-primary leading-none">100%</span>
+<span class="font-dg text-sm font-bold text-emerald-800 bg-emerald-100/70 px-2 py-0.5 rounded-full">Scheme C-24</span>
+</div>
+<span class="font-dg text-xs font-semibold text-stone-500 mt-1.5">Zero untethered nodes</span>
+</div>
+<div class="w-12 h-12 rounded-2xl bg-white border border-stone-200/80 text-emerald-800 flex items-center justify-center shadow-xs shrink-0">
+<span class="material-symbols-outlined text-2xl">security</span>
+</div>
+</div>
+<!-- Tile 3 -->
+<div class="bg-stone-50/80 hover:bg-stone-50 border border-stone-200/70 rounded-[24px] p-5 flex items-center justify-between gap-4 transition-all shadow-xs">
+<div class="flex flex-col">
+<span class="font-dg text-sm font-bold text-stone-500 uppercase tracking-wider">Drift Expirations</span>
+<div class="flex items-baseline gap-2 mt-1">
+<span class="font-dg text-4xl font-black text-primary leading-none">0</span>
+<span class="font-dg text-sm font-bold text-emerald-800 bg-emerald-100/70 px-2 py-0.5 rounded-full">Zero-Trust Compliant</span>
+</div>
+<span class="font-dg text-xs font-semibold text-stone-500 mt-1.5">No geo-spoofing flags</span>
+</div>
+<div class="w-12 h-12 rounded-2xl bg-white border border-stone-200/80 text-primary flex items-center justify-center shadow-xs shrink-0">
+<span class="material-symbols-outlined text-2xl">verified</span>
+</div>
+</div>
+</div>
+<!-- Filter & Search toolbar -->
+<div class="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4 bg-[#f8f6f0] border border-stone-200/70 rounded-[24px] p-3 sm:p-3.5">
+<!-- Department Pill Tabs -->
+<div class="flex items-center gap-2 overflow-x-auto pb-1 lg:pb-0">
+<button class="px-4 py-2 rounded-full bg-primary text-white font-dg text-xs font-black uppercase tracking-wider shrink-0 shadow-xs transition-all hover:bg-primary-container" type="button">
+            CS Dept (180 Keys)
           </button>
-          <a href="./students-info.html" class="neu-btn-primary" style="text-decoration: none; padding: 10px 18px; border-radius: 10px; font-weight: 800;">
-            ⚡ Students Info →
-          </a>
-        </div>
-      </header>
+<button class="px-4 py-2 rounded-full bg-white hover:bg-stone-100 text-stone-700 border border-stone-200/70 font-dg text-xs font-bold uppercase tracking-wider shrink-0 transition-all" type="button">
+            AIML Dept (120 Keys)
+          </button>
+<button class="px-4 py-2 rounded-full bg-white hover:bg-stone-100 text-stone-700 border border-stone-200/70 font-dg text-xs font-bold uppercase tracking-wider shrink-0 transition-all" type="button">
+            All Departments (300 Keys)
+          </button>
+</div>
+<!-- Search Input & Print Pill -->
+<div class="flex items-center gap-3 shrink-0">
+<div class="relative w-full sm:w-72">
+<span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-stone-400 text-[18px]">search</span>
+<input class="w-full bg-white text-on-surface placeholder:text-stone-400 font-dg text-base font-semibold rounded-full pl-10 pr-4 py-2 border border-stone-200/80 focus:outline-none focus:ring-2 focus:ring-primary/20 shadow-xs" id="rosterSearch" placeholder="Search PIN, Name, or Key..." type="text"/>
+</div>
+<button class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-white hover:bg-stone-100 text-on-surface border border-stone-200/80 font-dg text-xs font-black uppercase tracking-wide transition-all shadow-xs shrink-0" id="printBtn" type="button">
+<span class="material-symbols-outlined text-[16px] text-stone-600">print</span> Print Roster
+          </button>
+</div>
+</div>
+<!-- Security Keys Roster Table with rounded-2xl headers and crisp pill badges -->
+<div class="overflow-x-auto max-h-[640px] overflow-y-auto rounded-[24px] border border-stone-200/70 bg-white shadow-inner" id="rosterScrollContainer">
+<table class="w-full text-left border-collapse" id="rosterTable">
+<thead>
+<tr class="bg-primary text-white">
+<th class="py-4 px-4 font-mono text-xs font-semibold tracking-wider rounded-tl-[24px]" scope="col"># ROLL</th>
+<th class="py-4 px-4 font-mono text-xs font-semibold tracking-wider" scope="col">DIPLOMA PIN</th>
+<th class="py-4 px-4 font-dg text-sm font-black uppercase tracking-wider" scope="col">STUDENT NAME</th>
+<th class="py-4 px-4 font-mono text-xs font-semibold tracking-wider" scope="col">ASSIGNED INSTITUTIONAL SECURITY KEY</th>
+<th class="py-4 px-4 font-dg text-sm font-black uppercase tracking-wider" scope="col">BRANCH &amp; SCHEME</th>
+<th class="py-4 px-4 font-dg text-sm font-black uppercase tracking-wider rounded-tr-[24px]" scope="col">VERIFICATION STATUS</th>
+</tr>
+</thead>
+<tbody id="securityRosterTbody" class="divide-y divide-stone-100 font-dg text-base">
+<!-- Row 1 -->
+<tr class="hover:bg-stone-50/80 transition-colors group">
+<td class="py-4 px-4 font-mono text-xs font-bold text-stone-500">#001</td>
+<td class="py-4 px-4 font-mono text-xs font-bold text-on-surface">24259-CS-001</td>
+<td class="py-4 px-4 font-dg text-[17px] font-bold text-on-surface leading-snug">GONA LAXMI NARASIMHA SWAMI</td>
+<td class="py-4 px-4">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-950 font-mono text-xs font-semibold shadow-2xs">
+<span class="material-symbols-outlined text-[14px] text-emerald-800">vpn_key</span>STD-3472C6
+                </span>
+</td>
+<td class="py-4 px-4 font-dg text-base text-stone-600 font-semibold">Computer Science &amp; Engineering (C-24)</td>
+<td class="py-4 px-4">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300 font-dg text-xs font-bold uppercase tracking-wider shadow-2xs">
+<span class="material-symbols-outlined text-sm text-emerald-700">verified</span>VERIFIED &amp; ACTIVE
+                </span>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-stone-50/80 transition-colors group">
+<td class="py-4 px-4 font-mono text-xs font-bold text-stone-500">#002</td>
+<td class="py-4 px-4 font-mono text-xs font-bold text-on-surface">24259-CS-002</td>
+<td class="py-4 px-4 font-dg text-[17px] font-bold text-on-surface leading-snug">DULIPUDI TARUN</td>
+<td class="py-4 px-4">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-stone-100 border border-stone-200 text-stone-800 font-mono text-xs font-semibold">
+<span class="material-symbols-outlined text-[14px] text-stone-500">vpn_key</span>STD-8111F9
+                </span>
+</td>
+<td class="py-4 px-4 font-dg text-base text-stone-600 font-semibold">Computer Science &amp; Engineering (C-24)</td>
+<td class="py-4 px-4">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-50 text-teal-800 border border-teal-200 font-dg text-xs font-bold uppercase tracking-wider">
+<span class="w-1.5 h-1.5 rounded-full bg-teal-600"></span>PRE-ALLOCATED
+                </span>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-stone-50/80 transition-colors group">
+<td class="py-4 px-4 font-mono text-xs font-bold text-stone-500">#003</td>
+<td class="py-4 px-4 font-mono text-xs font-bold text-on-surface">24259-CS-003</td>
+<td class="py-4 px-4 font-dg text-[17px] font-bold text-on-surface leading-snug">ANABOINA DILIP</td>
+<td class="py-4 px-4">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-stone-100 border border-stone-200 text-stone-800 font-mono text-xs font-semibold">
+<span class="material-symbols-outlined text-[14px] text-stone-500">vpn_key</span>STD-6658A0
+                </span>
+</td>
+<td class="py-4 px-4 font-dg text-base text-stone-600 font-semibold">Computer Science &amp; Engineering (C-24)</td>
+<td class="py-4 px-4">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-50 text-teal-800 border border-teal-200 font-dg text-xs font-bold uppercase tracking-wider">
+<span class="w-1.5 h-1.5 rounded-full bg-teal-600"></span>PRE-ALLOCATED
+                </span>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-stone-50/80 transition-colors group">
+<td class="py-4 px-4 font-mono text-xs font-bold text-stone-500">#004</td>
+<td class="py-4 px-4 font-mono text-xs font-bold text-on-surface">24259-CS-004</td>
+<td class="py-4 px-4 font-dg text-[17px] font-bold text-on-surface leading-snug">PITTALA BHAVYA</td>
+<td class="py-4 px-4">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-stone-100 border border-stone-200 text-stone-800 font-mono text-xs font-semibold">
+<span class="material-symbols-outlined text-[14px] text-stone-500">vpn_key</span>STD-07968C
+                </span>
+</td>
+<td class="py-4 px-4 font-dg text-base text-stone-600 font-semibold">Computer Science &amp; Engineering (C-24)</td>
+<td class="py-4 px-4">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-50 text-teal-800 border border-teal-200 font-dg text-xs font-bold uppercase tracking-wider">
+<span class="w-1.5 h-1.5 rounded-full bg-teal-600"></span>PRE-ALLOCATED
+                </span>
+</td>
+</tr>
+<!-- Row 5 -->
+<tr class="hover:bg-stone-50/80 transition-colors group">
+<td class="py-4 px-4 font-mono text-xs font-bold text-stone-500">#005</td>
+<td class="py-4 px-4 font-mono text-xs font-bold text-on-surface">24259-CS-005</td>
+<td class="py-4 px-4 font-dg text-[17px] font-bold text-on-surface leading-snug">CHAGANTI SRIJA</td>
+<td class="py-4 px-4">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-stone-100 border border-stone-200 text-stone-800 font-mono text-xs font-semibold">
+<span class="material-symbols-outlined text-[14px] text-stone-500">vpn_key</span>STD-7F0C06
+                </span>
+</td>
+<td class="py-4 px-4 font-dg text-base text-stone-600 font-semibold">Computer Science &amp; Engineering (C-24)</td>
+<td class="py-4 px-4">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-50 text-teal-800 border border-teal-200 font-dg text-xs font-bold uppercase tracking-wider">
+<span class="w-1.5 h-1.5 rounded-full bg-teal-600"></span>PRE-ALLOCATED
+                </span>
+</td>
+</tr>
+<!-- Row 6 -->
+<tr class="hover:bg-stone-50/80 transition-colors group">
+<td class="py-4 px-4 font-mono text-xs font-bold text-stone-500">#006</td>
+<td class="py-4 px-4 font-mono text-xs font-bold text-on-surface">24259-CS-006</td>
+<td class="py-4 px-4 font-dg text-[17px] font-bold text-on-surface leading-snug">BOLLOJU SATYA PAVANI</td>
+<td class="py-4 px-4">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-stone-100 border border-stone-200 text-stone-800 font-mono text-xs font-semibold">
+<span class="material-symbols-outlined text-[14px] text-stone-500">vpn_key</span>STD-169015
+                </span>
+</td>
+<td class="py-4 px-4 font-dg text-base text-stone-600 font-semibold">Computer Science &amp; Engineering (C-24)</td>
+<td class="py-4 px-4">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-50 text-teal-800 border border-teal-200 font-dg text-xs font-bold uppercase tracking-wider">
+<span class="w-1.5 h-1.5 rounded-full bg-teal-600"></span>PRE-ALLOCATED
+                </span>
+</td>
+</tr>
+<!-- Row 7 -->
+<tr class="hover:bg-stone-50/80 transition-colors group">
+<td class="py-4 px-4 font-mono text-xs font-bold text-stone-500">#007</td>
+<td class="py-4 px-4 font-mono text-xs font-bold text-on-surface">24259-CS-007</td>
+<td class="py-4 px-4 font-dg text-[17px] font-bold text-on-surface leading-snug">KATTA DHANUSH GOUD</td>
+<td class="py-4 px-4">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-stone-100 border border-stone-200 text-stone-800 font-mono text-xs font-semibold">
+<span class="material-symbols-outlined text-[14px] text-stone-500">vpn_key</span>STD-F7C720
+                </span>
+</td>
+<td class="py-4 px-4 font-dg text-base text-stone-600 font-semibold">Computer Science &amp; Engineering (C-24)</td>
+<td class="py-4 px-4">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-50 text-teal-800 border border-teal-200 font-dg text-xs font-bold uppercase tracking-wider">
+<span class="w-1.5 h-1.5 rounded-full bg-teal-600"></span>PRE-ALLOCATED
+                </span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Infinite Scroll Master Status Bar -->
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-3 pb-1 border-t border-stone-200">
+      <div class="flex items-center gap-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+        <span class="font-dg text-base text-stone-700 font-semibold" id="rosterCountStatus">
+          Displaying all <strong class="text-on-surface font-mono" id="visibleCount">180</strong> of <strong class="text-on-surface font-mono">180</strong> Computer Science Pre-Allocations (Continuous Scroll)
+        </span>
+      </div>
+      <div class="flex items-center gap-2">
+        <button id="scrollToTopBtn" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-semibold transition cursor-pointer" type="button">
+          <span class="material-symbols-outlined text-[16px]">arrow_upward</span>
+          <span>Scroll to Top</span>
+        </button>
+        <button id="exportCsvBtn" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-800 text-xs font-bold transition cursor-pointer" type="button">
+          <span class="material-symbols-outlined text-[16px]">download</span>
+          <span>Download 180 CSV</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+</div>
+</main>
+  </main>
 
-      <!-- Roster Card -->
-      <section class="executive-card" style="padding: 24px;">
-        <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; flex-wrap: wrap; gap: 12px;">
-          <div>
-            <h2 class="section-title" id="roster-section-title" style="font-size: 1.15rem; font-weight: 800; color: var(--hod-text-main); margin: 0 0 4px 0;">Pre-Allocated Deterministic Security Keys</h2>
-            <p style="font-size: 0.8rem; color: var(--hod-text-muted); margin: 0;">Institutional zero-trust keys for multi-factor activation and account recovery under Scheme C-24.</p>
+  <!-- Shared Samskruti Institutional Footer -->
+  <footer class="w-full bg-[#f3efe6]/90 border-t border-emerald-900/10 mt-16 relative z-10">
+    <div class="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-4 pb-6 border-b border-emerald-900/10">
+        <div class="flex flex-col gap-1 text-center md:text-left">
+          <div class="flex items-center justify-center md:justify-start gap-2">
+            <span class="font-title-editorial text-2xl text-emerald-950 font-bold">Samskruti College of Engineering &amp; Technology</span>
+            <span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-dg text-sm font-bold">Code 259</span>
           </div>
-          <span class="neu-badge metric-emerald-glow" id="roster-count-badge" style="font-weight: 800;">Loading Keys...</span>
+          <p class="font-dg text-base text-stone-600 font-medium">Anti-Spoofing Cryptographic Key Directory &bull; SBTET Scheme C-24.</p>
         </div>
-
-        <!-- Department Filter Pills & Search Bar -->
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; margin-bottom: 18px;">
-          <div class="filter-btn-group" id="dept-security-tabs">
-            <button type="button" class="filter-pill" id="pill-all" data-branch="ALL">All Departments (300 Keys)</button>
-            <button type="button" class="filter-pill" id="pill-cs" data-branch="CS">CS Dept (180 Keys)</button>
-            <button type="button" class="filter-pill" id="pill-aiml" data-branch="AIML">AIML Dept (120 Keys)</button>
+        <div class="flex flex-wrap items-center justify-center gap-2">
+          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/90 border border-emerald-900/10 shadow-sm">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span class="font-dg text-sm text-on-surface font-bold">180 Keys Enrolled</span>
           </div>
-
-          <input
-            type="text"
-            id="search-security-input"
-            class="neu-input"
-            placeholder="Search PIN, Name or Security Key..."
-            style="width: 100%; max-width: 440px; font-size: 0.85rem;"
-          />
+          <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/90 border border-emerald-900/10 shadow-sm">
+            <span class="material-symbols-outlined text-emerald-700 text-[16px]">verified</span>
+            <span class="font-dg text-sm text-on-surface font-bold">SHA-256 Validated</span>
+          </div>
         </div>
-
-        <!-- Distinct Table View -->
-        <div class="table-scroll-wrap" style="max-height: 600px; overflow-y: auto;">
-          <table class="security-table" id="master-security-table">
-            <thead>
-              <tr>
-                <th style="width: 70px;"># Roll</th>
-                <th style="width: 180px;">Diploma PIN</th>
-                <th style="width: 240px;">Student Name</th>
-                <th style="width: 250px;">Assigned Institutional Security Key</th>
-                <th style="width: 220px;">Branch & Scheme</th>
-                <th style="width: 180px;">Verification Status</th>
-              </tr>
-            </thead>
-            <tbody id="security-roster-tbody">
-              <!-- Dynamically populated via JS -->
-            </tbody>
-          </table>
+      </div>
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-4 text-stone-600">
+        <span class="font-dg text-base">&copy; 2025 Samskruti College. Institutional Administration. All rights reserved.</span>
+        <div class="flex items-center gap-4">
+          <a class="font-dg text-base font-semibold hover:text-emerald-800 transition-colors" href="./hod-dashboard.html">Console</a>
+          <a class="font-dg text-base font-semibold hover:text-emerald-800 transition-colors" href="./document-approvals.html">Approvals</a>
+          <a class="font-dg text-base font-semibold hover:text-emerald-800 transition-colors" href="./security-roster.html">Roster</a>
+          <a class="font-dg text-base font-semibold hover:text-emerald-800 transition-colors" href="./students-info.html">Students</a>
         </div>
-      </section>
+      </div>
+    </div>
+  </footer>
 
-    </main>
+  <!-- Toast Notification -->
+  <div id="toastNotification" class="fixed bottom-6 right-6 z-[30000] hidden px-5 py-3 rounded-2xl bg-emerald-900 text-white font-dg text-lg font-bold shadow-2xl flex items-center gap-3 border border-emerald-400/40 transform transition-all duration-300">
+    <span class="material-symbols-outlined text-emerald-300 text-[22px]" id="toastIcon">check_circle</span>
+    <span id="toastMsg">Action completed successfully</span>
   </div>
 
-  <!-- Scripts -->
-  <script type="module" src="../../js/theme.js"></script>
-  <script type="module">
-    import { api } from '../../js/api.js';
-    import { requireAuth } from '../../js/auth-guard.js';
-    import { renderDock } from '../../js/dock.js';
-
-    // Verify HOD Credentials & Initialize Navigation Dock
-    const user = requireAuth(['HOD', 'HOD_CS', 'HOD_AIML', 'ADMIN', 'FACULTY']) || JSON.parse(localStorage.getItem('dc_user') || '{}');
-    renderDock('security-roster.html', 'HOD');
-
-    if (window.lucide) {
-      window.lucide.createIcons();
-    }
-
-    // Determine logged-in branch
-    const isAIML = (user.branch === 'AIML') || 
-                   (user.role === 'HOD_AIML') || 
-                   (user.pin && (user.pin.includes('AIML') || user.pin.includes('PADMINI'))) || 
-                   (user.department && user.department.includes('Artificial')) ||
-                   (localStorage.getItem('hod_branch') === 'AIML') ||
-                   (localStorage.getItem('hod_id') && localStorage.getItem('hod_id').toUpperCase().includes('PADMINI'));
-
-    let currentDeptFilter = isAIML ? 'AIML' : (user.role === 'HOD_CS' || user.branch === 'CS' ? 'CS' : 'ALL');
-    let allRoster = [];
-
-    function initSecurityRoster() {
-      setupDepartmentTabs();
-      setupSearch();
-      loadSecurityRoster();
-    }
-
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', initSecurityRoster);
-    } else {
-      initSecurityRoster();
-    }
-
-    function setupDepartmentTabs() {
-      const pills = document.querySelectorAll('#dept-security-tabs .filter-pill');
-      pills.forEach(pill => {
-        const branch = pill.getAttribute('data-branch');
-        if (branch === currentDeptFilter) {
-          pill.classList.add('active');
-          if (branch === 'AIML') pill.classList.add('aiml-active');
-        } else {
-          pill.classList.remove('active', 'aiml-active');
-        }
-
-        pill.addEventListener('click', () => {
-          pills.forEach(p => p.classList.remove('active', 'aiml-active'));
-          pill.classList.add('active');
-          if (branch === 'AIML') pill.classList.add('aiml-active');
-          currentDeptFilter = branch;
-          applyFilterAndSearch();
-        });
-      });
-
-      if (isAIML) {
-        const accent = document.getElementById('brand-accent-title');
-        if (accent) accent.style.color = '#34d399';
-      }
-    }
-
-    async function loadSecurityRoster() {
-      try {
-        const res = await api.get('/hod/security-roster');
-        if (res && res.success && Array.isArray(res.roster)) {
-          allRoster = res.roster;
-        } else {
-          allRoster = generateLocalRoster();
-        }
-      } catch (err) {
-        console.warn('[Security Roster Load Fallback]', err);
-        allRoster = generateLocalRoster();
-      }
-
-      applyFilterAndSearch();
-    }
-
-    function applyFilterAndSearch() {
-      const searchVal = (document.getElementById('search-security-input')?.value || '').trim().toLowerCase();
-      
-      const filtered = allRoster.filter(s => {
-        // Branch Filter
-        const sBranch = (s.branch || (s.pin && (s.pin.includes('AIML') || s.pin.includes('-AI-')) ? 'AIML' : 'CS')).toUpperCase();
-        if (currentDeptFilter !== 'ALL' && sBranch !== currentDeptFilter) {
-          return false;
-        }
-
-        // Search Query
-        if (!searchVal) return true;
-        const pin = (s.pin || '').toLowerCase();
-        const key = (s.secretKey || '').toLowerCase();
-        const name = (s.name || '').toLowerCase();
-        const dept = (s.department || '').toLowerCase();
-
-        return pin.includes(searchVal) || key.includes(searchVal) || name.includes(searchVal) || dept.includes(searchVal);
-      });
-
-      // Update Count Badge
-      const badge = document.getElementById('roster-count-badge');
-      if (badge) {
-        badge.textContent = `${filtered.length} Keys Active`;
-      }
-
-      // Update Section Header Subtitle
-      const sub = document.getElementById('roster-section-title');
-      if (sub) {
-        if (currentDeptFilter === 'AIML') {
-          sub.textContent = 'Pre-Allocated Deterministic Security Keys (AIML • 127 Total)';
-        } else if (currentDeptFilter === 'CS') {
-          sub.textContent = 'Pre-Allocated Deterministic Security Keys (CSE • 180 Total)';
-        } else {
-          sub.textContent = 'Pre-Allocated Deterministic Security Keys (Multi-Department • 307 Total)';
-        }
-      }
-
-      renderRoster(filtered);
-    }
-
-    function renderRoster(list) {
-      const tbody = document.getElementById('security-roster-tbody');
-      if (!tbody) return;
-
-      if (list.length === 0) {
-        tbody.innerHTML = `
-          <tr>
-            <td colspan="6" style="text-align: center; padding: 36px; color: var(--hod-text-muted); font-style: italic;">
-              No matching student security keys found in the selected department.
-            </td>
-          </tr>
-        `;
-        return;
-      }
-
-      tbody.innerHTML = list.map(s => {
-        const pin = s.pin || '';
-        const rollNum = s.rollNumber || parseInt(pin.slice(-3), 10) || 1;
-        const isAimlStudent = (s.branch === 'AIML') || pin.includes('AIML') || pin.includes('-AI-');
-        const deptTitle = isAimlStudent ? 'Artificial Intelligence & Machine Learning (C-24)' : 'Computer Science & Engineering (C-24)';
-        const defaultName = isAimlStudent ? `AIML Student ${String(rollNum).padStart(3, '0')}` : `CS Student ${String(rollNum).padStart(3, '0')}`;
-        const name = s.name || defaultName;
-        const isRegistered = Boolean(s.is_registered);
-        const keyClass = isAimlStudent ? 'key-badge key-badge-aiml' : 'key-badge key-badge-cs';
-
-        return `
-          <tr>
-            <td><strong style="color: var(--hod-text-muted); font-family: monospace;">#${String(rollNum).padStart(3, '0')}</strong></td>
-            <td><strong class="mono-code" style="color: ${isAimlStudent ? '#34d399' : '#93c5fd'};">${escapeHtml(pin)}</strong></td>
-            <td><div style="font-weight: 700; color: var(--hod-text-main);">${escapeHtml(name)}</div></td>
-            <td><span class="${keyClass}">🔑 ${escapeHtml(s.secretKey || 'STD-SECRET')}</span></td>
-            <td><span style="font-size: 0.8rem; color: var(--hod-text-muted);">${escapeHtml(deptTitle)}</span></td>
-            <td>
-              ${isRegistered
-                ? `<span class="neu-badge metric-emerald-glow">VERIFIED & ACTIVE</span>`
-                : `<span class="neu-badge metric-blue-glow">PRE-ALLOCATED</span>`
-              }
-            </td>
-          </tr>
-        `;
-      }).join('');
-    }
-
-    function setupSearch() {
-      const input = document.getElementById('search-security-input');
-      input?.addEventListener('input', () => {
-        applyFilterAndSearch();
-      });
-    }
-
-    function generateLocalRoster() {
-      const cs = Array.from({ length: 180 }, (_, i) => {
-        const roll = i + 1;
-        const pin = `24259-CS-${String(roll).padStart(3, '0')}`;
-        return {
-          pin,
-          rollNumber: roll,
-          name: `CS Student ${String(roll).padStart(3, '0')}`,
-          secretKey: `STD-CS${String(roll).padStart(3, '0')}X`,
-          department: 'Computer Science & Engineering',
-          branch: 'CS',
-          scheme: 'C-24',
-          is_registered: [23, 25, 39].includes(roll)
-        };
-      });
-
-      const aiml = Array.from({ length: 127 }, (_, i) => {
-        const roll = i + 1;
-        const pin = `24259-AI-${String(roll).padStart(3, '0')}`;
-        return {
-          pin,
-          rollNumber: roll,
-          name: roll === 119 ? 'KARNATI HITESH' : (roll === 82 ? 'THURAI KRISHNA LOHITH' : `AIML Student ${String(roll).padStart(3, '0')}`),
-          secretKey: roll === 119 ? 'STD-HI19TE' : `STD-AI${String(roll).padStart(3, '0')}X`,
-          department: 'Artificial Intelligence & Machine Learning',
-          branch: 'AIML',
-          scheme: 'C-24',
-          is_registered: [19, 82, 119].includes(roll)
-        };
-      });
-
-      return [...cs, ...aiml];
-    }
-
-    function escapeHtml(str) {
-      return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-    }
-  </script>
+  <script src="/screens/04-hod-portal/security-roster.js"></script>
 </body>
 </html>

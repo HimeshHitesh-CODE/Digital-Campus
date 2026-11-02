@@ -1,493 +1,619 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Campus Connect | Student Attendance Intelligence (Code: 259)</title>
+  <title>Biometric Attendance & Academic Eligibility — Samskruti College</title>
   
-  <!-- Urbanist and JetBrains Mono Fonts -->
+  <!-- Material Symbols & Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Darker+Grotesque:wght@400;500;600;700;800;900&family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..700&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet" />
   
-  <link rel="stylesheet" href="../../css/reset.css" />
-  <link rel="stylesheet" href="../../css/theme-tokens.css" />
-  <link rel="stylesheet" href="../../css/dc-global-theme.css?v=3.3.0" />
-  <link rel="stylesheet" href="../../css/top-nav.css?v=3.3.0" />
-  <link rel="stylesheet" href="attendance.css" />
-  
-  <!-- Lucide Icons, Chart.js & Dynamic Island -->
+  <!-- Tailwind CSS & Master Config -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script src="/js/stitch-tailwind-config.js"></script>
+
+  <!-- Stitch Design System & Nav Dock Styles -->
+  <link rel="stylesheet" href="/css/stitch-design-system.css" />
+  <link rel="stylesheet" href="/css/top-nav.css" />
+
+  <!-- Lucide Icons & Shared State -->
   <script src="https://unpkg.com/lucide@latest"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="../../js/dc-dynamic-island.js?v=3.3.0"></script>
-
-  <style>
-    /* ============================================================
-       ATTENDANCE PORTAL LUXURY EMERALD GLASS THEME
-       ============================================================ */
-    body.student-portal-body {
-      background: var(--bg-app);
-      color: #f0fdf4 !important;
-      min-height: 100vh;
-      line-height: 1.6;
-      position: relative;
-      overflow-x: hidden;
-    }
-
-    .portal-viewport-wrapper {
-      position: relative;
-      z-index: 10;
-      width: 100%;
-      max-width: 1360px;
-      margin: 0 auto;
-      padding: 1rem 1.5rem 4rem;
-      box-sizing: border-box;
-    }
-
-    /* Fixed Top-Right Corner Profile Widget */
-    .corner-profile-widget,
-    #attendanceCornerProfile {
-      position: fixed;
-      top: 14px;
-      right: 20px;
-      z-index: 9998;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      background: rgba(30, 68, 50, 0.55) !important;
-      backdrop-filter: blur(24px) saturate(180%) !important;
-      -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
-      border: 1px solid rgba(110, 231, 183, 0.3) !important;
-      border-radius: 9999px;
-      padding: 5px 14px 5px 6px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
-      cursor: pointer;
-      text-decoration: none;
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    .corner-profile-widget:hover {
-      background: rgba(45, 95, 70, 0.75) !important;
-      border-color: rgba(110, 231, 183, 0.6) !important;
-      transform: translateY(-2px);
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6), 0 0 20px rgba(16, 185, 129, 0.35);
-    }
-
-    /* ALL CARDS IN LUXURY TRANSLUCENT EMERALD GLASS */
-    .chart-section-card,
-    .identity-card-neumorphic,
-    .hero-card,
-    .kpi-card,
-    .calendar-section-card,
-    .neu-card {
-      background: rgba(20, 52, 36, 0.48) !important;
-      backdrop-filter: blur(28px) saturate(180%) !important;
-      -webkit-backdrop-filter: blur(28px) saturate(180%) !important;
-      border: 1px solid rgba(110, 231, 183, 0.22) !important;
-      border-radius: 24px !important;
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.06) !important;
-      color: #f0fdf4 !important;
-      opacity: 1 !important;
-      visibility: visible !important;
-      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
-    }
-
-    .chart-section-card:hover,
-    .identity-card-neumorphic:hover,
-    .hero-card:hover,
-    .kpi-card:hover,
-    .calendar-section-card:hover {
-      background: rgba(28, 70, 48, 0.6) !important;
-      border-color: rgba(110, 231, 183, 0.45) !important;
-      transform: translateY(-3px) !important;
-      box-shadow: 0 20px 48px rgba(0, 0, 0, 0.6), 0 0 25px rgba(16, 185, 129, 0.2) !important;
-    }
-
-    /* Page title and headers */
-    .page-title {
-      color: #ffffff !important;
-      font-weight: 800 !important;
-      font-size: 1.85rem !important;
-    }
-
-    .page-subtitle {
-      color: #a7d9be !important;
-    }
-
-    .chart-heading,
-    .student-name,
-    .card-title {
-      color: #ffffff !important;
-      font-weight: 800 !important;
-    }
-
-    .student-pin-badge {
-      background: linear-gradient(135deg, #10b981, #059669) !important;
-      color: #041009 !important;
-      font-weight: 800 !important;
-      padding: 3px 12px !important;
-    }
-
-    .info-chip {
-      background: rgba(255, 255, 255, 0.06) !important;
-      border: 1px solid rgba(110, 231, 183, 0.25) !important;
-      border-radius: 12px !important;
-      color: #e2fbe8 !important;
-    }
-
-    .chip-k { color: #a7d9be !important; }
-    .chip-v { color: #ffffff !important; font-weight: 700 !important; }
-
-    .kpi-label { color: #a7d9be !important; font-weight: 700 !important; }
-    .kpi-val { color: #34d399 !important; font-weight: 900 !important; }
-    .kpi-subtext { color: #6ee7b7 !important; }
-
-    /* Calendar month switch and matrix */
-    .cal-month-switch {
-      background: rgba(0, 0, 0, 0.35) !important;
-      border: 1px solid rgba(110, 231, 183, 0.25) !important;
-      border-radius: 9999px !important;
-      padding: 4px !important;
-    }
-
-    .month-pill-btn {
-      color: #a7d9be !important;
-      border-radius: 9999px !important;
-      font-weight: 700 !important;
-      padding: 6px 16px !important;
-    }
-
-    .month-pill-btn.active {
-      background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
-      color: #041009 !important;
-      box-shadow: 0 0 16px rgba(16, 185, 129, 0.4) !important;
-    }
-
-    .calendar-week-header span {
-      color: #6ee7b7 !important;
-      font-weight: 800 !important;
-    }
-
-    .cal-day-cell {
-      background: rgba(255, 255, 255, 0.04) !important;
-      border: 1px solid rgba(110, 231, 183, 0.15) !important;
-      border-radius: 14px !important;
-      color: #f0fdf4 !important;
-    }
-
-    .cal-day-cell:hover {
-      background: rgba(16, 185, 129, 0.2) !important;
-      border-color: rgba(52, 211, 153, 0.5) !important;
-      transform: scale(1.04) !important;
-    }
-
-    /* Gauge and Radial readout */
-    .gauge-track {
-      stroke: rgba(255, 255, 255, 0.1) !important;
-    }
-
-    .gauge-number {
-      color: #34d399 !important;
-      font-weight: 900 !important;
-    }
-
-    .gauge-sub {
-      color: #a7d9be !important;
-    }
-
-    .stat-lbl { color: #a7d9be !important; }
-    .stat-val { color: #ffffff !important; }
-
-    /* Button Re-sync */
-    .btn-resync-pill {
-      background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
-      color: #041009 !important;
-      font-weight: 800 !important;
-      border: 1px solid rgba(52, 211, 153, 0.5) !important;
-      box-shadow: 0 4px 18px rgba(16, 185, 129, 0.35) !important;
-    }
-  </style>
+  <script src="/js/stitch-state.js"></script>
+  <script src="/js/dc-dynamic-island.js" defer></script>
 </head>
-<body class="student-portal-body">
-  <div class="portal-viewport-wrapper">
-    <main class="dashboard-canvas">
-      
-      <!-- 2. PAGE HEADER & SYNC CONTROLLER -->
-      <section class="page-header-row">
-        <div class="header-titles">
-          <h1 class="page-title" id="greeting-title">Live Biometric Telemetry</h1>
-          <p class="page-subtitle" id="student-meta-subtitle">Samskruti College (Code: 259) • Real-Time SBTET Gateways</p>
-        </div>
-        <div class="header-sync-container">
-          <button id="re-sync-trigger" class="btn-resync-pill">
-            <i data-lucide="refresh-cw" id="sync-icon-spinner" class="sync-icon"></i>
-            <span>Re-sync Latest</span>
+
+<body class="bg-surface font-sans text-on-surface min-h-screen flex flex-col antialiased selection:bg-emerald-200 selection:text-emerald-900 bg-mesh-pattern">
+
+  <!-- Main Content Viewport Wrapper (Offset below persistent top navigation) -->
+  <main class="w-full flex-grow pt-[84px] md:pt-[92px]">
+    <div class="max-w-[1240px] mx-auto px-4 sm:px-6 pb-12 flex flex-col gap-6 w-full">
+      <div class="max-w-[1240px] w-full mx-auto px-6 flex flex-col gap-7"><!-- Title & Student Status Header --><div class="flex flex-col gap-3">
+<div class="flex flex-wrap items-center justify-between gap-3">
+<div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-red-50 text-red-700 border border-red-200/80 shadow-sm">
+<span class="w-2 h-2 rounded-full bg-red-600 animate-ping"></span>
+<span class="font-black text-xs tracking-wider uppercase">BIOMETRIC ATTENDANCE &amp; SBTET COMPLIANCE</span>
+</div>
+<div class="flex items-center gap-1.5 text-secondary text-sm font-bold bg-white/70 backdrop-blur-sm px-3.5 py-1 rounded-full border border-emerald-500/15">
+<span class="material-symbols-outlined text-[18px] text-emerald-600">fingerprint</span>
+<span><span id="attLastPunch">Last Biometric Punch: Today, 09:12 AM (Device #Bio-CSE-04)</span></span>
+</div>
+</div>
+<div class="flex flex-col lg:flex-row lg:items-end justify-between gap-5">
+<div class="flex flex-col gap-2 max-w-3xl">
+<h1 class="text-4xl sm:text-5xl font-extrabold text-on-surface tracking-tight leading-none">
+            Biometric Attendance &amp; Academic Eligibility
+          </h1>
+<!-- Student Meta Bar Pill -->
+<div class="flex flex-wrap items-center gap-x-3 gap-y-1 py-1.5 px-4 rounded-full bg-white/80 border border-emerald-500/20 text-on-surface font-semibold text-sm shadow-sm backdrop-blur-sm">
+<span class="font-extrabold text-emerald-800"><span id="attStudentName">Karnati Himesh</span></span>
+<span class="text-emerald-400 font-bold">•</span>
+<span class="text-on-surface-variant font-bold"><span id="attStudentPin">PIN: 24259-CS-025</span></span>
+<span class="text-emerald-400 font-bold">•</span>
+<span class="text-secondary font-medium">Scheme C-24</span>
+<span class="text-emerald-400 font-bold">•</span>
+<span class="text-secondary font-medium">Computer Science &amp; Engineering</span>
+<span class="text-emerald-400 font-bold">•</span>
+<span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-black text-xs"><span id="attStudentSem">Sem IV (2024-25)</span></span>
+</div>
+</div>
+<div class="flex flex-wrap items-center gap-2.5">
+<button class="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full bg-white/90 text-emerald-800 border border-emerald-500/25 hover:bg-emerald-50 hover:border-emerald-500/40 shadow-sm transition-all active:scale-95 font-bold text-base" id="resyncBtn">
+<span class="material-symbols-outlined text-[19px] transition-transform duration-700 text-emerald-600" id="syncIcon">sync</span>
+<span>Re-sync Latest Records</span>
+</button>
+<button class="inline-flex items-center gap-1.5 px-6 py-2.5 rounded-full text-white font-extrabold text-base shadow-[0_6px_20px_rgba(16,185,129,0.35)] hover:shadow-[0_8px_24px_rgba(16,185,129,0.45)] transition-all active:scale-95" style="background: linear-gradient(135deg, #059669 0%, #10b981 50%, #34d399 100%);">
+<span class="material-symbols-outlined text-[19px]">download</span>
+<span>Download Official Statement</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Top KPI Row -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+<!-- KPI 1: Live Gauge & Clearance Status -->
+<div class="lg:col-span-6 glass-card rounded-[28px] p-6 flex flex-col justify-between relative overflow-hidden">
+<div class="absolute -right-8 -top-8 w-48 h-48 rounded-full bg-red-400/10 blur-3xl pointer-events-none"></div>
+<div class="flex items-center justify-between pb-4 border-b border-emerald-500/10">
+<div class="flex items-center gap-2.5">
+<span class="w-9 h-9 rounded-2xl bg-red-100 text-red-600 flex items-center justify-center font-bold border border-red-200">
+<span class="material-symbols-outlined text-[20px]">warning</span>
+</span>
+<div class="flex flex-col">
+<span class="text-xs uppercase font-extrabold tracking-wider text-secondary">Statutory Evaluation Metric</span>
+<span class="text-2xl font-bold text-on-surface leading-tight">Cumulative Biometric Rate</span>
+</div>
+</div>
+<span class="px-3.5 py-1 rounded-full bg-red-100 text-red-700 border border-red-300 font-extrabold text-xs flex items-center gap-1.5 shadow-sm">
+<span class="w-2 h-2 rounded-full bg-red-600"></span>
+            Critical Detainment Alert (&lt;65%)
+          </span>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-12 items-center gap-5 py-4">
+<!-- Circular SVG Gauge -->
+<div class="sm:col-span-5 flex flex-col items-center justify-center relative">
+<div class="relative w-40 h-40 flex items-center justify-center">
+<svg class="w-full h-full -rotate-90" viewbox="0 0 120 120">
+<circle class="text-emerald-950/10" cx="60" cy="60" fill="transparent" r="48" stroke="currentColor" stroke-width="11"></circle>
+<!-- 27.78% of circumference (2 * PI * 48 ≈ 301.59): dashoffset = 301.59 * (1 - 0.2778) ≈ 217.8 -->
+<circle class="text-red-500 transition-all duration-1000 ease-out" cx="60" cy="60" fill="transparent" r="48" stroke="currentColor" stroke-dasharray="301.59" stroke-dashoffset="217.8" stroke-linecap="round" stroke-width="11"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center text-center">
+<span class="text-3xl font-black text-red-600 leading-none tracking-tight" id="kpiGaugeRate">27.78%</span>
+<span class="text-xs font-extrabold text-secondary mt-1 tracking-wide" id="kpiGaugePresent">50 / 180 Sess</span>
+</div>
+</div>
+<div class="mt-2 text-center">
+<span class="inline-block px-3 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-500/20 font-bold text-xs">
+                Target: 135 Sess
+              </span>
+</div>
+</div>
+<!-- Quantitative Details & Thresholds -->
+<div class="sm:col-span-7 flex flex-col gap-2.5">
+<div class="p-3 rounded-2xl bg-white/70 border border-emerald-500/10 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[19px] text-emerald-700">gavel</span>
+<span class="text-sm font-bold text-secondary">Statutory SBTET Cutoff</span>
+</div>
+<span class="text-lg font-black text-on-surface">75.00%</span>
+</div>
+<div class="p-3 rounded-2xl bg-white/70 border border-emerald-500/10 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[19px] text-red-600">trending_down</span>
+<span class="text-sm font-bold text-secondary">Clearance Deficit</span>
+</div>
+<span class="text-lg font-black text-red-600" id="kpiGaugeDeficit">-47.22%</span>
+</div>
+<div class="p-3 rounded-2xl bg-red-50/80 border border-red-200/80 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[19px] text-red-700">cancel</span>
+<span class="text-sm font-bold text-red-900">Exam Clearance</span>
+</div>
+<span class="px-3 py-0.5 rounded-full bg-red-600 text-white font-black text-xs uppercase tracking-wider shadow-sm">
+                Ineligible
+              </span>
+</div>
+</div>
+</div>
+<div class="pt-2 border-t border-emerald-500/10 flex items-center justify-between text-secondary text-xs font-bold">
+<span>Regulation: SBTET C-24 § 14(a)</span>
+<span class="text-red-600 font-extrabold">Biometric Condonation Range: 65% - 74.9%</span>
+</div>
+</div>
+<!-- KPI 2: Recovery Prescription Card -->
+<div class="lg:col-span-6 glass-card rounded-[28px] p-6 flex flex-col justify-between relative overflow-hidden">
+<div class="absolute -right-10 -bottom-10 w-52 h-52 rounded-full bg-emerald-400/15 blur-3xl pointer-events-none"></div>
+<div class="flex items-center justify-between pb-3 border-b border-emerald-500/10">
+<div class="flex items-center gap-2.5">
+<span class="w-9 h-9 rounded-2xl bg-emerald-100 text-emerald-800 border border-emerald-300/40 flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">verified_user</span>
+</span>
+<div class="flex flex-col">
+<span class="text-xs uppercase font-extrabold tracking-wider text-secondary">Prescribed Recovery Protocol</span>
+<span class="text-2xl font-bold text-on-surface leading-tight">Emergency Recovery Prescription</span>
+</div>
+</div>
+<button class="px-4 py-1.5 rounded-full bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-500/25 font-bold text-xs transition-all inline-flex items-center gap-1.5 shadow-sm">
+<span class="material-symbols-outlined text-[16px] text-emerald-700">medical_services</span>
+            File Medical Appeal
           </button>
+</div>
+<!-- 4 Stat Badges Grid -->
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 py-4">
+<div class="p-3 rounded-2xl bg-white/70 border border-emerald-500/15 flex flex-col items-center text-center">
+<span class="text-xs uppercase font-black text-secondary tracking-wider">Working Days</span>
+<span class="text-3xl font-black text-on-surface mt-0.5 leading-none" id="kpiPrescriptionTotal">180</span>
+<span class="text-xs font-bold text-secondary mt-0.5">Total Prescribed</span>
+</div>
+<div class="p-3 rounded-2xl bg-emerald-100/60 border border-emerald-500/20 flex flex-col items-center text-center">
+<span class="text-xs uppercase font-black text-emerald-800 tracking-wider">Present</span>
+<span class="text-3xl font-black text-emerald-700 mt-0.5 leading-none" id="kpiPrescriptionPresent">50</span>
+<span class="text-xs font-bold text-emerald-800/80 mt-0.5">Validated Punch</span>
+</div>
+<div class="p-3 rounded-2xl bg-red-100/70 border border-red-300/60 flex flex-col items-center text-center">
+<span class="text-xs uppercase font-black text-red-700 tracking-wider">Absent</span>
+<span class="text-3xl font-black text-red-600 mt-0.5 leading-none" id="kpiPrescriptionAbsent">130</span>
+<span class="text-xs font-bold text-red-700/80 mt-0.5">Unaccounted</span>
+</div>
+<div class="p-3 rounded-2xl bg-white/70 border border-emerald-500/15 flex flex-col items-center text-center">
+<span class="text-xs uppercase font-black text-secondary tracking-wider">Remaining</span>
+<span class="text-3xl font-black text-on-surface mt-0.5 leading-none" id="kpiPrescriptionRemaining">08</span>
+<span class="text-xs font-bold text-secondary mt-0.5">Class Days Left</span>
+</div>
+</div>
+<!-- Recovery Advice Banner -->
+<div class="p-3.5 rounded-2xl bg-gradient-to-r from-emerald-50 to-mint-soft/50 border border-emerald-500/20 flex items-start gap-3">
+<span class="material-symbols-outlined text-[22px] text-emerald-700 mt-0.5">info</span>
+<div class="flex flex-col">
+<span class="font-black text-sm text-emerald-900 leading-tight">Mathematical Threshold Notice</span>
+<p class="text-sm font-semibold text-on-surface-variant leading-snug mt-0.5">
+              To cross the minimum 65% condonation baseline under SBTET rules, you must attend <span class="font-black text-red-600"><span id="kpiConsecutiveNeeded">33 consecutive sessions</span></span>. Since only 8 instructional days remain, immediate submission of Medical Certification with HOD endorsement is required.
+            </p>
+</div>
+</div>
+</div>
+</div>
+<!-- Middle Section: Chart and Granular Matrix -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+<!-- Trajectory & Cutoff Chart -->
+<div class="lg:col-span-7 glass-card rounded-[28px] p-6 flex flex-col justify-between">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-emerald-500/10">
+<div class="flex flex-col">
+<span class="text-xs uppercase font-extrabold tracking-wider text-secondary">Cumulative Velocity</span>
+<h2 class="text-2xl font-bold text-on-surface">Semester Trajectory &amp; Cutoff Boundary</h2>
+</div>
+<div class="flex items-center gap-3">
+<div class="flex items-center gap-1.5 text-xs font-bold text-red-600">
+<span class="w-4 h-0.5 bg-red-500 inline-block border-b-2 border-dashed border-red-500"></span>
+<span>75% Cutoff</span>
+</div>
+<div class="flex items-center gap-1.5 text-xs font-bold text-emerald-700">
+<span class="w-4 h-1 bg-emerald-600 rounded-full inline-block"></span>
+<span>Actual Trend</span>
+</div>
+</div>
+</div>
+<!-- Responsive Inline SVG Chart -->
+<div class="w-full h-56 relative flex items-center justify-center my-2">
+<svg class="w-full h-full overflow-visible" preserveaspectratio="none" viewbox="0 0 600 200">
+<!-- Grid Lines -->
+<line class="text-emerald-900/10" stroke="currentColor" stroke-width="1" x1="40" x2="580" y1="20" y2="20"></line>
+<line class="text-emerald-900/10" stroke="currentColor" stroke-width="1" x1="40" x2="580" y1="65" y2="65"></line>
+<line class="text-emerald-900/10" stroke="currentColor" stroke-width="1" x1="40" x2="580" y1="110" y2="110"></line>
+<line class="text-emerald-900/10" stroke="currentColor" stroke-width="1" x1="40" x2="580" y1="155" y2="155"></line>
+<line class="text-emerald-900/10" stroke="currentColor" stroke-width="1" x1="40" x2="580" y1="190" y2="190"></line>
+<!-- Y Axis Labels -->
+<text class="text-[12px] font-bold fill-secondary" text-anchor="end" x="32" y="24">100%</text>
+<text class="text-[12px] font-bold fill-secondary" text-anchor="end" x="32" y="69">75%</text>
+<text class="text-[12px] font-bold fill-secondary" text-anchor="end" x="32" y="114">50%</text>
+<text class="text-[12px] font-bold fill-secondary" text-anchor="end" x="32" y="159">25%</text>
+<!-- 75% Cutoff Dashed Line (y = 65) -->
+<line stroke="#DC2626" stroke-dasharray="6,4" stroke-width="2.5" x1="40" x2="580" y1="65" y2="65"></line>
+<text class="text-[12px] font-black fill-red-600" text-anchor="end" x="575" y="58">MANDATORY 75% SBTET</text>
+<!-- 65% Condonation Boundary Line (y = 82) -->
+<line opacity="0.6" stroke="#059669" stroke-dasharray="3,3" stroke-width="1.5" x1="40" x2="580" y1="82.5" y2="82.5"></line>
+<text class="text-[11px] font-bold fill-emerald-800" text-anchor="end" x="575" y="94">65% Condonable</text>
+<!-- Gradient Area under Curve -->
+<defs>
+<lineargradient id="chartGradient" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#10b981" stop-opacity="0.45"></stop><stop offset="50%" stop-color="#34d399" stop-opacity="0.25"></stop><stop offset="100%" stop-color="#a7f3d0" stop-opacity="0.0"></stop></lineargradient>
+</defs>
+<!-- Curve Polygon Fill -->
+<polygon fill="url(#chartGradient)" points="40,190 40,50 148,70 256,120 364,138 472,148 472,190"></polygon>
+<!-- Actual Attendance Trend Bezier Line -->
+<path d="M 40,60 C 90,65 110,80 148,85 C 200,95 220,128 256,132 C 310,140 330,142 364,144 C 420,148 440,150 472,151" fill="none" stroke="#059669" stroke-linecap="round" stroke-width="3.5"></path>
+<!-- Data Points -->
+<circle cx="40" cy="60" fill="#047857" r="5" stroke="#FFFFFF" stroke-width="1.5"></circle>
+<circle cx="148" cy="85" fill="#047857" r="5" stroke="#FFFFFF" stroke-width="1.5"></circle>
+<circle cx="256" cy="132" fill="#047857" r="5" stroke="#FFFFFF" stroke-width="1.5"></circle>
+<circle cx="364" cy="144" fill="#047857" r="5" stroke="#FFFFFF" stroke-width="1.5"></circle>
+<circle cx="472" cy="151" fill="#DC2626" r="6" stroke="#FFFFFF" stroke-width="2.5"></circle>
+<!-- Projection dotted line -->
+<path d="M 472,151 C 510,152 540,153 580,153" fill="none" stroke="#6b7280" stroke-dasharray="4,4" stroke-width="2"></path>
+</svg>
+</div>
+<div class="flex items-center justify-between pt-2 border-t border-emerald-500/10 text-secondary text-xs font-bold">
+<span>Jun (Wk 1-4)</span>
+<span>Jul (Wk 5-8)</span>
+<span>Aug (Wk 9-12)</span>
+<span>Sep (Wk 13-16)</span>
+<span class="text-on-surface font-black">Oct (Final Run)</span>
+</div>
+</div>
+<!-- Granular Biometric Matrix & Monthly Registry -->
+<div class="lg:col-span-5 glass-card rounded-[28px] p-6 flex flex-col justify-between">
+<div class="flex flex-col gap-1 border-b border-emerald-500/10 pb-2.5">
+<div class="flex items-center justify-between">
+<span class="text-xs uppercase font-extrabold tracking-wider text-secondary">Biometric Punch Log</span>
+<span class="text-xs px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-extrabold border border-emerald-500/20">Terminal Verified</span>
+</div>
+<h2 class="text-2xl font-bold text-on-surface">Monthly Registry Calendar</h2>
+</div>
+<!-- Month Filter Pills -->
+<div class="flex flex-wrap items-center gap-1.5 py-2.5" id="monthFilterContainer">
+<button class="month-pill px-3 py-1 rounded-full text-on-surface-variant hover:bg-emerald-50 font-bold text-sm transition-all" data-month="june">Jun</button>
+<button class="month-pill px-3 py-1 rounded-full text-on-surface-variant hover:bg-emerald-50 font-bold text-sm transition-all" data-month="july">Jul</button>
+<button class="month-pill px-3 py-1 rounded-full text-on-surface-variant hover:bg-emerald-50 font-bold text-sm transition-all" data-month="aug">Aug</button>
+<button class="month-pill px-3 py-1 rounded-full text-on-surface-variant hover:bg-emerald-50 font-bold text-sm transition-all" data-month="sep">Sep</button>
+<button class="month-pill px-4 py-1 rounded-full text-white font-extrabold text-sm transition-all shadow-[0_4px_12px_rgba(16,185,129,0.3)]" data-month="oct" style="background: linear-gradient(135deg, #059669 0%, #10b981 100%);">Oct 2024</button>
+</div>
+<!-- Legend Pills -->
+<div class="flex flex-wrap items-center gap-2 py-1 text-xs font-bold">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-500/20">
+<span class="w-2 h-2 rounded-full bg-emerald-600"></span> Present
+          </span>
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-red-100 text-red-700 border border-red-200">
+<span class="w-2 h-2 rounded-full bg-red-600"></span> Absent
+          </span>
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-stone-100 text-stone-700 border border-stone-200">
+<span class="w-2 h-2 rounded-full bg-stone-500"></span> Holiday
+          </span>
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-stone-200/70 text-stone-600">
+            Week Off
+          </span>
+</div>
+<!-- October Calendar Matrix Grid -->
+<div class="grid grid-cols-7 gap-1.5 pt-2 text-center">
+<span class="text-secondary font-black text-xs">M</span>
+<span class="text-secondary font-black text-xs">T</span>
+<span class="text-secondary font-black text-xs">W</span>
+<span class="text-secondary font-black text-xs">T</span>
+<span class="text-secondary font-black text-xs">F</span>
+<span class="text-secondary font-black text-xs">S</span>
+<span class="text-secondary font-black text-xs">S</span>
+<!-- Days Grid with Pill styling -->
+<div class="h-8"></div>
+<div class="h-8 rounded-full bg-stone-100 text-stone-700 border border-stone-200 flex items-center justify-center font-bold text-xs" title="Gandhi Jayanti Prep">01</div>
+<div class="h-8 rounded-full bg-stone-100 text-stone-700 border border-stone-200 flex items-center justify-center font-bold text-xs" title="National Holiday">02</div>
+<div class="h-8 rounded-full bg-red-100 text-red-700 border border-red-200 font-extrabold flex items-center justify-center text-xs">03</div>
+<div class="h-8 rounded-full bg-red-100 text-red-700 border border-red-200 font-extrabold flex items-center justify-center text-xs">04</div>
+<div class="h-8 rounded-full bg-stone-200/80 text-stone-600 flex items-center justify-center font-semibold text-xs">05</div>
+<div class="h-8 rounded-full bg-stone-200/80 text-stone-600 flex items-center justify-center font-semibold text-xs">06</div>
+<div class="h-8 rounded-full bg-emerald-200 text-emerald-900 border border-emerald-400/50 font-black flex items-center justify-center text-xs shadow-sm" title="Present - Punch at 09:04 AM">07</div>
+<div class="h-8 rounded-full bg-red-100 text-red-700 border border-red-200 font-extrabold flex items-center justify-center text-xs" id="kpiPrescriptionRemaining">08</div>
+<div class="h-8 rounded-full bg-red-100 text-red-700 border border-red-200 font-extrabold flex items-center justify-center text-xs">09</div>
+<div class="h-8 rounded-full bg-stone-100 text-stone-700 border border-stone-200 flex items-center justify-center font-bold text-xs">10</div>
+<div class="h-8 rounded-full bg-stone-100 text-stone-700 border border-stone-200 flex items-center justify-center font-bold text-xs">11</div>
+<div class="h-8 rounded-full bg-stone-200/80 text-stone-600 flex items-center justify-center font-semibold text-xs">12</div>
+<div class="h-8 rounded-full bg-stone-200/80 text-stone-600 flex items-center justify-center font-semibold text-xs">13</div>
+<div class="h-8 rounded-full bg-red-100 text-red-700 border border-red-200 font-extrabold flex items-center justify-center text-xs">14</div>
+<div class="h-8 rounded-full bg-red-100 text-red-700 border border-red-200 font-extrabold flex items-center justify-center text-xs">15</div>
+<div class="h-8 rounded-full bg-emerald-200 text-emerald-900 border border-emerald-400/50 font-black flex items-center justify-center text-xs shadow-sm">16</div>
+<div class="h-8 rounded-full bg-red-100 text-red-700 border border-red-200 font-extrabold flex items-center justify-center text-xs">17</div>
+<div class="h-8 rounded-full bg-red-100 text-red-700 border border-red-200 font-extrabold flex items-center justify-center text-xs">18</div>
+<div class="h-8 rounded-full bg-stone-200/80 text-stone-600 flex items-center justify-center font-semibold text-xs">19</div>
+<div class="h-8 rounded-full bg-stone-200/80 text-stone-600 flex items-center justify-center font-semibold text-xs">20</div>
+<div class="h-8 rounded-full bg-emerald-200 text-emerald-900 border border-emerald-400/50 font-black flex items-center justify-center text-xs shadow-sm">21</div>
+<div class="h-8 rounded-full bg-red-100 text-red-700 border border-red-200 font-extrabold flex items-center justify-center text-xs">22</div>
+<div class="h-8 rounded-full bg-red-100 text-red-700 border border-red-200 font-extrabold flex items-center justify-center text-xs">23</div>
+<div class="h-8 rounded-full bg-emerald-200 text-emerald-900 border border-emerald-400/50 font-black flex items-center justify-center text-xs shadow-sm">24</div>
+<div class="h-8 rounded-full bg-gradient-to-r from-emerald-500 to-mint-accent text-white font-black flex items-center justify-center text-xs ring-2 ring-emerald-300 shadow-sm" title="Today">25</div>
+<div class="h-8 rounded-full bg-white/60 text-secondary flex items-center justify-center font-semibold text-xs">26</div>
+<div class="h-8 rounded-full bg-white/60 text-secondary flex items-center justify-center font-semibold text-xs">27</div>
+</div>
+<div class="pt-2 border-t border-emerald-500/10 flex items-center justify-between text-secondary text-xs font-bold">
+<span>This Month: 5 / 22 Sess</span>
+<span class="text-red-600 font-black">Rate: 22.7%</span>
+</div>
+</div>
+</div>
+<!-- Bottom Section: Subject-Wise Biometric Audit Table -->
+<div class="glass-card rounded-[28px] p-6 flex flex-col gap-4">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-emerald-500/10 pb-3">
+<div class="flex flex-col">
+<span class="text-xs uppercase font-extrabold tracking-wider text-secondary">Institutional Registry</span>
+<h2 class="text-2xl font-bold text-on-surface">Subject-Wise Biometric Audit &amp; Condonability</h2>
+</div>
+<div class="flex items-center gap-2">
+<span class="px-3.5 py-1 rounded-full bg-white/80 border border-emerald-500/20 text-emerald-900 text-xs font-black">
+            5 Subjects Logged
+          </span>
+<span class="px-3.5 py-1 rounded-full bg-red-100 text-red-700 border border-red-200 text-xs font-black">
+            4 Detained Status
+          </span>
+</div>
+</div>
+<!-- Audit Table -->
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead>
+<tr class="bg-emerald-50/80 text-emerald-950 font-extrabold text-xs uppercase tracking-wider rounded-xl">
+<th class="py-3 px-4 rounded-l-xl">Subject Code</th>
+<th class="py-3 px-4">Subject Description</th>
+<th class="py-3 px-4 text-center">Conducted</th>
+<th class="py-3 px-4 text-center">Attended</th>
+<th class="py-3 px-4">Percentage Trajectory</th>
+<th class="py-3 px-4 text-right rounded-r-xl">Clearance Status</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-emerald-500/10 text-on-surface text-base">
+<!-- Row 1: DBMS -->
+<tr class="hover:bg-white/60 transition-colors">
+<td class="py-3.5 px-4 font-black text-emerald-800">CS-401</td>
+<td class="py-3.5 px-4">
+<div class="flex flex-col">
+<span class="font-bold text-on-surface leading-tight">Database Management Systems</span>
+<span class="text-xs font-semibold text-secondary">Faculty: Dr. V. Murali (Cabin 204)</span>
+</div>
+</td>
+<td class="py-3.5 px-4 text-center font-bold">42</td>
+<td class="py-3.5 px-4 text-center font-black text-red-600">12</td>
+<td class="py-3.5 px-4">
+<div class="flex items-center gap-2 max-w-xs">
+<div class="w-full h-2.5 rounded-full bg-stone-200 overflow-hidden">
+<div class="h-full bg-red-500 rounded-full" style="width: 28.57%"></div>
+</div>
+<span class="text-xs font-black text-red-600 w-12 text-right">28.5%</span>
+</div>
+</td>
+<td class="py-3.5 px-4 text-right">
+<span class="px-3 py-1 rounded-full bg-red-100 text-red-700 border border-red-200 text-xs font-black uppercase tracking-wider inline-flex items-center gap-1">
+<span class="material-symbols-outlined text-[15px]">cancel</span>
+                  DETAINED
+                </span>
+</td>
+</tr>
+<!-- Row 2: DAA -->
+<tr class="hover:bg-white/60 transition-colors">
+<td class="py-3.5 px-4 font-black text-emerald-800">CS-402</td>
+<td class="py-3.5 px-4">
+<div class="flex flex-col">
+<span class="font-bold text-on-surface leading-tight">Design &amp; Analysis of Algorithms</span>
+<span class="text-xs font-semibold text-secondary">Faculty: Prof. K. Ramesh (Cabin 209)</span>
+</div>
+</td>
+<td class="py-3.5 px-4 text-center font-bold">40</td>
+<td class="py-3.5 px-4 text-center font-black text-red-600">10</td>
+<td class="py-3.5 px-4">
+<div class="flex items-center gap-2 max-w-xs">
+<div class="w-full h-2.5 rounded-full bg-stone-200 overflow-hidden">
+<div class="h-full bg-red-500 rounded-full" style="width: 25%"></div>
+</div>
+<span class="text-xs font-black text-red-600 w-12 text-right">25.0%</span>
+</div>
+</td>
+<td class="py-3.5 px-4 text-right">
+<span class="px-3 py-1 rounded-full bg-red-100 text-red-700 border border-red-200 text-xs font-black uppercase tracking-wider inline-flex items-center gap-1">
+<span class="material-symbols-outlined text-[15px]">cancel</span>
+                  DETAINED
+                </span>
+</td>
+</tr>
+<!-- Row 3: Operating Systems -->
+<tr class="hover:bg-white/60 transition-colors">
+<td class="py-3.5 px-4 font-black text-emerald-800">CS-403</td>
+<td class="py-3.5 px-4">
+<div class="flex flex-col">
+<span class="font-bold text-on-surface leading-tight">Operating Systems</span>
+<span class="text-xs font-semibold text-secondary">Faculty: S. Anitha Devi (Cabin 212)</span>
+</div>
+</td>
+<td class="py-3.5 px-4 text-center font-bold">38</td>
+<td class="py-3.5 px-4 text-center font-black text-on-surface">12</td>
+<td class="py-3.5 px-4">
+<div class="flex items-center gap-2 max-w-xs">
+<div class="w-full h-2.5 rounded-full bg-stone-200 overflow-hidden">
+<div class="h-full bg-red-500 rounded-full" style="width: 31.57%"></div>
+</div>
+<span class="text-xs font-black text-red-600 w-12 text-right">31.6%</span>
+</div>
+</td>
+<td class="py-3.5 px-4 text-right">
+<span class="px-3 py-1 rounded-full bg-red-100 text-red-700 border border-red-200 text-xs font-black uppercase tracking-wider inline-flex items-center gap-1">
+<span class="material-symbols-outlined text-[15px]">cancel</span>
+                  DETAINED
+                </span>
+</td>
+</tr>
+<!-- Row 4: DB Lab -->
+<tr class="hover:bg-white/60 transition-colors">
+<td class="py-3.5 px-4 font-black text-emerald-800">CS-408</td>
+<td class="py-3.5 px-4">
+<div class="flex flex-col">
+<span class="font-bold text-on-surface leading-tight">Database Management Systems Lab</span>
+<span class="text-xs font-semibold text-secondary">Lab 3 (Systems Block)</span>
+</div>
+</td>
+<td class="py-3.5 px-4 text-center font-bold">30</td>
+<td class="py-3.5 px-4 text-center font-black text-emerald-700" id="kpiPrescriptionRemaining">08</td>
+<td class="py-3.5 px-4">
+<div class="flex items-center gap-2 max-w-xs">
+<div class="w-full h-2.5 rounded-full bg-stone-200 overflow-hidden">
+<div class="h-full bg-red-500 rounded-full" style="width: 26.67%"></div>
+</div>
+<span class="text-xs font-black text-red-600 w-12 text-right">26.7%</span>
+</div>
+</td>
+<td class="py-3.5 px-4 text-right">
+<span class="px-3 py-1 rounded-full bg-red-100 text-red-700 border border-red-200 text-xs font-black uppercase tracking-wider inline-flex items-center gap-1">
+<span class="material-symbols-outlined text-[15px]">cancel</span>
+                  DETAINED
+                </span>
+</td>
+</tr>
+<!-- Row 5: Web Tech Lab -->
+<tr class="hover:bg-white/60 transition-colors">
+<td class="py-3.5 px-4 font-black text-emerald-800">CS-409</td>
+<td class="py-3.5 px-4">
+<div class="flex flex-col">
+<span class="font-bold text-on-surface leading-tight">Web Technologies Lab</span>
+<span class="text-xs font-semibold text-secondary">Lab 1 (Computing Block)</span>
+</div>
+</td>
+<td class="py-3.5 px-4 text-center font-bold">30</td>
+<td class="py-3.5 px-4 text-center font-black text-on-surface">20</td>
+<td class="py-3.5 px-4">
+<div class="flex items-center gap-2 max-w-xs">
+<div class="w-full h-2.5 rounded-full bg-stone-200 overflow-hidden">
+<div class="h-full bg-emerald-600 rounded-full" style="width: 66.67%"></div>
+</div>
+<span class="text-xs font-black text-emerald-700 w-12 text-right">66.7%</span>
+</div>
+</td>
+<td class="py-3.5 px-4 text-right">
+<span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-400/40 text-xs font-black uppercase tracking-wider inline-flex items-center gap-1">
+<span class="material-symbols-outlined text-[15px] text-emerald-700">verified</span>
+                  CONDONABLE
+                </span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Grievance & Warden Assistance Banner -->
+<div class="rounded-[28px] p-7 flex flex-col md:flex-row items-center justify-between gap-5 relative overflow-hidden text-white" style="background: linear-gradient(135deg, #047857 0%, #059669 35%, #10b981 70%, #34d399 100%); box-shadow: 0 16px 36px -6px rgba(16, 185, 129, 0.4), 0 4px 16px rgba(5, 150, 105, 0.2);">
+<div class="absolute -right-16 -top-16 w-64 h-64 rounded-full bg-mint-accent/20 blur-3xl pointer-events-none"></div>
+<div class="flex items-center gap-4 z-10">
+<div class="w-13 h-13 p-3 rounded-2xl flex items-center justify-center flex-shrink-0" style="background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.35);">
+<span class="material-symbols-outlined text-[28px] text-white">support_agent</span>
+</div>
+<div class="flex flex-col">
+<span class="text-xs font-black uppercase tracking-wider text-emerald-100">Discrepancy Rectification Desk</span>
+<h3 class="text-2xl font-black text-white leading-tight">Biometric Grievance Helpdesk &amp; SBTET Appeals</h3>
+<p class="text-sm font-semibold text-emerald-50/90 max-w-xl leading-snug">
+            If any biometric machine punch was invalidated due to sensor timeout or systemic failure, lodge a formal dispute within 48 hours endorsed by your Department Head.
+          </p>
+</div>
+</div>
+<div class="flex flex-wrap items-center gap-3 z-10 flex-shrink-0">
+<button class="px-5 py-2.5 rounded-full bg-white text-emerald-900 hover:bg-emerald-50 font-black text-base transition-all shadow-md active:scale-95 inline-flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[19px] text-emerald-700">badge</span>
+          Contact Academic Warden
+        </button>
+<button class="px-5 py-2.5 rounded-full font-black text-base transition-all active:scale-95 inline-flex items-center gap-1.5" style="background: rgba(255, 255, 255, 0.2); color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.35); backdrop-filter: blur(8px);">
+<span>Grievance Portal</span>
+<span class="material-symbols-outlined text-[17px]">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<script>
+  // Re-sync interaction
+  const syncBtn = document.getElementById('resyncBtn');
+  const syncIcon = document.getElementById('syncIcon');
+  if (syncBtn && syncIcon) {
+    syncBtn.addEventListener('click', () => {
+      syncIcon.classList.add('rotate-180');
+      syncBtn.disabled = true;
+      setTimeout(() => {
+        syncIcon.classList.remove('rotate-180');
+        syncBtn.disabled = false;
+      }, 700);
+    });
+  }
+
+  // Month filter selector
+  const monthPills = document.querySelectorAll('.month-pill');
+  monthPills.forEach(pill => {
+    pill.addEventListener('click', () => {
+      monthPills.forEach(p => {
+        p.removeAttribute('style');
+        p.className = 'month-pill px-3 py-1 rounded-full text-on-surface-variant hover:bg-emerald-50 font-bold text-sm transition-all';
+      });
+      pill.className = 'month-pill px-4 py-1 rounded-full text-white font-extrabold text-sm transition-all shadow-[0_4px_12px_rgba(16,185,129,0.3)]';
+      pill.style.background = 'linear-gradient(135deg, #059669 0%, #10b981 100%)';
+    });
+  });
+</script>
+    </div>
+  </main>
+
+  <!-- Shared Samskruti Institutional Footer -->
+  <footer class="w-full bg-white/60 border-t border-emerald-500/15 backdrop-blur-md mt-10"><div class="max-w-[1240px] mx-auto px-6 py-8"><div class="flex flex-col md:flex-row items-center justify-between gap-4 pb-6 border-b border-emerald-500/10"><div class="flex flex-col gap-1 text-center md:text-left"><div class="flex items-center justify-center md:justify-start gap-2"><span class="text-2xl text-on-surface font-extrabold">Samskruti College of Engineering &amp; Technology</span><span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-xs font-black border border-emerald-500/20">Code 259</span></div><p class="text-sm font-semibold text-secondary">Permanent SBTET &amp; AICTE Affiliation. Autonomous Campus Registry &amp; Academic Management Portal.</p></div><div class="flex flex-wrap items-center justify-center gap-2.5"><div class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-white border border-emerald-500/20 shadow-sm"><span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span><span class="text-xs font-extrabold text-emerald-900">Biometric Sync Online</span></div><div class="inline-flex items-center gap-1 px-3.5 py-1 rounded-full bg-white border border-emerald-500/20 shadow-sm"><span class="material-symbols-outlined text-emerald-600 text-[16px]">verified</span><span class="text-xs font-extrabold text-emerald-900">SBTET Verified Hub</span></div></div></div><div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-4 text-secondary text-sm font-semibold"><span>© 2025 Samskruti College. PIN 24259-CS-025 Registry. All rights reserved.</span><div class="flex items-center gap-4"><a class="hover:text-emerald-800 transition-colors font-bold" href="#">Academic Regulations</a><a class="hover:text-emerald-800 transition-colors font-bold" href="#">Attendance Mandates</a><a class="hover:text-emerald-800 transition-colors font-bold" href="#">Campus Support</a></div></div></div></footer>
+
+  <!-- Medical Appeal Modal -->
+  <div id="modalMedicalAppeal" class="fixed inset-0 z-[20000] hidden bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 md:p-8 shadow-2xl border border-emerald-500/20 flex flex-col gap-5">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-800 flex items-center justify-center">
+            <span class="material-symbols-outlined text-[24px]">medical_services</span>
+          </div>
+          <h3 class="text-2xl font-bold text-on-surface">File Medical Condonation Appeal</h3>
         </div>
-      </section>
-
-      <!-- 3. ATTENDANCE TRENDS GRAPH CARD (MATCHING REFERENCE DESIGN) -->
-      <section class="chart-section-card">
-        <div class="chart-header-block">
-          <div class="chart-title-group">
-            <h3 class="chart-heading">Semester Attendance Trajectory &amp; Trends</h3>
+        <button type="button" class="close-modal-btn text-stone-400 hover:text-stone-700 p-1">
+          <span class="material-symbols-outlined text-[22px]">close</span>
+        </button>
+      </div>
+      <p class="text-base text-on-surface-variant font-medium">
+        Submit clinical certificate and hospital records for statutory SBTET condonation slab approval (65% – 74.9%).
+      </p>
+      <form id="formMedicalAppeal" class="flex flex-col gap-4">
+        <div>
+          <label class="block text-sm font-bold text-on-surface mb-1">Medical Diagnosis / Hospitalization Reason</label>
+          <input type="text" required placeholder="e.g. Acute Dengue / Clinical Bedrest" class="w-full px-4 py-2.5 rounded-xl border border-stone-200 text-base focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-sm font-bold text-on-surface mb-1">Period From</label>
+            <input type="date" required class="w-full px-3 py-2 rounded-xl border border-stone-200 text-base focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
           </div>
-          <div class="chart-legend-group">
-            <span class="legend-chip legend-monthly">
-              <span class="legend-dot"></span> Monthly Attendance %
-            </span>
-            <span class="legend-chip legend-target">
-              <span class="legend-dash"></span> 75% Mandatory Line
-            </span>
+          <div>
+            <label class="block text-sm font-bold text-on-surface mb-1">Period To</label>
+            <input type="date" required class="w-full px-3 py-2 rounded-xl border border-stone-200 text-base focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
           </div>
         </div>
-
-        <!-- Spline Waves Chart Canvas -->
-        <div class="chart-canvas-wrapper">
-          <canvas id="attendanceTrendChart"></canvas>
+        <div>
+          <label class="block text-sm font-bold text-on-surface mb-1">Attach Signed Medical Certificate (PDF / Image)</label>
+          <input type="file" required accept=".pdf,.jpg,.jpeg,.png" class="w-full text-sm text-stone-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100" />
         </div>
-      </section>
-
-      <!-- 4. STUDENT IDENTITY STRIP -->
-      <section class="identity-card-neumorphic">
-        <div class="identity-profile-cell">
-          <div class="avatar-hexagon-wrapper">
-            <div class="avatar-initials" id="student-avatar-initials">KR</div>
-          </div>
-          <div class="identity-meta">
-            <h2 class="student-name" id="student-display-name">KAKARLA RAKESH</h2>
-            <div class="student-pin-badge font-mono" id="student-display-pin">24259-CS-039</div>
-          </div>
+        <div class="flex items-center justify-end gap-3 mt-2">
+          <button type="button" class="close-modal-btn px-5 py-2 rounded-full border border-stone-200 font-bold text-on-surface-variant hover:bg-stone-50">Cancel</button>
+          <button type="submit" class="px-6 py-2 rounded-full bg-primary hover:bg-emerald-800 text-white font-bold shadow-md transition-all">Submit for HOD Endorsement</button>
         </div>
-
-        <div class="identity-tags-cell">
-          <div class="info-chip">
-            <span class="chip-k">Scheme</span>
-            <span class="chip-v" id="student-scheme">C-24</span>
-          </div>
-          <div class="info-chip">
-            <span class="chip-k">Branch</span>
-            <span class="chip-v" id="student-branch">Computer Science &amp; Engineering</span>
-          </div>
-          <div class="info-chip">
-            <span class="chip-k">College Code</span>
-            <span class="chip-v">259 (SCET)</span>
-          </div>
-          <div class="gateway-live-pill">
-            <span class="live-dot-pulse"></span>
-            <span>Direct SCET Gateway</span>
-          </div>
-        </div>
-      </section>
-
-      <!-- 5. ATTENDANCE HERO: INTELLIGENCE ENGINE & RISK FORECAST -->
-      <section class="hero-intelligence-grid">
-        
-        <!-- Left: Circular Gauge Card -->
-        <div class="hero-card gauge-centerpiece">
-          <div class="card-inner-header">
-            <h3 class="card-title">Overall Attendance</h3>
-            <span class="risk-pill-danger" id="risk-pill-badge">Detained Risk (&lt;65%)</span>
-          </div>
-
-          <div class="radial-gauge-container">
-            <svg class="radial-svg" viewBox="0 0 200 200">
-              <circle class="gauge-track" cx="100" cy="100" r="80" />
-              <circle class="gauge-progress danger-stroke" id="hero-progress-ring" cx="100" cy="100" r="80" />
-            </svg>
-            <div class="gauge-readout-centered">
-              <span class="gauge-number font-mono" id="attendance-pct-display">38.46%</span>
-              <span class="gauge-sub">OVERALL</span>
-            </div>
-          </div>
-
-          <div class="gauge-footer-metrics">
-            <div class="footer-stat">
-              <span class="stat-lbl">Required Threshold</span>
-              <span class="stat-val font-mono">75.0%</span>
-            </div>
-            <div class="stat-separator"></div>
-            <div class="footer-stat">
-              <span class="stat-lbl">Clearance Deficit</span>
-              <span class="stat-val font-mono text-danger" id="clearance-deficit-val">-36.5%</span>
-            </div>
-            <div class="stat-separator"></div>
-            <div class="footer-stat">
-              <span class="stat-lbl">Current Exam %</span>
-              <span class="stat-val font-mono text-warning" id="exam-pct-val">28.4%</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Center: Diagnostic Recovery & SBTET Projections -->
-        <div class="hero-card projection-centerpiece">
-          <div class="card-inner-header">
-            <h3 class="card-title">SBTET Examination Status</h3>
-            <div class="warning-header-icon" title="Regulatory Compliance Warning">
-              <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-500"></i>
-            </div>
-          </div>
-
-          <!-- Alert Banner -->
-          <div class="elevated-alert-panel danger-theme" id="detainment-alert-panel">
-            <div class="alert-icon-box">
-              <i data-lucide="alert-octagon"></i>
-            </div>
-            <div class="alert-text">
-              <h4 class="alert-title" id="alert-title-text">Critical Detainment Alert (&lt;65% Threshold)</h4>
-              <p class="alert-desc" id="alert-desc-text">Your attendance is below 65%. You must attend upcoming sessions consistently to avoid academic detention.</p>
-            </div>
-          </div>
-
-          <!-- Recovery Metrics Grid -->
-          <div class="projection-stats-row">
-            <div class="proj-box">
-              <div class="proj-icon text-primary"><i data-lucide="target"></i></div>
-              <div class="proj-data">
-                <span class="proj-label">Attend 33 More Days</span>
-                <span class="proj-value font-mono" id="reach-75-target">(35 Present / 68 Target)</span>
-              </div>
-            </div>
-
-            <div class="proj-box">
-              <div class="proj-icon text-warning"><i data-lucide="calendar-clock"></i></div>
-              <div class="proj-data">
-                <span class="proj-label">9 Sessions Left</span>
-                <span class="proj-value font-mono" id="trajectory-text">Max Attainable: 38.9%</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- SBTET Official Regulatory Rules Strip -->
-          <div class="sbtet-rules-accordion">
-            <span class="rules-header font-mono"><i data-lucide="shield-alert" class="w-3.5 h-3.5"></i> SBTET C-24 Regulatory Mandates:</span>
-            <ul class="rules-list">
-              <li><strong>&ge; 75%:</strong> Eligible for Hall Ticket generation without condonation.</li>
-              <li><strong>65% – 74.9%:</strong> Medical Condonation allowed subject to Principal sign-off.</li>
-              <li><strong>&lt; 65%:</strong> Strict Detainment. Student must repeat the academic term.</li>
-            </ul>
-          </div>
-        </div>
-
-        <!-- Right: KPI Quick Stat Tiles (as in screenshot) -->
-        <div class="hero-kpi-sidebar">
-          <div class="side-kpi-card">
-            <span class="side-kpi-tag">WORKING SESSIONS</span>
-            <div class="side-kpi-val font-mono" id="val-working-days">36</div>
-            <span class="side-kpi-badge badge-green">Status Badges</span>
-          </div>
-          <div class="side-kpi-card">
-            <span class="side-kpi-tag">KPI STATISTICS</span>
-            <div class="side-kpi-val font-mono" id="val-present-days">43</div>
-            <span class="side-kpi-badge badge-green">Status Badges</span>
-          </div>
-        </div>
-
-      </section>
-
-      <!-- 6. TIERED KPI CARDS (WORKING, PRESENT, ABSENT, REMAINING, ERRORS) -->
-      <section class="kpi-cards-grid">
-        
-        <!-- Card 1: Working Days -->
-        <div class="kpi-card">
-          <div class="kpi-top">
-            <span class="kpi-label">WORKING DAYS</span>
-            <div class="kpi-icon-pill"><i data-lucide="layers"></i></div>
-          </div>
-          <div class="kpi-val font-mono" id="kpi-working-days">66</div>
-          <span class="kpi-subtext">Sessions Held to Date</span>
-        </div>
-
-        <!-- Card 2: Present Days -->
-        <div class="kpi-card success-accent">
-          <div class="kpi-top">
-            <span class="kpi-label">PRESENT DAYS</span>
-            <div class="kpi-icon-pill"><i data-lucide="user-check"></i></div>
-          </div>
-          <div class="kpi-val font-mono text-success" id="kpi-present-days">18</div>
-          <span class="kpi-subtext">Biometric Marked Present</span>
-        </div>
-
-        <!-- Card 3: Absent Days -->
-        <div class="kpi-card danger-accent">
-          <div class="kpi-top">
-            <span class="kpi-label">ABSENT DAYS</span>
-            <div class="kpi-icon-pill"><i data-lucide="user-x"></i></div>
-          </div>
-          <div class="kpi-val font-mono text-danger" id="kpi-absent-days">48</div>
-          <span class="kpi-subtext">Unattended Sessions</span>
-        </div>
-
-        <!-- Card 4: Remaining Days -->
-        <div class="kpi-card primary-accent">
-          <div class="kpi-top">
-            <span class="kpi-label">REMAINING DAYS</span>
-            <div class="kpi-icon-pill"><i data-lucide="hourglass"></i></div>
-          </div>
-          <div class="kpi-val font-mono text-primary" id="kpi-remaining-days">24</div>
-          <span class="kpi-subtext">Left in Semester (of 90)</span>
-        </div>
-
-        <!-- Card 5: Errors / HP -->
-        <div class="kpi-card">
-          <div class="kpi-top">
-            <span class="kpi-label">ERRORS / HP</span>
-            <div class="kpi-icon-pill"><i data-lucide="bug"></i></div>
-          </div>
-          <div class="kpi-val font-mono" id="kpi-error-days">0</div>
-          <span class="kpi-subtext">Logged Exception Records</span>
-        </div>
-
-      </section>
-
-      <!-- 7. MONTHLY ATTENDANCE CALENDAR MATRIX -->
-      <section class="calendar-section-card">
-        <div class="calendar-header-toolbar">
-          <div class="cal-title-block">
-            <span class="cal-eyebrow">CALENDAR MATRIX</span>
-            <h3 class="card-title">Calendar Matrix</h3>
-          </div>
-
-          <div class="cal-toolbar-actions">
-            <div class="cal-status-pills">
-              <span class="status-pill status-pill-present">Present</span>
-              <span class="status-pill status-pill-absent">Absent</span>
-            </div>
-
-            <!-- Month Selector Pills -->
-            <div class="cal-month-switch" role="tablist">
-              <button type="button" class="month-pill-btn" data-month="june">June</button>
-              <button type="button" class="month-pill-btn" data-month="july">July</button>
-              <button type="button" class="month-pill-btn active" data-month="august">August</button>
-              <button type="button" class="month-pill-btn" data-month="september">September</button>
-              <button type="button" class="month-pill-btn" data-month="october">October</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- 7-Column Day Header -->
-        <div class="calendar-week-header">
-          <span>MON</span><span>TUE</span><span>WED</span><span>THU</span><span>FRI</span><span>SAT</span><span>SUN</span>
-        </div>
-
-        <!-- Calendar Dynamic Matrix Grid -->
-        <div class="calendar-cells-matrix" id="calendar-grid-target">
-          <!-- Dynamically Injected by attendance.js -->
-        </div>
-
-        <!-- Legend -->
-        <div class="calendar-legend-bar">
-          <div class="legend-item"><span class="dot-p"></span><span>Present (P)</span></div>
-          <div class="legend-item"><span class="dot-a"></span><span>Absent (A)</span></div>
-          <div class="legend-item"><span class="dot-hp"></span><span>Half Day (HP)</span></div>
-          <div class="legend-item"><span class="dot-h"></span><span>Holiday (H)</span></div>
-          <div class="legend-item"><span class="dot-w"></span><span>Week Off (W)</span></div>
-        </div>
-      </section>
-
-    </main>
+      </form>
+    </div>
   </div>
 
-  <script type="module" src="./attendance.js"></script>
+  <!-- Toast Notification -->
+  <div id="toastNotification" class="fixed bottom-6 right-6 z-[30000] hidden px-5 py-3 rounded-2xl bg-emerald-900 text-white font-bold text-base shadow-2xl flex items-center gap-3 border border-emerald-400/40 transform transition-all duration-300">
+    <span class="material-symbols-outlined text-emerald-300 text-[20px]" id="toastIcon">check_circle</span>
+    <span id="toastMsg">Action completed successfully</span>
+  </div>
+
+  <!-- Attendance Page Controller Script -->
+  <script src="/screens/02-student-portal/attendance.js"></script>
 </body>
 </html>

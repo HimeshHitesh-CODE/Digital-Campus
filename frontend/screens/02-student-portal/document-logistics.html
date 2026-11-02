@@ -1,318 +1,526 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Document Logistics &amp; Counter Pickup | Samskruti College (Code: 259)</title>
-
-  <!-- Typography & Icons -->
+  <title>Certificate & Bonafide Requests — Samskruti College</title>
+  
+  <!-- Material Symbols & Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Urbanist:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,600&family=JetBrains+Mono:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Darker+Grotesque:wght@400;500;600;700;800;900&family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..700&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet" />
+  
+  <!-- Tailwind CSS & Master Config -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script src="/js/stitch-tailwind-config.js"></script>
+
+  <!-- Stitch Design System & Nav Dock Styles -->
+  <link rel="stylesheet" href="/css/stitch-design-system.css" />
+  <link rel="stylesheet" href="/css/top-nav.css" />
+
+  <!-- Lucide Icons & Shared State -->
   <script src="https://unpkg.com/lucide@latest"></script>
-
-  <!-- Master Design System Stylesheets -->
-  <link rel="stylesheet" href="../../css/reset.css" />
-  <link rel="stylesheet" href="../../css/theme-tokens.css" />
-  <link rel="stylesheet" href="../../css/dc-global-theme.css?v=3.3.0" />
-  <link rel="stylesheet" href="../../css/top-nav.css?v=3.3.0" />
-  <link rel="stylesheet" href="./doc-request.css" />
-
-  <!-- Global Dynamic Island & Navigation Engine -->
-  <script src="../../js/dc-dynamic-island.js?v=3.3.0"></script>
-
-  <style>
-    .doc-page-container {
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 24px 0 60px;
-      display: flex;
-      flex-direction: column;
-      gap: 24px;
-    }
-
-    .top-bar-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 16px;
-      margin-bottom: 8px;
-    }
-
-    .top-bar-title {
-      font-size: 1.85rem;
-      font-weight: 800;
-      color: var(--text-heading);
-      letter-spacing: -0.02em;
-      margin: 0;
-    }
-
-    .top-bar-sub {
-      font-size: 0.88rem;
-      color: var(--text-muted);
-      margin-top: 4px;
-      font-weight: 500;
-    }
-
-    .grid-dashboard {
-      display: grid;
-      grid-template-columns: 1.15fr 1fr;
-      gap: 24px;
-    }
-
-    @media (max-width: 960px) {
-      .grid-dashboard {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .neu-card {
-      background: var(--surface-card);
-      backdrop-filter: blur(28px) saturate(180%);
-      -webkit-backdrop-filter: blur(28px) saturate(180%);
-      border: 1px solid var(--border-card);
-      outline: 1px solid var(--border-card-outer);
-      border-radius: var(--radius-2xl);
-      box-shadow: var(--shadow-card);
-      padding: 30px 32px;
-      position: relative;
-    }
-
-    .section-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 22px;
-      border-bottom: 1px solid var(--border-divider);
-      padding-bottom: 14px;
-    }
-
-    .section-title {
-      font-size: 1.18rem;
-      font-weight: 800;
-      color: var(--text-heading);
-      margin: 0;
-    }
-
-    .neu-input-group {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      margin-bottom: 18px;
-    }
-
-    .neu-input-label {
-      font-size: 0.82rem;
-      font-weight: 700;
-      color: var(--text-heading);
-      letter-spacing: 0.02em;
-    }
-
-    .neu-input {
-      width: 100%;
-      padding: 12px 16px;
-      border-radius: var(--radius-md);
-      background: var(--surface-raised);
-      border: 1px solid var(--border-card);
-      color: var(--text-main);
-      font-size: 0.90rem;
-      font-family: var(--font-sans);
-      outline: none;
-      transition: all 0.2s ease;
-      box-sizing: border-box;
-    }
-
-    .neu-input:focus {
-      border-color: var(--brand-accent);
-      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.18);
-    }
-
-    .btn-submit-doc {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      width: 100%;
-      padding: 13px 20px;
-      border-radius: var(--radius-pill);
-      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-      color: #ffffff;
-      border: none;
-      font-size: 0.90rem;
-      font-weight: 700;
-      cursor: pointer;
-      box-shadow: 0 8px 24px rgba(16, 185, 129, 0.35);
-      transition: all 0.25s ease;
-      margin-top: 8px;
-    }
-
-    .btn-submit-doc:hover {
-      filter: brightness(1.08);
-      transform: translateY(-1px);
-      box-shadow: 0 12px 28px rgba(16, 185, 129, 0.45);
-    }
-
-    .btn-refresh {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 16px;
-      border-radius: var(--radius-pill);
-      background: var(--surface-raised);
-      border: 1px solid var(--border-card);
-      color: var(--brand-primary);
-      font-size: 0.82rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .btn-refresh:hover {
-      background: var(--brand-primary-tint);
-      border-color: var(--brand-accent);
-    }
-
-    .doc-status-card {
-      background: var(--surface-raised);
-      border: 1px solid var(--border-card);
-      border-radius: var(--radius-lg);
-      padding: 18px 20px;
-      margin-bottom: 14px;
-      transition: all 0.2s ease;
-    }
-
-    .doc-status-card:hover {
-      border-color: var(--brand-accent);
-      transform: translateY(-2px);
-    }
-
-    .otp-box {
-      background: rgba(16, 185, 129, 0.12);
-      border: 1px solid rgba(16, 185, 129, 0.35);
-      border-radius: var(--radius-md);
-      padding: 14px 16px;
-      text-align: center;
-      margin-top: 12px;
-    }
-
-    .otp-label {
-      font-size: 0.72rem;
-      font-weight: 800;
-      color: var(--brand-accent);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      display: block;
-      margin-bottom: 4px;
-    }
-
-    .otp-code {
-      font-family: var(--font-mono);
-      font-size: 1.6rem;
-      font-weight: 900;
-      letter-spacing: 5px;
-      color: var(--brand-accent);
-      display: block;
-    }
-  </style>
+  <script src="/js/stitch-state.js"></script>
+  <script src="/js/dc-dynamic-island.js" defer></script>
 </head>
-<body class="student-portal-body">
 
-  <div class="portal-viewport-wrapper">
-    <main class="main-content">
-      <div class="doc-page-container">
+<body class="bg-surface font-sans text-emerald-950 min-h-screen flex flex-col antialiased selection:bg-emerald-200 selection:text-emerald-900 bg-dot-pattern"
+      style="background-color: #fcfaf6; background-image: radial-gradient(at 0% 0%, rgba(16, 185, 129, 0.12) 0px, transparent 48%), radial-gradient(at 100% 20%, rgba(5, 150, 105, 0.10) 0px, transparent 44%), radial-gradient(at 48% 65%, rgba(52, 211, 153, 0.08) 0px, transparent 52%), radial-gradient(at 95% 90%, rgba(16, 185, 129, 0.09) 0px, transparent 45%), radial-gradient(circle at 1px 1px, rgba(16, 185, 129, 0.06) 1.2px, transparent 0px); background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%, 28px 28px;">
 
-        <!-- Top Title Bar -->
-        <header class="top-bar-header">
-          <div>
-            <h1 class="top-bar-title">Document Logistics &amp; Counter Pickup</h1>
-            <p class="top-bar-sub" id="doc-student-meta">Samskruti College (Code: 259) • Direct HOD Queue &amp; Counter OTP Verification</p>
-          </div>
-          <div>
-            <button type="button" class="btn-refresh" id="refresh-docs-btn">
-              <i data-lucide="refresh-cw" style="width: 15px; height: 15px;"></i>
-              <span>Refresh Status</span>
-            </button>
-          </div>
-        </header>
-
-        <!-- Two Column Workspace -->
-        <div class="grid-dashboard">
-          
-          <!-- Left: Raise New Document Request -->
-          <div class="neu-card">
-            <div class="section-header">
-              <h2 class="section-title">New Certificate Request</h2>
-              <span class="neu-badge neu-badge-primary">HOD Direct Queue</span>
+  <!-- Main Content Viewport Wrapper (Offset below persistent top navigation) -->
+  <main class="w-full flex-grow pt-[84px] md:pt-[92px]">
+    <div class="max-w-[1240px] mx-auto px-4 sm:px-6 pb-12 flex flex-col gap-6 w-full">
+      
+<div class="max-w-[1240px] mx-auto px-6 space-y-8">
+<!-- Top Headline & Spatial Badge Band -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-2">
+<div class="space-y-2">
+<div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-100/70 border border-emerald-300 text-emerald-900 shadow-sm">
+<span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
+<span class="text-[13px] font-extrabold uppercase tracking-widest text-emerald-800">CAMPUS CONNECT • SBTET CLEARANCE TERMINAL</span>
+</div>
+<h1 class="font-headline-hero text-4xl sm:text-5xl lg:text-[52px] font-semibold text-emerald-950 tracking-tight leading-[1.1]">
+          Certificate &amp; Bonafide Requests
+        </h1>
+<p class="text-[17px] text-emerald-900/80 font-medium flex flex-wrap items-center gap-x-2.5">
+<span>Samskruti College (Code: 259)</span>
+<span class="text-emerald-400">•</span>
+<span class="font-bold text-emerald-950"><span id="reqStudentMeta">KARNATI HIMESH (PIN: 24259-CS-025)</span></span>
+<span class="text-emerald-400">•</span>
+<span class="text-emerald-700 font-semibold">Direct HOD Queue &amp; Instant OTP Clearance</span>
+</p>
+</div>
+<div class="flex items-center gap-3">
+<button class="group inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/90 hover:bg-emerald-50/90 text-emerald-900 border border-emerald-200 shadow-sm transition-all active:scale-[0.98]" id="refreshBtn" type="button">
+<span class="material-symbols-outlined text-[20px] text-emerald-700 group-hover:rotate-180 transition-transform duration-500">sync</span>
+<span class="text-[16px] font-bold tracking-wide">Refresh Request Status</span>
+</button>
+</div>
+</div>
+<!-- Quick Stats Grid Bar -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+<div class="glass-card-inner rounded-2xl p-4 flex items-center justify-between border border-emerald-200/60 shadow-sm">
+<div>
+<span class="text-[13px] font-bold uppercase tracking-wider text-emerald-700 block">HOD Queue Load</span>
+<span class="text-[26px] font-extrabold text-emerald-950 leading-tight">3 In Review</span>
+</div>
+<div class="w-10 h-10 rounded-xl bg-emerald-500/15 flex items-center justify-center text-emerald-700">
+<span class="material-symbols-outlined text-[22px]">assignment_turned_in</span>
+</div>
+</div>
+<div class="glass-card-inner rounded-2xl p-4 flex items-center justify-between border border-emerald-200/60 shadow-sm">
+<div>
+<span class="text-[13px] font-bold uppercase tracking-wider text-emerald-700 block">Counter Status</span>
+<span class="text-[26px] font-extrabold text-emerald-950 leading-tight">Desk 02 Open</span>
+</div>
+<div class="w-10 h-10 rounded-xl bg-emerald-500/15 flex items-center justify-center text-emerald-700">
+<span class="material-symbols-outlined text-[22px]">storefront</span>
+</div>
+</div>
+<div class="glass-card-inner rounded-2xl p-4 flex items-center justify-between border border-emerald-200/60 shadow-sm">
+<div>
+<span class="text-[13px] font-bold uppercase tracking-wider text-emerald-700 block">SBTET Registry</span>
+<span class="text-[26px] font-extrabold text-emerald-950 leading-tight">Biometric OK</span>
+</div>
+<div class="w-10 h-10 rounded-xl bg-emerald-500/15 flex items-center justify-center text-emerald-700">
+<span class="material-symbols-outlined text-[22px]">fingerprint</span>
+</div>
+</div>
+<div class="glass-card-inner rounded-2xl p-4 flex items-center justify-between border border-emerald-200/60 shadow-sm">
+<div>
+<span class="text-[13px] font-bold uppercase tracking-wider text-emerald-700 block">Turnaround</span>
+<span class="text-[26px] font-extrabold text-emerald-950 leading-tight">&lt; 24 Hours</span>
+</div>
+<div class="w-10 h-10 rounded-xl bg-emerald-500/15 flex items-center justify-center text-emerald-700">
+<span class="material-symbols-outlined text-[22px]">timelapse</span>
+</div>
+</div>
+</div>
+<!-- Core Two-Column Spatial Architecture -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+<!-- LEFT CARD: New Certificate Request (HOD Direct Queue) -->
+<section class="lg:col-span-5 glass-card rounded-[32px] p-6 sm:p-8 space-y-6 relative overflow-hidden">
+<!-- Subtle Top Glow Flare -->
+<div class="absolute -top-16 -right-16 w-44 h-44 bg-emerald-400/20 rounded-full blur-3xl pointer-events-none"></div>
+<div class="space-y-2">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2.5">
+<span class="w-3 h-3 rounded-full bg-emerald-500 ring-4 ring-emerald-200/60"></span>
+<h2 class="text-[28px] font-extrabold text-emerald-950 tracking-tight leading-none">New Certificate Request</h2>
+</div>
+<span class="px-3 py-0.5 rounded-full text-[12px] font-extrabold text-emerald-800 bg-emerald-100 border border-emerald-300 tracking-wider uppercase">
+              HOD Direct Queue
+            </span>
+</div>
+<p class="text-[15px] font-medium text-emerald-900/75 leading-snug">
+            Official academic attestations generated under SBTET Autonomous Regulations. Approvals require verifiable attendance clearance and HOD credentials.
+          </p>
+</div>
+<form class="space-y-5" id="certificateRequestForm" onsubmit="event.preventDefault(); triggerSubmit();">
+<!-- Document Type Dropdown -->
+<div class="space-y-1.5">
+<div class="flex items-center justify-between">
+<label class="text-[16px] font-bold text-emerald-950 tracking-wide" for="docTypeSelect">Document Type</label>
+<span class="text-[13px] font-semibold text-emerald-700">Official SBTET Seal</span>
+</div>
+<div class="relative">
+<select class="w-full h-13 pl-4 pr-10 rounded-2xl bg-white/90 border border-emerald-200 text-emerald-950 text-[16px] font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-emerald-500 shadow-sm appearance-none cursor-pointer transition-all" id="docTypeSelect">
+<option value="bonafide">Bonafide Certificate (Scholarship / Bank / Passport)</option>
+<option value="custodian">Study &amp; Conduct / Custodian Certificate</option>
+<option value="buspass">State Road Transport Bus Pass Endorsement</option>
+<option value="noc">No Objection Certificate (Internship / Industrial Visit)</option>
+<option value="transcript">Official Semester Transcript Excerpt</option>
+</select>
+<span class="material-symbols-outlined pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-emerald-700 text-[22px]">
+                expand_more
+              </span>
+</div>
+</div>
+<!-- Purpose of Request Textarea -->
+<div class="space-y-1.5">
+<div class="flex items-center justify-between">
+<label class="text-[16px] font-bold text-emerald-950 tracking-wide" for="purposeText">Purpose of Request</label>
+<span class="text-[13px] font-bold font-mono text-emerald-700" id="charCounter">0 / 220</span>
+</div>
+<div class="rounded-2xl bg-white/90 border border-emerald-200 p-3 shadow-sm focus-within:ring-2 focus-within:ring-emerald-400 focus-within:border-emerald-500 transition-all">
+<textarea class="w-full bg-transparent resize-none text-[15px] font-medium text-emerald-950 placeholder:text-emerald-900/40 focus:outline-none leading-relaxed" id="purposeText" maxlength="220" placeholder="E.g., Required for Passport Seva Kendra (PSK Begumpet) verification scheduled on March 18..." rows="3"></textarea>
+</div>
+</div>
+<!-- Physical Copies Stepper -->
+<div class="space-y-1.5">
+<div class="flex items-center justify-between">
+<label class="text-[16px] font-bold text-emerald-950 tracking-wide">Copies Needed</label>
+<span class="text-[13px] font-semibold text-emerald-700">Max 3 copies per batch</span>
+</div>
+<div class="flex items-center justify-between bg-white/90 border border-emerald-200 rounded-2xl px-4 py-2 shadow-sm">
+<span class="text-[15px] font-medium text-emerald-900/80">Official Printed Replicas</span>
+<div class="flex items-center gap-3">
+<button class="w-8 h-8 rounded-full bg-emerald-100 hover:bg-emerald-200 text-emerald-900 flex items-center justify-center transition-colors" id="decCopies" type="button">
+<span class="material-symbols-outlined text-[18px]">remove</span>
+</button>
+<span class="w-6 text-center font-bold text-[18px] text-emerald-950 font-mono" id="copiesCount">1</span>
+<button class="w-8 h-8 rounded-full bg-emerald-100 hover:bg-emerald-200 text-emerald-900 flex items-center justify-center transition-colors" id="incCopies" type="button">
+<span class="material-symbols-outlined text-[18px]">add</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Urgent Priority & Biometric Callout -->
+<div class="p-3.5 rounded-2xl bg-emerald-50/80 border border-emerald-200/80 flex items-center justify-between gap-3">
+<div class="flex items-center gap-2.5">
+<div class="w-9 h-9 rounded-xl bg-emerald-600/15 flex items-center justify-center text-emerald-800">
+<span class="material-symbols-outlined text-[20px]">bolt</span>
+</div>
+<div>
+<p class="text-[15px] font-bold text-emerald-950 leading-tight">Urgent Processing Priority</p>
+<p class="text-[13px] font-medium text-emerald-800/80 leading-tight">Priority counter clearance within 24h</p>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" id="urgentToggle" type="checkbox"/>
+<div class="w-11 h-6 bg-emerald-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+</label>
+</div>
+<div class="p-3.5 rounded-2xl bg-emerald-100/50 border border-emerald-300/80 flex items-start gap-2.5">
+<span class="material-symbols-outlined text-emerald-700 text-[20px] mt-0.5">verified_user</span>
+<div class="text-[13px] leading-tight text-emerald-900">
+<span class="font-bold">Biometric Sync Verified:</span> Student PIN 24259-CS-025 is authenticated with active attendance status registered in SBTET repository.
             </div>
-
-            <form id="doc-request-form" class="doc-form">
-              <div class="neu-input-group">
-                <label class="neu-input-label" for="doc-type">Document Type</label>
-                <select class="neu-input" id="doc-type" required>
-                  <option value="BONAFIDE">Bonafide Certificate (Scholarship / Bank)</option>
-                  <option value="CUSTODIAN">Custodian Certificate (Originals Verification)</option>
-                  <option value="NO_OBJECTION">No Objection Certificate (NOC for Internship)</option>
-                  <option value="TRANSCRIPT">Official Academic Transcript</option>
-                  <option value="CAPSTONE_PROJECT">Capstone / Innovation Project Incubation Approval</option>
-                  <option value="CUSTOM">Custom Document Request</option>
-                </select>
-              </div>
-
-              <!-- Custom Document Fields (Expandable) -->
-              <div id="custom-doc-fields" style="display: none; flex-direction: column; gap: 14px; margin-bottom: 14px;">
-                <div class="neu-input-group">
-                  <label class="neu-input-label" for="custom-doc-title">Custom Document Title</label>
-                  <input type="text" class="neu-input" id="custom-doc-title" placeholder="Specific Certificate / Document Name" />
+</div>
+<!-- Vibrant Emerald Gradient CTA Button -->
+<button class="w-full h-14 rounded-2xl text-white text-[18px] font-extrabold tracking-wide emerald-glow-shadow hover:brightness-105 active:scale-[0.99] transition-all flex items-center justify-center gap-2" id="submitRequestBtn" style="background: linear-gradient(135deg, #10b981 0%, #059669 50%, #047857 100%);" type="submit">
+<span>Submit to Department HOD for Approval</span>
+<span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+</button>
+</form>
+<div class="pt-2 border-t border-emerald-900/10 flex items-center justify-between text-emerald-800 text-[13px] font-semibold">
+<span class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px]">security</span>
+            Digital Ledger: 0x9AF4••259
+          </span>
+<span class="uppercase tracking-wider">CSE Dept • SCET</span>
+</div>
+</section>
+<!-- RIGHT CARD: Active Requests & Pickup OTP -->
+<section class="lg:col-span-7 space-y-6">
+<div class="flex items-center justify-between px-1">
+<div class="flex items-center gap-2">
+<h2 class="text-[28px] font-extrabold text-emerald-950 tracking-tight leading-none">Active Requests &amp; Pickup OTP</h2>
+</div>
+<span class="px-3 py-1 rounded-full text-[13px] font-bold text-emerald-800 bg-emerald-100/80 border border-emerald-200">2 Processing Units</span>
+</div>
+<!-- Request #1: APPROVED + High Visibility Institutional Counter Pickup OTP -->
+<div class="glass-card rounded-[32px] p-6 sm:p-7 space-y-5 relative overflow-hidden">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+<div>
+<div class="flex items-center gap-2">
+<span class="font-mono text-[12px] font-bold text-emerald-800">REF #REQ-24259-082</span>
+<span class="text-emerald-400">•</span>
+<span class="text-[13px] font-semibold text-emerald-700">Issued Today, 09:40 AM</span>
+</div>
+<h3 class="text-[24px] font-extrabold text-emerald-950 mt-1 leading-tight">
+                Bonafide &amp; Custodian Certificate
+              </h3>
+</div>
+<!-- Live Status Pill: APPROVED -->
+<span class="self-start sm:self-center px-4 py-1.5 rounded-full text-[14px] font-black tracking-wider uppercase flex items-center gap-1.5 border border-emerald-400 bg-emerald-100 text-emerald-900 shadow-sm">
+<span class="w-2.5 h-2.5 rounded-full bg-emerald-600 animate-pulse"></span>
+              APPROVED
+            </span>
+</div>
+<!-- Purpose Details & Attendance Snapshot -->
+<div class="flex flex-wrap gap-2 text-emerald-900 text-[14px] font-medium">
+<span class="px-3 py-1 rounded-full bg-white/80 border border-emerald-200 shadow-xs">
+              Purpose: Official Passport verification at RPO Hyderabad
+            </span>
+<span class="px-3 py-1 rounded-full bg-emerald-100/70 border border-emerald-300 font-bold text-emerald-900">
+              Attendance Snapshot: 38.64%
+            </span>
+<span class="px-3 py-1 rounded-full bg-teal-100/70 border border-teal-300 font-bold text-teal-900">
+              Condonation Cleared
+            </span>
+<span class="px-3 py-1 rounded-full bg-white/80 border border-emerald-200 text-emerald-800">
+              Sign-off: Dr. K. Srinivas (HOD)
+            </span>
+<span class="px-3 py-1 rounded-full bg-white/80 border border-emerald-200 text-emerald-800">
+              Dispatch: Counter Desk
+            </span>
+</div>
+<!-- HIGH-VISIBILITY 'INSTITUTIONAL COUNTER PICKUP OTP' HIGHLIGHT BOX -->
+<div class="rounded-3xl p-5 sm:p-6 otp-box-glow border-2 border-emerald-400/80 relative overflow-hidden" style="background: linear-gradient(145deg, #ecfdf5 0%, #d1fae5 60%, #a7f3d0 100%);">
+<!-- Background Radial Watermark Accent -->
+<div class="absolute -right-8 -bottom-8 w-40 h-40 bg-emerald-400/20 rounded-full blur-2xl pointer-events-none"></div>
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-5 relative z-10">
+<div class="space-y-1.5">
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-900 text-emerald-100 text-[12px] font-extrabold uppercase tracking-widest shadow-sm">
+<span class="material-symbols-outlined text-[15px] text-emerald-300">verified</span>
+                  INSTITUTIONAL COUNTER PICKUP OTP
                 </div>
-                <div class="neu-input-group">
-                  <label class="neu-input-label" for="custom-doc-format">Required Format &amp; Medium</label>
-                  <select class="neu-input" id="custom-doc-format">
-                    <option value="Official College Letterhead with Seal">Official College Letterhead with Seal</option>
-                    <option value="Printed Certificate on Stamped Bond">Printed Certificate on Stamped Bond</option>
-                    <option value="Digital Verified PDF Copy">Digital Verified PDF Copy</option>
-                    <option value="HOD Attested Copy">HOD Attested Copy</option>
-                  </select>
-                </div>
-              </div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-emerald-800 text-[20px]">desk</span>
+<span class="text-[18px] font-extrabold text-emerald-950">Counter 2 (Academic Section)</span>
+</div>
+<p class="text-[14px] font-semibold text-emerald-900/80 leading-snug">
+                  Present your Physical ID Card and verbalize this clearance code to collect attested copy.
+                </p>
+<div class="flex items-center gap-2 pt-1 text-[13px] font-bold text-emerald-800">
+<span class="w-2 h-2 rounded-full bg-emerald-600 animate-ping"></span>
+<span>Valid for 48 Hours</span>
+<span class="text-emerald-400">•</span>
+<span>Physical Student ID Required</span>
+</div>
+</div>
+<!-- Large Bold OTP Code styled with luminous mint/emerald accent -->
+<div class="flex flex-col items-start md:items-end justify-center gap-1.5 flex-shrink-0">
+<span class="text-[12px] font-extrabold text-emerald-800 uppercase tracking-widest">CLEARANCE CODE</span>
+<div class="px-6 py-3 rounded-2xl bg-white/95 border-2 border-emerald-400 text-emerald-900 flex items-center gap-2.5 font-mono text-[34px] sm:text-[38px] font-black tracking-[0.25em] shadow-[0_8px_24px_rgba(16,185,129,0.25)] select-all leading-none">
+<span>5</span><span>8</span><span>4</span><span>3</span><span>8</span><span>6</span>
+</div>
+<button class="inline-flex items-center gap-1 text-[13px] font-bold text-emerald-800 hover:text-emerald-950 hover:underline pt-0.5" onclick="navigator.clipboard?.writeText('584386'); alert('Clearance OTP copied: 584386');" type="button">
+<span class="material-symbols-outlined text-[15px]">content_copy</span>
+<span>Copy Token</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Document Preview Download Ribbon -->
+<div class="rounded-2xl p-3 bg-white/80 border border-emerald-200/80 flex items-center justify-between gap-3 shadow-xs">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-800">
+<span class="material-symbols-outlined text-[22px]">description</span>
+</div>
+<div>
+<p class="text-[15px] font-bold text-emerald-950">SCET-BONAFIDE-24259025.pdf</p>
+<p class="text-[12px] font-mono text-emerald-700">1.4 MB • Cryptographically Signed by Registrar</p>
+</div>
+</div>
+<a class="px-4 py-1.5 rounded-full bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-900 text-[14px] font-bold inline-flex items-center gap-1.5 transition-colors" href="javascript:void(0)">
+<span>View Preview</span>
+<span class="material-symbols-outlined text-[16px]">visibility</span>
+</a>
+</div>
+</div>
+<!-- Request #2: PENDING HOD SIGN-OFF -->
+<div class="glass-card rounded-[32px] p-6 sm:p-7 space-y-4">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+<div>
+<div class="flex items-center gap-2">
+<span class="font-mono text-[12px] font-bold text-emerald-800">REF #REQ-24259-094</span>
+<span class="text-emerald-400">•</span>
+<span class="text-[13px] font-semibold text-emerald-700">Submitted Yesterday, 04:15 PM</span>
+</div>
+<h3 class="text-[22px] font-extrabold text-emerald-950 mt-1 leading-tight">
+                State Bus Pass Recommendation Memo
+              </h3>
+</div>
+<span class="self-start sm:self-center px-3.5 py-1 rounded-full text-[13px] font-bold bg-amber-100/90 text-amber-900 border border-amber-300 flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+              PENDING HOD SIGN-OFF
+            </span>
+</div>
+<div class="flex flex-wrap gap-2 text-[14px] font-medium text-emerald-900">
+<span class="px-3 py-1 rounded-full bg-white/80 border border-emerald-200">
+              Route: ECIL X Roads → Samskruti Campus (Ghatkesar)
+            </span>
+<span class="px-3 py-1 rounded-full bg-white/80 border border-emerald-200">
+              Pass Type: Student Monthly Ordinary / Metro Express
+            </span>
+<span class="px-3 py-1 rounded-full bg-emerald-100/70 border border-emerald-300 font-bold text-emerald-900">
+              Queue Position #3
+            </span>
+</div>
+<!-- Workflow Clearance Progression -->
+<div class="rounded-2xl p-4 bg-white/70 border border-emerald-200/70 space-y-2">
+<div class="flex items-center justify-between text-[13px] font-bold uppercase tracking-wider text-emerald-800">
+<span>Workflow Clearance Progression</span>
+<span>Step 2 of 3</span>
+</div>
+<div class="w-full bg-emerald-100 h-2.5 rounded-full overflow-hidden p-0.5">
+<div class="h-full rounded-full transition-all duration-500" style="width: 66%; background: linear-gradient(90deg, #10b981, #34d399);"></div>
+</div>
+<div class="grid grid-cols-3 text-center pt-1 text-[14px]">
+<div class="text-emerald-950 font-bold flex items-center justify-center gap-1">
+<span class="material-symbols-outlined text-[16px] text-emerald-600">check_circle</span>
+<span>Verification</span>
+</div>
+<div class="text-emerald-700 font-extrabold flex items-center justify-center gap-1">
+<span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+<span>HOD Desk</span>
+</div>
+<div class="text-emerald-800/60 font-semibold flex items-center justify-center gap-1">
+<span class="material-symbols-outlined text-[16px]">schedule</span>
+<span>Counter Desk</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Collapsible Accordion: Archived Logs -->
+<div class="glass-card rounded-[28px] p-4 shadow-sm overflow-hidden">
+<button aria-expanded="false" class="w-full flex items-center justify-between p-2 rounded-2xl hover:bg-emerald-50/70 transition-colors text-left" id="toggleArchiveBtn" type="button">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]">inventory_2</span>
+</div>
+<div>
+<span class="text-[17px] font-bold text-emerald-950">Archived Certificate Logs</span>
+<span class="ml-2 font-mono text-[12px] font-bold text-emerald-700">(3 Completed)</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-emerald-800 transition-transform duration-300" id="accordionArrow">
+              expand_more
+            </span>
+</button>
+<div class="hidden pt-3 space-y-2" id="archiveContent">
+<div class="rounded-2xl p-3 bg-white/70 border border-emerald-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+<div>
+<div class="flex items-center gap-2">
+<span class="font-mono text-[12px] font-bold text-emerald-700">#REQ-24259-041</span>
+<span class="text-emerald-400">•</span>
+<span class="text-[15px] font-bold text-emerald-950">Fee Structure Memo (SBI Education Loan)</span>
+</div>
+<p class="text-[13px] font-medium text-emerald-800/80">Cleared on Jan 14, 2025 • Collected at Counter 1</p>
+</div>
+<span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-[12px] font-bold uppercase tracking-wider self-start sm:self-center">
+                Archived &amp; Delivered
+              </span>
+</div>
+<div class="rounded-2xl p-3 bg-white/70 border border-emerald-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+<div>
+<div class="flex items-center gap-2">
+<span class="font-mono text-[12px] font-bold text-emerald-700">#REQ-24259-019</span>
+<span class="text-emerald-400">•</span>
+<span class="text-[15px] font-bold text-emerald-950">NOC for Summer AI/ML Hackathon</span>
+</div>
+<p class="text-[13px] font-medium text-emerald-800/80">Cleared on Nov 22, 2024 • Collected at HOD Office</p>
+</div>
+<span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-[12px] font-bold uppercase tracking-wider self-start sm:self-center">
+                Archived &amp; Delivered
+              </span>
+</div>
+<div class="rounded-2xl p-3 bg-white/70 border border-emerald-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+<div>
+<div class="flex items-center gap-2">
+<span class="font-mono text-[12px] font-bold text-emerald-700">#REQ-24259-004</span>
+<span class="text-emerald-400">•</span>
+<span class="text-[15px] font-bold text-emerald-950">Sem-3 Provisional Grade Attestation</span>
+</div>
+<p class="text-[13px] font-medium text-emerald-800/80">Cleared on Sep 02, 2024 • Dispatched via Registry</p>
+</div>
+<span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-[12px] font-bold uppercase tracking-wider self-start sm:self-center">
+                Archived &amp; Delivered
+              </span>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Campus Regulatory Guidance Card -->
+<div class="glass-card rounded-[32px] p-6 sm:p-7 flex flex-col md:flex-row items-center justify-between gap-6">
+<div class="flex items-start gap-4">
+<div class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-[26px]">policy</span>
+</div>
+<div class="space-y-1">
+<h4 class="text-[20px] font-extrabold text-emerald-950 leading-tight">Institutional Compliance &amp; Condonation Guidelines</h4>
+<p class="text-[15px] font-medium text-emerald-900/80 max-w-2xl leading-snug">
+            As per SBTET Directive 2024-25, bonafide requests for Passport, Bank Loans, and State Transport require minimum 65% aggregate or ratified condonation sanction signed by the Academic Council.
+          </p>
+</div>
+</div>
+<div class="flex items-center gap-3 flex-shrink-0">
+<a class="px-5 py-2.5 rounded-full bg-white hover:bg-emerald-50 text-emerald-950 font-bold text-[15px] border border-emerald-300 shadow-sm transition-colors" href="javascript:void(0)">
+          Regulations Handbook
+        </a>
+</div>
+</div>
+</div>
 
-              <div class="neu-input-group">
-                <label class="neu-input-label" for="doc-purpose">Purpose of Request</label>
-                <textarea class="neu-input" id="doc-purpose" rows="3" placeholder="State reason for certificate request (e.g., Scholarship, Internship NOC, or higher studies)..." required></textarea>
-              </div>
+    </div>
+  </main>
 
-              <div class="neu-input-group">
-                <label class="neu-input-label" for="doc-copies">Copies Needed</label>
-                <input type="number" class="neu-input" id="doc-copies" min="1" max="5" value="1" required />
-              </div>
+  <!-- Shared Samskruti Institutional Footer -->
+  <footer class="relative z-20 w-full bg-white/80 border-t border-emerald-900/10 mt-12 backdrop-blur-md">
+<div class="max-w-[1240px] mx-auto px-6 py-8">
+<div class="flex flex-col md:flex-row items-center justify-between gap-4 pb-6">
+<div class="flex flex-col gap-1 text-center md:text-left">
+<div class="flex items-center justify-center md:justify-start gap-2">
+<span class="font-headline-hero text-[20px] font-bold text-emerald-950">Samskruti College of Engineering &amp; Technology</span>
+<span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[12px] font-bold font-mono">Code 259</span>
+</div>
+<p class="text-[14px] text-emerald-900/70 font-medium">
+          Permanent SBTET &amp; AICTE Affiliation. Autonomous Campus Registry &amp; Academic Management Portal.
+        </p>
+</div>
+<div class="flex flex-wrap items-center justify-center gap-3">
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200">
+<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+<span class="text-[13px] font-bold text-emerald-900 font-mono">Biometric Sync Online</span>
+</div>
+<div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200">
+<span class="material-symbols-outlined text-emerald-700 text-[16px]">verified</span>
+<span class="text-[13px] font-bold text-emerald-900 font-mono">SBTET Verified Hub</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-4 border-t border-emerald-900/10 text-emerald-900/70 text-[14px] font-medium">
+<span>© 2025 Samskruti College. PIN 24259-CS-025 Registry. All rights reserved.</span>
+<div class="flex items-center gap-4 text-[13px] font-semibold">
+<a class="hover:text-emerald-950 transition-colors" href="#">Academic Regulations</a>
+<a class="hover:text-emerald-950 transition-colors" href="#">Attendance Mandates</a>
+<a class="hover:text-emerald-950 transition-colors" href="#">Campus Support</a>
+</div>
+</div>
+</div>
+</footer>
 
-              <button type="submit" class="btn-submit-doc" id="doc-submit-btn">
-                <i data-lucide="send" style="width: 16px; height: 16px;"></i>
-                <span>Submit to Department HOD for Approval</span>
-              </button>
-            </form>
+  <!-- PDF Preview Modal -->
+  <div id="modalPdfPreview" class="fixed inset-0 z-[20000] hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-2xl w-full p-6 md:p-8 shadow-2xl border border-emerald-500/20 flex flex-col gap-5">
+      <div class="flex items-center justify-between pb-3 border-b border-stone-200">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-800 flex items-center justify-center">
+            <span class="material-symbols-outlined text-[24px]">description</span>
           </div>
-
-          <!-- Right: Active Requests & Pickup OTP Cards -->
-          <div class="side-column">
-            <div class="neu-card">
-              <div class="section-header">
-                <h2 class="section-title">Active Requests &amp; Pickup OTP</h2>
-                <span class="neu-badge neu-badge-success">Live Status</span>
-              </div>
-              
-              <div class="active-doc-list" id="active-doc-list">
-                <!-- Dynamically populated via doc-request.js -->
-              </div>
-            </div>
+          <div>
+            <h3 class="text-2xl font-bold text-on-surface">SCET-BONAFIDE-24259025.pdf</h3>
+            <span class="text-sm text-stone-500">Cryptographically Signed · SHA-256 Validated</span>
           </div>
-
         </div>
-
+        <button type="button" class="close-modal-btn text-stone-400 hover:text-stone-700 p-1">
+          <span class="material-symbols-outlined text-[22px]">close</span>
+        </button>
       </div>
-    </main>
+      <div class="p-6 rounded-2xl bg-surface-container-low border border-surface-container-highest flex flex-col gap-4 font-mono text-xs text-stone-700">
+        <div class="flex justify-between items-center pb-2 border-b border-stone-200">
+          <span class="font-bold text-sm text-emerald-950">SAMSKRUTI COLLEGE OF ENGINEERING & TECHNOLOGY</span>
+          <span class="text-xs text-emerald-800 font-bold">CODE: 259</span>
+        </div>
+        <div class="flex flex-col gap-1">
+          <div><span class="font-bold">STUDENT:</span> KARNATI HIMESH (PIN: 24259-CS-025)</div>
+          <div><span class="font-bold">BRANCH:</span> Computer Science & Engineering (Diploma)</div>
+          <div><span class="font-bold">ACADEMIC YEAR:</span> 2024-25 · 4th Semester</div>
+          <div><span class="font-bold">PURPOSE:</span> Official Passport verification at RPO Hyderabad</div>
+          <div><span class="font-bold">CLEARANCE OTP:</span> 5 8 4 3 8 6 (Counter 2 Academic Section)</div>
+          <div><span class="font-bold">SIGN-OFF:</span> Dr. K. Srinivas (HOD) & Controller of Examinations</div>
+        </div>
+      </div>
+      <div class="flex items-center justify-between">
+        <span class="text-xs text-stone-500 font-medium">Present your Student ID & OTP to collect stamped physical copy.</span>
+        <button type="button" onclick="window.print()" class="px-6 py-2 rounded-full bg-primary hover:bg-emerald-800 text-white font-bold inline-flex items-center gap-2">
+          <span class="material-symbols-outlined text-[18px]">print</span>
+          <span>Print Attestation</span>
+        </button>
+      </div>
+    </div>
   </div>
 
-  <script type="module" src="./doc-request.js"></script>
+  <!-- Toast Notification -->
+  <div id="toastNotification" class="fixed bottom-6 right-6 z-[30000] hidden px-5 py-3 rounded-2xl bg-emerald-900 text-white font-bold text-base shadow-2xl flex items-center gap-3 border border-emerald-400/40 transform transition-all duration-300">
+    <span class="material-symbols-outlined text-emerald-300 text-[20px]" id="toastIcon">check_circle</span>
+    <span id="toastMsg">Action completed successfully</span>
+  </div>
+
+  <!-- Requests Page Controller Script -->
+  <script src="/screens/02-student-portal/document-logistics.js"></script>
 </body>
 </html>

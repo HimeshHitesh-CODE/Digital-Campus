@@ -1,16 +1,18 @@
+/* ================================================================
+   SAMSKRUTI DIGITAL CAMPUS (INSTITUTION CODE: 259)
+   GLOBAL MASTER THEME & COMPONENT SPECIFICATION
+   Palette: Apricot Cream (#FFCF99), Terracotta (#9E2B25), Vintage Grape (#51355A),
+            Dark Amethyst (#2A0C4E), Olive Green (#8A9720)
+   Typography: Plus Jakarta Sans / Outfit / JetBrains Mono
+   ================================================================ */
 
 /* ================================================================
-   PAGE & INNER SCROLLBAR SPECIFICATION (Single Document Scroller)
+   1. SINGLE DOCUMENT SCROLLER (Visually Hidden Page Scrollbar)
    ================================================================ */
-:root {
-  --scrollbar-mode: hidden; /* "hidden" | "slim" */
-}
-
-/* Page-level scroller: keep scrolling fully active but visually hidden */
 html {
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE/Edge */
-  overflow-y: scroll; /* Maintain stable layout without scrollbar jump */
+  overflow-y: scroll; /* Keep layout stable without horizontal jump */
   scrollbar-gutter: stable;
 }
 
@@ -21,7 +23,7 @@ body::-webkit-scrollbar {
   height: 0 !important;
 }
 
-/* Inner scroll areas: slim 6px themed scrollbar with rounded semi-transparent thumb */
+/* Inner scroll areas: slim 6px themed scrollbar */
 .custom-scroll,
 .inner-scroller,
 .chat-messages-container,
@@ -29,7 +31,7 @@ body::-webkit-scrollbar {
 .modal-body-scroll,
 .modal-content-scroll {
   scrollbar-width: thin;
-  scrollbar-color: rgba(16, 185, 129, 0.35) transparent;
+  scrollbar-color: rgba(138, 151, 32, 0.40) transparent;
 }
 
 .custom-scroll::-webkit-scrollbar,
@@ -57,7 +59,7 @@ body::-webkit-scrollbar {
 .chat-thread-list::-webkit-scrollbar-thumb,
 .modal-body-scroll::-webkit-scrollbar-thumb,
 .modal-content-scroll::-webkit-scrollbar-thumb {
-  background: rgba(16, 185, 129, 0.35);
+  background: rgba(138, 151, 32, 0.40);
   border-radius: 9999px;
   transition: background 0.2s ease;
 }
@@ -68,17 +70,11 @@ body::-webkit-scrollbar {
 .chat-thread-list::-webkit-scrollbar-thumb:hover,
 .modal-body-scroll::-webkit-scrollbar-thumb:hover,
 .modal-content-scroll::-webkit-scrollbar-thumb:hover {
-  background: rgba(16, 185, 129, 0.65);
+  background: rgba(158, 43, 37, 0.70);
 }
 
 /* ================================================================
-   SAMSKRUTI DIGITAL CAMPUS (CODE: 259) — GLOBAL COMPONENT THEME
-   Implements Phases 1, 3, 4, 13, 14, 20
-   Matches reference 1.png and 2.png with perfection
-   ================================================================ */
-
-/* ================================================================
-   1. GLOBAL RESET & BASE STYLES
+   2. GLOBAL BASE & TYPOGRAPHY
    ================================================================ */
 *, *::before, *::after {
   box-sizing: border-box;
@@ -106,125 +102,78 @@ body {
   transition: background-color 0.35s ease, color 0.35s ease;
 }
 
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display, var(--font-sans));
+  color: var(--text-heading);
+  letter-spacing: -0.02em;
+}
+
 /* ================================================================
-   2. PHASE 4: GLOBAL ANIMATED GRAPHICS (LEFT WAVES & BOTTOM-RIGHT)
-   Exact recreation of the organic flowing green waves in 1.png & 2.png
+   3. AMBIENT FLOWING WAVE GRAPHICS
    ================================================================ */
 .ambient-graphic-container {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  z-index: var(--z-waves);
+  z-index: var(--z-waves, 1);
   overflow: hidden;
 }
 
-/* Left-Side Flowing Waves */
 .ambient-waves-left {
   position: absolute;
   top: 0;
   left: -80px;
-  width: 520px;
+  width: 540px;
   height: 100vh;
-  opacity: 0.85;
+  opacity: 0.75;
   transform-origin: left center;
-  animation: waveFloatLeft 12s infinite ease-in-out;
+  animation: waveFloatLeft 14s infinite ease-in-out;
 }
 
 .ambient-waves-left svg {
   width: 100%;
   height: 100%;
-  filter: blur(2px);
+  filter: blur(3px);
 }
 
-/* Bottom-Right Flowing Graphic Waves */
 .ambient-waves-right {
   position: absolute;
   bottom: -60px;
   right: -80px;
-  width: 680px;
-  height: 520px;
-  opacity: 0.90;
+  width: 720px;
+  height: 540px;
+  opacity: 0.80;
   transform-origin: bottom right;
-  animation: waveFloatRight 14s infinite ease-in-out;
+  animation: waveFloatRight 16s infinite ease-in-out;
 }
 
 .ambient-waves-right svg {
   width: 100%;
   height: 100%;
-  filter: blur(2px);
+  filter: blur(3px);
 }
-
-/* Background Subtle Sparkle Stars (✦) */
-.ambient-sparkles {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-}
-
-.ambient-sparkle {
-  position: absolute;
-  color: rgba(16, 185, 129, 0.45);
-  font-size: 14px;
-  animation: sparkleTwinkle 6s infinite ease-in-out;
-  user-select: none;
-}
-
-[data-theme="dark"] .ambient-sparkle {
-  color: rgba(52, 211, 153, 0.55);
-}
-
-.ambient-sparkle:nth-child(1) { top: 18%; left: 32%; animation-delay: 0s; font-size: 18px; }
-.ambient-sparkle:nth-child(2) { top: 28%; left: 48%; animation-delay: 2s; font-size: 13px; }
-.ambient-sparkle:nth-child(3) { top: 14%; left: 68%; animation-delay: 4s; font-size: 16px; }
-.ambient-sparkle:nth-child(4) { top: 45%; left: 82%; animation-delay: 1.5s; font-size: 14px; }
-.ambient-sparkle:nth-child(5) { top: 62%; left: 12%; animation-delay: 3.5s; font-size: 17px; }
 
 @keyframes waveFloatLeft {
-  0% {
-    transform: translate3d(0, 0, 0) scale(1, 1) rotate(0deg);
-  }
-  33% {
-    transform: translate3d(24px, -32px, 0) scale(1.05, 1.03) rotate(1.6deg);
-  }
-  66% {
-    transform: translate3d(-14px, 26px, 0) scale(0.97, 0.98) rotate(-1.4deg);
-  }
-  100% {
-    transform: translate3d(0, 0, 0) scale(1, 1) rotate(0deg);
-  }
+  0% { transform: translate3d(0, 0, 0) scale(1, 1) rotate(0deg); }
+  50% { transform: translate3d(20px, -24px, 0) scale(1.04, 1.02) rotate(1.2deg); }
+  100% { transform: translate3d(0, 0, 0) scale(1, 1) rotate(0deg); }
 }
 
 @keyframes waveFloatRight {
-  0% {
-    transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
-  }
-  33% {
-    transform: translate3d(-32px, -24px, 0) scale(1.06) rotate(-1.8deg);
-  }
-  66% {
-    transform: translate3d(18px, 18px, 0) scale(0.95) rotate(1.4deg);
-  }
-  100% {
-    transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
-  }
-}
-
-@keyframes sparkleTwinkle {
-  0%, 100% { opacity: 0.25; transform: scale(0.85); }
-  50% { opacity: 0.85; transform: scale(1.25); }
+  0% { transform: translate3d(0, 0, 0) scale(1) rotate(0deg); }
+  50% { transform: translate3d(-24px, -18px, 0) scale(1.05) rotate(-1.4deg); }
+  100% { transform: translate3d(0, 0, 0) scale(1) rotate(0deg); }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .ambient-waves-left,
-  .ambient-waves-right,
-  .ambient-sparkle {
+  .ambient-waves-right {
     animation: none !important;
   }
 }
 
-
 /* ================================================================
-   3. GLOBAL FIXED TOP HEADER BAR (Header, Brand, Dock & Dropdown)
+   4. GLOBAL FIXED HEADER (Shared Alignment Gridline)
    ================================================================ */
 .app-global-header {
   position: fixed;
@@ -240,32 +189,32 @@ body {
 }
 
 .app-global-header.is-scrolled {
-  background: rgba(255, 255, 255, 0.88);
-  backdrop-filter: blur(16px) saturate(180%);
-  -webkit-backdrop-filter: blur(16px) saturate(180%);
-  border-bottom: 1px solid rgba(13, 71, 34, 0.10);
-  box-shadow: 0 4px 20px rgba(13, 71, 34, 0.05);
+  background: rgba(255, 255, 255, 0.90);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid rgba(81, 53, 90, 0.12);
+  box-shadow: 0 4px 20px rgba(42, 12, 78, 0.05);
 }
 
 [data-theme="dark"] .app-global-header.is-scrolled {
-  background: rgba(2, 8, 4, 0.88);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.55);
+  background: rgba(20, 5, 38, 0.92);
+  border-bottom: 1px solid rgba(255, 207, 153, 0.14);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.65);
 }
 
 .app-global-header-inner {
-  max-width: var(--container-max-width, 1280px);
+  max-width: var(--container-max-width, 1240px);
   width: 100%;
   height: 100%;
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 0 clamp(16px, 3.5vw, 28px);
   display: flex;
   align-items: center;
   justify-content: space-between;
   box-sizing: border-box;
 }
 
-/* Header Left: Clean College Identity without pill border */
+/* Brand Identity */
 .header-brand-meta {
   pointer-events: auto;
   display: flex;
@@ -274,7 +223,6 @@ body {
   line-height: 1.25;
   background: transparent !important;
   border: none !important;
-  border-radius: 0 !important;
   padding: 0 !important;
   box-shadow: none !important;
   text-decoration: none;
@@ -283,20 +231,15 @@ body {
 }
 
 .header-brand-meta:hover {
-  opacity: 0.88;
-  transform: none !important;
-  box-shadow: none !important;
-  border-color: transparent !important;
+  opacity: 0.85;
 }
 
 .header-brand-title {
-  font-family: var(--font-sans);
-  font-size: 1.12rem;
-  font-weight: 700;
+  font-family: var(--font-display, var(--font-sans));
+  font-size: 1.15rem;
+  font-weight: 800;
   color: var(--text-heading);
-  letter-spacing: -0.015em;
-  margin: 0;
-  padding: 0;
+  letter-spacing: -0.02em;
 }
 
 .header-brand-sub {
@@ -326,14 +269,14 @@ body {
   justify-content: center;
   border: 1px solid var(--border-default);
   background: var(--surface-card);
-  backdrop-filter: blur(12px);
-  color: var(--text-primary);
+  backdrop-filter: blur(14px);
+  color: var(--text-heading);
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .theme-switch-btn:hover {
-  border-color: var(--brand-accent);
+  border-color: var(--brand-primary);
   transform: scale(1.05);
 }
 
@@ -349,7 +292,7 @@ body {
   align-items: center;
   gap: 8px;
   padding: 4px 14px 4px 6px;
-  border-radius: 9999px;
+  border-radius: var(--radius-pill);
   border: 1px solid var(--border-default);
   background: var(--surface-card);
   backdrop-filter: blur(16px);
@@ -359,8 +302,8 @@ body {
 }
 
 .profile-badge-btn:hover {
-  border-color: var(--brand-accent);
-  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.15);
+  border-color: var(--brand-primary);
+  box-shadow: 0 4px 16px rgba(158, 43, 37, 0.15);
 }
 
 .profile-badge-avatar {
@@ -377,8 +320,8 @@ body {
 }
 
 [data-theme="dark"] .profile-badge-avatar {
-  background: #10b981;
-  color: #020804;
+  background: var(--color-apricot);
+  color: var(--color-amethyst);
 }
 
 .profile-badge-name-preview {
@@ -397,44 +340,35 @@ body {
   transition: transform 0.2s ease;
 }
 
-/* Centered Viewport Wrapper */
-.portal-viewport-wrapper {
-  position: relative;
-  z-index: var(--z-content, 10);
-  max-width: var(--container-max-width, 1280px);
-  width: 100%;
-  margin: 0 auto;
-  padding: 88px 24px 60px;
-  box-sizing: border-box;
-}
 /* ================================================================
-   4. PAGE MAIN CONTAINER & LAYOUT
+   5. UNIFIED PAGE WRAPPER & CONTAINER ALIGNMENT (ZERO JANK)
    ================================================================ */
 .portal-viewport-wrapper,
 .main-content,
 .dashboard-canvas {
   position: relative;
-  z-index: var(--z-content);
-  max-width: 1400px;
+  z-index: var(--z-content, 10);
+  max-width: var(--container-max-width, 1240px);
+  width: 100%;
   margin: 0 auto;
-  padding: 88px 36px 60px;
+  padding-left: clamp(16px, 3.5vw, 28px);
+  padding-right: clamp(16px, 3.5vw, 28px);
+  padding-top: 92px;
+  padding-bottom: 60px;
   box-sizing: border-box;
 }
 
 @media (max-width: 768px) {
-  .app-global-header {
-    padding: 0 16px;
-    height: 64px;
-  }
   .portal-viewport-wrapper,
   .main-content,
   .dashboard-canvas {
-    padding: 76px 16px 40px;
+    padding-top: 80px;
+    padding-bottom: 40px;
   }
 }
 
 /* ================================================================
-   5. REUSABLE CARD SYSTEM & FROSTED GLASS
+   6. LUXURY GLASS CARDS & TILES
    ================================================================ */
 .glass-card,
 .neu-card,
@@ -443,8 +377,7 @@ body {
   backdrop-filter: blur(28px) saturate(180%);
   -webkit-backdrop-filter: blur(28px) saturate(180%);
   border: 1px solid var(--border-card);
-  outline: 1px solid var(--border-card-outer);
-  border-radius: var(--radius-xl);
+  border-radius: var(--radius-card, 26px);
   box-shadow: var(--shadow-card);
   transition: all var(--duration-normal) var(--ease-smooth);
   position: relative;
@@ -456,13 +389,12 @@ body {
 .feature-card:hover {
   background: var(--surface-card-hover);
   box-shadow: var(--shadow-card-hover);
-  border-color: rgba(16, 185, 129, 0.40);
+  border-color: rgba(158, 43, 37, 0.25);
   transform: translateY(-2px);
 }
 
 /* ================================================================
-   6. STATS METRICS ROW (Phase 5 Attendance Stats)
-   Exact reproduction of 4-column glass stat card in 1.png
+   7. STATS SUMMARY CARD & 4 EQUAL COLUMNS
    ================================================================ */
 .stats-summary-card {
   display: grid;
@@ -471,9 +403,9 @@ body {
   backdrop-filter: blur(24px) saturate(180%);
   -webkit-backdrop-filter: blur(24px) saturate(180%);
   border: 1px solid var(--border-card);
-  border-radius: var(--radius-card, 28px);
+  border-radius: var(--radius-card, 26px);
   box-shadow: var(--shadow-card);
-  padding: 16px 24px;
+  padding: 18px 24px;
   margin: 0;
   gap: 0;
   align-items: center;
@@ -485,74 +417,87 @@ body {
 .stat-metric-col {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 14px;
+  padding: 6px 18px;
+  min-width: 0;
+  box-sizing: border-box;
   position: relative;
 }
 
 .stat-metric-col:not(:last-child)::after {
   content: "";
   position: absolute;
-  right: -8px;
-  top: 10%;
-  bottom: 10%;
+  right: 0;
+  top: 15%;
+  bottom: 15%;
   width: 1px;
-  background: var(--border-default);
+  background: var(--border-subtle);
 }
 
 .stat-metric-icon {
-  width: 48px;
-  height: 48px;
+  width: 44px;
+  height: 44px;
   border-radius: 14px;
-  background: rgba(167, 243, 208, 0.45);
+  background: rgba(255, 207, 153, 0.35);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--brand-primary);
+  color: var(--color-amethyst);
   flex-shrink: 0;
   transition: transform var(--duration-fast) ease;
 }
 
 [data-theme="dark"] .stat-metric-icon {
-  background: rgba(16, 185, 129, 0.20);
-  color: #34d399;
+  background: rgba(81, 53, 90, 0.45);
+  color: var(--color-apricot);
 }
 
 .stat-metric-icon svg,
 .stat-metric-icon i {
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
 }
 
 .stat-metric-content {
   display: flex;
   flex-direction: column;
-  line-height: 1.15;
+  min-width: 0;
+  flex: 1;
 }
 
 .stat-metric-val {
+  font-family: var(--font-display, var(--font-sans));
   font-size: 1.65rem;
   font-weight: 800;
   color: var(--text-heading);
   letter-spacing: -0.02em;
+  line-height: 1.1;
+  white-space: nowrap;
 }
 
 .stat-metric-lbl {
+  font-family: var(--font-sans);
   font-size: 0.78rem;
   font-weight: 600;
   color: var(--text-muted);
-  margin-top: 4px;
+  margin-top: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .stat-metric-sparkline {
   margin-left: auto;
-  width: 72px;
-  height: 28px;
+  width: 64px;
+  height: 26px;
+  flex-shrink: 0;
 }
 
 @media (max-width: 1024px) {
   .stats-summary-card {
     grid-template-columns: repeat(2, 1fr);
-    gap: 24px;
+    gap: 16px;
+    padding: 20px;
   }
   .stat-metric-col:nth-child(2)::after {
     display: none;
@@ -562,8 +507,8 @@ body {
 @media (max-width: 640px) {
   .stats-summary-card {
     grid-template-columns: 1fr;
-    gap: 20px;
-    padding: 20px;
+    gap: 14px;
+    padding: 16px;
   }
   .stat-metric-col::after {
     display: none !important;
@@ -571,11 +516,13 @@ body {
 }
 
 /* ================================================================
-   7. HERO BUTTONS & ACTION CONTROLS
+   8. BUTTONS & INTERACTIVE CONTROLS
    ================================================================ */
-.btn-action-primary {
+.btn-action-primary,
+.btn-hero-primary {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 10px;
   height: 48px;
   padding: 0 24px;
@@ -586,32 +533,199 @@ body {
   font-size: 0.90rem;
   font-weight: 700;
   text-decoration: none;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 6px 20px rgba(13, 71, 34, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.20);
+  box-shadow: 0 6px 20px rgba(158, 43, 37, 0.28);
   cursor: pointer;
   transition: all var(--duration-fast) var(--ease-smooth);
 }
 
-.btn-action-primary:hover {
+.btn-action-primary:hover,
+.btn-hero-primary:hover {
   background: var(--brand-primary-hover);
   transform: translateY(-2px);
-  box-shadow: 0 10px 28px rgba(13, 71, 34, 0.38);
+  box-shadow: 0 10px 28px rgba(158, 43, 37, 0.38);
 }
 
-.btn-action-primary svg,
-.btn-action-primary i {
-  width: 18px;
-  height: 18px;
-  transition: transform var(--duration-fast) ease;
+.btn-action-secondary,
+.btn-hero-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 48px;
+  padding: 0 24px;
+  border-radius: var(--radius-pill);
+  background: var(--surface-card);
+  color: var(--text-heading) !important;
+  font-family: var(--font-sans);
+  font-size: 0.90rem;
+  font-weight: 700;
+  text-decoration: none;
+  border: 1px solid var(--border-default);
+  backdrop-filter: blur(12px);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-smooth);
 }
 
-.btn-action-primary:hover svg,
-.btn-action-primary:hover i {
-  transform: translateX(3px);
+.btn-action-secondary:hover,
+.btn-hero-secondary:hover {
+  border-color: var(--brand-accent);
+  background: var(--surface-card-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
 /* ================================================================
-   8. FOOTER WITH SCRIPT BRANDING
+   9. PROFILE DROPDOWN MENU
+   ================================================================ */
+.profile-dropdown-card {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  width: 260px;
+  background: var(--surface-card);
+  backdrop-filter: blur(28px) saturate(190%);
+  -webkit-backdrop-filter: blur(28px) saturate(190%);
+  border: 1px solid var(--border-default);
+  border-radius: 20px;
+  box-shadow: var(--shadow-lg);
+  padding: 16px;
+  box-sizing: border-box;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px) scale(0.96);
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: var(--z-dropdown, 10050);
+  pointer-events: none;
+}
+
+.profile-dropdown-card.is-open {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+.dropdown-user-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 12px;
+}
+
+.dropdown-user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--brand-primary);
+  color: #ffffff;
+  font-size: 0.92rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+[data-theme="dark"] .dropdown-user-avatar {
+  background: var(--color-apricot);
+  color: var(--color-amethyst);
+}
+
+.dropdown-user-name {
+  font-family: var(--font-display, var(--font-sans));
+  font-weight: 800;
+  font-size: 0.94rem;
+  color: var(--text-heading);
+}
+
+.dropdown-user-sub {
+  font-size: 0.74rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.dropdown-divider-v {
+  width: 100%;
+  height: 1px;
+  background: var(--border-subtle);
+  margin: 10px 0;
+}
+
+.dropdown-menu-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.dropdown-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  color: var(--text-primary) !important;
+  text-decoration: none;
+  font-size: 0.86rem;
+  font-weight: 700;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  width: 100%;
+  text-align: left;
+  transition: all 0.15s ease;
+}
+
+.dropdown-menu-item:hover {
+  background: rgba(138, 151, 32, 0.12) !important;
+  color: var(--text-heading) !important;
+}
+
+.dropdown-menu-item i,
+.dropdown-menu-item svg {
+  width: 18px;
+  height: 18px;
+  color: var(--brand-accent) !important;
+}
+
+.dropdown-theme-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.dropdown-theme-row .row-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dropdown-theme-row .row-label i,
+.dropdown-theme-row .row-label svg {
+  width: 18px;
+  height: 18px;
+  color: var(--brand-accent);
+}
+
+.dropdown-menu-item.logout-item {
+  color: #b91c1c !important;
+}
+
+.dropdown-menu-item.logout-item i,
+.dropdown-menu-item.logout-item svg {
+  color: #b91c1c !important;
+}
+
+.dropdown-menu-item.logout-item:hover {
+  background: rgba(185, 28, 28, 0.12) !important;
+}
+
+/* ================================================================
+   10. INSTITUTIONAL FOOTER
    ================================================================ */
 .app-footer {
   margin-top: 50px;
@@ -619,7 +733,7 @@ body {
   padding-bottom: 30px;
   text-align: center;
   position: relative;
-  z-index: var(--z-content);
+  z-index: var(--z-content, 10);
 }
 
 .footer-divider-row {
@@ -640,51 +754,6 @@ body {
 }
 
 .footer-star {
-  color: var(--brand-accent);
+  color: var(--brand-primary);
   font-size: 14px;
-}
-
-
-/* Profile Dropdown Internal Contrast Enforcement */
-.profile-dropdown-card .dropdown-menu-item {
-  color: #e2e8f0 !important;
-}
-
-.profile-dropdown-card .dropdown-menu-item:hover {
-  background: rgba(16, 185, 129, 0.18) !important;
-  color: #ffffff !important;
-}
-
-.profile-dropdown-card .dropdown-menu-item i,
-.profile-dropdown-card .dropdown-menu-item svg {
-  color: #10b981 !important;
-}
-
-.profile-dropdown-card .dropdown-menu-item:hover i,
-.profile-dropdown-card .dropdown-menu-item:hover svg {
-  color: #34d399 !important;
-}
-
-.profile-dropdown-card .dropdown-theme-row {
-  color: #e2e8f0 !important;
-}
-
-.profile-dropdown-card .dropdown-theme-row .row-label i,
-.profile-dropdown-card .dropdown-theme-row .row-label svg {
-  color: #10b981 !important;
-}
-
-.profile-dropdown-card .dropdown-menu-item.logout-item {
-  color: #f87171 !important;
-  border-top: 1px solid rgba(16, 185, 129, 0.18) !important;
-}
-
-.profile-dropdown-card .dropdown-menu-item.logout-item i,
-.profile-dropdown-card .dropdown-menu-item.logout-item svg {
-  color: #ef4444 !important;
-}
-
-.profile-dropdown-card .dropdown-menu-item.logout-item:hover {
-  background: rgba(239, 68, 68, 0.18) !important;
-  color: #fca5a5 !important;
 }

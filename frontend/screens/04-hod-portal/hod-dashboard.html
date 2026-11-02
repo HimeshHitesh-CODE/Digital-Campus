@@ -1,629 +1,450 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en" class="light">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title id="page-head-title">HOD Executive Console • Samskruti Digital Campus</title>
-  
-  <!-- Web Fonts for Pro UI -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet" />
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>HOD Executive Console &bull; Samskruti College (Code: 259)</title>
 
-  <!-- Stylesheets -->
-  <link rel="stylesheet" href="../../css/reset.css" />
-  <link rel="stylesheet" href="../../css/theme-tokens.css" />
-  <link rel="stylesheet" href="../../css/global-layout.css" />
-  <link rel="stylesheet" href="../../css/top-nav.css?v=3.3.0" />
-  <link rel="stylesheet" href="../../css/animations.css" />
-  <link rel="stylesheet" href="../../css/theme.css" />
-  <link rel="stylesheet" href="../../css/hod-theme.css" />
-  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Plus Jakarta Sans, Darker Grotesque, Newsreader, IBM Plex Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+  <link href="https://fonts.googleapis.com/css2?family=Darker+Grotesque:wght@600;700;800;900&family=IBM+Plex+Mono:wght@500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,500;0,6..72,700;1,6..72,500&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <!-- Material Symbols Outlined -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
   <script src="https://unpkg.com/lucide@latest"></script>
-  <script src="../../js/theme-engine.js"></script>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Unified Tailwind Configuration -->
+  <script src="/js/stitch-tailwind-config.js"></script>
+
+  <!-- Master Design System Stylesheets -->
+  <link rel="stylesheet" href="/css/stitch-design-system.css"/>
+  <link rel="stylesheet" href="/css/top-nav.css"/>
+
+  <!-- Client State Engine & Dynamic Island Dock -->
+  <script src="/js/campus-180-roster.js"></script>
+  <script src="/js/stitch-state.js"></script>
+  <script src="/js/dc-dynamic-island.js"></script>
 
   <style>
-    .app-layout {
-      display: flex !important;
-      flex-direction: column !important;
-      width: 100% !important;
-      min-height: 100vh !important;
+    .glass-card {
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(220, 215, 205, 0.8);
+      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.04), 0 0 0 1px rgba(0, 0, 0, 0.02);
     }
-    .brand-logo-img, img.brand-logo-img, .brand-emblem-badge img, header img {
-      width: 32px !important;
-      height: 32px !important;
-      max-width: 32px !important;
-      max-height: 32px !important;
-      object-fit: contain !important;
-      display: block !important;
-    }
-    .brand-emblem-badge {
-      width: 40px !important;
-      height: 40px !important;
-      min-width: 40px !important;
-      min-height: 40px !important;
-      max-width: 40px !important;
-      max-height: 40px !important;
-      border-radius: 50% !important;
-      overflow: hidden !important;
-      display: flex !important;
-      align-items: center !important;
-      justify-content: center !important;
-    }
-    body.hod-executive {
-      font-family: 'Urbanist', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      letter-spacing: -0.01em;
-      background: var(--dc-black, #020604) !important;
-      color: #f0fdf4 !important;
-      min-height: 100vh;
-      padding-bottom: 110px !important;
-      position: relative;
-      overflow-x: hidden;
-    }
-    .executive-card,
-    .pro-stat-card {
-      background: rgba(30, 68, 50, 0.45) !important;
-      backdrop-filter: blur(28px) saturate(180%) !important;
-      -webkit-backdrop-filter: blur(28px) saturate(180%) !important;
-      border: 1px solid rgba(110, 231, 183, 0.22) !important;
-      border-radius: 24px !important;
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45), inset 0 0 0 1px rgba(255, 255, 255, 0.06) !important;
-      color: #f0fdf4 !important;
-    }
-    .pro-gradient-title {
-      background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 50%, #94a3b8 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      font-size: 2rem;
-      font-weight: 900;
-      letter-spacing: -0.03em;
-      line-height: 1.2;
-    }
-    .pro-subtitle-badge {
-      font-size: 0.72rem;
-      font-weight: 800;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: #60a5fa;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      margin-bottom: 4px;
-    }
-    .grid-cols-4 {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-      gap: 20px;
-      margin-bottom: 24px;
-    }
-    .grid-cols-2 {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
-      gap: 24px;
-    }
-    .pro-stat-card {
-      padding: 24px;
-      position: relative;
-      overflow: hidden;
-    }
-    .pro-stat-card::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      right: 0;
-      width: 80px;
-      height: 80px;
-      background: radial-gradient(circle, rgba(37, 99, 235, 0.15) 0%, transparent 70%);
-      pointer-events: none;
-    }
-    .mono-num {
-      font-family: 'JetBrains Mono', monospace;
-      font-variant-numeric: tabular-nums;
-    }
-    .progress-bar-container {
-      width: 100%;
-      height: 8px;
-      background: rgba(255, 255, 255, 0.08);
-      border-radius: 9999px;
-      overflow: hidden;
-      margin: 8px 0;
-    }
-    .progress-bar-fill {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, #3b82f6, #10b981);
-      border-radius: 9999px;
-      transition: width 0.3s ease;
+    .hero-mesh {
+      background: linear-gradient(135deg, #022c22 0%, #064e3b 45%, #047857 100%);
     }
   </style>
-  <link rel="stylesheet" href="../../css/dc-global-theme.css?v=3.3.0" />
-  <script src="../../js/dc-dynamic-island.js?v=3.3.0"></script>
 </head>
-<body class="hod-executive">
-  <!-- Live Moving Background with Aura Orbs -->
-  <div class="dc-orb-bg" aria-hidden="true">
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
-    <div class="orb orb-3"></div>
-    <div class="orb orb-4"></div>
+
+<body class="bg-[#fcfaf6] dark:bg-[#020604] text-stone-800 dark:text-stone-100 font-sans antialiased min-h-screen flex flex-col justify-between relative selection:bg-emerald-500 selection:text-white">
+  <!-- Fixed Global Navigation & Floating Dynamic Island Dock will mount via dc-dynamic-island.js -->
+
+  <main class="w-full flex-grow pt-[84px] md:pt-[92px]">
+    <div class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+      
+<!-- BEGIN: MainContainer -->
+<div class="max-w-[1240px] mx-auto px-4 sm:px-6 py-6 space-y-6">
+<!-- BEGIN: TopBar -->
+
+<!-- END: TopBar -->
+<!-- BEGIN: HeroBanner -->
+<section class="hero-mesh rounded-[32px] p-7 md:p-8 text-white relative overflow-hidden" data-purpose="executive-hero">
+<!-- Decorative radial accent background -->
+<div class="absolute -right-20 -bottom-20 w-80 h-80 rounded-full bg-emerald-400/20 blur-3xl pointer-events-none"></div>
+<div class="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+<div class="space-y-3">
+<!-- Status Pills -->
+<div class="flex flex-wrap items-center gap-2.5">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider bg-white/15 backdrop-blur-md border border-white/20 text-emerald-50">
+              Department of Computer Science &amp; Engineering • Scheme: C-24
+            </span>
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-400/20 border border-emerald-300/30 text-emerald-100">
+<span class="w-2 h-2 rounded-full bg-emerald-300 animate-pulse"></span>
+              Live SBTET Node
+            </span>
+</div>
+<!-- Hero Heading -->
+<h2 class="text-4xl md:text-5xl lg:text-[50px] font-extrabold font-display leading-[0.95] tracking-tight">
+            Head of Department Executive Console
+          </h2>
+<p class="text-sm text-emerald-100/90 max-w-xl font-normal">
+            Real-time curriculum management, compliance verification, and examination roster approvals.
+          </p>
+</div>
+<!-- HOD Profile Card Pill -->
+<div class="flex items-center gap-3.5 bg-black/20 backdrop-blur-md border border-white/20 p-2.5 pr-5 rounded-full shadow-lg self-stretch md:self-auto">
+<div class="w-12 h-12 rounded-full bg-[#003519] text-white flex items-center justify-center font-bold text-base shadow-inner">
+            VK
+          </div>
+<div>
+<div class="text-base font-bold leading-tight text-white">Dr. J. Vamshi Krishna</div>
+<div class="text-[11px] font-semibold text-emerald-200 tracking-wide uppercase mt-0.5">
+              Official HOD (Computer Science)
+            </div>
+</div>
+</div>
+</div>
+</section>
+<!-- END: HeroBanner -->
+<!-- BEGIN: SyncCard -->
+<section class="glass-card rounded-[28px] p-5 md:p-7 space-y-4" data-purpose="sync-status-card" id="syncStatusSection">
+  <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-5 pb-2">
+    <!-- Left: Status title & beacon -->
+    <div class="space-y-1.5">
+      <div class="flex flex-wrap items-center gap-2.5">
+        <span class="relative flex h-3 w-3">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" id="syncPingBeacon"></span>
+          <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500" id="syncDotBeacon"></span>
+        </span>
+        <h3 class="text-base sm:text-lg font-bold text-slate-900 font-display">
+          180-Student Automated Department Sync &amp; Biometric Ledger
+        </h3>
+        <span id="syncStageBadge" class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 border border-emerald-200 transition-all">
+          Standby: 180 Nodes Ready
+        </span>
+      </div>
+      <p class="text-xs text-slate-600 font-medium">
+        Active worker stream: <span class="text-slate-800 font-semibold font-mono" id="syncSummaryText">Processed 12 / 180 students</span>. Currently auditing: 
+        <span class="font-mono text-emerald-800 font-semibold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200/60" id="currentSyncPin">24259-CS-012</span>
+        <span class="text-slate-500 font-medium ml-1" id="currentSyncName">(K. SAI MANIDEEP)</span>
+      </p>
+    </div>
+
+    <!-- Right: Action Buttons -->
+    <div class="flex items-center gap-3 shrink-0">
+      <button id="syncAllBtn" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-[#003519] via-[#047857] to-[#10b981] hover:opacity-95 text-white text-xs font-bold tracking-wide shadow-md shadow-emerald-700/20 transition-all active:scale-95 cursor-pointer" type="button">
+        <span class="material-symbols-outlined text-[18px]" id="syncBtnIcon">bolt</span>
+        <span id="syncBtnText">⚡ Sync All 180 Now</span>
+      </button>
+      <button id="viewBatchBtn" class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 text-xs font-semibold shadow-xs transition-all cursor-pointer" type="button">
+        <span>View Batch →</span>
+      </button>
+    </div>
   </div>
 
-  <!-- Dynamic Top-Right Corner Profile Widget -->
-  <div class="app-layout" style="position: relative; z-index: 10;">
+  <!-- Dual Loading Bars Container -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 border-t border-slate-200/60">
+    <!-- Dual Bar 1: Biometric Hardware Nodes -->
+    <div class="space-y-1.5 bg-slate-50/70 p-3.5 rounded-2xl border border-slate-200/50">
+      <div class="flex items-center justify-between text-xs font-semibold text-slate-700">
+        <span class="flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-emerald-700 text-[16px]">fingerprint</span>
+          Biometric Hardware Stream
+        </span>
+        <span class="font-mono text-emerald-800 font-bold" id="bar1Counter">12 / 180 (6%)</span>
+      </div>
+      <div class="w-full bg-slate-200 rounded-full h-2.5 overflow-hidden">
+        <div id="progressBar1" class="bg-gradient-to-r from-[#047857] to-[#10b981] h-2.5 rounded-full w-[6%] transition-all duration-300 ease-out shadow-xs"></div>
+      </div>
+      <div class="flex items-center justify-between text-[11px] text-slate-500">
+        <span>Sensor Nodes: 8 Gateways</span>
+        <span class="text-emerald-700 font-medium">99.8% Hardware Ping</span>
+      </div>
+    </div>
 
-    <main class="main-content" style="margin-left: 0; width: 100%; max-width: 1600px; margin: auto; padding: 24px 32px;">
-      
-      <!-- Top Bar with Executive Pro Typography -->
-      <header class="content-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 18px; margin-bottom: 24px;">
-        <div class="header-titles">
-          <div class="pro-subtitle-badge" id="hod-dept-subtitle">
-            <span id="hod-dot-indicator" style="width: 6px; height: 6px; border-radius: 50%; background: #3b82f6; display: inline-block; box-shadow: 0 0 8px #3b82f6;"></span>
-            <span id="hod-dept-title-text">Samskruti College (259) • Department of Computer Science &amp; Engineering</span>
-          </div>
-          <h1 class="pro-gradient-title" id="hod-main-heading">Head of Department Executive Console</h1>
-        </div>
-
-        <div class="header-actions">
-          <div class="executive-card" style="display: flex; align-items: center; gap: 14px; padding: 8px 18px; border-radius: 9999px; border: 1px solid var(--hod-border-highlight); box-shadow: var(--hod-shadow-card);">
-            <div id="hod-avatar" class="user-avatar" style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #2563eb, #3b82f6); color: white; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 0.95rem; box-shadow: var(--hod-glow-blue);">VK</div>
-            <div class="user-info">
-              <div id="hod-name" style="font-size: 0.9rem; font-weight: 800; color: var(--hod-text-main);">Prof. Vamshi Krishna</div>
-              <div id="hod-role-badge" style="font-size: 0.72rem; color: #60a5fa; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em;">Official HOD (Computer Science)</div>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      <!-- Non-Blocking Department Live Background Sync Widget -->
-      <section id="sync-banner-card" class="executive-card" style="padding: 18px 24px; margin-bottom: 24px; border-left: 4px solid #3b82f6; background: rgba(15, 23, 42, 0.75);">
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
-          <div>
-            <div style="display: flex; align-items: center; gap: 8px;">
-              <span id="sync-status-indicator" style="width: 8px; height: 8px; border-radius: 50%; background: #3b82f6; display: inline-block;"></span>
-              <strong id="sync-title-text" style="font-size: 0.95rem; color: var(--hod-text-main);">Automated Department Sync</strong>
-              <span id="sync-percent-badge" class="neu-badge" style="font-size: 0.7rem; background: rgba(59, 130, 246, 0.15); color: #60a5fa;">Idle</span>
-            </div>
-            <p id="sync-desc-text" style="font-size: 0.8rem; color: var(--hod-text-muted); margin: 4px 0 0 0;">
-              Live background sync automatically pulls attendance, CGPA, and backlog statistics directly from SBTET for all department students.
-            </p>
-          </div>
-
-          <div style="display: flex; align-items: center; gap: 10px;">
-            <button id="btn-trigger-sync" class="neu-btn-primary" style="font-size: 0.8rem; padding: 8px 16px; border-radius: 8px; cursor: pointer;">
-              ⚡ Sync All Now
+    <!-- Dual Bar 2: State Board (SBTET) Ledger Audit -->
+    <div class="space-y-1.5 bg-slate-50/70 p-3.5 rounded-2xl border border-slate-200/50">
+      <div class="flex items-center justify-between text-xs font-semibold text-slate-700">
+        <span class="flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-[#003519] text-[16px]">verified</span>
+          SBTET Scheme C-24 Ledger Audit
+        </span>
+        <span class="font-mono text-slate-800 font-bold" id="bar2Counter">8 / 180 (4%)</span>
+      </div>
+      <div class="w-full bg-slate-200 rounded-full h-2.5 overflow-hidden">
+        <div id="progressBar2" class="bg-gradient-to-r from-[#003519] to-[#047857] h-2.5 rounded-full w-[4%] transition-all duration-300 ease-out shadow-xs"></div>
+      </div>
+      <div class="flex items-center justify-between text-[11px] text-slate-500">
+        <span>Central Ledger: Node 259</span>
+        <span class="text-slate-600 font-medium">TLS 1.3 Hash Verified</span>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- END: SyncCard -->
+<!-- BEGIN: KpiMetricsGrid -->
+<section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" data-purpose="key-metrics">
+<!-- Metric 1: Total Intake -->
+<article class="glass-card rounded-[24px] p-5 flex flex-col justify-between hover:border-emerald-300 transition-colors">
+<div>
+<span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Department Total Intake</span>
+<div class="text-3xl font-extrabold text-slate-900 mt-2 font-display tracking-tight">180</div>
+</div>
+<p class="text-xs font-medium text-slate-500 mt-3 pt-3 border-t border-slate-100">
+          180 Students (24259 Batch • Scheme C-24)
+        </p>
+</article>
+<!-- Metric 2: Average Attendance -->
+<article class="glass-card rounded-[24px] p-5 flex flex-col justify-between hover:border-red-300 transition-colors">
+<div>
+<div class="flex items-center justify-between">
+<span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Department Avg Attendance</span>
+<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-700 uppercase tracking-tight">Critical Alert</span>
+</div>
+<div class="text-3xl font-extrabold text-rose-600 mt-2 font-display tracking-tight">36.8%</div>
+</div>
+<p class="text-xs font-medium text-slate-500 mt-3 pt-3 border-t border-slate-100">
+          Real-time aggregate across synced students
+        </p>
+</article>
+<!-- Metric 3: Exam Clearance Rate -->
+<article class="glass-card rounded-[24px] p-5 flex flex-col justify-between hover:border-emerald-300 transition-colors">
+<div>
+<span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Exam Clearance Rate</span>
+<div class="text-3xl font-extrabold text-amber-600 mt-2 font-display tracking-tight">2.2%</div>
+</div>
+<p class="text-xs font-medium text-slate-500 mt-3 pt-3 border-t border-slate-100">
+<strong class="text-slate-700 font-semibold">4 / 180</strong> students ≥ 75% SBTET line
+        </p>
+</article>
+<!-- Metric 4: Document Approvals -->
+<article class="glass-card rounded-[24px] p-5 flex flex-col justify-between hover:border-emerald-300 transition-colors">
+<div>
+<div class="flex items-center justify-between">
+<span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Pending Approvals</span>
+<span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+</div>
+<div class="text-3xl font-extrabold text-amber-500 mt-2 font-display tracking-tight">3</div>
+</div>
+<p class="text-xs font-medium text-slate-500 mt-3 pt-3 border-t border-slate-100">
+          Awaiting HOD Digital Sign-Off
+        </p>
+</article>
+</section>
+<!-- END: KpiMetricsGrid -->
+<!-- BEGIN: OperationalTablesSection -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6" data-purpose="operational-tables">
+<!-- Table 1: Live Student Requests Queue -->
+<section class="glass-card rounded-[28px] p-6 flex flex-col justify-between">
+<div>
+<!-- Header Area -->
+<div class="flex items-center justify-between mb-4">
+<div>
+<h3 class="text-base font-bold text-slate-900">Live Student Requests Queue</h3>
+<p class="text-xs text-slate-500 mt-0.5">Verified Attendance Snapshots &amp; Instant OTP Generation</p>
+</div>
+<button class="px-3.5 py-1.5 rounded-full bg-white hover:bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-700 shadow-sm transition" type="button">
+              Full Queue →
             </button>
-            <a href="./students-info.html" class="neu-btn" style="font-size: 0.8rem; padding: 8px 16px; border-radius: 8px; text-decoration: none; font-weight: 700;">
-              View Batch →
-            </a>
+</div>
+<!-- Table Container -->
+<div class="overflow-x-auto">
+<table class="w-full text-left border-separate border-spacing-y-2">
+<thead>
+<tr class="bg-slate-100/70 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
+<th class="py-2.5 px-3 rounded-l-2xl">PIN</th>
+<th class="py-2.5 px-3">Student Name</th>
+<th class="py-2.5 px-3">Request Type</th>
+<th class="py-2.5 px-3">Verified Att.</th>
+<th class="py-2.5 px-3 rounded-r-2xl text-right">Action</th>
+</tr>
+</thead>
+<tbody class="text-xs">
+<!-- Row 1 -->
+<tr class="bg-white/60 hover:bg-white transition-colors shadow-sm rounded-xl">
+<td class="py-3 px-3 font-mono font-bold text-[#047857] rounded-l-xl">24259-CS-025</td>
+<td class="py-3 px-3 font-semibold text-slate-800 uppercase">Karnati Himesh</td>
+<td class="py-3 px-3 text-slate-600">Bonafide Certificate <span class="text-slate-400 block text-[10px]">(1 Copy)</span></td>
+<td class="py-3 px-3">
+<span class="inline-block px-2 py-0.5 rounded-full text-[11px] font-bold bg-rose-100 text-rose-700 border border-rose-200">
+                      38.64%
+                    </span>
+</td>
+<td class="py-3 px-3 text-right rounded-r-xl">
+<button class="px-3 py-1.5 rounded-full bg-[#003519] hover:bg-[#022c22] text-white font-semibold text-xs transition shadow-sm" type="button">
+                      Review →
+                    </button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="bg-white/60 hover:bg-white transition-colors shadow-sm rounded-xl">
+<td class="py-3 px-3 font-mono font-bold text-[#047857] rounded-l-xl">24259-CS-037</td>
+<td class="py-3 px-3 font-semibold text-slate-800 uppercase">Edamanapally Samisaac</td>
+<td class="py-3 px-3 text-slate-600">Internship NOC</td>
+<td class="py-3 px-3">
+<span class="inline-block px-2 py-0.5 rounded-full text-[11px] font-bold bg-rose-100 text-rose-700 border border-rose-200">
+                      27.27%
+                    </span>
+</td>
+<td class="py-3 px-3 text-right rounded-r-xl">
+<button class="px-3 py-1.5 rounded-full bg-[#003519] hover:bg-[#022c22] text-white font-semibold text-xs transition shadow-sm" type="button">
+                      Review →
+                    </button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="bg-white/60 hover:bg-white transition-colors shadow-sm rounded-xl">
+<td class="py-3 px-3 font-mono font-bold text-[#047857] rounded-l-xl">24259-AIML-019</td>
+<td class="py-3 px-3 font-semibold text-slate-800 uppercase">Karnati Hitesh</td>
+<td class="py-3 px-3 text-slate-600">Bonafide Certificate</td>
+<td class="py-3 px-3">
+<span class="inline-block px-2 py-0.5 rounded-full text-[11px] font-bold bg-rose-100 text-rose-700 border border-rose-200">
+                      0.00%
+                    </span>
+</td>
+<td class="py-3 px-3 text-right rounded-r-xl">
+<button class="px-3 py-1.5 rounded-full bg-[#003519] hover:bg-[#022c22] text-white font-semibold text-xs transition shadow-sm" type="button">
+                      Review →
+                    </button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="mt-4 pt-3 border-t border-slate-100 text-right">
+<span class="text-[11px] font-medium text-slate-400">Showing 3 prioritized requests requiring digital sign-off</span>
+</div>
+</section>
+<!-- Table 2: Student Security Keys Roster -->
+<section class="glass-card rounded-[28px] p-6 flex flex-col justify-between">
+<div>
+<!-- Header Area -->
+<div class="flex items-center justify-between mb-4">
+<div>
+<h3 class="text-base font-bold text-slate-900">Student Security Keys Roster</h3>
+<p class="text-xs text-slate-500 mt-0.5">Master Anti-Spoofing Keys (CS-001 to CS-180)</p>
+</div>
+<button class="px-3.5 py-1.5 rounded-full bg-white hover:bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-700 shadow-sm transition" type="button">
+              View All 180 →
+            </button>
+</div>
+<!-- Table Container -->
+<div class="overflow-x-auto">
+<table class="w-full text-left border-separate border-spacing-y-2">
+<thead>
+<tr class="bg-slate-100/70 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
+<th class="py-2.5 px-3 rounded-l-2xl">PIN</th>
+<th class="py-2.5 px-3">Student Name</th>
+<th class="py-2.5 px-3 text-center">Security Key</th>
+<th class="py-2.5 px-3 rounded-r-2xl text-right">Status</th>
+</tr>
+</thead>
+<tbody class="text-xs">
+<!-- Key Row 1 -->
+<tr class="bg-white/60 hover:bg-white transition-colors shadow-sm rounded-xl">
+<td class="py-3 px-3 font-mono font-bold text-[#047857] rounded-l-xl">24259-CS-001</td>
+<td class="py-3 px-3 font-semibold text-slate-800 uppercase">Gona Laxmi Narasimha Swami</td>
+<td class="py-3 px-3 text-center">
+<span class="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 font-mono text-[11px] font-semibold">
+                      STD-3472C6
+                    </span>
+</td>
+<td class="py-3 px-3 text-right rounded-r-xl">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                      Active
+                    </span>
+</td>
+</tr>
+<!-- Key Row 2 -->
+<tr class="bg-white/60 hover:bg-white transition-colors shadow-sm rounded-xl">
+<td class="py-3 px-3 font-mono font-bold text-[#047857] rounded-l-xl">24259-CS-002</td>
+<td class="py-3 px-3 font-semibold text-slate-800 uppercase">Dulipudi Tarun</td>
+<td class="py-3 px-3 text-center">
+<span class="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 font-mono text-[11px] font-semibold">
+                      STD-8111F9
+                    </span>
+</td>
+<td class="py-3 px-3 text-right rounded-r-xl">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                      Active
+                    </span>
+</td>
+</tr>
+<!-- Key Row 3 -->
+<tr class="bg-white/60 hover:bg-white transition-colors shadow-sm rounded-xl">
+<td class="py-3 px-3 font-mono font-bold text-[#047857] rounded-l-xl">24259-CS-003</td>
+<td class="py-3 px-3 font-semibold text-slate-800 uppercase">Anaboina Dilip</td>
+<td class="py-3 px-3 text-center">
+<span class="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 font-mono text-[11px] font-semibold">
+                      STD-6658A0
+                    </span>
+</td>
+<td class="py-3 px-3 text-right rounded-r-xl">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                      Active
+                    </span>
+</td>
+</tr>
+<!-- Key Row 4 -->
+<tr class="bg-white/60 hover:bg-white transition-colors shadow-sm rounded-xl">
+<td class="py-3 px-3 font-mono font-bold text-[#047857] rounded-l-xl">24259-CS-004</td>
+<td class="py-3 px-3 font-semibold text-slate-800 uppercase">Pittala Bhavya</td>
+<td class="py-3 px-3 text-center">
+<span class="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 font-mono text-[11px] font-semibold">
+                      STD-07968C
+                    </span>
+</td>
+<td class="py-3 px-3 text-right rounded-r-xl">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                      Active
+                    </span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="mt-4 pt-3 border-t border-slate-100 text-right">
+<span class="text-[11px] font-medium text-slate-400">Cryptographically hashed SHA-256 tokens</span>
+</div>
+</section>
+</div>
+<!-- END: OperationalTablesSection -->
+<!-- BEGIN: Footer -->
+
+<!-- END: Footer -->
+</div>
+<!-- END: MainContainer -->
+
+    </div>
+  </main>
+
+  <!-- Shared Samskruti Institutional Footer -->
+  <footer class="w-full bg-[#f3efe6]/90 border-t border-emerald-900/10 mt-16 relative z-10">
+    <div class="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-4 pb-6 border-b border-emerald-900/10">
+        <div class="flex flex-col gap-1 text-center md:text-left">
+          <div class="flex items-center justify-center md:justify-start gap-2">
+            <span class="font-title-editorial text-2xl text-emerald-950 font-bold">Samskruti College of Engineering &amp; Technology</span>
+            <span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-dg text-sm font-bold">Code 259</span>
           </div>
+          <p class="font-dg text-base text-stone-600 font-medium">Head of Department Executive Authority &bull; Department of Computer Science &amp; Engineering.</p>
         </div>
-
-        <div id="sync-progress-bar-wrap" class="progress-bar-container" style="display: none; margin-top: 12px;">
-          <div id="sync-progress-bar-fill" class="progress-bar-fill"></div>
-        </div>
-      </section>
-
-      <!-- REAL-DATA STATS OVERVIEW GRID (STRICT DB DATA) -->
-      <section class="grid-cols-4">
-        <div class="executive-card pro-stat-card">
-          <div class="hod-stat-title">Department Total Intake</div>
-          <div class="hod-stat-val mono-num" id="stat-intake">--</div>
-          <div class="hod-stat-sub" id="stat-intake-sub">Diploma C-24 Department</div>
-        </div>
-
-        <div class="executive-card pro-stat-card">
-          <div class="hod-stat-title">Department Average Attendance</div>
-          <div class="hod-stat-val mono-num" id="stat-avg-att" style="color: #60a5fa;">--%</div>
-          <div class="hod-stat-sub">Real-time aggregate across synced students</div>
-        </div>
-
-        <div class="executive-card pro-stat-card">
-          <div class="hod-stat-title">Examination Clearance Rate</div>
-          <div class="hod-stat-val mono-num" id="stat-clearance" style="color: #34d399;">--%</div>
-          <div class="hod-stat-sub" id="stat-clearance-sub"><span id="stat-eligible-count">0</span> students &ge; 75% SBTET line</div>
-        </div>
-
-        <div class="executive-card pro-stat-card">
-          <div class="hod-stat-title">Pending Document Approvals</div>
-          <div class="hod-stat-val mono-num" id="stat-pending-docs" style="color: #fbbf24;">0</div>
-          <div class="hod-stat-sub">Awaiting HOD Digital Sign-Off</div>
-        </div>
-      </section>
-
-      <!-- Department Quick Actions & Approvals Grid -->
-      <div class="grid-cols-2">
-        <!-- Live Pending Approvals Queue with Live Attendance % -->
-        <div class="executive-card" style="padding: 24px;">
-          <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-            <div>
-              <h2 class="section-title" style="font-size: 1.15rem; font-weight: 800; color: var(--hod-text-main); margin: 0 0 2px 0;">Live Student Requests Queue</h2>
-              <span style="font-size: 0.75rem; color: var(--hod-text-muted);">Verified Attendance Snapshots &amp; Instant OTP Generation</span>
-            </div>
-            <a href="./document-approvals.html" class="neu-btn" style="font-size: 0.78rem; padding: 6px 14px; border-radius: 8px; text-decoration: none; font-weight: 700;">Full Queue →</a>
+        <div class="flex flex-wrap items-center justify-center gap-2">
+          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/90 border border-emerald-900/10 shadow-sm">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span class="font-dg text-sm text-on-surface font-bold">HOD Node 259: Active</span>
           </div>
-
-          <div class="table-responsive">
-            <table class="fee-table" style="width: 100%;">
-              <thead>
-                <tr>
-                  <th>PIN</th>
-                  <th>Student Name</th>
-                  <th>Request Type</th>
-                  <th>Verified Attendance</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody id="dash-docs-tbody">
-                <tr>
-                  <td colspan="5" style="text-align: center; color: var(--hod-text-muted); padding: 24px;">Loading active student requests...</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- Student Security Keys Master Roster Preview -->
-        <div class="executive-card" style="padding: 24px;">
-          <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-            <div>
-              <h2 class="section-title" style="font-size: 1.15rem; font-weight: 800; color: var(--hod-text-main); margin: 0 0 2px 0;">Student Security Keys Roster</h2>
-              <span id="security-keys-subtext" style="font-size: 0.75rem; color: var(--hod-text-muted);">Master Anti-Spoofing Keys</span>
-            </div>
-            <a id="security-keys-link" href="./security-roster.html" class="neu-btn" style="font-size: 0.78rem; padding: 6px 14px; border-radius: 8px; text-decoration: none; font-weight: 700;">View All →</a>
-          </div>
-
-          <div class="table-responsive">
-            <table class="fee-table" style="width: 100%;">
-              <thead>
-                <tr>
-                  <th>PIN</th>
-                  <th>Student Name</th>
-                  <th>Security Key</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody id="dash-security-tbody">
-                <tr>
-                  <td colspan="4" style="text-align: center; color: var(--hod-text-muted); padding: 20px;">Loading security roster preview...</td>
-                </tr>
-              </tbody>
-            </table>
+          <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/90 border border-emerald-900/10 shadow-sm">
+            <span class="material-symbols-outlined text-emerald-700 text-[16px]">verified</span>
+            <span class="font-dg text-sm text-on-surface font-bold">SBTET Verified Terminal</span>
           </div>
         </div>
       </div>
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-4 text-stone-600">
+        <span class="font-dg text-base">&copy; 2025 Samskruti College. Institutional Administration. All rights reserved.</span>
+        <div class="flex items-center gap-4">
+          <a class="font-dg text-base font-semibold hover:text-emerald-800 transition-colors" href="./hod-dashboard.html">Console</a>
+          <a class="font-dg text-base font-semibold hover:text-emerald-800 transition-colors" href="./document-approvals.html">Approvals</a>
+          <a class="font-dg text-base font-semibold hover:text-emerald-800 transition-colors" href="./security-roster.html">Roster</a>
+          <a class="font-dg text-base font-semibold hover:text-emerald-800 transition-colors" href="./students-info.html">Students</a>
+        </div>
+      </div>
+    </div>
+  </footer>
 
-    </main>
+  <!-- Toast Notification -->
+  <div id="toastNotification" class="fixed bottom-6 right-6 z-[30000] hidden px-5 py-3 rounded-2xl bg-emerald-900 text-white font-dg text-lg font-bold shadow-2xl flex items-center gap-3 border border-emerald-400/40 transform transition-all duration-300">
+    <span class="material-symbols-outlined text-emerald-300 text-[22px]" id="toastIcon">check_circle</span>
+    <span id="toastMsg">Action completed successfully</span>
   </div>
 
-  <script type="module">
-    import { api } from '../../js/api.js';
-    import { requireAuth } from '../../js/auth-guard.js';
-    import { renderDock } from '../../js/dock.js';
-    import { alerts } from '../../js/alerts.js';
-    import { wsClient } from '../../js/ws.js';
-
-    // Verify HOD Role & Branch
-    const user = requireAuth(['HOD', 'HOD_CS', 'HOD_AIML', 'ADMIN', 'FACULTY']) || JSON.parse(localStorage.getItem('dc_user') || '{}');
-    renderDock('hod-dashboard.html', 'HOD');
-
-    // Branch context detection
-    const isAIML = (user.branch === 'AIML') || 
-                   (user.role === 'HOD_AIML') || 
-                   (user.pin && (user.pin.includes('AIML') || user.pin.includes('PADMINI'))) || 
-                   (user.department && user.department.includes('Artificial')) ||
-                   (localStorage.getItem('hod_branch') === 'AIML') ||
-                   (localStorage.getItem('hod_id') && localStorage.getItem('hod_id').toUpperCase().includes('PADMINI'));
-    const branchCode = isAIML ? 'AIML' : 'CS';
-    const totalIntake = isAIML ? 127 : 180;
-    const deptTitle = isAIML ? 'Department of Artificial Intelligence & Machine Learning' : 'Department of Computer Science & Engineering';
-    const hodName = isAIML ? 'Prof. Padmini' : 'Dr. J. Vamshi Krishna';
-    const hodRoleText = isAIML ? 'Official HOD (Artificial Intelligence & Machine Learning)' : 'Official HOD (Computer Science)';
-    const hodAvatarText = isAIML ? 'PP' : 'VK';
-    const accentColor = isAIML ? '#10b981' : '#3b82f6';
-
-    function initHodDashboard() {
-      hydrateDepartmentProfile();
-      setupRealtimeWebSocket();
-      loadDashboardStats();
-      loadLiveRequests();
-      loadSecurityPreview();
-      checkSyncStatus();
-      setupSyncTrigger();
-    }
-
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', initHodDashboard);
-    } else {
-      initHodDashboard();
-    }
-
-    /**
-     * Hydrate HOD Profile and Department Theming
-     */
-    function hydrateDepartmentProfile() {
-      // Document title
-      document.title = `HOD Console • ${deptTitle} • Samskruti Digital Campus`;
-      const headTitle = document.getElementById('page-head-title');
-      if (headTitle) headTitle.textContent = `HOD Executive Console • ${deptTitle}`;
-
-      // Subtitle badge
-      const subtitleText = document.getElementById('hod-dept-title-text');
-      if (subtitleText) subtitleText.textContent = `Samskruti College (259) • ${deptTitle}`;
-
-      const dot = document.getElementById('hod-dot-indicator');
-      if (dot) {
-        dot.style.background = accentColor;
-        dot.style.boxShadow = `0 0 8px ${accentColor}`;
-      }
-
-      // HOD Badge
-      const avatarEl = document.getElementById('hod-avatar');
-      if (avatarEl) {
-        avatarEl.textContent = hodAvatarText;
-        if (isAIML) {
-          avatarEl.style.background = 'linear-gradient(135deg, #059669, #10b981)';
-          avatarEl.style.boxShadow = '0 0 16px rgba(16, 185, 129, 0.4)';
-        } else {
-          avatarEl.style.background = 'linear-gradient(135deg, #1d4ed8, #3b82f6)';
-          avatarEl.style.boxShadow = '0 0 16px rgba(59, 130, 246, 0.4)';
-        }
-      }
-
-      const nameEl = document.getElementById('hod-name');
-      if (nameEl) nameEl.textContent = hodName;
-
-      const roleEl = document.getElementById('hod-role-badge');
-      if (roleEl) {
-        roleEl.textContent = hodRoleText;
-        if (isAIML) roleEl.style.color = '#34d399';
-      }
-
-      // Sync Card
-      const syncBanner = document.getElementById('sync-banner-card');
-      if (syncBanner && isAIML) syncBanner.style.borderLeftColor = '#10b981';
-
-      const syncTitle = document.getElementById('sync-title-text');
-      if (syncTitle) syncTitle.textContent = `${totalIntake}-Student Automated Department Sync`;
-
-      const syncDesc = document.getElementById('sync-desc-text');
-      if (syncDesc) {
-        syncDesc.textContent = `Live background sync automatically pulls attendance, CGPA, and backlog statistics directly from SBTET for all ${totalIntake} department students under C-24 scheme.`;
-      }
-
-      const syncBtn = document.getElementById('btn-trigger-sync');
-      if (syncBtn) {
-        syncBtn.textContent = `⚡ Sync All ${totalIntake} Now`;
-        if (isAIML) syncBtn.style.background = 'linear-gradient(135deg, #059669, #10b981)';
-      }
-
-      // Intake Card
-      const intakeVal = document.getElementById('stat-intake');
-      if (intakeVal) intakeVal.textContent = totalIntake;
-
-      const intakeSub = document.getElementById('stat-intake-sub');
-      if (intakeSub) {
-        intakeSub.textContent = `${totalIntake} Students (24259 Batch • Scheme C-24)`;
-      }
-
-      const secSub = document.getElementById('security-keys-subtext');
-      if (secSub) secSub.textContent = `Master Anti-Spoofing Keys (${branchCode}-001 to ${branchCode}-${String(totalIntake).padStart(3, '0')})`;
-
-      const secLink = document.getElementById('security-keys-link');
-      if (secLink) secLink.textContent = `View All ${totalIntake} →`;
-    }
-
-    /**
-     * 1. REAL-TIME WEBSOCKET SUBSCRIPTION
-     */
-    function setupRealtimeWebSocket() {
-      wsClient.connect(`HOD_${branchCode}_CONSOLE`, hodName);
-
-      wsClient.on('HOD_SYNC_PROGRESS', (data) => {
-        if (!data.branch || data.branch === branchCode) {
-          updateSyncProgressUI(data);
-        }
-      });
-
-      wsClient.on('HOD_SYNC_COMPLETE', (data) => {
-        if (!data.branch || data.branch === branchCode) {
-          onSyncCompleteUI(data);
-          loadDashboardStats();
-        }
-      });
-
-      wsClient.on('NEW_DIGITAL_REQUEST_SUBMITTED', (data) => {
-        alerts.info('New Student Request', `${data.request?.student_name} submitted a ${data.request?.request_type}.`);
-        loadLiveRequests();
-        loadDashboardStats();
-      });
-
-      wsClient.on('REQUEST_STATUS_UPDATED', () => {
-        loadLiveRequests();
-        loadDashboardStats();
-      });
-    }
-
-    /**
-     * 2. LOAD STRICT REAL-DATA STATS FOR THIS BRANCH
-     */
-    async function loadDashboardStats() {
-      try {
-        const stats = await api.get(`/hod/stats?branch=${branchCode}`);
-        if (stats) {
-          document.getElementById('stat-intake').textContent = stats.total_intake || totalIntake;
-          document.getElementById('stat-avg-att').textContent = stats.average_attendance || '0.0%';
-          document.getElementById('stat-clearance').textContent = stats.clearance_rate || '0.0%';
-          document.getElementById('stat-eligible-count').textContent = stats.eligible_students || 0;
-          document.getElementById('stat-pending-docs').textContent = stats.pending_requests || 0;
-
-          const clrSub = document.getElementById('stat-clearance-sub');
-          if (clrSub) {
-            clrSub.innerHTML = `<span id="stat-eligible-count">${stats.eligible_students || 0}</span> / ${stats.total_intake || totalIntake} students &ge; 75% SBTET line`;
-          }
-        }
-      } catch (err) {
-        console.error('Failed to load HOD stats:', err);
-      }
-    }
-
-    /**
-     * 3. LOAD LIVE REQUESTS FOR THIS DEPARTMENT
-     */
-    async function loadLiveRequests() {
-      const tbody = document.getElementById('dash-docs-tbody');
-      if (!tbody) return;
-
-      try {
-        const res = await api.get(`/hod/requests?branch=${branchCode}`);
-        if (res && res.success && Array.isArray(res.requests)) {
-          const pending = res.requests.filter(r => r.status === 'PENDING').slice(0, 5);
-
-          if (pending.length === 0) {
-            tbody.innerHTML = `
-              <tr>
-                <td colspan="5" style="text-align: center; color: var(--hod-text-muted); padding: 24px; font-style: italic;">
-                  🎉 No pending requests in queue. All student applications have been reviewed.
-                </td>
-              </tr>
-            `;
-            return;
-          }
-
-          tbody.innerHTML = pending.map(req => {
-            const att = req.attendance_snapshot || '0.0%';
-            const attVal = parseFloat(att.replace('%', '')) || 0;
-            const isEligible = attVal >= 75.0;
-
-            return `
-              <tr>
-                <td><code class="mono-num" style="color: #93c5fd; font-weight: 700;">${escapeHtml(req.student_pin)}</code></td>
-                <td><strong style="color: var(--hod-text-main);">${escapeHtml(req.student_name)}</strong></td>
-                <td>${escapeHtml(req.request_type)}</td>
-                <td>
-                  <span class="neu-badge ${isEligible ? 'metric-emerald-glow' : 'metric-ruby-glow'}">
-                    ${escapeHtml(att)}
-                  </span>
-                </td>
-                <td>
-                  <a href="./document-approvals.html" class="neu-btn-primary" style="font-size: 0.75rem; padding: 5px 12px; border-radius: 6px; text-decoration: none;">
-                    Review &rarr;
-                  </a>
-                </td>
-              </tr>
-            `;
-          }).join('');
-        }
-      } catch (err) {
-        console.error('Failed to load requests for dashboard:', err);
-      }
-    }
-
-    /**
-     * 4. LOAD SECURITY KEYS PREVIEW
-     */
-    async function loadSecurityPreview() {
-      const tbody = document.getElementById('dash-security-tbody');
-      if (!tbody) return;
-
-      try {
-        const res = await api.get(`/hod/security-roster?branch=${branchCode}`);
-        if (res && res.success && Array.isArray(res.roster)) {
-          const sample = res.roster.slice(0, 4);
-          tbody.innerHTML = sample.map(s => `
-            <tr>
-              <td><code class="mono-num" style="color: #93c5fd; font-weight: 700;">${escapeHtml(s.pin)}</code></td>
-              <td><strong style="color: var(--hod-text-main);">${escapeHtml(s.name)}</strong></td>
-              <td><span class="neu-badge metric-emerald-glow mono-num">${escapeHtml(s.secretKey)}</span></td>
-              <td><span class="neu-badge neu-badge-success" style="font-size: 0.7rem;">Active</span></td>
-            </tr>
-          `).join('');
-        }
-      } catch (err) {
-        console.error('Failed to load security preview:', err);
-      }
-    }
-
-    /**
-     * 5. BACKGROUND SYNC CONTROLLER
-     */
-    async function checkSyncStatus() {
-      try {
-        const res = await api.get(`/hod/sync-status?branch=${branchCode}`);
-        if (res && res.status === 'RUNNING') {
-          updateSyncProgressUI(res);
-        } else if (res && res.status === 'COMPLETED') {
-          onSyncCompleteUI(res);
-        }
-      } catch {}
-    }
-
-    function setupSyncTrigger() {
-      const btn = document.getElementById('btn-trigger-sync');
-      btn?.addEventListener('click', async () => {
-        btn.disabled = true;
-        btn.textContent = '⚡ Dispatching Sync...';
-
-        try {
-          await api.post(`/hod/trigger-sync?branch=${branchCode}`);
-          alerts.info('Sync Dispatched', `${totalIntake}-student ${branchCode} SBTET scraper running in background.`);
-          document.getElementById('sync-progress-bar-wrap').style.display = 'block';
-          document.getElementById('sync-percent-badge').textContent = 'Syncing...';
-        } catch (err) {
-          alerts.error('Sync Error', err.message || 'Could not start background sync.');
-        } finally {
-          setTimeout(() => {
-            btn.disabled = false;
-            btn.textContent = `⚡ Sync All ${totalIntake} Now`;
-          }, 2000);
-        }
-      });
-    }
-
-    function updateSyncProgressUI(data) {
-      const barWrap = document.getElementById('sync-progress-bar-wrap');
-      const barFill = document.getElementById('sync-progress-bar-fill');
-      const badge = document.getElementById('sync-percent-badge');
-      const desc = document.getElementById('sync-desc-text');
-      const indicator = document.getElementById('sync-status-indicator');
-
-      if (barWrap) barWrap.style.display = 'block';
-      if (barFill) barFill.style.width = `${data.percent || 0}%`;
-      if (badge) {
-        badge.textContent = `Syncing: ${data.percent || 0}%`;
-        badge.style.background = 'rgba(59, 130, 246, 0.2)';
-        badge.style.color = '#60a5fa';
-      }
-      if (indicator) indicator.style.background = '#3b82f6';
-      if (desc) {
-        desc.textContent = `Background worker active: Processed ${data.synced || data.synced_count || 0} / ${totalIntake} students. Currently fetching PIN: ${data.current_pin || '...'}`;
-      }
-    }
-
-    function onSyncCompleteUI(data) {
-      const barFill = document.getElementById('sync-progress-bar-fill');
-      const badge = document.getElementById('sync-percent-badge');
-      const desc = document.getElementById('sync-desc-text');
-      const indicator = document.getElementById('sync-status-indicator');
-
-      if (barFill) barFill.style.width = '100%';
-      if (badge) {
-        badge.textContent = `${totalIntake} Students Live`;
-        badge.style.background = 'rgba(16, 185, 129, 0.2)';
-        badge.style.color = '#34d399';
-      }
-      if (indicator) indicator.style.background = '#10b981';
-      if (desc) {
-        desc.textContent = `All ${totalIntake} ${branchCode} department students are synchronized with live SBTET records. Department Attendance: ${data.department_avg_attendance || '--'}% • Clearance: ${data.department_clearance_rate || '--'}%`;
-      }
-    }
-
-    function escapeHtml(str) {
-      return String(str || '')
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;');
-    }
-  </script>
+  <script src="/screens/04-hod-portal/hod-dashboard.js"></script>
 </body>
 </html>

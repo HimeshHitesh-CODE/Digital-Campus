@@ -193,6 +193,62 @@ class SyncProgressDB(Base):
     started_at = Column(String(40), nullable=True)
     completed_at = Column(String(40), nullable=True)
 
+
+class AnnouncementDB(Base):
+    """Official Circulars & Bulletins published by HOD or Administration."""
+    __tablename__ = "announcements"
+
+    id = Column(Integer, primary_key=True, index=True)
+    title = Column(String(200), nullable=False)
+    body = Column(Text, nullable=False)
+    category = Column(String(50), default="ACADEMIC") # ACADEMIC, EXAMINATION, SCHOLARSHIP, EVENT, URGENT
+    image_url = Column(String(255), nullable=True)
+    department = Column(String(100), default="Computer Science & Engineering")
+    branch = Column(String(20), default="CS") # CS, AIML, ALL
+    target_audience = Column(String(50), default="ALL_STUDENTS") # ALL_STUDENTS, 1ST_YEAR, 2ND_YEAR, 3RD_YEAR
+    status = Column(String(30), default="PUBLISHED") # DRAFT, PUBLISHED, ARCHIVED
+    published_by = Column(String(100), default="Dr. J. Vamshi Krishna")
+    published_by_role = Column(String(50), default="HOD CS")
+    reference_no = Column(String(60), nullable=True)
+    created_at = Column(String(50), default=lambda: datetime.utcnow().isoformat())
+    updated_at = Column(String(50), default=lambda: datetime.utcnow().isoformat())
+
+class AttendanceAuditDB(Base):
+    """Audit trail of attendance adjustments performed by HOD."""
+    __tablename__ = "attendance_audits"
+
+    id = Column(Integer, primary_key=True, index=True)
+    student_pin = Column(String(50), index=True, nullable=False)
+    student_name = Column(String(120), nullable=False)
+    branch = Column(String(20), default="CS")
+    previous_pct = Column(Float, default=0.0)
+    new_pct = Column(Float, default=0.0)
+    previous_present = Column(Integer, default=0)
+    new_present = Column(Integer, default=0)
+    total_working_days = Column(Integer, default=180)
+    changed_by = Column(String(100), default="Dr. J. Vamshi Krishna")
+    reason = Column(Text, nullable=False)
+    timestamp = Column(String(50), default=lambda: datetime.utcnow().isoformat())
+
+class MarksAuditDB(Base):
+    """Audit trail of marks/results edits by HOD."""
+    __tablename__ = "marks_audits"
+
+    id = Column(Integer, primary_key=True, index=True)
+    student_pin = Column(String(50), index=True, nullable=False)
+    student_name = Column(String(120), nullable=False)
+    branch = Column(String(20), default="CS")
+    semester = Column(String(30), default="5th Sem")
+    subject_code = Column(String(40), nullable=False)
+    subject_title = Column(String(120), nullable=False)
+    previous_marks = Column(Float, default=0.0)
+    new_marks = Column(Float, default=0.0)
+    previous_grade = Column(String(10), default="F")
+    new_grade = Column(String(10), default="P")
+    changed_by = Column(String(100), default="Dr. J. Vamshi Krishna")
+    reason = Column(Text, default="Re-evaluation verification approved by HOD")
+    timestamp = Column(String(50), default=lambda: datetime.utcnow().isoformat())
+
 def get_db():
     db = SessionLocal()
     try:
@@ -732,6 +788,54 @@ def seed_database():
             db.commit()
         else:
             aiml_prog.total_students = 127
+            db.commit()
+
+    
+        # Seed default verified announcements if table empty
+        if db.query(AnnouncementDB).count() == 0:
+            sample_announcements = [
+                AnnouncementDB(
+                    title="SBTET C-24 Diploma Regular & Supplementary Examinations Schedule",
+                    body="All eligible students with a minimum of 75% biometric attendance are instructed to download their hall tickets from the examination branch desk. Fee submission clearance window closes on Nov 15.",
+                    category="EXAMINATION",
+                    department="Computer Science & Engineering",
+                    branch="CS",
+                    target_audience="ALL_STUDENTS",
+                    status="PUBLISHED",
+                    published_by="Dr. J. Vamshi Krishna",
+                    published_by_role="HOD CS",
+                    reference_no="SCET/EXAM/2026-11/C24",
+                    created_at="2026-10-26T10:00:00"
+                ),
+                AnnouncementDB(
+                    title="Telangana State ePASS Post-Matric Scholarship Biometric Verification",
+                    body="Candidates renewing scholarship entitlements must complete biometric authentication at Student Service Counter 3. Required clearances include Bonafide Certificate and Fee Remittance Receipt.",
+                    category="SCHOLARSHIP",
+                    department="Computer Science & Engineering",
+                    branch="CS",
+                    target_audience="ALL_STUDENTS",
+                    status="PUBLISHED",
+                    published_by="Dr. J. Vamshi Krishna",
+                    published_by_role="HOD CS",
+                    reference_no="SCET/EPASS/2026-B4",
+                    created_at="2026-10-24T14:30:00"
+                ),
+                AnnouncementDB(
+                    title="Smart India Hackathon (SIH 2026) Institutional Team Registrations",
+                    body="CSE & AIML project teams are invited to submit solution abstracts via Idea Hub. Shortlisted teams will receive dedicated mentor support from the Samskruti T-Hub Incubation Center.",
+                    category="ACADEMIC",
+                    department="Computer Science & Engineering",
+                    branch="CS",
+                    target_audience="ALL_STUDENTS",
+                    status="PUBLISHED",
+                    published_by="Dr. J. Vamshi Krishna",
+                    published_by_role="HOD CS",
+                    reference_no="SCET/INNOV/2026-H1",
+                    created_at="2026-10-20T09:15:00"
+                )
+            ]
+            for sa in sample_announcements:
+                db.add(sa)
             db.commit()
 
     finally:

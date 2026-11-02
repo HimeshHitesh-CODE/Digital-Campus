@@ -1,0 +1,478 @@
+import os
+
+login_html_path = r'C:\Users\HiteshHimesh\.gemini\antigravity\scratch\Digital-Campus\frontend\screens\01-auth\login.html'
+login_js_path = r'C:\Users\HiteshHimesh\.gemini\antigravity\scratch\Digital-Campus\frontend\screens\01-auth\login.js'
+
+login_html = """<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Campus Connect &bull; Unified Authentication Gateway | Samskruti College (Code: 259)</title>
+
+  <!-- Google Fonts: Plus Jakarta Sans & Darker Grotesque & Newsreader -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+  <link href="https://fonts.googleapis.com/css2?family=Darker+Grotesque:wght@600;700;800;900&family=IBM+Plex+Mono:wght@500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,500;0,6..72,700;1,6..72,500&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <!-- Material Symbols Outlined -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Unified Tailwind Configuration -->
+  <script src="/js/stitch-tailwind-config.js"></script>
+
+  <!-- Master Design System Stylesheets -->
+  <link rel="stylesheet" href="/css/stitch-design-system.css"/>
+  <link rel="stylesheet" href="/css/top-nav.css"/>
+
+  <style>
+    /* Dot pattern & radial mesh background */
+    .bg-dot-pattern {
+      background-image: radial-gradient(rgba(4, 120, 87, 0.12) 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
+    .radial-mesh-top {
+      background: radial-gradient(circle 600px at 50% -100px, rgba(16, 185, 129, 0.15), transparent 70%);
+    }
+    .radial-mesh-bottom {
+      background: radial-gradient(circle 500px at 50% 110%, rgba(4, 120, 87, 0.12), transparent 70%);
+    }
+    .glass-card-shadow {
+      box-shadow: 0 24px 60px -15px rgba(2, 44, 34, 0.14), 0 0 0 1px rgba(16, 185, 129, 0.2);
+    }
+    .shake-error {
+      animation: shake 0.45s cubic-bezier(.36,.07,.19,.97) both;
+    }
+    @keyframes shake {
+      10%, 90% { transform: translate3d(-1px, 0, 0); }
+      20%, 80% { transform: translate3d(2px, 0, 0); }
+      30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+      40%, 60% { transform: translate3d(4px, 0, 0); }
+    }
+  </style>
+</head>
+
+<body class="bg-[#fcfaf6] text-emerald-950 font-sans antialiased min-h-screen flex flex-col justify-between relative selection:bg-emerald-500 selection:text-white">
+  <!-- Background Meshes -->
+  <div class="fixed inset-0 pointer-events-none bg-dot-pattern opacity-70 z-0"></div>
+  <div class="fixed inset-0 pointer-events-none radial-mesh-top z-0"></div>
+  <div class="fixed inset-0 pointer-events-none radial-mesh-bottom z-0"></div>
+
+  <!-- Minimal Institutional Top Bar -->
+  <header class="w-full relative z-20 px-4 sm:px-8 py-4 flex items-center justify-between border-b border-emerald-900/10 bg-white/70 backdrop-blur-md">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-full bg-emerald-900 text-white flex items-center justify-center font-editorial font-bold text-lg shadow-sm">
+        SC
+      </div>
+      <div class="flex flex-col">
+        <span class="font-title-editorial text-xl sm:text-2xl font-bold text-emerald-950 leading-tight">Samskruti College</span>
+        <span class="font-dg text-xs font-bold text-emerald-700 tracking-wide">College Code: 259 &bull; Autonomous SBTET Node</span>
+      </div>
+    </div>
+    <div class="flex items-center gap-2">
+      <div class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200/80 text-emerald-800 font-dg text-xs font-bold">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+        <span>Relay Node 259: Active</span>
+      </div>
+      <a href="/screens/02-student-portal/dashboard.html" class="inline-flex items-center gap-1 px-4 py-1.5 rounded-full bg-white hover:bg-emerald-50 border border-emerald-900/15 text-emerald-900 font-dg text-sm font-bold shadow-sm transition-all">
+        <span>Explore Portal</span>
+        <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Content Gateway -->
+  <main class="relative z-10 flex-grow flex items-center justify-center px-4 py-8">
+    <div class="w-full max-w-[460px]">
+      <!-- Elevated Glassmorphic Card -->
+      <div class="rounded-[32px] bg-white/90 backdrop-blur-xl border border-emerald-500/25 p-8 sm:p-9 glass-card-shadow transition-all duration-300 relative overflow-hidden" id="loginCard">
+        <!-- Luminous Top Glow Line -->
+        <div class="absolute top-0 left-8 right-8 h-[2.5px] bg-gradient-to-r from-transparent via-emerald-400 to-transparent"></div>
+
+        <!-- Role Switcher Pill Container -->
+        <div class="flex justify-center mb-6">
+          <div class="inline-flex p-1 bg-emerald-950/85 backdrop-blur-md rounded-full border border-emerald-500/40 shadow-inner relative" id="rolePillTrack">
+            <!-- Sliding Active Pill Indicator -->
+            <div class="absolute top-1 bottom-1 rounded-full bg-gradient-to-r from-[#047857] to-[#10b981] shadow-md transition-all duration-300 ease-out" id="activePillIndicator" style="left: 4px; width: 108px;"></div>
+            
+            <!-- Student Pill Button -->
+            <button class="relative z-10 flex items-center gap-1.5 px-5 py-2 rounded-full text-white font-dg text-sm font-bold tracking-wide transition-colors focus:outline-none" id="studentRoleBtn" type="button">
+              <span class="material-symbols-outlined text-[17px]">school</span>
+              <span>Student</span>
+            </button>
+            <!-- HOD / Faculty Pill Button -->
+            <button class="relative z-10 flex items-center gap-1.5 px-5 py-2 rounded-full text-emerald-200 hover:text-white font-dg text-sm font-bold tracking-wide transition-colors focus:outline-none" id="hodRoleBtn" type="button">
+              <span class="material-symbols-outlined text-[17px]">shield_person</span>
+              <span>HOD / Faculty</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- ======================================================== -->
+        <!-- VIEW 1: STUDENT LOGIN & FIRST-TIME ONBOARDING            -->
+        <!-- ======================================================== -->
+        <div id="studentLoginView" class="transition-all duration-300">
+          <div class="text-center mb-6">
+            <h2 class="font-dg text-3xl font-extrabold text-emerald-950 tracking-tight leading-tight">Student Gateway</h2>
+            <p class="font-dg text-base text-stone-600 font-medium mt-0.5">Welcome back, scholar &bull; Enter your permanent PIN</p>
+          </div>
+
+          <form id="studentLoginForm" class="space-y-4" onsubmit="event.preventDefault(); handleStudentSubmit();">
+            <!-- Student PIN Input -->
+            <div class="space-y-1.5">
+              <label class="block font-dg text-base font-bold text-emerald-950" for="studentPin">State Board PIN / Roll Number</label>
+              <div class="relative">
+                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-emerald-700/70 text-[20px]">badge</span>
+                <input class="w-full pl-11 pr-4 py-3 rounded-full bg-[#f8fcf9] border border-emerald-900/15 font-mono text-base text-emerald-950 placeholder:text-stone-400 placeholder:font-sans focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500 transition-all shadow-xs" id="studentPin" placeholder="e.g. 24259-CS-025" required="" type="text" value="24259-CS-025"/>
+              </div>
+            </div>
+
+            <!-- Password Input -->
+            <div class="space-y-1.5">
+              <div class="flex items-center justify-between">
+                <label class="block font-dg text-base font-bold text-emerald-950" for="password">Password</label>
+                <a class="font-dg text-sm font-bold text-emerald-700 hover:text-emerald-900 hover:underline transition-colors" href="javascript:void(0)" onclick="openForgotPassword()">Forgot password?</a>
+              </div>
+              <div class="relative">
+                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-emerald-700/70 text-[20px]">lock</span>
+                <input class="w-full pl-11 pr-12 py-3 rounded-full bg-[#f8fcf9] border border-emerald-900/15 font-sans text-base text-emerald-950 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500 transition-all shadow-xs" id="password" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;" required="" type="password" value="student123"/>
+                <!-- Eye Toggle -->
+                <button aria-label="Toggle password visibility" class="absolute right-4 top-1/2 -translate-y-1/2 text-stone-500 hover:text-emerald-700 transition-colors focus:outline-none" id="togglePasswordVisibility" type="button">
+                  <span class="material-symbols-outlined text-[20px]" id="eyeIcon">visibility</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Remember Me Session Toggle -->
+            <div class="flex items-center justify-between pt-1">
+              <label class="flex items-center gap-2 cursor-pointer select-none">
+                <input class="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500 border-stone-300" id="rememberMe" type="checkbox" checked=""/>
+                <span class="font-dg text-base text-stone-700 font-semibold">Keep session active (30 Days)</span>
+              </label>
+            </div>
+
+            <!-- Primary Submit Button -->
+            <div class="pt-2">
+              <button class="w-full py-3.5 px-6 rounded-full text-white font-dg text-xl font-bold tracking-wide transition-all shadow-lg hover:shadow-emerald-500/35 hover:-translate-y-0.5 active:scale-[0.98] flex items-center justify-center gap-2 group" id="studentLoginBtn" style="background: linear-gradient(135deg, #022c22 0%, #047857 50%, #10b981 100%);" type="submit">
+                <span id="studentBtnText">Login to Portal</span>
+                <span class="material-symbols-outlined text-[19px] transition-transform group-hover:translate-x-1" id="studentBtnIcon">arrow_forward</span>
+              </button>
+            </div>
+          </form>
+
+          <!-- First-Time Onboarding Activation Callout Box -->
+          <div class="mt-6 pt-5 border-t border-emerald-900/10">
+            <div class="p-4 rounded-2xl bg-gradient-to-r from-emerald-50/90 to-amber-50/60 border border-emerald-200/80 flex flex-col gap-2 shadow-xs transition-all" id="onboardingCallout">
+              <div class="flex items-start justify-between gap-3">
+                <div class="flex flex-col">
+                  <span class="font-dg text-sm font-extrabold uppercase tracking-wider text-emerald-800">First-Time Student Onboarding</span>
+                  <p class="font-dg text-base text-stone-700 font-medium leading-snug">Activate account with your HOD Anti-Spoofing Key (<code class="font-mono font-bold text-xs bg-white px-1.5 py-0.5 rounded border border-emerald-300 text-emerald-950">STD-3472C6</code>)</p>
+                </div>
+                <button class="shrink-0 inline-flex items-center gap-1 px-3.5 py-1.5 rounded-full bg-emerald-800 hover:bg-emerald-900 text-white font-dg text-sm font-bold shadow-xs hover:shadow-sm transition-all active:scale-95" id="openOnboardingBtn" type="button" onclick="toggleOnboardingDrawer()">
+                  <span>Activate Key</span>
+                  <span class="material-symbols-outlined text-[15px]">key</span>
+                </button>
+              </div>
+
+              <!-- Collapsible First-Time Activation Drawer -->
+              <div class="hidden pt-3 border-t border-emerald-900/10 flex flex-col gap-3 transition-all" id="onboardingDrawer">
+                <div class="space-y-1">
+                  <label class="block font-dg text-sm font-bold text-emerald-950">Anti-Spoofing Key</label>
+                  <input class="w-full px-3.5 py-2 rounded-xl bg-white border border-emerald-900/20 font-mono text-sm text-emerald-950 uppercase placeholder:text-stone-400 placeholder:font-sans focus:outline-none focus:ring-2 focus:ring-emerald-500" id="onboardKey" placeholder="e.g. STD-3472C6" type="text" value="STD-3472C6"/>
+                </div>
+                <div class="space-y-1">
+                  <label class="block font-dg text-sm font-bold text-emerald-950">Create New Password</label>
+                  <input class="w-full px-3.5 py-2 rounded-xl bg-white border border-emerald-900/20 font-sans text-sm text-emerald-950 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-emerald-500" id="onboardPass" placeholder="At least 6 characters" type="password" value="student123"/>
+                </div>
+                <button class="w-full py-2.5 px-4 rounded-full bg-gradient-to-r from-emerald-700 to-teal-600 text-white font-dg text-base font-bold shadow-sm hover:opacity-95 active:scale-95 transition-all" type="button" onclick="handleActivateAccount()">
+                  Verify Key &amp; Set Password &rarr;
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ======================================================== -->
+        <!-- VIEW 2: HOD EXECUTIVE LOGIN                             -->
+        <!-- ======================================================== -->
+        <div id="hodLoginView" class="hidden transition-all duration-300">
+          <div class="text-center mb-6">
+            <div class="inline-flex items-center gap-1 px-3 py-0.5 rounded-full bg-emerald-100 text-emerald-900 font-mono text-xs font-bold mb-1 border border-emerald-300">
+              <span class="material-symbols-outlined text-[14px] text-emerald-700">verified_user</span>
+              <span>Institutional Level 3 Clearance</span>
+            </div>
+            <h2 class="font-dg text-3xl font-extrabold text-emerald-950 tracking-tight leading-tight">Executive Gateway</h2>
+            <p class="font-dg text-base text-stone-600 font-medium mt-0.5">Department of Computer Science &bull; HOD Node</p>
+          </div>
+
+          <form id="hodLoginForm" class="space-y-4" onsubmit="event.preventDefault(); handleHodSubmit();">
+            <!-- Faculty / HOD ID Input -->
+            <div class="space-y-1.5">
+              <label class="block font-dg text-base font-bold text-emerald-950" for="hodIdInput">Executive / HOD Credential ID</label>
+              <div class="relative">
+                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-emerald-700/70 text-[20px]">badge</span>
+                <input class="w-full pl-11 pr-4 py-3 rounded-full bg-[#f8fcf9] border border-emerald-900/15 font-mono text-base text-emerald-950 placeholder:text-stone-400 placeholder:font-sans focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500 transition-all shadow-xs" id="hodIdInput" placeholder="e.g. VAMSHI-CS-HOD" required="" type="text" value="VAMSHI-CS-HOD"/>
+              </div>
+            </div>
+
+            <!-- Master Password Input -->
+            <div class="space-y-1.5">
+              <div class="flex items-center justify-between">
+                <label class="block font-dg text-base font-bold text-emerald-950" for="passwordInput">Master Authorization Password</label>
+                <span class="font-dg text-xs font-bold text-stone-500">256-Bit Encrypted</span>
+              </div>
+              <div class="relative">
+                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-emerald-700/70 text-[20px]">vpn_key</span>
+                <input class="w-full pl-11 pr-12 py-3 rounded-full bg-[#f8fcf9] border border-emerald-900/15 font-sans text-base text-emerald-950 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500 transition-all shadow-xs" id="passwordInput" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;" required="" type="password" value="hod123"/>
+                <!-- Eye Toggle -->
+                <button aria-label="Toggle password visibility" class="absolute right-4 top-1/2 -translate-y-1/2 text-stone-500 hover:text-emerald-700 transition-colors focus:outline-none" id="togglePasswordBtn" type="button">
+                  <span class="material-symbols-outlined text-[20px]" id="hodEyeIcon">visibility</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Hardware Security Notice -->
+            <div class="p-3 rounded-2xl bg-emerald-50/90 border border-emerald-200 flex items-center gap-2.5">
+              <span class="material-symbols-outlined text-emerald-700 text-[18px]">security</span>
+              <span class="font-dg text-sm text-emerald-900 font-semibold leading-tight">FIDO2 / Cryptographic Department Relay Active for Node 259</span>
+            </div>
+
+            <!-- Primary Submit Button -->
+            <div class="pt-2">
+              <button class="w-full py-3.5 px-6 rounded-full text-white font-dg text-xl font-bold tracking-wide transition-all shadow-lg hover:shadow-emerald-500/35 hover:-translate-y-0.5 active:scale-[0.98] flex items-center justify-center gap-2 group" id="hodLoginBtn" style="background: linear-gradient(135deg, #003519 0%, #047857 50%, #10b981 100%);" type="submit">
+                <span id="hodBtnText">Authenticate &amp; Enter Console</span>
+                <span class="material-symbols-outlined text-[19px] transition-transform group-hover:translate-x-1" id="hodBtnIcon">arrow_forward</span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- Institutional Footer -->
+  <footer class="w-full relative z-20 py-4 px-4 text-center border-t border-emerald-900/10 bg-white/50 backdrop-blur-sm">
+    <p class="font-dg text-sm text-stone-600 font-medium">
+      &copy; 2025 Samskruti College of Engineering &amp; Technology. Permanent SBTET &bull; AICTE Affiliation.
+    </p>
+  </footer>
+
+  <!-- Toast Notification -->
+  <div id="toastNotification" class="fixed bottom-6 right-6 z-[30000] hidden px-5 py-3 rounded-2xl bg-emerald-900 text-white font-dg text-lg font-bold shadow-2xl flex items-center gap-3 border border-emerald-400/40 transform transition-all duration-300">
+    <span class="material-symbols-outlined text-emerald-300 text-[22px]" id="toastIcon">check_circle</span>
+    <span id="toastMsg">Action completed successfully</span>
+  </div>
+
+  <script src="/screens/01-auth/login.js"></script>
+</body>
+</html>
+"""
+
+login_js = """/**
+ * Samskruti College Unified Authentication Gateway Controller
+ * Manages Role Switching (Student vs HOD), Password Toggles, Key Activation, and Authentication Flow
+ */
+
+document.addEventListener('DOMContentLoaded', () => {
+  initRoleSwitcher();
+  initPasswordToggles();
+});
+
+let currentRole = 'student';
+
+function initRoleSwitcher() {
+  const studentBtn = document.getElementById('studentRoleBtn');
+  const hodBtn = document.getElementById('hodRoleBtn');
+  const indicator = document.getElementById('activePillIndicator');
+  const studentView = document.getElementById('studentLoginView');
+  const hodView = document.getElementById('hodLoginView');
+
+  if (!studentBtn || !hodBtn) return;
+
+  function switchRole(role) {
+    currentRole = role;
+    if (navigator.vibrate) navigator.vibrate(10);
+
+    if (role === 'student') {
+      indicator.style.left = '4px';
+      indicator.style.width = '108px';
+      studentBtn.classList.remove('text-emerald-200');
+      studentBtn.classList.add('text-white');
+      hodBtn.classList.remove('text-white');
+      hodBtn.classList.add('text-emerald-200');
+
+      hodView.classList.add('hidden');
+      studentView.classList.remove('hidden');
+    } else {
+      indicator.style.left = '112px';
+      indicator.style.width = '140px';
+      hodBtn.classList.remove('text-emerald-200');
+      hodBtn.classList.add('text-white');
+      studentBtn.classList.remove('text-white');
+      studentBtn.classList.add('text-emerald-200');
+
+      studentView.classList.add('hidden');
+      hodView.classList.remove('hidden');
+    }
+  }
+
+  studentBtn.addEventListener('click', () => switchRole('student'));
+  hodBtn.addEventListener('click', () => switchRole('hod'));
+
+  // Read URL query param ?role=hod if any
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('role') === 'hod') {
+    switchRole('hod');
+  }
+}
+
+function initPasswordToggles() {
+  // Student Password Toggle
+  const toggleStudent = document.getElementById('togglePasswordVisibility');
+  const studentPass = document.getElementById('password');
+  const eyeIcon = document.getElementById('eyeIcon');
+
+  toggleStudent?.addEventListener('click', () => {
+    const isPass = studentPass.getAttribute('type') === 'password';
+    studentPass.setAttribute('type', isPass ? 'text' : 'password');
+    eyeIcon.textContent = isPass ? 'visibility_off' : 'visibility';
+  });
+
+  // HOD Password Toggle
+  const toggleHod = document.getElementById('togglePasswordBtn');
+  const hodPass = document.getElementById('passwordInput');
+  const hodEyeIcon = document.getElementById('hodEyeIcon');
+
+  toggleHod?.addEventListener('click', () => {
+    const isPass = hodPass.getAttribute('type') === 'password';
+    hodPass.setAttribute('type', isPass ? 'text' : 'password');
+    hodEyeIcon.textContent = isPass ? 'visibility_off' : 'visibility';
+  });
+}
+
+function toggleOnboardingDrawer() {
+  const drawer = document.getElementById('onboardingDrawer');
+  if (!drawer) return;
+  drawer.classList.toggle('hidden');
+}
+
+function handleActivateAccount() {
+  const pin = document.getElementById('studentPin')?.value.trim();
+  const key = document.getElementById('onboardKey')?.value.trim();
+  const pass = document.getElementById('onboardPass')?.value.trim();
+
+  if (!key || !key.startsWith('STD-')) {
+    showToast('Please enter a valid Anti-Spoofing Key (e.g. STD-3472C6)', 'error');
+    return;
+  }
+  if (!pass || pass.length < 4) {
+    showToast('Please enter a password with at least 4 characters', 'error');
+    return;
+  }
+
+  showToast(`Security Key ${key} verified! Account activated for ${pin}`);
+  toggleOnboardingDrawer();
+}
+
+function handleStudentSubmit() {
+  const pin = document.getElementById('studentPin')?.value.trim() || '24259-CS-025';
+  const pass = document.getElementById('password')?.value.trim();
+  const btn = document.getElementById('studentLoginBtn');
+  const btnText = document.getElementById('studentBtnText');
+
+  if (navigator.vibrate) navigator.vibrate(10);
+
+  // Button spinner
+  btnText.textContent = 'Verifying credentials...';
+  btn.disabled = true;
+
+  setTimeout(() => {
+    // Save student session
+    const userData = {
+      name: 'KARNATI HIMESH',
+      pin: pin,
+      role: 'student',
+      branch: 'Computer Science & Engineering',
+      code: '259',
+      cgpa: 9.11
+    };
+
+    localStorage.setItem('dc_user', JSON.stringify(userData));
+    localStorage.setItem('user_name', 'KARNATI HIMESH');
+    localStorage.setItem('user_pin', pin);
+    localStorage.setItem('user_role', 'student');
+
+    showToast('Authentication successful! Routing to Student Dashboard...');
+
+    setTimeout(() => {
+      window.location.href = '/screens/02-student-portal/dashboard.html';
+    }, 600);
+  }, 750);
+}
+
+function handleHodSubmit() {
+  const hodId = document.getElementById('hodIdInput')?.value.trim() || 'VAMSHI-CS-HOD';
+  const pass = document.getElementById('passwordInput')?.value.trim();
+  const btn = document.getElementById('hodLoginBtn');
+  const btnText = document.getElementById('hodBtnText');
+
+  if (navigator.vibrate) navigator.vibrate(10);
+
+  btnText.textContent = 'Authenticating Level 3 Clearance...';
+  btn.disabled = true;
+
+  setTimeout(() => {
+    // Save HOD session
+    const userData = {
+      name: 'Dr. J. Vamshi Krishna',
+      pin: hodId,
+      role: 'HOD',
+      branch: 'Computer Science & Engineering',
+      code: '259'
+    };
+
+    localStorage.setItem('dc_user', JSON.stringify(userData));
+    localStorage.setItem('user_name', 'Dr. J. Vamshi Krishna');
+    localStorage.setItem('user_pin', hodId);
+    localStorage.setItem('user_role', 'HOD');
+
+    showToast('Executive Clearance Verified! Entering HOD Console...');
+
+    setTimeout(() => {
+      window.location.href = '/screens/04-hod-portal/hod-dashboard.html';
+    }, 600);
+  }, 850);
+}
+
+function openForgotPassword() {
+  showToast('Self-service password recovery is available via verified department Security Key.');
+  const drawer = document.getElementById('onboardingDrawer');
+  if (drawer) drawer.classList.remove('hidden');
+}
+
+function showToast(message, type = 'success') {
+  const toast = document.getElementById('toastNotification');
+  const msgEl = document.getElementById('toastMsg');
+  const iconEl = document.getElementById('toastIcon');
+  if (!toast) return;
+
+  msgEl.textContent = message;
+  iconEl.textContent = type === 'error' ? 'error' : 'check_circle';
+  toast.classList.remove('hidden');
+
+  clearTimeout(window._loginToastTimeout);
+  window._loginToastTimeout = setTimeout(() => {
+    toast.classList.add('hidden');
+  }, 3500);
+}
+"""
+
+with open(login_html_path, 'w', encoding='utf-8') as f:
+    f.write(login_html)
+
+with open(login_js_path, 'w', encoding='utf-8') as f:
+    f.write(login_js)
+
+print("Phase 1: login.html and login.js successfully created!")

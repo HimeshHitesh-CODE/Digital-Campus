@@ -1,596 +1,652 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SBTET Academic Results | Campus Connect (Code: 259)</title>
+  <title>SBTET Examination Results & Transcripts — Samskruti College</title>
   
-  <!-- Urbanist and JetBrains Mono Fonts -->
+  <!-- Material Symbols & Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Darker+Grotesque:wght@400;500;600;700;800;900&family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..700&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet" />
+  
+  <!-- Tailwind CSS & Master Config -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script src="/js/stitch-tailwind-config.js"></script>
 
-  <link rel="stylesheet" href="../../css/reset.css" />
-  <link rel="stylesheet" href="../../css/theme-tokens.css" />
-  <link rel="stylesheet" href="../../css/dc-global-theme.css?v=3.3.0" />
-  <link rel="stylesheet" href="../../css/top-nav.css?v=3.3.0" />
-  <link rel="stylesheet" href="./results.css" />
+  <!-- Stitch Design System & Nav Dock Styles -->
+  <link rel="stylesheet" href="/css/stitch-design-system.css" />
+  <link rel="stylesheet" href="/css/top-nav.css" />
+
+  <!-- Lucide Icons & Shared State -->
   <script src="https://unpkg.com/lucide@latest"></script>
-  <script src="../../js/dc-dynamic-island.js?v=3.3.0"></script>
-
-  <style>
-    /* =============================================
-       DARK GLASS DESIGN SYSTEM — Results Page
-    ============================================= */
-    *, *::before, *::after { box-sizing: border-box; }
-
-    body.student-portal-body {
-      background: var(--bg-app);
-      color: #f0fdf4 !important;
-      font-family: 'Urbanist', -apple-system, BlinkMacSystemFont, sans-serif;
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
-
-    .portal-viewport-wrapper {
-      position: relative;
-      z-index: 10;
-      width: 100%;
-      max-width: 1360px;
-      margin: 0 auto;
-      padding: 1rem 1.5rem 4rem;
-      box-sizing: border-box;
-    }
-
-    /* Fixed Top-Right Corner Profile Widget */
-    .corner-profile-widget,
-    #resultsCornerProfile {
-      position: fixed;
-      top: 14px;
-      right: 20px;
-      z-index: 9998;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      background: rgba(30, 68, 50, 0.55) !important;
-      backdrop-filter: blur(24px) saturate(180%) !important;
-      -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
-      border: 1px solid rgba(110, 231, 183, 0.3) !important;
-      border-radius: 9999px;
-      padding: 5px 14px 5px 6px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
-      cursor: pointer;
-      text-decoration: none;
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    /* Glass Cards Override */
-    .glass,
-    .results-kpi-card,
-    .marksheet-table-card,
-    .sem-card,
-    .neu-card {
-      background: rgba(20, 52, 36, 0.48) !important;
-      backdrop-filter: blur(28px) saturate(180%) !important;
-      -webkit-backdrop-filter: blur(28px) saturate(180%) !important;
-      border: 1px solid rgba(110, 231, 183, 0.22) !important;
-      border-radius: 24px !important;
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.06) !important;
-      color: #f0fdf4 !important;
-      opacity: 1 !important;
-      visibility: visible !important;
-      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
-    }
-
-    .glass:hover,
-    .results-kpi-card:hover,
-    .sem-card:hover {
-      background: rgba(28, 70, 48, 0.6) !important;
-      border-color: rgba(110, 231, 183, 0.45) !important;
-      transform: translateY(-3px) !important;
-    }
-
-    /* Portal Wrapper */
-    .portal-viewport-wrapper {
-      position: relative;
-      z-index: 1;
-      min-height: 100vh;
-    }
-
-    /* Main Content */
-    .main-content {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 100px 28px 40px;
-    }
-
-    /* Top Bar */
-    .top-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 16px;
-      margin-bottom: 28px;
-    }
-    .welcome-text h1 {
-      font-size: 1.8rem;
-      font-weight: 900;
-      background: linear-gradient(135deg, #ffffff, #10b981);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      letter-spacing: -0.02em;
-      margin: 0;
-    }
-    .welcome-text p {
-      font-size: 0.82rem;
-      color: rgba(160,200,160,0.6);
-      margin-top: 4px;
-    }
-    .top-bar-actions { display: flex; gap: 10px; }
-
-    /* Sync Button */
-    .btn-primary-action {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 20px;
-      border-radius: 9999px;
-      border: 1px solid rgba(16,185,129,0.4);
-      background: rgba(16,185,129,0.12);
-      color: #10b981;
-      font-size: 0.85rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      font-family: 'Urbanist', sans-serif;
-    }
-    .btn-primary-action:hover {
-      background: rgba(16,185,129,0.22);
-      box-shadow: 0 0 20px rgba(16,185,129,0.25);
-    }
-
-    /* Student Profile Bar */
-    .student-profile-bar {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-      padding: 20px 28px;
-      margin-bottom: 24px;
-      flex-wrap: wrap;
-    }
-    .profile-avatar-wrap {
-      width: 56px; height: 56px;
-      border-radius: 50%;
-      background: rgba(16,185,129,0.12);
-      border: 2px solid rgba(16,185,129,0.4);
-      display: flex; align-items: center; justify-content: center;
-      color: #10b981;
-      box-shadow: 0 0 16px rgba(16,185,129,0.2);
-    }
-    .profile-info-content h2 {
-      font-size: 1.1rem;
-      font-weight: 800;
-      color: #f1f5f9;
-      margin: 0;
-    }
-    .profile-pin-tag {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.78rem;
-      color: #10b981;
-    }
-    .profile-meta-pills {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-left: auto;
-    }
-
-    /* Badges */
-    .neu-badge {
-      display: inline-flex; align-items: center; gap: 4px;
-      padding: 4px 12px;
-      border-radius: 9999px;
-      font-size: 0.73rem;
-      font-weight: 700;
-    }
-    .neu-badge-primary {
-      background: rgba(16,185,129,0.1);
-      border: 1px solid rgba(16,185,129,0.25);
-      color: #6ee7b7;
-    }
-    .neu-badge-success {
-      background: rgba(16,185,129,0.15);
-      border: 1px solid rgba(16,185,129,0.35);
-      color: #10b981;
-    }
-
-    /* KPI Grid */
-    .results-kpi-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 18px;
-      margin-bottom: 24px;
-    }
-    .kpi-card {
-      padding: 22px 24px;
-    }
-    .kpi-card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
-    }
-    .kpi-label {
-      font-size: 0.75rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: rgba(160,200,160,0.6);
-    }
-    .kpi-icon-pill {
-      width: 32px; height: 32px;
-      border-radius: 10px;
-      background: rgba(16,185,129,0.1);
-      border: 1px solid rgba(16,185,129,0.2);
-      display: flex; align-items: center; justify-content: center;
-      color: #10b981;
-    }
-    .kpi-icon-pill svg { width: 16px; height: 16px; }
-    .kpi-val {
-      font-size: 2.4rem;
-      font-weight: 900;
-      color: #10b981;
-      text-shadow: 0 0 20px rgba(16,185,129,0.4);
-      line-height: 1;
-      margin-bottom: 6px;
-    }
-    .font-mono { font-family: 'JetBrains Mono', monospace; }
-    .kpi-subtext {
-      font-size: 0.75rem;
-      color: rgba(160,200,160,0.5);
-    }
-
-    /* Subject Breakdown Card */
-    .subject-breakdown-card {
-      padding: 24px;
-      margin-bottom: 24px;
-    }
-
-    /* Toolbar */
-    .table-toolbar-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      flex-wrap: wrap;
-      gap: 14px;
-      margin-bottom: 20px;
-    }
-    .table-title-meta {}
-    .section-title {
-      font-size: 1.05rem;
-      font-weight: 800;
-      color: #f1f5f9;
-      margin: 0 0 4px;
-    }
-    .section-subtitle {
-      font-size: 0.78rem;
-      color: rgba(160,200,160,0.5);
-      margin: 0;
-    }
-    .toolbar-controls-group {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    /* Semester Pills */
-    .semester-pill-group {
-      display: flex;
-      gap: 6px;
-    }
-    .sem-btn {
-      padding: 6px 14px;
-      border-radius: 9999px;
-      border: 1px solid rgba(16,185,129,0.2);
-      background: rgba(5,20,5,0.5);
-      color: rgba(160,200,160,0.6);
-      font-size: 0.78rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      font-family: 'Urbanist', sans-serif;
-    }
-    .sem-btn:hover {
-      border-color: rgba(16,185,129,0.4);
-      color: #10b981;
-    }
-    .sem-btn.active {
-      background: rgba(16,185,129,0.15);
-      border-color: rgba(16,185,129,0.5);
-      color: #10b981;
-      box-shadow: 0 0 12px rgba(16,185,129,0.15);
-    }
-
-    /* Clearance Badge */
-    .clearance-badge-success {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 14px;
-      border-radius: 9999px;
-      background: rgba(16,185,129,0.12);
-      border: 1px solid rgba(16,185,129,0.3);
-      color: #10b981;
-      font-size: 0.75rem;
-      font-weight: 800;
-      letter-spacing: 0.04em;
-    }
-    .clearance-badge-success svg { width: 13px; height: 13px; }
-
-    /* Table */
-    .table-responsive-wrapper {
-      overflow-x: auto;
-      border-radius: 14px;
-      border: 1px solid rgba(16,185,129,0.1);
-    }
-    .neumorphic-data-table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-    .neumorphic-data-table thead tr {
-      background: rgba(5,15,5,0.8);
-    }
-    .neumorphic-data-table th {
-      padding: 12px 16px;
-      font-size: 0.72rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.07em;
-      color: #10b981;
-      border-bottom: 1px solid rgba(16,185,129,0.15);
-      text-align: left;
-      white-space: nowrap;
-    }
-    .neumorphic-data-table td {
-      padding: 13px 16px;
-      font-size: 0.86rem;
-      color: #cbd5e1;
-      border-bottom: 1px solid rgba(16,185,129,0.06);
-    }
-    .neumorphic-data-table tbody tr:nth-child(odd) {
-      background: rgba(5,20,5,0.3);
-    }
-    .neumorphic-data-table tbody tr:nth-child(even) {
-      background: rgba(10,26,10,0.2);
-    }
-    .neumorphic-data-table tbody tr:hover {
-      background: rgba(16,185,129,0.06);
-    }
-    .text-center { text-align: center; }
-    .font-bold { font-weight: 700; }
-    .font-semibold { font-weight: 600; }
-
-    /* Grade Pills */
-    .grade-pill {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 30px; height: 30px;
-      border-radius: 8px;
-      font-size: 0.75rem;
-      font-weight: 800;
-    }
-    .grade-aplus {
-      background: rgba(16,185,129,0.18);
-      border: 1px solid rgba(16,185,129,0.4);
-      color: #10b981;
-      box-shadow: 0 0 10px rgba(16,185,129,0.2);
-    }
-    .grade-a {
-      background: rgba(52,211,153,0.12);
-      border: 1px solid rgba(52,211,153,0.3);
-      color: #34d399;
-    }
-    .grade-b {
-      background: rgba(96,165,250,0.12);
-      border: 1px solid rgba(96,165,250,0.25);
-      color: #60a5fa;
-    }
-    .grade-c {
-      background: rgba(251,191,36,0.1);
-      border: 1px solid rgba(251,191,36,0.25);
-      color: #fbbf24;
-    }
-    .grade-f {
-      background: rgba(248,113,113,0.12);
-      border: 1px solid rgba(248,113,113,0.3);
-      color: #f87171;
-    }
-
-    /* Status Pills */
-    .status-pill {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 4px 12px;
-      border-radius: 9999px;
-      font-size: 0.72rem;
-      font-weight: 800;
-      letter-spacing: 0.04em;
-    }
-    .status-pass {
-      background: rgba(16,185,129,0.14);
-      border: 1px solid rgba(16,185,129,0.35);
-      color: #10b981;
-    }
-    .status-fail {
-      background: rgba(239,68,68,0.12);
-      border: 1px solid rgba(239,68,68,0.3);
-      color: #f87171;
-    }
-
-    /* Neumorphic card = glass */
-    .neumorphic-card {
-      background: rgba(5,20,5,0.6);
-      backdrop-filter: blur(20px) saturate(180%);
-      border: 1px solid rgba(16,185,129,0.18);
-      border-radius: 20px;
-    }
-
-    /* Sliding pill (keep JS working) */
-    .sliding-morph-pill { display: none; }
-  </style>
+  <script src="/js/stitch-state.js"></script>
+  <script src="/js/dc-dynamic-island.js" defer></script>
 </head>
-<body class="student-portal-body">
-  <div class="portal-viewport-wrapper">
-    <main class="main-content">
-      
-      <!-- Top Navigation & Header -->
-      <header class="top-bar">
-        <div class="welcome-text">
-          <h1>SBTET Academic Results</h1>
-          <p id="student-meta-subtitle">State Board of Technical Education &amp; Training Official Records</p>
-        </div>
-        <div class="top-bar-actions">
-          <button class="btn-primary-action" id="sync-results-btn">
-            <i data-lucide="refresh-cw" id="sync-btn-icon"></i>
-            <span id="sync-btn-label">Sync Live SBTET Marks</span>
-          </button>
-        </div>
-      </header>
 
-      <!-- Student Identity Profile Card (SBTET Connect Style) -->
-      <section class="neumorphic-card student-profile-bar">
-        <div class="profile-avatar-wrap">
-          <i data-lucide="user-check"></i>
-        </div>
-        <div class="profile-info-content">
-          <h2 id="student-display-name">Loading Student Record...</h2>
-          <span class="profile-pin-tag" id="student-display-pin">--</span>
-        </div>
-        <div class="profile-meta-pills">
-          <span class="neu-badge neu-badge-primary">Scheme: <strong id="student-display-scheme">C-24</strong></span>
-          <span class="neu-badge neu-badge-primary">Branch: <strong id="student-display-branch">CS</strong></span>
-          <span class="neu-badge neu-badge-success" id="gateway-status-badge">Direct SBTET Cloud Gateway</span>
-        </div>
-      </section>
+<body class="bg-surface font-sans text-neutral-900 min-h-screen flex flex-col antialiased selection:bg-emerald-200 selection:text-emerald-950" 
+      style="background-color: #fcfaf6; background-image: radial-gradient(at 0% 0%, rgba(16, 185, 129, 0.12) 0px, transparent 48%), radial-gradient(at 100% 20%, rgba(5, 150, 105, 0.10) 0px, transparent 44%), radial-gradient(at 48% 65%, rgba(52, 211, 153, 0.08) 0px, transparent 52%), radial-gradient(at 95% 90%, rgba(16, 185, 129, 0.09) 0px, transparent 45%), radial-gradient(circle at 1px 1px, rgba(16, 185, 129, 0.06) 1.2px, transparent 0px); background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%, 28px 28px;">
 
-      <!-- 3-Column Results Summary Row -->
-      <section class="results-kpi-grid">
-        
-        <!-- 1. Cumulative GPA (CGPA) -->
-        <div class="neumorphic-card kpi-card">
-          <div class="kpi-card-header">
-            <span class="kpi-label">Cumulative GPA (CGPA)</span>
-            <div class="kpi-icon-pill"><i data-lucide="award"></i></div>
+  <!-- Main Content Viewport Wrapper (Offset below persistent top navigation) -->
+  <main class="w-full flex-grow pt-[84px] md:pt-[92px]">
+    <div class="max-w-[1240px] mx-auto px-4 sm:px-6 pb-12 flex flex-col gap-6 w-full">
+      <div class="flex flex-col w-full">
+<div class="max-w-[1240px] w-full mx-auto px-5 sm:px-8 py-8 md:py-10 flex flex-col gap-7 md:gap-9">
+<!-- Top Institutional Header & Action Control Ribbon -->
+<header class="flex flex-col md:flex-row md:items-end justify-between gap-5 border-b border-emerald-900/10 pb-6">
+<div class="flex flex-col gap-2">
+<div class="flex flex-wrap items-center gap-2">
+<span class="px-3.5 py-1 rounded-full bg-emerald-900/5 border border-emerald-700/15 text-emerald-900 text-sm md:text-base font-bold tracking-wider uppercase">
+        SBTET Academic Records &amp; Examination Board
+      </span>
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-sm md:text-base font-bold border border-emerald-200">
+<span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+        Live Node #259
+      </span>
+<span class="px-3 py-1 rounded-full bg-white/70 border border-emerald-600/20 text-emerald-700 text-sm md:text-base font-bold">
+        Campus Connect • Marks &amp; Results
+      </span>
+</div>
+<h1 class="text-3xl md:text-5xl lg:text-6xl font-black text-emerald-950 tracking-tight leading-tight md:leading-none">
+      SBTET Examination Results &amp; Transcripts
+    </h1>
+<p class="text-lg md:text-xl text-neutral-600 font-semibold leading-snug">
+      Samskruti College of Engineering &amp; Technology (259) • State Board of Technical Education &amp; Training Official Verified Hub
+    </p>
+</div>
+<!-- Action Pill Group -->
+<div class="flex flex-wrap items-center gap-3 shrink-0">
+<button class="group flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/90 border border-emerald-600/25 text-emerald-900 shadow-sm hover:bg-emerald-50/80 hover:border-emerald-600/40 transition-all cursor-pointer" id="sync-btn" type="button">
+<span class="material-symbols-outlined text-[20px] text-emerald-700 group-hover:rotate-180 transition-transform duration-500">sync</span>
+<span class="text-lg md:text-xl font-bold tracking-tight">Sync Live SBTET Marks</span>
+</button>
+<button class="flex items-center gap-2 px-6 py-2.5 rounded-full bg-gradient-to-r from-emerald-700 via-emerald-600 to-teal-600 text-white font-bold text-lg md:text-xl shadow-lg shadow-emerald-700/25 hover:shadow-emerald-600/40 hover:brightness-105 transition-all cursor-pointer" onclick="window.print()" type="button">
+<span class="material-symbols-outlined text-[20px]">download_for_offline</span>
+<span class="tracking-tight">Download Consolidated Memo</span>
+</button>
+</div>
+</header>
+<!-- Student Summary Hero Banner -->
+<div class="relative overflow-hidden rounded-[32px] bg-gradient-to-br from-[#043e2f] via-[#065f46] to-[#0f766e] p-6 md:p-9 text-white glass-glow border border-emerald-400/25">
+<div class="absolute -right-24 -top-24 w-96 h-96 rounded-full bg-emerald-400/20 blur-3xl pointer-events-none"></div>
+<div class="absolute left-1/3 -bottom-24 w-96 h-96 rounded-full bg-teal-300/15 blur-3xl pointer-events-none"></div>
+<div class="absolute inset-0 bg-[radial-gradient(rgba(255,255,255,0.12)_1px,transparent_1px)] [background-size:18px_18px] pointer-events-none"></div>
+<div class="relative z-10 flex flex-col gap-6 md:gap-7">
+<!-- Top Details Row -->
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-5 border-b border-white/15 pb-5">
+<div class="flex items-center gap-4 md:gap-5">
+<div class="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-gradient-to-tr from-white/20 to-emerald-200/30 backdrop-blur-md flex items-center justify-center text-white border border-white/30 shadow-inner">
+<span class="text-3xl md:text-4xl font-black tracking-wider text-emerald-100">KH</span>
+</div>
+<div class="flex flex-col">
+<div class="flex flex-wrap items-center gap-2.5">
+<span class="text-2xl md:text-4xl font-extrabold text-white tracking-tight leading-none"><span id="marksStudentName">Karnati Himesh</span></span>
+<span class="px-3 py-0.5 rounded-full bg-emerald-300/25 border border-emerald-300/40 text-emerald-100 text-sm md:text-base font-bold">Direct SBTET Cloud Gateway</span>
+</div>
+<div class="flex flex-wrap items-center gap-x-5 gap-y-1 mt-1.5 text-emerald-100/90 text-base md:text-lg font-medium">
+<span>PIN: <strong class="text-white font-bold tracking-wider">24259-CS-025</strong></span>
+<span class="w-1 h-1 rounded-full bg-emerald-300"></span>
+<span>Branch: <strong class="text-white font-bold">CS (Diploma Engg.)</strong></span>
+<span class="w-1 h-1 rounded-full bg-emerald-300"></span>
+<span>Curriculum Scheme: <strong class="text-white font-bold">C-24 Regular</strong></span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-2 self-start lg:self-center">
+<div class="flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20">
+<span class="material-symbols-outlined text-[18px] text-emerald-300">verified_user</span>
+<span class="text-sm md:text-base text-emerald-100 font-bold tracking-wide">Cryptographically Signed • SHA-256 Validated</span>
+</div>
+</div>
+</div>
+<!-- 3 Key Metric Cards -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5">
+<!-- Metric 1: CGPA -->
+<div class="rounded-2xl bg-white/90 backdrop-blur-md p-5 text-neutral-800 border border-emerald-400/30 shadow-md flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="text-sm md:text-base uppercase tracking-wider text-emerald-900 font-bold">Cumulative GPA (CGPA)</span>
+<div class="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center border border-emerald-200">
+<span class="material-symbols-outlined text-[20px]">school</span>
+</div>
+</div>
+<div class="my-2.5 flex items-baseline gap-2">
+<span class="text-4xl md:text-5xl font-black text-emerald-950 tracking-tight leading-none" id="marksCgpa">9.11</span>
+<span class="text-base md:text-lg font-bold text-neutral-500">/ 10.00 Scale</span>
+</div>
+<div class="flex items-center justify-between pt-1">
+<span class="px-2.5 py-0.5 rounded-full bg-emerald-100/90 text-emerald-900 text-sm md:text-base font-extrabold border border-emerald-300/60">First Class with Distinction</span>
+<span class="text-sm md:text-base font-bold text-emerald-700">Δ +0.17 Sem-on-Sem</span>
+</div>
+</div>
+<!-- Metric 2: Credits -->
+<div class="rounded-2xl bg-white/90 backdrop-blur-md p-5 text-neutral-800 border border-emerald-400/30 shadow-md flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="text-sm md:text-base uppercase tracking-wider text-emerald-900 font-bold">Secured Academic Credits</span>
+<div class="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center border border-emerald-200">
+<span class="material-symbols-outlined text-[20px]">fact_check</span>
+</div>
+</div>
+<div class="my-2.5 flex items-baseline gap-2">
+<span class="text-4xl md:text-5xl font-black text-emerald-950 tracking-tight leading-none" id="marksCredits">80.0</span>
+<span class="text-base md:text-lg font-bold text-neutral-500">/ 80.0 Prescribed</span>
+</div>
+<div class="flex flex-col gap-1.5 pt-1">
+<div class="w-full h-2 rounded-full bg-neutral-200 overflow-hidden">
+<div class="h-full bg-gradient-to-r from-emerald-600 to-teal-400 rounded-full w-full"></div>
+</div>
+<div class="flex items-center justify-between text-sm md:text-base font-bold text-neutral-600">
+<span>100% Degree Progression</span>
+<span class="text-emerald-800">C-24 Benchmarks Met</span>
+</div>
+</div>
+</div>
+<!-- Metric 3: Standing -->
+<div class="rounded-2xl bg-white/90 backdrop-blur-md p-5 text-neutral-800 border border-emerald-400/30 shadow-md flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="text-sm md:text-base uppercase tracking-wider text-emerald-900 font-bold">Academic Standing</span>
+<div class="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center border border-emerald-200">
+<span class="material-symbols-outlined text-[20px]">workspace_premium</span>
+</div>
+</div>
+<div class="my-2.5 flex items-baseline gap-2">
+<span class="text-4xl md:text-5xl font-black text-emerald-950 tracking-tight leading-none" id="marksBacklogs">0</span>
+<span class="text-base md:text-lg font-bold text-neutral-500">Active Backlogs (Arrears)</span>
+</div>
+<div class="flex items-center justify-between pt-1">
+<span class="px-2.5 py-0.5 rounded-full bg-emerald-100/90 text-emerald-900 text-sm md:text-base font-extrabold border border-emerald-300/60">Promoted • All Cleared</span>
+<span class="text-sm md:text-base font-bold text-neutral-600">Regular Candidate</span>
+</div>
+</div>
+</div>
+<!-- SGPA Trajectory -->
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 pt-1 border-t border-white/10">
+<div class="flex items-center gap-2">
+<span class="text-sm md:text-base uppercase text-emerald-200 tracking-wider font-extrabold">Semester Progression (SGPA Trajectory)</span>
+</div>
+<div class="flex flex-wrap items-center gap-2 md:gap-3">
+<div class="flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur-sm border border-white/15">
+<span class="text-sm md:text-base text-emerald-200 font-bold">Sem 1</span>
+<span class="text-base md:text-lg font-black text-white">8.85</span>
+</div>
+<span class="text-emerald-300 text-sm">→</span>
+<div class="flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur-sm border border-white/15">
+<span class="text-sm md:text-base text-emerald-200 font-bold">Sem 2</span>
+<span class="text-base md:text-lg font-black text-white">9.05</span>
+</div>
+<span class="text-emerald-300 text-sm">→</span>
+<div class="flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur-sm border border-white/15">
+<span class="text-sm md:text-base text-emerald-200 font-bold">Sem 3</span>
+<span class="text-base md:text-lg font-black text-white">9.18</span>
+</div>
+<span class="text-emerald-300 text-sm">→</span>
+<div class="flex items-center gap-2 px-3.5 py-1 rounded-full bg-white text-emerald-950 shadow-md font-bold">
+<span class="text-sm md:text-base text-emerald-800">Sem 4</span>
+<span class="text-base md:text-lg font-black">9.35</span>
+<span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Semester IV Subject Breakdown Table Card -->
+<section class="glass-card rounded-[30px] p-6 md:p-8 flex flex-col gap-6">
+<!-- Tabs & Status Pill Bar -->
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-2 border-b border-emerald-900/10">
+<div class="flex items-center gap-2 overflow-x-auto pb-1">
+<button class="sem-tab-btn px-4 py-2 rounded-full bg-white border border-emerald-900/10 text-neutral-600 font-bold text-base md:text-lg hover:bg-emerald-50 hover:text-emerald-900 transition-all cursor-pointer whitespace-nowrap" data-sem="1" type="button">1st Sem (C-24)</button>
+<button class="sem-tab-btn px-4 py-2 rounded-full bg-white border border-emerald-900/10 text-neutral-600 font-bold text-base md:text-lg hover:bg-emerald-50 hover:text-emerald-900 transition-all cursor-pointer whitespace-nowrap" data-sem="2" type="button">2nd Sem (C-24)</button>
+<button class="sem-tab-btn px-4 py-2 rounded-full bg-white border border-emerald-900/10 text-neutral-600 font-bold text-base md:text-lg hover:bg-emerald-50 hover:text-emerald-900 transition-all cursor-pointer whitespace-nowrap" data-sem="3" type="button">3rd Sem (C-24)</button>
+<button class="sem-tab-btn active-tab px-5 py-2 rounded-full bg-gradient-to-r from-emerald-700 via-emerald-600 to-teal-600 text-white font-black text-base md:text-lg shadow-md shadow-emerald-700/25 cursor-pointer whitespace-nowrap" data-sem="4" type="button">4th Sem (Active Memo)</button>
+</div>
+<div class="flex flex-wrap items-center gap-2.5">
+<div class="flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-100 border border-emerald-300 text-emerald-900 font-extrabold text-sm md:text-base">
+<span class="material-symbols-outlined text-[18px] text-emerald-700">check_circle</span>
+<span>PASS - ALL CLEARED</span>
+</div>
+<div class="flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-emerald-800/15 text-neutral-800">
+<span class="text-sm md:text-base uppercase text-neutral-500 font-bold">Sem SGPA</span>
+<span id="tabSgpaVal" class="text-lg md:text-xl font-black text-emerald-900">9.35</span>
+</div>
+</div>
+</div>
+<!-- Subject Marks Table (with Internal, End Sem, Total, Grade, Status) -->
+<div class="overflow-x-auto rounded-2xl border border-emerald-900/10 bg-white/70">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-emerald-50/80 text-emerald-950 text-sm md:text-base font-extrabold uppercase tracking-wider border-b border-emerald-900/10">
+<th class="py-3.5 px-4">Subject Code</th>
+<th class="py-3.5 px-4">Subject Description</th>
+<th class="py-3.5 px-4">Category</th>
+<th class="py-3.5 px-3 text-center">Internal (30)</th>
+<th class="py-3.5 px-3 text-center">End Sem (70)</th>
+<th class="py-3.5 px-3 text-center">Total (100)</th>
+<th class="py-3.5 px-3 text-center">Grade Point</th>
+<th class="py-3.5 px-3 text-center">Letter Grade</th>
+<th class="py-3.5 px-4 text-center">Status</th>
+</tr>
+</thead>
+<tbody id="marksTableBody" class="divide-y divide-emerald-900/5 text-neutral-800 text-base md:text-lg font-medium">
+<tr class="hover:bg-emerald-50/50 transition-colors">
+<td class="py-3 px-4 font-black text-emerald-900">SC-401</td>
+<td class="py-3 px-4 font-bold text-neutral-900">Advanced Engineering Mathematics</td>
+<td class="py-3 px-4 text-neutral-600 text-sm md:text-base">Theory (Core)</td>
+<td class="py-3 px-3 text-center font-bold text-neutral-700">22</td>
+<td class="py-3 px-3 text-center font-bold text-neutral-700">43</td>
+<td class="py-3 px-3 text-center font-black text-neutral-900">65</td>
+<td class="py-3 px-3 text-center font-bold">7.0</td>
+<td class="py-3 px-3 text-center">
+<span class="inline-block px-3 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-900 text-sm md:text-base font-black">B+</span>
+</td>
+<td class="py-3 px-4 text-center">
+<span class="inline-block px-3 py-0.5 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300 text-xs md:text-sm font-extrabold">PASS</span>
+</td>
+</tr>
+<tr class="hover:bg-emerald-50/50 transition-colors">
+<td class="py-3 px-4 font-black text-emerald-900">CS-402</td>
+<td class="py-3 px-4 font-bold text-neutral-900">Java Programming &amp; OOP Concepts</td>
+<td class="py-3 px-4 text-neutral-600 text-sm md:text-base">Theory (Major)</td>
+<td class="py-3 px-3 text-center font-bold text-neutral-700">26</td>
+<td class="py-3 px-3 text-center font-bold text-neutral-700">53</td>
+<td class="py-3 px-3 text-center font-black text-neutral-900">79</td>
+<td class="py-3 px-3 text-center font-bold">8.0</td>
+<td class="py-3 px-3 text-center">
+<span class="inline-block px-3 py-0.5 rounded-full bg-emerald-100 border border-emerald-300 text-emerald-900 text-sm md:text-base font-black">A</span>
+</td>
+<td class="py-3 px-4 text-center">
+<span class="inline-block px-3 py-0.5 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300 text-xs md:text-sm font-extrabold">PASS</span>
+</td>
+</tr>
+<tr class="hover:bg-emerald-50/50 transition-colors">
+<td class="py-3 px-4 font-black text-emerald-900">CS-403</td>
+<td class="py-3 px-4 font-bold text-neutral-900">Python for Data Analysis</td>
+<td class="py-3 px-4 text-neutral-600 text-sm md:text-base">Theory (Major)</td>
+<td class="py-3 px-3 text-center font-bold text-neutral-700">27</td>
+<td class="py-3 px-3 text-center font-bold text-neutral-700">54</td>
+<td class="py-3 px-3 text-center font-black text-neutral-900">81</td>
+<td class="py-3 px-3 text-center font-bold">9.0</td>
+<td class="py-3 px-3 text-center">
+<span class="inline-block px-3 py-0.5 rounded-full bg-emerald-100 border border-emerald-300 text-emerald-900 text-sm md:text-base font-black">A</span>
+</td>
+<td class="py-3 px-4 text-center">
+<span class="inline-block px-3 py-0.5 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300 text-xs md:text-sm font-extrabold">PASS</span>
+</td>
+</tr>
+<tr class="hover:bg-emerald-50/50 transition-colors">
+<td class="py-3 px-4 font-black text-emerald-900">CS-404</td>
+<td class="py-3 px-4 font-bold text-neutral-900">Relational Database Management Systems</td>
+<td class="py-3 px-4 text-neutral-600 text-sm md:text-base">Theory (Core)</td>
+<td class="py-3 px-3 text-center font-bold text-neutral-700">24</td>
+<td class="py-3 px-3 text-center font-bold text-neutral-700">48</td>
+<td class="py-3 px-3 text-center font-black text-neutral-900">72</td>
+<td class="py-3 px-3 text-center font-bold">8.0</td>
+<td class="py-3 px-3 text-center">
+<span class="inline-block px-3 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-900 text-sm md:text-base font-black">B+</span>
+</td>
+<td class="py-3 px-4 text-center">
+<span class="inline-block px-3 py-0.5 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300 text-xs md:text-sm font-extrabold">PASS</span>
+</td>
+</tr>
+<tr class="hover:bg-emerald-50/50 transition-colors">
+<td class="py-3 px-4 font-black text-emerald-900">CS-405</td>
+<td class="py-3 px-4 font-bold text-neutral-900">Applied Cryptography &amp; Network Security</td>
+<td class="py-3 px-4 text-neutral-600 text-sm md:text-base">Theory (Specialization)</td>
+<td class="py-3 px-3 text-center font-bold text-neutral-700">23</td>
+<td class="py-3 px-3 text-center font-bold text-neutral-700">45</td>
+<td class="py-3 px-3 text-center font-black text-neutral-900">68</td>
+<td class="py-3 px-3 text-center font-bold">7.0</td>
+<td class="py-3 px-3 text-center">
+<span class="inline-block px-3 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-900 text-sm md:text-base font-black">B+</span>
+</td>
+<td class="py-3 px-4 text-center">
+<span class="inline-block px-3 py-0.5 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300 text-xs md:text-sm font-extrabold">PASS</span>
+</td>
+</tr>
+<tr class="hover:bg-emerald-50/50 transition-colors">
+<td class="py-3 px-4 font-black text-emerald-900">CS-406</td>
+<td class="py-3 px-4 font-bold text-neutral-900">Operating Systems Internals</td>
+<td class="py-3 px-4 text-neutral-600 text-sm md:text-base">Theory (Core)</td>
+<td class="py-3 px-3 text-center font-bold text-neutral-700">27</td>
+<td class="py-3 px-3 text-center font-bold text-neutral-700">54</td>
+<td class="py-3 px-3 text-center font-black text-neutral-900">81</td>
+<td class="py-3 px-3 text-center font-bold">9.0</td>
+<td class="py-3 px-3 text-center">
+<span class="inline-block px-3 py-0.5 rounded-full bg-emerald-200 text-emerald-950 border border-emerald-400 text-sm md:text-base font-black">A+</span>
+</td>
+<td class="py-3 px-4 text-center">
+<span class="inline-block px-3 py-0.5 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300 text-xs md:text-sm font-extrabold">PASS</span>
+</td>
+</tr>
+<tr class="hover:bg-emerald-50/50 transition-colors">
+<td class="py-3 px-4 font-black text-emerald-900">CS-407</td>
+<td class="py-3 px-4 font-bold text-neutral-900">Java Programming Practical Lab</td>
+<td class="py-3 px-4 text-neutral-600 text-sm md:text-base">Practical (Lab)</td>
+<td class="py-3 px-3 text-center font-bold text-neutral-700">30</td>
+<td class="py-3 px-3 text-center font-bold text-neutral-700">68</td>
+<td class="py-3 px-3 text-center font-black text-emerald-700">98</td>
+<td class="py-3 px-3 text-center font-bold">10.0</td>
+<td class="py-3 px-3 text-center">
+<span class="inline-block px-3 py-0.5 rounded-full bg-emerald-200 text-emerald-950 border border-emerald-400 text-sm md:text-base font-black">A+</span>
+</td>
+<td class="py-3 px-4 text-center">
+<span class="inline-block px-3 py-0.5 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300 text-xs md:text-sm font-extrabold">PASS</span>
+</td>
+</tr>
+<tr class="hover:bg-emerald-50/50 transition-colors">
+<td class="py-3 px-4 font-black text-emerald-900">CS-408</td>
+<td class="py-3 px-4 font-bold text-neutral-900">Python Applications Lab</td>
+<td class="py-3 px-4 text-neutral-600 text-sm md:text-base">Practical (Lab)</td>
+<td class="py-3 px-3 text-center font-bold text-neutral-700">30</td>
+<td class="py-3 px-3 text-center font-bold text-neutral-700">69</td>
+<td class="py-3 px-3 text-center font-black text-emerald-700">99</td>
+<td class="py-3 px-3 text-center font-bold">10.0</td>
+<td class="py-3 px-3 text-center">
+<span class="inline-block px-3 py-0.5 rounded-full bg-emerald-200 text-emerald-950 border border-emerald-400 text-sm md:text-base font-black">A+</span>
+</td>
+<td class="py-3 px-4 text-center">
+<span class="inline-block px-3 py-0.5 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300 text-xs md:text-sm font-extrabold">PASS</span>
+</td>
+</tr>
+<tr class="hover:bg-emerald-50/50 transition-colors">
+<td class="py-3 px-4 font-black text-emerald-900">CS-409</td>
+<td class="py-3 px-4 font-bold text-neutral-900">RDBMS Implementation &amp; SQL Lab</td>
+<td class="py-3 px-4 text-neutral-600 text-sm md:text-base">Practical (Lab)</td>
+<td class="py-3 px-3 text-center font-bold text-neutral-700">30</td>
+<td class="py-3 px-3 text-center font-bold text-neutral-700">70</td>
+<td class="py-3 px-3 text-center font-black text-emerald-700">100</td>
+<td class="py-3 px-3 text-center font-bold">10.0</td>
+<td class="py-3 px-3 text-center">
+<span class="inline-block px-3 py-0.5 rounded-full bg-emerald-200 text-emerald-950 border border-emerald-400 text-sm md:text-base font-black">A+</span>
+</td>
+<td class="py-3 px-4 text-center">
+<span class="inline-block px-3 py-0.5 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300 text-xs md:text-sm font-extrabold">PASS</span>
+</td>
+</tr>
+<tr class="hover:bg-emerald-50/50 transition-colors">
+<td class="py-3 px-4 font-black text-emerald-900">HU-410</td>
+<td class="py-3 px-4 font-bold text-neutral-900">Employability &amp; Life Skills</td>
+<td class="py-3 px-4 text-neutral-600 text-sm md:text-base">Humanities / Viva</td>
+<td class="py-3 px-3 text-center font-bold text-neutral-700">28</td>
+<td class="py-3 px-3 text-center font-bold text-neutral-700">60</td>
+<td class="py-3 px-3 text-center font-black text-neutral-900">88</td>
+<td class="py-3 px-3 text-center font-bold">9.0</td>
+<td class="py-3 px-3 text-center">
+<span class="inline-block px-3 py-0.5 rounded-full bg-emerald-100 border border-emerald-300 text-emerald-900 text-sm md:text-base font-black">A</span>
+</td>
+<td class="py-3 px-4 text-center">
+<span class="inline-block px-3 py-0.5 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300 text-xs md:text-sm font-extrabold">PASS</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Table Summary Bar -->
+<div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-4 md:p-5 rounded-2xl bg-emerald-50/70 border border-emerald-900/10">
+<div class="flex flex-wrap items-center gap-6">
+<div class="flex flex-col">
+<span class="text-sm md:text-base text-neutral-500 uppercase font-extrabold">Semester Credits</span>
+<span class="text-xl md:text-2xl font-black text-emerald-950" id="tabCreditsVal">22.5 Earned</span>
+</div>
+<div class="hidden sm:block w-px h-8 bg-emerald-900/15"></div>
+<div class="flex flex-col">
+<span class="text-sm md:text-base text-neutral-500 uppercase font-extrabold">Total Marks Obtained</span>
+<span class="text-xl md:text-2xl font-black text-neutral-900" id="tabTotalMarksVal">851 / 1000</span>
+</div>
+<div class="hidden sm:block w-px h-8 bg-emerald-900/15"></div>
+<div class="flex flex-col">
+<span class="text-sm md:text-base text-neutral-500 uppercase font-extrabold">Semester Aggregate</span>
+<span class="text-xl md:text-2xl font-black text-emerald-700" id="tabAggregateVal">85.10%</span>
+</div>
+</div>
+<div class="flex items-center gap-2.5">
+<div class="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white border border-emerald-800/15 text-neutral-700 text-sm md:text-base font-bold shadow-sm">
+<span class="material-symbols-outlined text-[18px] text-emerald-600">fingerprint</span>
+<span>Hash: 9f7b...318e</span>
+</div>
+<button class="flex items-center gap-2 px-5 py-2 rounded-full bg-gradient-to-r from-emerald-700 to-teal-600 text-white font-bold text-base md:text-lg shadow hover:opacity-95 transition-all cursor-pointer" onclick="window.print()" type="button">
+<span class="material-symbols-outlined text-[18px]">print</span>
+<span>Print Memo</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Campus Academic Context / Accreditation Media Cards -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="glass-card rounded-[28px] p-6 flex flex-col justify-between">
+<div class="flex flex-col gap-1.5 mb-4">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-emerald-600"></span>
+<span class="text-sm md:text-base text-emerald-900 font-extrabold uppercase tracking-wider">Exam Center • Code 259</span>
+</div>
+<h2 class="text-2xl md:text-3xl font-extrabold text-neutral-900">Department Computing Laboratories</h2>
+<p class="text-base md:text-lg text-neutral-600 font-medium">
+        All continuous internal evaluations (CIE) and SBTET terminal semester practical assessments conducted in high-performance computational suites.
+      </p>
+</div>
+<div class="relative w-full h-48 rounded-2xl overflow-hidden border border-emerald-900/10">
+<img alt="Department Computing Laboratories" class="w-full h-full object-cover" data-alt="A modern, scholarly engineering computer laboratory with neatly aligned workstations, ambient green and natural daylight, students focused on high resolution displays, clean wooden and parchment aesthetic reflecting collegiate discipline." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDskuN9ZemNo4gNZDzJcYXTmU6MF3HaI_hmH5bNzDwwbj008-coRifhxhDfvJS0bGl_a85Z_aUtWrmPQms0qTHuFOAXTtBUg0tshURGFAPPpWcDwXxStLYXiBw-19VoaZy0JQ9LUoI15AhAbHwvmMFcOjoUvKuHydxfCWdpwbhvn_xSkfbWrAjH5Q2BspuA9Bc56nq9PqJxINRRuIvpKtnJ9zCalZsnHRLqi0hovtDY"/>
+<div class="absolute bottom-3 left-3 px-3 py-1 rounded-full bg-white/90 backdrop-blur-md text-sm md:text-base font-bold text-neutral-900 border border-emerald-900/10">
+        Lab Room CSE-302 • Terminal Node Active
+      </div>
+</div>
+</div>
+<div class="glass-card rounded-[28px] p-6 flex flex-col justify-between">
+<div class="flex flex-col gap-1.5 mb-4">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-emerald-600"></span>
+<span class="text-sm md:text-base text-emerald-900 font-extrabold uppercase tracking-wider">Board Accreditation</span>
+</div>
+<h2 class="text-2xl md:text-3xl font-extrabold text-neutral-900">Official SBTET Academic Seal</h2>
+<p class="text-base md:text-lg text-neutral-600 font-medium">
+        State Board transcripts are certified with integrated QR checksums for instant verification across industrial placement portals and higher universities.
+      </p>
+</div>
+<div class="relative w-full h-48 rounded-2xl overflow-hidden border border-emerald-900/10">
+<img alt="Official SBTET Seal" class="w-full h-full object-cover" data-alt="An elegant close-up of classical academic parchment diplomas and high security collegiate examination registries with gold embossed seal stamps and deep forest green institutional ribbon." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBWDJngHOvV9mGfUUYsFqsbXBxJinvvnQtMRGDhEwLzDKwWAgrD-24e6UJSqxgQJR07Bj3Zc_jIztsRrEpzeJDHmUHL-WBhp7BVCBlegZkhgZ7fpl8Drx0SmwF9fR1Fj3SJjSasD67Ek5VfAD0P3VSEWoXCV_7u-uTH642kM80jlprniOOfGs0aXEu0NoaGxmPkcYQPBIEYTqUNW7gZ5VgKxV4ci6TKTXt8gPVABCKu"/>
+<div class="absolute bottom-3 left-3 px-3 py-1 rounded-full bg-white/90 backdrop-blur-md text-sm md:text-base font-bold text-neutral-900 border border-emerald-900/10">
+        Government of Telangana SBTET Affiliated
+      </div>
+</div>
+</div>
+</div>
+<!-- Bottom Reference Cards: Grading Scale & Discrepancy Reporting -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<!-- Grading Scale Matrix (2 Columns Span) -->
+<div class="lg:col-span-2 glass-card rounded-[28px] p-6 md:p-8 flex flex-col gap-4">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2.5">
+<div class="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-800 border border-emerald-200">
+<span class="material-symbols-outlined text-[18px]">menu_book</span>
+</div>
+<h3 class="text-2xl md:text-3xl font-extrabold text-neutral-900">
+          SBTET C-24 Relative Grading Scale Guide
+        </h3>
+</div>
+<span class="px-3 py-0.5 rounded-full bg-white border border-emerald-900/15 text-neutral-600 text-sm md:text-base font-bold">
+        Statutory Rule 12.4
+      </span>
+</div>
+<p class="text-base md:text-lg text-neutral-600 font-medium">
+      Grades are computed via end-semester external exams (70% weightage) paired with mid-term assessments and continuous sessional records (30% weightage).
+    </p>
+<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2.5 pt-1">
+<div class="p-3 rounded-2xl bg-white border border-emerald-900/10 flex flex-col items-center text-center">
+<span class="text-3xl font-black text-emerald-800">A+</span>
+<span class="text-sm font-bold text-neutral-500">90 - 100%</span>
+<span class="mt-1 px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-900 text-xs font-black">10.0 GP</span>
+</div>
+<div class="p-3 rounded-2xl bg-white border border-emerald-900/10 flex flex-col items-center text-center">
+<span class="text-3xl font-black text-emerald-700">A</span>
+<span class="text-sm font-bold text-neutral-500">80 - 89%</span>
+<span class="mt-1 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-black">9.0 GP</span>
+</div>
+<div class="p-3 rounded-2xl bg-white border border-emerald-900/10 flex flex-col items-center text-center">
+<span class="text-3xl font-black text-teal-700">B+</span>
+<span class="text-sm font-bold text-neutral-500">70 - 79%</span>
+<span class="mt-1 px-2.5 py-0.5 rounded-full bg-teal-50 text-teal-800 border border-teal-200 text-xs font-black">8.0 GP</span>
+</div>
+<div class="p-3 rounded-2xl bg-white border border-emerald-900/10 flex flex-col items-center text-center">
+<span class="text-3xl font-black text-neutral-700">B</span>
+<span class="text-sm font-bold text-neutral-500">60 - 69%</span>
+<span class="mt-1 px-2.5 py-0.5 rounded-full bg-neutral-100 text-neutral-800 text-xs font-black">7.0 GP</span>
+</div>
+<div class="p-3 rounded-2xl bg-white border border-emerald-900/10 flex flex-col items-center text-center">
+<span class="text-3xl font-black text-neutral-600">C</span>
+<span class="text-sm font-bold text-neutral-500">50 - 59%</span>
+<span class="mt-1 px-2.5 py-0.5 rounded-full bg-neutral-100 text-neutral-800 text-xs font-black">6.0 GP</span>
+</div>
+<div class="p-3 rounded-2xl bg-white border border-rose-200 flex flex-col items-center text-center">
+<span class="text-3xl font-black text-rose-600">F</span>
+<span class="text-sm font-bold text-neutral-500">&lt; 35%</span>
+<span class="mt-1 px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-800 text-xs font-black">0.0 GP</span>
+</div>
+</div>
+</div>
+<!-- Discrepancy Reporting & Recounting Box -->
+<div class="glass-card rounded-[28px] p-6 md:p-8 flex flex-col justify-between gap-5">
+<div class="flex flex-col gap-2">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-rose-100 text-rose-700 flex items-center justify-center border border-rose-200">
+<span class="material-symbols-outlined text-[18px]">contact_support</span>
+</div>
+<h3 class="text-2xl md:text-3xl font-extrabold text-neutral-900">
+          Discrepancy Reporting
+        </h3>
+</div>
+<p class="text-base md:text-lg text-neutral-600 font-medium">
+        Found any clerical error or missing sessional marks? C-24 recounting and script challenge evaluation window closes in <strong class="text-neutral-900 font-extrabold">6 calendar days</strong>.
+      </p>
+<div class="mt-2 p-3 rounded-2xl bg-emerald-50/80 border border-emerald-200/60 flex items-center gap-2.5">
+<span class="material-symbols-outlined text-[20px] text-emerald-700">info</span>
+<span class="text-sm md:text-base text-emerald-950 font-bold">Fee: ₹400 per theory paper for recounting.</span>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<a class="inline-flex items-center justify-center gap-2 w-full px-5 py-2.5 rounded-full bg-gradient-to-r from-emerald-700 to-teal-600 text-white font-bold text-lg shadow-md hover:brightness-105 transition-all" href="javascript:void(0)">
+<span>Apply for Recounting</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</a>
+<span class="text-center text-sm md:text-base font-bold text-neutral-500">
+        Officer-in-Charge: Exam Cell • Room G-08
+      </span>
+</div>
+</div>
+</div>
+</div>
+<!-- Sync Button Simulation Script -->
+<script>
+  (function() {
+    const syncBtn = document.getElementById('sync-btn');
+    if (syncBtn) {
+      syncBtn.addEventListener('click', function() {
+        const originalText = syncBtn.innerHTML;
+        syncBtn.innerHTML = `
+          <span class="material-symbols-outlined text-[20px] text-emerald-700 animate-spin">refresh</span>
+          <span class="text-lg md:text-xl font-bold tracking-tight">Contacting SBTET Server...</span>
+        `;
+        syncBtn.disabled = true;
+        setTimeout(() => {
+          syncBtn.innerHTML = `
+            <span class="material-symbols-outlined text-[20px] text-emerald-700">done_all</span>
+            <span class="text-lg md:text-xl font-bold tracking-tight">Marks Up to Date</span>
+          `;
+          setTimeout(() => {
+            syncBtn.innerHTML = originalText;
+            syncBtn.disabled = false;
+          }, 2500);
+        }, 1200);
+      });
+    }
+  })();
+</script>
+</div>
+    </div>
+  </main>
+
+  <!-- Shared Samskruti Institutional Footer -->
+  <footer class="w-full relative z-10 bg-gradient-to-b from-[#f7f3ea] to-[#e6f4ea] mt-10 border-t border-emerald-900/10">
+<div class="max-w-[1240px] mx-auto px-5 sm:px-8 py-8 md:py-10">
+<div class="flex flex-col md:flex-row items-center justify-between gap-5 pb-6 border-b border-emerald-900/10">
+<div class="flex flex-col gap-1 text-center md:text-left">
+<div class="flex flex-wrap items-center justify-center md:justify-start gap-2.5">
+<span class="text-2xl md:text-3xl text-emerald-950 font-extrabold tracking-tight">Samskruti College of Engineering &amp; Technology</span>
+<span class="px-2.5 py-0.5 rounded-full bg-emerald-100 border border-emerald-300 text-emerald-900 text-sm md:text-base font-black">Code 259</span>
+</div>
+<p class="text-base md:text-lg text-neutral-600 font-medium">Permanent SBTET &amp; AICTE Affiliation. Autonomous Campus Registry &amp; Academic Management Portal.</p>
+</div>
+<div class="flex flex-wrap items-center justify-center gap-3">
+<div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white border border-emerald-900/15 shadow-sm">
+<span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+<span class="text-sm md:text-base text-neutral-800 font-bold">Biometric Sync Online</span>
+</div>
+<div class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-white border border-emerald-900/15 shadow-sm">
+<span class="material-symbols-outlined text-emerald-700 text-[18px]">verified</span>
+<span class="text-sm md:text-base text-neutral-800 font-bold">SBTET Verified Hub</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-5 text-neutral-600 font-medium">
+<span class="text-base md:text-lg">© 2025 Samskruti College. PIN 24259-CS-025 Registry. All rights reserved.</span>
+<div class="flex items-center gap-5 text-base md:text-lg font-bold">
+<a class="hover:text-emerald-800 transition-colors" href="#">Academic Regulations</a>
+<a class="hover:text-emerald-800 transition-colors" href="#">Attendance Mandates</a>
+<a class="hover:text-emerald-800 transition-colors" href="#">Campus Support</a>
+</div>
+</div>
+</div>
+</footer>
+
+  <!-- Recounting Request Modal -->
+  <div id="modalRecounting" class="fixed inset-0 z-[20000] hidden bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 md:p-8 shadow-2xl border border-emerald-500/20 flex flex-col gap-5">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-800 flex items-center justify-center">
+            <span class="material-symbols-outlined text-[24px]">fact_check</span>
           </div>
-          <div class="kpi-val font-mono" id="res-cgpa">8.36</div>
-          <span class="kpi-subtext" id="res-scheme-footer">Scheme: C24 Regular</span>
+          <h3 class="text-2xl font-bold text-on-surface">Apply for SBTET Recounting</h3>
         </div>
-
-        <!-- 2. Total Credits Secured -->
-        <div class="neumorphic-card kpi-card">
-          <div class="kpi-card-header">
-            <span class="kpi-label">Total Credits Secured</span>
-            <div class="kpi-icon-pill"><i data-lucide="check-circle-2"></i></div>
-          </div>
-          <div class="kpi-val font-mono" id="res-credits">80 / 80</div>
-          <span class="kpi-subtext" id="res-sem-footer">Latest Exam: 4SEM Cleared</span>
+        <button type="button" class="close-modal-btn text-stone-400 hover:text-stone-700 p-1">
+          <span class="material-symbols-outlined text-[22px]">close</span>
+        </button>
+      </div>
+      <p class="text-base text-on-surface-variant font-medium">
+        Prescribed SBTET fee is ₹400 per theory paper for clerical recount and marks retabulation.
+      </p>
+      <form id="formRecounting" class="flex flex-col gap-4">
+        <div>
+          <label class="block text-sm font-bold text-on-surface mb-1">Select Subject</label>
+          <select required class="w-full px-4 py-2.5 rounded-xl border border-stone-200 text-base focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+            <option value="SC-401">SC-401 — Advanced Engineering Mathematics (Marks: 65)</option>
+            <option value="CS-402">CS-402 — Java Programming & OOP Concepts (Marks: 79)</option>
+            <option value="CS-403">CS-403 — Python for Data Analysis (Marks: 81)</option>
+            <option value="CS-404">CS-404 — Relational Database Management Systems (Marks: 72)</option>
+            <option value="CS-405">CS-405 — Applied Cryptography & Network Security (Marks: 68)</option>
+            <option value="CS-406">CS-406 — Operating Systems Internals (Marks: 81)</option>
+          </select>
         </div>
-
-        <!-- 3. Active Backlogs -->
-        <div class="neumorphic-card kpi-card">
-          <div class="kpi-card-header">
-            <span class="kpi-label">Active Backlogs</span>
-            <div class="kpi-icon-pill"><i data-lucide="shield-check"></i></div>
-          </div>
-          <div class="kpi-val font-mono" id="res-backlogs">0</div>
-          <span class="kpi-subtext" id="res-promotion-footer">Status: Promoted with Distinction</span>
+        <div>
+          <label class="block text-sm font-bold text-on-surface mb-1">Reason for Recounting Challenge</label>
+          <textarea required rows="2" placeholder="e.g. Expected 80+ in Part-B theory valuation..." class="w-full px-4 py-2 rounded-xl border border-stone-200 text-base focus:ring-2 focus:ring-emerald-500 focus:outline-none"></textarea>
         </div>
-
-      </section>
-
-      <!-- Marksheet Table Container with Semester Selection Tabs -->
-      <section class="neumorphic-card subject-breakdown-card">
-        
-        <!-- Header Toolbar with Tab Buttons & Status -->
-        <div class="table-toolbar-header">
-          <div class="table-title-meta">
-            <h3 class="section-title" id="semester-heading">Semester IV Subject Breakdown</h3>
-            <p class="section-subtitle" id="semester-subheading">Exam Session: APR-2026 • SBTET Official Record</p>
-          </div>
-
-          <div class="toolbar-controls-group">
-            <!-- Semester Switcher Pills -->
-            <div class="semester-pill-group" id="semester-tab-bar">
-              <button type="button" class="sem-btn" data-sem="1SEM">1st Sem</button>
-              <button type="button" class="sem-btn" data-sem="2SEM">2nd Sem</button>
-              <button type="button" class="sem-btn" data-sem="3SEM">3rd Sem</button>
-              <button type="button" class="sem-btn active" data-sem="4SEM">4th Sem</button>
-            </div>
-
-            <!-- Clearance Status Badge -->
-            <div class="clearance-badge-success" id="res-status-badge">
-              <i data-lucide="check"></i>
-              <span>PASS - ALL CLEARED</span>
-            </div>
-          </div>
+        <div class="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200/80 text-sm text-emerald-900 font-semibold flex items-center justify-between">
+          <span>Examination Fee (Pre-cleared via Challan)</span>
+          <span class="font-bold text-base">₹400.00</span>
         </div>
-
-        <!-- Polished Subject Table -->
-        <div class="table-responsive-wrapper">
-          <table class="neumorphic-data-table" id="results-table">
-            <thead>
-              <tr>
-                <th>Subject Code</th>
-                <th>Subject Title</th>
-                <th class="text-center">Internal (40)</th>
-                <th class="text-center">End Sem (60)</th>
-                <th class="text-center">Total (100)</th>
-                <th class="text-center">Grade</th>
-                <th class="text-center">Status</th>
-              </tr>
-            </thead>
-            <tbody id="results-tbody">
-              <tr>
-                <td class="font-mono font-bold">SC-401</td>
-                <td class="font-semibold">Advanced Engineering Mathematics</td>
-                <td class="text-center font-mono">20</td>
-                <td class="text-center font-mono">32.5</td>
-                <td class="text-center font-mono font-bold">76</td>
-                <td class="text-center"><span class="grade-pill grade-a">A</span></td>
-                <td class="text-center"><span class="status-pill status-pass">PASS</span></td>
-              </tr>
-              <tr>
-                <td class="font-mono font-bold">CS-402</td>
-                <td class="font-semibold">Java Programming</td>
-                <td class="text-center font-mono">20</td>
-                <td class="text-center font-mono">32.0</td>
-                <td class="text-center font-mono font-bold">81</td>
-                <td class="text-center"><span class="grade-pill grade-a">A</span></td>
-                <td class="text-center"><span class="status-pill status-pass">PASS</span></td>
-              </tr>
-              <tr>
-                <td class="font-mono font-bold">CS-403</td>
-                <td class="font-semibold">Python Programming</td>
-                <td class="text-center font-mono">20</td>
-                <td class="text-center font-mono">37.5</td>
-                <td class="text-center font-mono font-bold">87</td>
-                <td class="text-center"><span class="grade-pill grade-aplus">A+</span></td>
-                <td class="text-center"><span class="status-pill status-pass">PASS</span></td>
-              </tr>
-            </tbody>
-          </table>
+        <div class="flex items-center justify-end gap-3 mt-1">
+          <button type="button" class="close-modal-btn px-5 py-2 rounded-full border border-stone-200 font-bold text-on-surface-variant hover:bg-stone-50">Cancel</button>
+          <button type="submit" class="px-6 py-2 rounded-full bg-primary hover:bg-emerald-800 text-white font-bold shadow-md transition-all">Submit Recounting Application</button>
         </div>
-
-      </section>
-
-    </main>
+      </form>
+    </div>
   </div>
 
-  <script type="module" src="../../js/top-nav.js"></script>
-  <script type="module" src="./results.js"></script>
+  <!-- Toast Notification -->
+  <div id="toastNotification" class="fixed bottom-6 right-6 z-[30000] hidden px-5 py-3 rounded-2xl bg-emerald-900 text-white font-bold text-base shadow-2xl flex items-center gap-3 border border-emerald-400/40 transform transition-all duration-300">
+    <span class="material-symbols-outlined text-emerald-300 text-[20px]" id="toastIcon">check_circle</span>
+    <span id="toastMsg">Action completed successfully</span>
+  </div>
+
+  <!-- Results Page Controller Script -->
+  <script src="/screens/02-student-portal/results.js"></script>
 </body>
 </html>

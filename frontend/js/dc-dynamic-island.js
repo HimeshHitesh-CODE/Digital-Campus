@@ -160,6 +160,12 @@
                   <span>${isHod ? 'HOD Executive Console' : 'My Profile'}</span>
                 </a>
 
+                <a href="/screens/02-student-portal/helpdesk.html" 
+                   class="dropdown-menu-item" role="menuitem">
+                  <i data-lucide="help-circle"></i>
+                  <span>Campus Help Desk</span>
+                </a>
+
                 <div class="dropdown-theme-row">
                   <span class="row-label">
                     <i data-lucide="moon"></i>

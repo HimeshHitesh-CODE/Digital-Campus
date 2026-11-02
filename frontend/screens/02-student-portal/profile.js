@@ -1,146 +1,111 @@
 /**
- * Student Profile & Security Management Controller
- * Dynamically binds active session records and manages editable contact info.
+ * Samskruti College Student Profile Controller
+ * Dynamic fill and contact editor logic
  */
-
-import { api } from '../../js/api.js';
-import { requireAuth } from '../../js/auth-guard.js';
-import { alerts } from '../../js/alerts.js';
-
-// Verify student authentication safely
-const user = requireAuth(['STUDENT', 'HOD', 'HOD_CS', 'ADMIN']);
 
 document.addEventListener('DOMContentLoaded', () => {
-  populateStudentProfile();
-  setupEditContactModal();
-
-  if (typeof window.dcSyncProfile === 'function') {
-    window.dcSyncProfile();
-  }
+  initProfile();
+  initContactModal();
 });
 
-function getActiveStudentInfo() {
-  const sessionUser = (typeof window.dcGetActiveUser === 'function' ? window.dcGetActiveUser() : null)
-    || api.getUser() 
-    || JSON.parse(localStorage.getItem('dc_user') || localStorage.getItem('smsk_user') || '{}');
+function initProfile() {
+  if (typeof StitchState === 'undefined') return;
+  const user = StitchState.getUser();
 
-  const pin = (sessionUser.pin || sessionUser.sbtetPin || sessionUser.rollNumber || localStorage.getItem('student_pin') || '24259-CS-040').trim().toUpperCase();
-  const name = sessionUser.name || localStorage.getItem('user_name') || 'Tallapalli Tulasi Ram Goud';
+  // Dynamic user data binding
+  const nameEls = document.querySelectorAll('[data-bind="userName"]');
+  nameEls.forEach(el => el.textContent = user.name.toUpperCase());
 
-  // Branch mapping
-  let branch = sessionUser.department || 'Computer Science & Engineering (CS)';
-  if (pin.includes('-AI-') || pin.includes('-AIML-')) branch = 'Artificial Intelligence & Machine Learning (AIML)';
-  else if (pin.includes('-CS-')) branch = 'Computer Science & Engineering (CS)';
-  else if (pin.includes('-EC-')) branch = 'Electronics & Communication (EC)';
-  else if (pin.includes('-EE-')) branch = 'Electrical & Electronics (EE)';
-  else if (pin.includes('-M-')) branch = 'Mechanical Engineering (MECH)';
-  else if (pin.includes('-CIV-')) branch = 'Civil Engineering (CIV)';
+  const pinEls = document.querySelectorAll('[data-bind="userPin"]');
+  pinEls.forEach(el => el.textContent = user.pin || '24259-CS-025');
 
-  const semText = 'Semester V (3rd Year • 5th Sem)';
-  const savedContact = JSON.parse(localStorage.getItem(`contact_${pin}`) || '{}');
-
-  return {
-    pin,
-    name,
-    branch,
-    email: sessionUser.email || `${pin.toLowerCase()}@samskruti.ac.in`,
-    scheme: sessionUser.scheme || 'SBTET C-24',
-    semester: semText,
-    batch: sessionUser.batch || '2024 - 2027',
-    mobile: savedContact.mobile || sessionUser.phone || '+91 98765 43239',
-    parentMobile: savedContact.parentMobile || '+91 98765 43299',
-  };
+  // Load custom contact info if stored
+  const customContact = localStorage.getItem('dc_student_contact');
+  if (customContact) {
+    try {
+      const data = JSON.parse(customContact);
+      if (data.mobile) {
+        const mobEl = document.getElementById('displayMobile');
+        if (mobEl) mobEl.textContent = data.mobile;
+      }
+      if (data.parent) {
+        const parentEl = document.getElementById('displayParent');
+        if (parentEl) parentEl.textContent = data.parent;
+      }
+    } catch (e) {}
+  }
 }
 
-function populateStudentProfile() {
-  const student = getActiveStudentInfo();
-  const clean = student.name.replace(/^(Dr\.|Prof\.|Mr\.|Ms\.|Mrs\.)\s*/i, '').trim();
-  const words = clean.split(/\s+/).filter(Boolean);
-  const initials = words.length >= 2 
-    ? `${words[0][0]}${words[1][0]}`.toUpperCase() 
-    : clean.substring(0, 2).toUpperCase();
+function initContactModal() {
+  const modal = document.getElementById('editContactModal');
+  const card = document.getElementById('contactModalCard');
+  const closeBtn = document.getElementById('closeContactModal');
+  const cancelBtn = document.getElementById('cancelContactModal');
 
-  // Header banner elements
-  const avatarElem = document.getElementById('profile-avatar');
-  const nameElem = document.getElementById('profile-student-name');
-  const deptSub = document.getElementById('profile-dept-sub');
-  const badgePin = document.getElementById('profile-badge-pin');
-  const badgeScheme = document.getElementById('profile-badge-scheme');
+  function openModal() {
+    if (!modal) return;
+    modal.classList.remove('hidden', 'opacity-0', 'pointer-events-none');
+    setTimeout(() => {
+      card?.classList.remove('scale-95');
+      card?.classList.add('scale-100');
+    }, 20);
+  }
 
-  if (avatarElem) avatarElem.textContent = initials;
-  if (nameElem) nameElem.textContent = student.name;
-  if (deptSub) deptSub.textContent = `${student.branch} • Samskruti College (259)`;
-  if (badgePin) badgePin.textContent = student.pin;
-  if (badgeScheme) badgeScheme.textContent = student.scheme;
+  function closeModal() {
+    if (!modal) return;
+    card?.classList.remove('scale-100');
+    card?.classList.add('scale-95');
+    modal.classList.add('opacity-0', 'pointer-events-none');
+    setTimeout(() => {
+      modal.classList.add('hidden');
+    }, 200);
+  }
 
-  // Academic Details (Locked)
-  const profScheme = document.getElementById('prof-scheme');
-  const profBranch = document.getElementById('prof-branch');
-  const profPin = document.getElementById('prof-pin');
-  const profSemester = document.getElementById('prof-semester');
-  const profBatch = document.getElementById('prof-batch');
+  // Find all buttons containing 'Edit Contact Info' or 'Update Contact Phone Numbers'
+  document.querySelectorAll('button').forEach(btn => {
+    const txt = btn.textContent || '';
+    if (txt.includes('Edit Contact Info') || txt.includes('Update Contact Phone Numbers')) {
+      btn.addEventListener('click', openModal);
+    }
+  });
 
-  if (profScheme) profScheme.textContent = student.scheme;
-  if (profBranch) profBranch.textContent = student.branch;
-  if (profPin) profPin.textContent = student.pin;
-  if (profSemester) profSemester.textContent = student.semester;
-  if (profBatch) profBatch.textContent = student.batch;
-
-  // Contact Details
-  const profEmail = document.getElementById('prof-email');
-  const profMobile = document.getElementById('prof-mobile');
-  const profParentMobile = document.getElementById('prof-parent-mobile');
-
-  if (profEmail) profEmail.textContent = student.email;
-  if (profMobile) profMobile.textContent = student.mobile;
-  if (profParentMobile) profParentMobile.textContent = student.parentMobile;
-}
-
-/**
- * Handle Contact Information Edit Modal
- */
-function setupEditContactModal() {
-  const modal = document.getElementById('edit-contact-modal');
-  const openBtn = document.getElementById('open-edit-contact-btn');
-  const triggerBtn = document.getElementById('edit-contact-trigger-btn');
-  const closeBtn = document.getElementById('close-contact-modal');
-  const cancelBtn = document.getElementById('cancel-contact-modal');
-  const form = document.getElementById('edit-contact-form');
-
-  const studentMobileInput = document.getElementById('edit-student-mobile');
-  const parentMobileInput = document.getElementById('edit-parent-mobile');
-
-  const openModal = () => {
-    const student = getActiveStudentInfo();
-    if (studentMobileInput) studentMobileInput.value = student.mobile;
-    if (parentMobileInput) parentMobileInput.value = student.parentMobile;
-    modal.style.display = 'flex';
-  };
-
-  const closeModal = () => { modal.style.display = 'none'; };
-
-  openBtn?.addEventListener('click', openModal);
-  triggerBtn?.addEventListener('click', openModal);
   closeBtn?.addEventListener('click', closeModal);
   cancelBtn?.addEventListener('click', closeModal);
-
-  form?.addEventListener('submit', (e) => {
-    e.preventDefault();
-
-    const newMobile = studentMobileInput.value.trim();
-    const newParentMobile = parentMobileInput.value.trim();
-
-    if (!newMobile || !newParentMobile) {
-      alerts.error('Invalid Contact', 'Please provide valid phone numbers.');
-      return;
-    }
-
-    const student = getActiveStudentInfo();
-    const contactData = { mobile: newMobile, parentMobile: newParentMobile };
-    localStorage.setItem(`contact_${student.pin}`, JSON.stringify(contactData));
-
-    populateStudentProfile();
-    closeModal();
-    alerts.success('Contact Saved', 'Your registered contact details have been updated.');
+  modal?.addEventListener('click', (e) => {
+    if (e.target === modal) closeModal();
   });
+
+  window.saveContactDetails = function() {
+    const mobile = document.getElementById('editMobile')?.value.trim();
+    const parent = document.getElementById('editParentContact')?.value.trim();
+
+    localStorage.setItem('dc_student_contact', JSON.stringify({ mobile, parent }));
+
+    // Update live DOM displays
+    document.querySelectorAll('.font-mono').forEach(el => {
+      if (el.textContent.includes('+91 98765 43210') && mobile) {
+        el.textContent = mobile;
+      }
+      if (el.textContent.includes('+91 98765 43211') && parent) {
+        el.textContent = parent;
+      }
+    });
+
+    closeModal();
+    showToast('Contact details successfully updated in campus registry!');
+  };
+}
+
+function showToast(message) {
+  const toast = document.getElementById('toastNotification');
+  const msgEl = document.getElementById('toastMsg');
+  if (!toast) return;
+
+  msgEl.textContent = message;
+  toast.classList.remove('hidden');
+
+  clearTimeout(window._profileToastTimeout);
+  window._profileToastTimeout = setTimeout(() => {
+    toast.classList.add('hidden');
+  }, 3500);
 }

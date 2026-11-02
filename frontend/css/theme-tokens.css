@@ -1,216 +1,244 @@
 /* ================================================================
-   SAMSKRUTI DIGITAL CAMPUS (CODE: 259) — DESIGN SYSTEM TOKENS
-   Master Implementation: Light Theme (Default) + Dark Theme (Alternative)
-   Refined Institutional Aesthetic: Premium Soft-Glass + Forest Green
+   SAMSKRUTI DIGITAL CAMPUS (INSTITUTION CODE: 259)
+   MASTER DESIGN SYSTEM TOKENS — PALETTE & TYPOGRAPHY SPECIFICATION
+   
+   Color Palette Source (Coolors Luxury Editorial Academic):
+   1. #FFCF99 — Apricot Cream (Warm Highlight / Soft Tints / Badges)
+   2. #9E2B25 — Brown Red / Terracotta (Bold Primary Accent / Action CTAs)
+   3. #51355A — Vintage Grape (Sophisticated Deep Plum / Mid-tones / Borders)
+   4. #2A0C4E — Dark Amethyst (Imperial Midnight Purple / Headings & Dark Canvas)
+   5. #8A9720 — Olive Green (Vitality / Progress / Success / Telemetry / Sparklines)
    ================================================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Urbanist:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,600&family=JetBrains+Mono:wght@400;500;600;700&family=Caveat:wght@600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Caveat:wght@600;700&display=swap');
 
 /* ================================================================
-   1. DEFAULT ROOT / LIGHT THEME (Matches 1.png & 2.png Reference)
+   1. LIGHT THEME (Warm Alabaster Canvas + Amethyst & Terracotta)
    ================================================================ */
 :root,
 [data-theme="light"] {
   color-scheme: light;
-  --container-max-width: 1280px;
+
+  /* ── Layout & Spatial Metrics ───────────────────────────────── */
+  --container-max-width: 1240px;
   --header-height: 72px;
-  --radius-card: 28px;
-  --radius-tile: 20px;
-  --radius-input: 14px;
+  --radius-card: 26px;
+  --radius-tile: 18px;
+  --radius-input: 13px;
   --radius-pill: 9999px;
   --z-header: 1000;
   --z-dock: 10000;
   --z-dropdown: 10050;
   --z-modal: 20000;
-  /* ── Canvas Background & Ambient Gradients ───────────────────── */
-  --bg-app:              #f2f7f4;
-  --bg-canvas:           #edf4f0;
-  --bg-gradient:         radial-gradient(ellipse at 15% 15%, rgba(187, 247, 208, 0.45) 0%, transparent 55%),
-                         radial-gradient(ellipse at 85% 85%, rgba(134, 239, 172, 0.35) 0%, transparent 60%),
-                         linear-gradient(175deg, #f4f8f5 0%, #ebf3ee 50%, #e5f0ea 100%);
+
+  /* ── The 5 Master Palette Tokens ────────────────────────────── */
+  --color-apricot:       #FFCF99;
+  --color-terracotta:    #9E2B25;
+  --color-grape:         #51355A;
+  --color-amethyst:      #2A0C4E;
+  --color-olive:         #8A9720;
+
+  /* ── Canvas Background & Ambient Editorial Lighting ─────────── */
+  --bg-app:              #FAF6F0;
+  --bg-canvas:           #F6F0E8;
+  --bg-gradient:         radial-gradient(circle at 10% 8%, rgba(255, 207, 153, 0.40) 0%, transparent 45%),
+                         radial-gradient(circle at 90% 12%, rgba(138, 151, 32, 0.12) 0%, transparent 50%),
+                         radial-gradient(circle at 85% 85%, rgba(81, 53, 90, 0.08) 0%, transparent 55%),
+                         linear-gradient(180deg, #FAF6F0 0%, #F5EFE6 50%, #EFE7DC 100%);
 
   /* ── Glass Surfaces & Card Backdrops ────────────────────────── */
   --surface-0:           #ffffff;
-  --surface-card:        rgba(255, 255, 255, 0.78);
-  --surface-card-hover:  rgba(255, 255, 255, 0.92);
-  --surface-glass:       rgba(255, 255, 255, 0.70);
-  --surface-pill:        rgba(255, 255, 255, 0.88);
-  --surface-elevated:    rgba(255, 255, 255, 0.95);
-  --surface-subtle:      rgba(240, 247, 242, 0.85);
-  --surface-overlay:     rgba(15, 30, 20, 0.45);
+  --surface-card:        rgba(255, 255, 255, 0.88);
+  --surface-card-hover:  rgba(255, 255, 255, 0.96);
+  --surface-glass:       rgba(255, 255, 255, 0.75);
+  --surface-pill:        rgba(255, 255, 255, 0.92);
+  --surface-elevated:    #ffffff;
+  --surface-subtle:      rgba(255, 248, 238, 0.85);
+  --surface-overlay:     rgba(42, 12, 78, 0.45);
 
-  /* ── Deep Forest Institutional Green (Primary) ──────────────── */
-  --brand-primary:       #0d4722;
-  --brand-primary-hover: #072f16;
-  --brand-primary-tint:  rgba(13, 71, 34, 0.08);
-  --brand-primary-light: rgba(13, 71, 34, 0.14);
+  /* ── Brand Primary & Accents ────────────────────────────────── */
+  --brand-primary:       #9E2B25;                 /* Terracotta Crimson */
+  --brand-primary-hover: #801F1A;
+  --brand-primary-tint:  rgba(158, 43, 37, 0.10);
+  --brand-primary-light: rgba(158, 43, 37, 0.16);
 
-  /* ── Bright Mint & Emerald Accents (Secondary) ──────────────── */
-  --brand-accent:        #10b981;
-  --brand-accent-hover:  #059669;
-  --brand-mint:          #a7f3d0;
-  --brand-mint-deep:     #059669;
-  --brand-mint-tint:     rgba(16, 185, 129, 0.12);
-  --brand-active-glow:   rgba(16, 185, 129, 0.28);
+  --brand-accent:        #8A9720;                 /* Olive Green */
+  --brand-accent-hover:  #717C17;
+  --brand-mint:          #8A9720;
+  --brand-mint-deep:     #5F6812;
+  --brand-mint-tint:     rgba(138, 151, 32, 0.14);
+  --brand-active-glow:   rgba(138, 151, 32, 0.30);
 
-  /* ── Typography & Readability ───────────────────────────────── */
-  --text-primary:        #0d2315;
-  --text-heading:        #08170e;
-  --text-secondary:      #1a3d28;
-  --text-body:           #2b4a36;
-  --text-muted:          #597764;
-  --text-subtle:         #7a9684;
-  --text-inverse:        #ffffff;
-  --text-link:           #0d4722;
-  --text-link-hover:     #059669;
+  /* ── Rich Typography & Readability ──────────────────────────── */
+  --text-primary:        #2A0C4E;                 /* Deep Imperial Amethyst */
+  --text-heading:        #2A0C4E;
+  --text-secondary:      #51355A;                 /* Vintage Grape */
+  --text-body:           #432A4B;
+  --text-muted:          #6F5379;
+  --text-subtle:         #8F7399;
+  --text-inverse:        #FFFFFF;
+  --text-link:           #9E2B25;
+  --text-link-hover:     #801F1A;
 
-  /* ── Borders & Outlines ─────────────────────────────────────── */
-  --border-subtle:       rgba(13, 71, 34, 0.08);
-  --border-default:      rgba(13, 71, 34, 0.13);
-  --border-medium:       rgba(13, 71, 34, 0.22);
-  --border-glass:        rgba(255, 255, 255, 0.75);
-  --border-card:         rgba(255, 255, 255, 0.85);
-  --border-card-outer:   rgba(13, 71, 34, 0.09);
-  --border-active:       #10b981;
+  /* ── Borders & Hairline Outlines ────────────────────────────── */
+  --border-subtle:       rgba(81, 53, 90, 0.08);
+  --border-default:      rgba(81, 53, 90, 0.14);
+  --border-medium:       rgba(81, 53, 90, 0.22);
+  --border-glass:        rgba(255, 255, 255, 0.90);
+  --border-card:         rgba(81, 53, 90, 0.10);
+  --border-card-outer:   rgba(255, 207, 153, 0.45);
+  --border-active:       #9E2B25;
 
-  /* ── Shadows & Glows ────────────────────────────────────────── */
-  --shadow-xs:           0 1px 3px rgba(13, 40, 22, 0.04);
-  --shadow-sm:           0 3px 10px rgba(13, 40, 22, 0.06), 0 1px 3px rgba(13, 40, 22, 0.04);
-  --shadow-md:           0 8px 24px rgba(13, 40, 22, 0.07), 0 2px 6px rgba(13, 40, 22, 0.04);
-  --shadow-lg:           0 16px 40px rgba(13, 40, 22, 0.09), 0 4px 12px rgba(13, 40, 22, 0.05);
-  --shadow-card:         0 10px 30px rgba(13, 40, 22, 0.06), 0 1px 3px rgba(13, 40, 22, 0.03);
-  --shadow-card-hover:   0 18px 44px rgba(13, 40, 22, 0.11), 0 4px 12px rgba(13, 40, 22, 0.05);
-  --shadow-dock:         0 10px 32px rgba(13, 40, 22, 0.12), 0 2px 8px rgba(13, 40, 22, 0.06);
+  /* ── Luxury Soft Shadows ────────────────────────────────────── */
+  --shadow-xs:           0 1px 3px rgba(42, 12, 78, 0.03);
+  --shadow-sm:           0 3px 10px rgba(42, 12, 78, 0.05), 0 1px 3px rgba(42, 12, 78, 0.03);
+  --shadow-md:           0 8px 24px rgba(42, 12, 78, 0.07), 0 2px 6px rgba(42, 12, 78, 0.03);
+  --shadow-lg:           0 16px 40px rgba(42, 12, 78, 0.09), 0 4px 12px rgba(42, 12, 78, 0.04);
+  --shadow-card:         0 10px 30px rgba(42, 12, 78, 0.06), 0 1px 4px rgba(42, 12, 78, 0.03);
+  --shadow-card-hover:   0 18px 44px rgba(42, 12, 78, 0.11), 0 4px 12px rgba(158, 43, 37, 0.08);
+  --shadow-dock:         0 12px 36px rgba(42, 12, 78, 0.12), 0 2px 8px rgba(42, 12, 78, 0.06);
 
   /* ── Dynamic Island Dock (Light Mode) ───────────────────────── */
-  --dock-bg:             rgba(255, 255, 255, 0.88);
-  --dock-bg-collapsed:   rgba(255, 255, 255, 0.92);
-  --dock-border:         rgba(13, 71, 34, 0.14);
-  --dock-border-hover:   rgba(16, 185, 129, 0.45);
-  --dock-glow:           0 10px 30px rgba(13, 71, 34, 0.12);
-  --dock-pill-w:         78px;
-  --dock-pill-h:         40px;
-  --dock-expanded-h:     48px;
-  --dock-active-bg:      #a7f3d0;
-  --dock-active-text:    #064e26;
-  --dock-item-text:      #1a3d28;
-  --dock-item-hover:     #0d4722;
-  --dock-sliding-bg:     rgba(167, 243, 208, 0.65);
-  --dock-sliding-border: rgba(16, 185, 129, 0.45);
+  --dock-bg:             rgba(255, 255, 255, 0.92);
+  --dock-bg-collapsed:   rgba(255, 255, 255, 0.95);
+  --dock-border:         rgba(81, 53, 90, 0.16);
+  --dock-border-hover:   rgba(158, 43, 37, 0.40);
+  --dock-glow:           0 12px 36px rgba(42, 12, 78, 0.10);
+  --dock-pill-w:         72px;
+  --dock-pill-h:         56px;
+  --dock-expanded-h:     56px;
+  --dock-active-bg:      #8A9720;
+  --dock-active-text:    #ffffff;
+  --dock-item-text:      #51355A;
+  --dock-item-hover:     #2A0C4E;
+  --dock-sliding-bg:     rgba(138, 151, 32, 0.18);
+  --dock-sliding-border: rgba(138, 151, 32, 0.45);
 
-  /* ── State Badges ───────────────────────────────────────────── */
-  --state-success:       #0d6e35;
-  --state-success-bg:    #dcfce7;
-  --state-warning:       #b45309;
-  --state-warning-bg:    #fef3c7;
-  --state-danger:        #b91c1c;
-  --state-danger-bg:     #fee2e2;
+  /* ── Badges & Status Indicators ─────────────────────────────── */
+  --state-success:       #5F6812;
+  --state-success-bg:    rgba(138, 151, 32, 0.16);
+  --state-warning:       #9E2B25;
+  --state-warning-bg:    rgba(255, 207, 153, 0.35);
+  --state-danger:        #9E2B25;
+  --state-danger-bg:     rgba(158, 43, 37, 0.12);
 
   /* ── Wave Graphic Colors ────────────────────────────────────── */
-  --wave-color-1:        rgba(16, 185, 129, 0.18);
-  --wave-color-2:        rgba(110, 231, 183, 0.26);
-  --wave-color-3:        rgba(5, 150, 105, 0.14);
+  --wave-color-1:        rgba(255, 207, 153, 0.45);
+  --wave-color-2:        rgba(138, 151, 32, 0.15);
+  --wave-color-3:        rgba(81, 53, 90, 0.09);
 }
 
 /* ================================================================
-   2. DARK THEME OVERRIDES (Alternative Aesthetic)
+   2. DARK THEME (Imperial Amethyst Velvet + Apricot Glow & Olive)
    ================================================================ */
 [data-theme="dark"] {
   color-scheme: dark;
-  --container-max-width: 1280px;
+
+  /* ── Layout & Spatial Metrics ───────────────────────────────── */
+  --container-max-width: 1240px;
   --header-height: 72px;
-  /* ── Canvas Background & Ambient Gradients ───────────────────── */
-  --bg-app:              #020804;
-  --bg-canvas:           #020604;
-  --bg-gradient:         radial-gradient(ellipse at 15% 15%, rgba(16, 185, 129, 0.15) 0%, transparent 60%),
-                         radial-gradient(ellipse at 85% 85%, rgba(5, 150, 105, 0.12) 0%, transparent 60%),
-                         linear-gradient(175deg, #020804 0%, #041007 50%, #010603 100%);
+
+  /* ── The 5 Master Palette Tokens ────────────────────────────── */
+  --color-apricot:       #FFCF99;
+  --color-terracotta:    #9E2B25;
+  --color-grape:         #51355A;
+  --color-amethyst:      #2A0C4E;
+  --color-olive:         #8A9720;
+
+  /* ── Canvas Background & Ambient Lighting ───────────────────── */
+  --bg-app:              #140526;
+  --bg-canvas:           #1A0831;
+  --bg-gradient:         radial-gradient(circle at 12% 10%, rgba(81, 53, 90, 0.55) 0%, transparent 55%),
+                         radial-gradient(circle at 88% 88%, rgba(42, 12, 78, 0.90) 0%, transparent 60%),
+                         radial-gradient(circle at 50% 40%, rgba(138, 151, 32, 0.08) 0%, transparent 65%),
+                         linear-gradient(180deg, #120421 0%, #1A0831 50%, #140526 100%);
 
   /* ── Glass Surfaces & Card Backdrops ────────────────────────── */
-  --surface-0:           #0a1b10;
-  --surface-card:        rgba(12, 28, 17, 0.72);
-  --surface-card-hover:  rgba(18, 40, 24, 0.85);
-  --surface-glass:       rgba(10, 24, 14, 0.70);
-  --surface-pill:        rgba(12, 28, 17, 0.88);
-  --surface-elevated:    rgba(14, 34, 20, 0.95);
-  --surface-subtle:      rgba(16, 36, 22, 0.60);
-  --surface-overlay:     rgba(0, 0, 0, 0.75);
+  --surface-0:           #1D0937;
+  --surface-card:        rgba(42, 12, 78, 0.58);
+  --surface-card-hover:  rgba(55, 18, 100, 0.70);
+  --surface-glass:       rgba(34, 10, 64, 0.65);
+  --surface-pill:        rgba(42, 12, 78, 0.85);
+  --surface-elevated:    rgba(51, 16, 92, 0.95);
+  --surface-subtle:      rgba(81, 53, 90, 0.28);
+  --surface-overlay:     rgba(8, 2, 15, 0.82);
 
-  /* ── Primary & Accent Colors ────────────────────────────────── */
-  --brand-primary:       #10b981;
-  --brand-primary-hover: #34d399;
-  --brand-primary-tint:  rgba(16, 185, 129, 0.12);
-  --brand-primary-light: rgba(16, 185, 129, 0.20);
+  /* ── Brand Primary & Accents ────────────────────────────────── */
+  --brand-primary:       #FFCF99;                 /* Apricot Cream Highlight */
+  --brand-primary-hover: #FFE2C2;
+  --brand-primary-tint:  rgba(255, 207, 153, 0.14);
+  --brand-primary-light: rgba(255, 207, 153, 0.22);
 
-  --brand-accent:        #34d399;
-  --brand-accent-hover:  #6ee7b7;
-  --brand-mint:          #10b981;
-  --brand-mint-deep:     #34d399;
-  --brand-mint-tint:     rgba(52, 211, 153, 0.14);
-  --brand-active-glow:   rgba(16, 185, 129, 0.35);
+  --brand-accent:        #8A9720;                 /* Olive Chartreuse */
+  --brand-accent-hover:  #A4B426;
+  --brand-mint:          #8A9720;
+  --brand-mint-deep:     #A4B426;
+  --brand-mint-tint:     rgba(138, 151, 32, 0.18);
+  --brand-active-glow:   rgba(138, 151, 32, 0.40);
 
   /* ── Typography & Readability ───────────────────────────────── */
-  --text-primary:        #f0fdf4;
-  --text-heading:        #ffffff;
-  --text-secondary:      #bbf7d0;
-  --text-body:           #cce3d4;
-  --text-muted:          #85a892;
-  --text-subtle:         #5f826d;
-  --text-inverse:        #020804;
-  --text-link:           #34d399;
-  --text-link-hover:     #6ee7b7;
+  --text-primary:        #FFF5EA;                 /* Pristine Ivory Warm White */
+  --text-heading:        #FFFFFF;
+  --text-secondary:      #FFCF99;                 /* Apricot Cream */
+  --text-body:           #E2D5E8;
+  --text-muted:          #A892B3;
+  --text-subtle:         #7C6588;
+  --text-inverse:        #140526;
+  --text-link:           #FFCF99;
+  --text-link-hover:     #FFFFFF;
 
-  /* ── Borders & Outlines ─────────────────────────────────────── */
-  --border-subtle:       rgba(52, 211, 153, 0.10);
-  --border-default:      rgba(52, 211, 153, 0.18);
-  --border-medium:       rgba(52, 211, 153, 0.30);
-  --border-glass:        rgba(52, 211, 153, 0.25);
-  --border-card:         rgba(52, 211, 153, 0.22);
-  --border-card-outer:   rgba(0, 0, 0, 0.45);
-  --border-active:       #34d399;
+  /* ── Borders & Hairline Outlines ────────────────────────────── */
+  --border-subtle:       rgba(255, 207, 153, 0.10);
+  --border-default:      rgba(255, 207, 153, 0.16);
+  --border-medium:       rgba(255, 207, 153, 0.28);
+  --border-glass:        rgba(255, 207, 153, 0.20);
+  --border-card:         rgba(255, 207, 153, 0.15);
+  --border-card-outer:   rgba(81, 53, 90, 0.60);
+  --border-active:       #8A9720;
 
-  /* ── Shadows & Glows ────────────────────────────────────────── */
-  --shadow-xs:           0 1px 3px rgba(0, 0, 0, 0.5);
-  --shadow-sm:           0 3px 12px rgba(0, 0, 0, 0.55);
-  --shadow-md:           0 8px 24px rgba(0, 0, 0, 0.65);
-  --shadow-lg:           0 16px 44px rgba(0, 0, 0, 0.75);
-  --shadow-card:         0 12px 36px rgba(0, 0, 0, 0.55), 0 0 1px rgba(52, 211, 153, 0.15);
-  --shadow-card-hover:   0 18px 48px rgba(0, 0, 0, 0.70), 0 0 24px rgba(16, 185, 129, 0.22);
-  --shadow-dock:         0 12px 36px rgba(0, 0, 0, 0.80), 0 0 20px rgba(16, 185, 129, 0.25);
+  /* ── Shadows & Deep Glows ───────────────────────────────────── */
+  --shadow-xs:           0 1px 3px rgba(0, 0, 0, 0.6);
+  --shadow-sm:           0 3px 12px rgba(0, 0, 0, 0.65);
+  --shadow-md:           0 8px 26px rgba(0, 0, 0, 0.72);
+  --shadow-lg:           0 16px 48px rgba(0, 0, 0, 0.82);
+  --shadow-card:         0 14px 40px rgba(0, 0, 0, 0.60), 0 0 1px rgba(255, 207, 153, 0.20);
+  --shadow-card-hover:   0 20px 52px rgba(0, 0, 0, 0.75), 0 0 24px rgba(255, 207, 153, 0.18);
+  --shadow-dock:         0 16px 44px rgba(0, 0, 0, 0.85), 0 0 24px rgba(138, 151, 32, 0.28);
 
   /* ── Dynamic Island Dock (Dark Mode) ────────────────────────── */
-  --dock-bg:             rgba(4, 16, 9, 0.94);
-  --dock-bg-collapsed:   rgba(4, 16, 9, 0.96);
-  --dock-border:         rgba(52, 211, 153, 0.35);
-  --dock-border-hover:   rgba(52, 211, 153, 0.70);
-  --dock-glow:           0 10px 30px rgba(0, 0, 0, 0.8), 0 0 20px rgba(16, 185, 129, 0.25);
-  --dock-active-bg:      rgba(16, 185, 129, 0.25);
+  --dock-bg:             rgba(26, 8, 48, 0.94);
+  --dock-bg-collapsed:   rgba(26, 8, 48, 0.96);
+  --dock-border:         rgba(255, 207, 153, 0.24);
+  --dock-border-hover:   rgba(138, 151, 32, 0.65);
+  --dock-glow:           0 12px 36px rgba(0, 0, 0, 0.85), 0 0 22px rgba(138, 151, 32, 0.30);
+  --dock-active-bg:      #8A9720;
   --dock-active-text:    #ffffff;
-  --dock-item-text:      #a7d9be;
-  --dock-item-hover:     #ffffff;
-  --dock-sliding-bg:     rgba(16, 185, 129, 0.22);
-  --dock-sliding-border: rgba(52, 211, 153, 0.65);
+  --dock-item-text:      #D8CDE0;
+  --dock-item-hover:     #FFFFFF;
+  --dock-sliding-bg:     rgba(138, 151, 32, 0.25);
+  --dock-sliding-border: rgba(138, 151, 32, 0.60);
 
-  /* ── State Badges ───────────────────────────────────────────── */
-  --state-success:       #34d399;
-  --state-success-bg:    rgba(16, 185, 129, 0.16);
-  --state-warning:       #fbbf24;
-  --state-warning-bg:    rgba(245, 158, 11, 0.16);
-  --state-danger:        #f87171;
-  --state-danger-bg:     rgba(239, 68, 68, 0.16);
+  /* ── Badges & Status Indicators ─────────────────────────────── */
+  --state-success:       #A4B426;
+  --state-success-bg:    rgba(138, 151, 32, 0.20);
+  --state-warning:       #FFCF99;
+  --state-warning-bg:    rgba(255, 207, 153, 0.18);
+  --state-danger:        #E25B54;
+  --state-danger-bg:     rgba(158, 43, 37, 0.25);
 
   /* ── Wave Graphic Colors ────────────────────────────────────── */
-  --wave-color-1:        rgba(16, 185, 129, 0.10);
-  --wave-color-2:        rgba(52, 211, 153, 0.14);
-  --wave-color-3:        rgba(5, 150, 105, 0.08);
+  --wave-color-1:        rgba(81, 53, 90, 0.35);
+  --wave-color-2:        rgba(42, 12, 78, 0.50);
+  --wave-color-3:        rgba(138, 151, 32, 0.12);
 }
 
 /* ================================================================
    3. GLOBAL METRICS, TYPOGRAPHY & TIMING (Shared across all themes)
    ================================================================ */
 :root {
-  /* ── Fonts ──────────────────────────────────────────────────── */
-  --font-sans:           'Urbanist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  /* ── Premium High-Fashion Typography ────────────────────────── */
+  --font-sans:           'Plus Jakarta Sans', 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-display:        'Outfit', 'Plus Jakarta Sans', sans-serif;
   --font-mono:           'JetBrains Mono', monospace;
   --font-script:         'Caveat', cursive, sans-serif;
 
