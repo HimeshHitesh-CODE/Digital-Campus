@@ -4,6 +4,11 @@
  */
 
 document.addEventListener('DOMContentLoaded', () => {
+  const user = StitchState?.getUser ? StitchState.getUser() : null;
+  if (!user || (!user.pin && !user.name)) {
+    window.location.replace('/screens/01-auth/login.html');
+    return;
+  }
   initDashboard();
 });
 
@@ -109,6 +114,7 @@ function bindInteractiveModals() {
       window.open('https://www.sbtet.telangana.gov.in/index.html#!/index/ContactUs', '_blank', 'noopener,noreferrer');
     });
   }
+}
 
 function setupModal(triggerId, modalId) {
   const trigger = document.getElementById(triggerId);

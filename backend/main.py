@@ -77,12 +77,12 @@ class DevNoCacheMiddleware(BaseHTTPMiddleware):
 
 app.add_middleware(DevNoCacheMiddleware)
 
-# --- DEFAULT ROUTE DIRECTLY TO STUDENT DASHBOARD ---
+# --- DEFAULT ROUTE DIRECTLY TO LOGIN ---
 @app.get("/")
 @app.get("/index.html")
 def root():
-    """Directly serves the Student Dashboard as the default landing view."""
-    return RedirectResponse(url="/screens/02-student-portal/dashboard.html", status_code=302)
+    """Directly serves the Login screen as the default landing view."""
+    return RedirectResponse(url="/screens/01-auth/login.html", status_code=302)
 
 # ==============================================================================
 # 1. REAL-TIME WEBSOCKET ROUTE (PRESENCE, MESSAGING, NOTIFICATIONS)

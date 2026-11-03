@@ -27,7 +27,7 @@
     { label: 'Idea Hub', file: 'idea-hub.html', icon: 'lightbulb', url: '/screens/02-student-portal/idea-hub.html', badgeId: 'badgeIdeaHub' },
     { label: 'Requests', file: 'document-logistics.html', icon: 'file-text', url: '/screens/02-student-portal/document-logistics.html', badgeId: 'badgeRequests' },
     { label: 'Market', file: 'marketplace.html', icon: 'shopping-bag', url: '/screens/02-student-portal/marketplace.html' },
-    { label: 'Messages', file: 'messages.html', icon: 'message-square', url: '/screens/04-hod-portal/messages.html', badgeId: 'badgeMessages' }
+    { label: 'Messages', file: 'messages.html', icon: 'message-square', url: '/screens/02-student-portal/messages.html', badgeId: 'badgeMessages' }
   ];
 
   const HOD_NAV = [
@@ -35,7 +35,7 @@
     { label: 'Approvals', file: 'document-approvals.html', icon: 'file-check', url: '/screens/04-hod-portal/document-approvals.html', badgeId: 'badgeRequests' },
     { label: 'Roster', file: 'security-roster.html', icon: 'users', url: '/screens/04-hod-portal/security-roster.html' },
     { label: 'Students', file: 'students-info.html', icon: 'graduation-cap', url: '/screens/04-hod-portal/students-info.html' },
-    { label: 'Messages', file: 'messages.html', icon: 'message-square', url: '/screens/04-hod-portal/messages.html', badgeId: 'badgeMessages' }
+    { label: 'Messages', file: 'messages.html', icon: 'message-square', url: '/screens/02-student-portal/messages.html', badgeId: 'badgeMessages' }
   ];
 
   function getActiveUser() {
@@ -47,10 +47,26 @@
       }
     } catch (e) {}
 
-    const name = localStorage.getItem('user_name') || 'KARNATI HIMESH';
-    const pin = localStorage.getItem('student_pin') || '24259-CS-025';
+    const name = localStorage.getItem('user_name');
+    const pin = localStorage.getItem('student_pin') || localStorage.getItem('user_pin');
     const role = localStorage.getItem('user_role') || 'STUDENT';
-    return { name, pin, sbtetPin: pin, role, collegeCode: '259' };
+    if (name || pin) {
+      return { name: name || 'Student', pin: pin || '', sbtetPin: pin || '', role, collegeCode: '259' };
+    }
+    return null;
+  }
+
+  function enforceAuth() {
+    const path = window.location.pathname.toLowerCase();
+    const isAuth = path.includes('/01-auth/') || path.endsWith('login.html');
+    if (isAuth) return true;
+
+    const user = getActiveUser();
+    if (!user || (!user.pin && !user.name)) {
+      window.location.replace('/screens/01-auth/login.html');
+      return false;
+    }
+    return true;
   }
 
   function detectRole() {
@@ -87,6 +103,7 @@
   let measuredExpandedWidth = 680;
 
   function initDynamicShell() {
+    if (!enforceAuth()) return;
     cleanupLegacyDocks();
     setupGlobalHeader();
     setupDynamicIslandDock();

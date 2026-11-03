@@ -74,22 +74,8 @@ function getSessionUser() {
     };
   }
 
-  // Graceful fallback for direct page inspection
-  const fallback = {
-    name: 'Tallapalli Tulasi Ram Goud',
-    pin: '24259-CS-040',
-    sbtetPin: '24259-CS-040',
-    rollNumber: '24259-CS-040',
-    role: 'STUDENT',
-    branch: 'CS',
-    department: 'Computer Science & Engineering',
-    collegeCode: '259',
-    isRegistered: true,
-    isActivated: true
-  };
-  localStorage.setItem('dc_user', JSON.stringify(fallback));
-  localStorage.setItem('auth_token', 'tok_active_session_' + Date.now());
-  return fallback;
+  // No fallback user: force user to log in
+  return null;
 }
 
 export function requireAuth(allowedRoles = []) {

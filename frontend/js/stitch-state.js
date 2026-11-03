@@ -478,7 +478,19 @@
           }
         }
       } catch (e) {}
-      return load(STORAGE_KEYS.USER, DEFAULT_USER);
+
+      const pin = localStorage.getItem('user_pin') || localStorage.getItem('student_pin');
+      const name = localStorage.getItem('user_name');
+      if (pin || name) {
+        return Object.assign({}, DEFAULT_USER, {
+          pin: pin || '',
+          name: name || 'Student',
+          avatarInitials: (name ? name.slice(0, 2) : 'ST').toUpperCase()
+        });
+      }
+
+      // No active session in storage
+      return null;
     },
 
     setUser(userObj) {
