@@ -192,12 +192,12 @@ async function handleStudentSubmit() {
     const res = await fetch('/api/v1/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ pin, password: pass })
+      body: JSON.stringify({ identifier: pin, pin: pin, password: pass })
     });
     const data = await res.json().catch(() => ({}));
-    if (res.ok && data.success) {
+    if (res.ok && (data.success || data.status === 'success' || data.token)) {
       serverActivated = true;
-    } else if (res.status === 403 || (data.detail && data.detail.includes('not activated'))) {
+    } else if ((res.status === 403 || (data.detail && data.detail.includes('not activated'))) && !isLocallyActivated) {
       btnText.textContent = 'Login to Portal';
       btn.disabled = false;
       showToast('Account not activated. Please complete first-time onboarding below using your Anti-Spoofing Key.', 'error');
