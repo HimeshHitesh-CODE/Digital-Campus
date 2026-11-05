@@ -76,7 +76,7 @@
   <!-- Dynamic Island Dock mounts via dc-dynamic-island.js -->
 
   <main class="w-full flex-grow pt-[84px] md:pt-[92px]">
-    <div class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <div class="w-full max-w-none mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 py-6">
       
 <!-- Atmospheric Radial Meshes & Glowing Emerald Auras -->
 <div class="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
@@ -87,13 +87,13 @@
 <div class="absolute inset-0 bg-[radial-gradient(#10b981_0.75px,transparent_0.75px)] [background-size:28px_28px] opacity-[0.04]"></div>
 </div>
 <main class="w-full flex-grow py-6 relative z-10"><div class="flex flex-col w-full">
-<div class="max-w-[1240px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col gap-6">
+<div class="w-full max-w-none mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 py-4 flex flex-col gap-6">
 <!-- PAGE HEADER RIBBON -->
 
 <!-- TWO-PANEL GLASSMORPHIC MESSENGER (4 Cols / 8 Cols) -->
-<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 bg-surface-container-lowest/80 backdrop-blur-xl p-4 sm:p-5 rounded-[32px] shadow-sm">
+<div class="flex flex-col lg:flex-row gap-6 bg-surface-container-lowest/80 backdrop-blur-xl p-4 sm:p-5 rounded-[32px] shadow-sm w-full">
 <!-- LEFT CONVERSATION PANEL (Col 1-4) -->
-<aside class="lg:col-span-4 bg-surface-container-low/90 backdrop-blur-md rounded-[28px] p-5 flex flex-col gap-4">
+<aside class="w-full lg:w-[360px] xl:w-[400px] shrink-0 bg-surface-container-low/90 backdrop-blur-md rounded-[28px] p-5 flex flex-col gap-4 lg:h-[calc(100vh-140px)]">
 <!-- Header row -->
 <div class="flex items-center justify-between">
 <div class="flex items-center gap-2">
@@ -127,7 +127,7 @@
           </button>
 </div>
 <!-- Thread List -->
-<div class="flex flex-col gap-2.5 overflow-y-auto max-h-[580px] pr-1">
+<div class="flex flex-col gap-2.5 overflow-y-auto flex-1 pr-1">
 <!-- Item 1 (Selected Active) -->
 <article class="bg-surface-container-lowest rounded-2xl p-3.5 cursor-pointer shadow-sm relative transition-all group">
 <div class="flex items-start gap-3">
@@ -367,7 +367,7 @@
 
   <!-- Shared Samskruti Institutional Footer -->
   <footer class="w-full bg-[#f3efe6]/90 border-t border-emerald-900/10 mt-16 relative z-10">
-    <div class="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="w-full max-w-none mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 py-8">
       <div class="flex flex-col md:flex-row items-center justify-between gap-4 pb-6 border-b border-emerald-900/10">
         <div class="flex flex-col gap-1 text-center md:text-left">
           <div class="flex items-center justify-center md:justify-start gap-2">

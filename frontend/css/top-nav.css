@@ -30,11 +30,11 @@
 }
 
 .app-global-header-inner {
-  max-width: var(--container-max-width, 1280px);
+  max-width: 100%;
   width: 100%;
   height: 100%;
   margin: 0 auto;
-  padding: 0 var(--container-gutter, 1.5rem);
+  padding: 0 var(--container-gutter, clamp(16px, 2.2vw, 40px)); box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -422,7 +422,7 @@
 .profile-dropdown-card {
   position: absolute;
   top: calc(100% + 12px);
-  right: var(--container-gutter, 1.5rem);
+  right: var(--container-gutter, clamp(16px, 2.2vw, 40px));
   width: 280px;
   background-color: var(--surface-container-low, #1c1b1b);
   border: 1px solid var(--hairline, rgba(255, 255, 255, 0.08));

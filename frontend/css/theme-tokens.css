@@ -96,8 +96,8 @@
   --size-icon-chip:             40px;
   --hairline-width:             1px;
 
-  --container-max-width:        1280px;
-  --container-gutter:           clamp(16px, 3vw, 32px);
+  --container-max-width:        100%;
+  --container-gutter:           clamp(16px, 2.2vw, 40px);
 
   /* ── Typography Mappings ───────────────────────────────────── */
   --font-sans:                  'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
@@ -199,6 +199,8 @@
 }
 
 html, body {
+  width: 100%;
+  overflow-x: hidden;
   margin: 0;
   padding: 0;
   font-family: var(--font-sans);
@@ -227,12 +229,13 @@ html, body {
 
 /* Master container utility */
 .campus-container {
-  max-width: var(--container-max-width);
+  max-width: 100%;
   width: 100%;
   margin-left: auto;
   margin-right: auto;
-  padding-left: var(--container-gutter);
-  padding-right: var(--container-gutter);
+  padding-left: var(--container-gutter, clamp(16px, 2.2vw, 40px));
+  padding-right: var(--container-gutter, clamp(16px, 2.2vw, 40px));
+  box-sizing: border-box;
 }
 
 /* Micro-hairline border utility */

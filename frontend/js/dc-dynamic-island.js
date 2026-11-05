@@ -451,7 +451,7 @@
     }
 
     footer.innerHTML = `
-      <div class="app-global-footer-inner" style="max-width: 1280px; margin: 0 auto; padding: 24px 16px; text-align: center; border-top: 1px solid var(--hairline, rgba(255,255,255,0.08)); color: var(--on-surface-variant, #c6c8b1); font-size: 13px;">
+      <div class="app-global-footer-inner" style="width: 100%; max-width: none; margin: 0 auto; padding: 24px var(--container-gutter, clamp(16px, 2.2vw, 40px)); text-align: center; border-top: 1px solid var(--hairline, rgba(255,255,255,0.08)); color: var(--on-surface-variant, #c6c8b1); font-size: 13px;">
         <p style="margin: 0; font-family: var(--font-sans);">Samskruti College &bull; Empowering Minds, Shaping Tomorrow</p>
         <span style="font-family: var(--font-mono); font-size: 11px; opacity: 0.7;">SBTET State Board Curriculum Portal &bull; Institution Code 259</span>
       </div>

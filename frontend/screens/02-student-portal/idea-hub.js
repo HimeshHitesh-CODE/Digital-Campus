@@ -239,21 +239,21 @@ function renderPeers() {
       .toUpperCase();
 
     return `
-      <div class="bento-card p-5 flex flex-col justify-between gap-4 border border-[var(--color-hairline)] hover:translate-y-[-2px] transition-all" data-id="${peer.id}">
+      <div class="bento-card p-5 flex flex-col justify-between gap-4 border border-[var(--color-hairline)] hover:translate-y-[-2px] transition-all min-w-0 overflow-hidden" data-id="${peer.id}">
         
         <!-- Top: Avatar, Name & Specialty -->
-        <div class="flex items-start justify-between gap-3 pb-3 border-b border-[var(--color-hairline)]">
-          <div class="flex items-center gap-3">
+        <div class="flex items-start justify-between gap-2 pb-3 border-b border-[var(--color-hairline)] min-w-0">
+          <div class="flex items-center gap-2.5 min-w-0 flex-1">
             <div class="relative w-10 h-10 rounded-full bg-[var(--color-feature-card)] text-white flex items-center justify-center font-mono font-bold text-xs shrink-0">
               ${initials}
               <span class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full ${peer.available ? 'bg-emerald-500' : 'bg-stone-400'} ring-2 ring-[var(--color-card)]"></span>
             </div>
-            <div class="flex flex-col min-w-0">
+            <div class="flex flex-col min-w-0 flex-1">
               <h3 class="text-sm font-bold text-[var(--color-ink)] truncate">${escapeHtml(peer.name)}</h3>
-              <span class="font-mono text-[11px] text-[var(--color-muted)]">${peer.pin} · ${peer.dept}</span>
+              <span class="font-mono text-[11px] text-[var(--color-muted)] truncate">${peer.pin} · ${peer.dept}</span>
             </div>
           </div>
-          <span class="font-mono text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[var(--color-lavender)] text-[#22174C] shrink-0">
+          <span class="font-mono text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[var(--color-lavender)] text-[#22174C] shrink-0 max-w-[120px] truncate" title="${escapeHtml(peer.specialty)}">
             ${escapeHtml(peer.specialty)}
           </span>
         </div>

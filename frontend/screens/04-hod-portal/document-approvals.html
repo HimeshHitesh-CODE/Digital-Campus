@@ -77,8 +77,7 @@
 <body class="bg-[var(--color-canvas)] text-[var(--color-ink)] font-sans antialiased min-h-screen flex flex-col justify-between relative selection:bg-[var(--color-lime)] selection:text-[#1A1A1A]">
   <!-- Dynamic Island Dock mounts via dc-dynamic-island.js -->
 
-  <main class="w-full flex-grow pt-[84px] md:pt-[92px]">
-    <main class="max-w-[1280px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6 flex-1 relative z-10">
+  <main class="w-full flex-grow pt-[84px] md:pt-[92px] max-w-none mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 py-6 sm:py-8 space-y-6 relative z-10">
 <!-- 1. TOP INSTITUTIONAL HEADER RIBBON (Encapsulated rounded-[36px] white card ribbon) -->
 <header class="bg-white/95 backdrop-blur-md border border-[#003519]/10 rounded-[36px] px-6 sm:px-8 py-5 shadow-[0_4px_24px_-4px_rgba(0,53,25,0.06)] flex flex-col lg:flex-row lg:items-center justify-between gap-5 transition-all">
 <div class="flex flex-col gap-2">
@@ -378,7 +377,6 @@
 </div>
 </section>
 </main>
-  </main>
 
   <!-- Review & Sign-Off Modal -->
   <div id="reviewSignModal" class="fixed inset-0 z-[11000] hidden flex items-center justify-center p-4 bg-emerald-950/65 backdrop-blur-sm transition-all duration-300 opacity-0 pointer-events-none">
@@ -427,7 +425,7 @@
 
   <!-- Shared Samskruti Institutional Footer -->
   <footer class="w-full bg-[#f3efe6]/90 border-t border-emerald-900/10 mt-16 relative z-10">
-    <div class="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="w-full max-w-none mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 py-8">
       <div class="flex flex-col md:flex-row items-center justify-between gap-4 pb-6 border-b border-emerald-900/10">
         <div class="flex flex-col gap-1 text-center md:text-left">
           <div class="flex items-center justify-center md:justify-start gap-2">

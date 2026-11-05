@@ -73,15 +73,15 @@
             </a>
 
             <!-- Semester Dropdown Pill -->
-            <div class="relative inline-flex items-center">
-              <select class="appearance-none bg-[var(--color-card)] text-[var(--color-ink)] border border-[var(--color-hairline)] pl-4 pr-9 py-2.5 rounded-full text-xs font-medium cursor-pointer focus:outline-none focus:ring-2 focus:ring-[var(--color-ink)]" id="homeSemesterSelect">
+            <div class="relative inline-flex items-center max-w-full">
+              <select class="appearance-none bg-[var(--color-card)] text-[var(--color-ink)] border border-[var(--color-hairline)] pl-4 pr-9 py-2.5 rounded-full text-xs font-medium cursor-pointer focus:outline-none focus:ring-2 focus:ring-[var(--color-ink)] max-w-full truncate" id="homeSemesterSelect">
                 <option value="5SEM">Semester V (Current)</option>
                 <option value="4SEM">Semester IV (Completed)</option>
                 <option value="3SEM">Semester III (Completed)</option>
                 <option value="2SEM">Semester II (Completed)</option>
                 <option value="1SEM">Semester I (Completed)</option>
               </select>
-              <span class="material-symbols-outlined absolute right-3 pointer-events-none text-[18px] text-[var(--color-muted)]">expand_more</span>
+              <span class="material-symbols-outlined absolute right-3 pointer-events-none text-[18px] w-[18px] h-[18px] overflow-hidden text-[var(--color-muted)]">expand_more</span>
             </div>
           </div>
         </div>
@@ -96,7 +96,7 @@
       <!-- ============================================================== -->
       <!-- 12-COLUMN MAIN BENTO GRID                                      -->
       <!-- ============================================================== -->
-      <div class="w-full grid grid-cols-1 lg:grid-cols-12 gap-4">
+      <div class="w-full grid grid-cols-1 md:grid-cols-12 gap-4 lg:gap-5">
 
         <!-- ============================================================ -->
         <!-- LEFT COLUMN (SPAN 8)                                         -->
@@ -106,8 +106,8 @@
           <!-- CARD 1: ATTENDANCE & ACADEMIC ELIGIBILITY -->
           <section class="bento-card p-6 flex flex-col justify-between" data-testid="tile-attendance-eligibility">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 gap-3 border-b border-[var(--color-hairline)]">
-              <div class="flex items-center gap-3">
-                <div class="icon-chip-40 bg-[var(--color-card-subtle)] text-[var(--color-ink)]">
+              <div class="flex items-center gap-3 min-w-0 flex-1">
+                <div class="icon-chip-40 bg-[var(--color-card-subtle)] text-[var(--color-ink)] shrink-0">
                   <span class="material-symbols-outlined text-[20px]">person_check</span>
                 </div>
                 <div>
@@ -121,10 +121,10 @@
             </div>
 
             <!-- Metric Diagram: Overlapping Sets & Progress -->
-            <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center py-4">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center py-4 w-full">
               <!-- Overlapping Circles Cluster SVG -->
-              <div class="md:col-span-6 flex flex-col items-center justify-center">
-                <svg class="w-full max-w-[320px] h-auto" fill="none" viewBox="0 0 340 180" xmlns="http://www.w3.org/2000/svg" id="homeVennSvg">
+              <div class="lg:col-span-5 flex flex-col items-center justify-center">
+                <svg class="w-full max-w-[360px] h-auto" fill="none" viewBox="0 0 340 180" xmlns="http://www.w3.org/2000/svg" id="homeVennSvg">
                   <!-- Absent Bubble (Near Black) -->
                   <circle cx="110" cy="90" fill="var(--color-feature-card)" r="64"></circle>
                   <!-- Present Bubble (Lavender) -->
@@ -148,7 +148,7 @@
               </div>
 
               <!-- Gauges & Progress Breakdown -->
-              <div class="md:col-span-6 flex flex-col justify-center gap-4">
+              <div class="lg:col-span-7 flex flex-col justify-center gap-4 flex-1 w-full">
                 <!-- Current Attendance Rate -->
                 <div class="flex flex-col gap-1.5">
                   <div class="flex justify-between items-baseline">
@@ -257,8 +257,8 @@
           <!-- CARD 4: CGPA CARD -->
           <section class="bento-card p-6 flex flex-col justify-between" data-testid="tile-cgpa">
             <div class="flex items-center justify-between">
-              <div class="flex items-center gap-3">
-                <div class="icon-chip-40 bg-[var(--color-card-subtle)] text-[var(--color-ink)]">
+              <div class="flex items-center gap-3 min-w-0 flex-1">
+                <div class="icon-chip-40 bg-[var(--color-card-subtle)] text-[var(--color-ink)] shrink-0">
                   <span class="material-symbols-outlined text-[20px]">school</span>
                 </div>
                 <div>

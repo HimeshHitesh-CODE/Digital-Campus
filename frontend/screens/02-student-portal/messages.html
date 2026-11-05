@@ -67,10 +67,10 @@
       <!-- ============================================================== -->
       <!-- MAIN 2-PANE CHAT GRID: DISCUSSIONS LIST + ACTIVE CHAT VIEWPORT -->
       <!-- ============================================================== -->
-      <section class="grid grid-cols-1 lg:grid-cols-12 gap-5 w-full items-start" data-testid="tile-messages-grid">
+      <section class="flex flex-col lg:flex-row gap-5 w-full items-start" data-testid="tile-messages-grid">
         
-        <!-- LEFT PANE: DISCUSSIONS LIST (4 COLS) -->
-        <div class="lg:col-span-4 bento-card p-4 flex flex-col gap-3.5 border border-[var(--color-hairline)]" data-testid="tile-discussions-list">
+        <!-- LEFT PANE: DISCUSSIONS LIST (RESPONSIVE WIDTH) -->
+        <div class="w-full lg:w-[360px] xl:w-[400px] shrink-0 bento-card p-4 flex flex-col gap-3.5 border border-[var(--color-hairline)] lg:h-[calc(100vh-140px)]" data-testid="tile-discussions-list">
           
           <!-- Discussions Header & Search -->
           <div class="flex flex-col gap-2.5">
@@ -94,14 +94,14 @@
           </div>
 
           <!-- Threads List Container -->
-          <div class="flex flex-col gap-1.5 overflow-y-auto max-h-[560px] pr-1" id="threadsListContainer">
+          <div class="flex flex-col gap-1.5 overflow-y-auto flex-1 pr-1" id="threadsListContainer">
             <!-- Dynamically populated by messages.js -->
           </div>
 
         </div>
 
         <!-- RIGHT PANE: ACTIVE CHAT VIEWPORT & COMPOSER (8 COLS) -->
-        <div class="lg:col-span-8 bento-card p-5 flex flex-col justify-between min-h-[620px] border border-[var(--color-hairline)]" data-testid="tile-chat-viewport">
+        <div class="flex-1 min-w-0 w-full bento-card p-5 flex flex-col justify-between h-[calc(100vh-140px)] border border-[var(--color-hairline)]" data-testid="tile-chat-viewport">
           
           <!-- Chat Header -->
           <div class="flex items-center justify-between pb-3.5 border-b border-[var(--color-hairline)]" id="chatHeaderBar">
