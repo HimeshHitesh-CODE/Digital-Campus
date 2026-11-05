@@ -3,347 +3,189 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Campus Messages & Peer Threads — Samskruti College</title>
+  <title>Samskruti Digital Campus — Campus Messages &amp; Discussions | Code 259</title>
   
-  <!-- Material Symbols & Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Darker+Grotesque:wght@400;500;600;700;800;900&family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..700&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet" />
-  
-  <!-- Tailwind CSS & Master Config -->
-  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-  <script src="/js/stitch-tailwind-config.js"></script>
-
-  <!-- Stitch Design System & Nav Dock Styles -->
+  <!-- Self-Hosted Fonts & Master Tokens -->
+  <link rel="stylesheet" href="/css/fonts.css" />
+  <link rel="stylesheet" href="/css/theme-tokens.css" />
   <link rel="stylesheet" href="/css/stitch-design-system.css" />
   <link rel="stylesheet" href="/css/top-nav.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  
+  <!-- Tailwind CSS & Master Config -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/js/stitch-tailwind-config.js"></script>
 
-  <!-- Lucide Icons & Shared State -->
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Shared State & Dynamic Island -->
   <script src="/js/stitch-state.js"></script>
   <script src="/js/dc-dynamic-island.js" defer></script>
+  <script src="/screens/02-student-portal/messages.js" defer></script>
 </head>
 
-<body class="bg-surface font-sans text-on-surface min-h-screen flex flex-col antialiased selection:bg-emerald-200 selection:text-emerald-950" 
-      style="background-color: #fcfaf6; background-image: radial-gradient(at 0% 0%, rgba(16, 185, 129, 0.12) 0px, transparent 48%), radial-gradient(at 100% 20%, rgba(5, 150, 105, 0.10) 0px, transparent 44%), radial-gradient(at 48% 65%, rgba(52, 211, 153, 0.08) 0px, transparent 52%), radial-gradient(at 95% 90%, rgba(16, 185, 129, 0.09) 0px, transparent 45%), radial-gradient(circle at 1px 1px, rgba(16, 185, 129, 0.06) 1.2px, transparent 0px); background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%, 28px 28px;">
+<body class="bg-[var(--color-canvas)] text-[var(--color-ink)] min-h-screen flex flex-col antialiased">
+  <!-- Dynamic Island Header Mounts Automatically via dc-dynamic-island.js -->
 
-  <!-- Main Content Viewport Wrapper (Offset below persistent top navigation) -->
-  <main class="w-full flex-grow pt-[84px] md:pt-[92px]">
-    <div class="max-w-[1240px] mx-auto px-4 sm:px-6 pb-12 flex flex-col gap-6 w-full">
-      <div class="flex flex-col w-full">
-<div class="max-w-[1240px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-col gap-6">
-<!-- Institutional Header Context & Telemetry Row -->
-<header class="flex flex-col lg:flex-row lg:items-end justify-between gap-4 border-b border-emerald-900/10 pb-5">
-<div class="flex flex-col gap-1">
-<div class="flex items-center gap-2">
-<span class="relative flex h-2.5 w-2.5">
-<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75"></span>
-<span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-600"></span>
-</span>
-<span class="font-dg text-sm text-emerald-800 uppercase tracking-widest font-bold">Real-Time Campus Network &amp; Peer Threads</span>
-</div>
-<h1 class="font-dg text-4xl sm:text-5xl text-on-surface font-extrabold tracking-tight leading-none text-emerald-950">Campus Messages &amp; Peer Threads</h1>
-<p class="font-dg text-lg text-on-surface-variant flex flex-wrap items-center gap-2 pt-0.5">
-<span class="font-medium text-emerald-900/80">Samskruti College (Code: 259)</span>
-<span class="inline-block w-1.5 h-1.5 rounded-full bg-emerald-900/20"></span>
-<span class="font-bold text-emerald-800"><span id="msgStudentMeta">KARNATI HIMESH (PIN: 24259-CS-025)</span></span>
-<span class="inline-block w-1.5 h-1.5 rounded-full bg-emerald-900/20"></span>
-<span class="text-secondary font-medium">Synchronized Institutional Relay</span>
-</p>
-</div>
-<!-- Telemetry Status Pills -->
-<div class="flex flex-wrap items-center gap-2">
-<div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/80 backdrop-blur-md border border-emerald-900/10 shadow-[0_2px_8px_rgba(16,185,129,0.06)]">
-<span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-<span class="font-dg text-base text-on-surface font-bold tracking-wide">Socket: Active</span>
-</div>
-<div class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-white font-dg text-base font-bold shadow-[0_4px_14px_rgba(16,185,129,0.35)]" style="background: linear-gradient(135deg, #10b981, #059669);">
-<span class="material-symbols-outlined text-[16px]">mark_chat_unread</span>
-<span>4 Unread</span>
-</div>
-<div class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-200/70 text-emerald-900 font-dg text-base font-semibold">
-<span class="material-symbols-outlined text-[15px] text-emerald-700">lock</span>
-<span>TLS 1.3 End-to-End</span>
-</div>
-</div>
-</header>
-<!-- Main Two-Panel Elevated Glassmorphic Messenger Workspace -->
-<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start min-h-[760px]">
-<!-- Left Sidebar: Conversations Panel (5 Cols) -->
-<aside class="lg:col-span-5 bg-white/70 backdrop-blur-xl border border-emerald-900/10 rounded-[32px] p-5 flex flex-col gap-4 shadow-[0_12px_40px_rgba(16,185,129,0.07)]">
-<!-- Panel Header -->
-<div class="flex items-center justify-between px-1 pt-1">
-<div class="flex items-center gap-2">
-<span class="font-dg text-2xl text-on-surface font-extrabold tracking-tight">Conversations</span>
-<span class="px-2.5 py-0.5 rounded-full bg-emerald-100/80 border border-emerald-200 text-emerald-800 font-dg text-sm font-bold">4 Active</span>
-</div>
-<button aria-label="Compose new message" class="w-10 h-10 rounded-full text-white flex items-center justify-center transition-all shadow-[0_4px_12px_rgba(16,185,129,0.35)] hover:shadow-[0_6px_18px_rgba(16,185,129,0.45)] hover:scale-105 active:scale-95" style="background: linear-gradient(135deg, #10b981, #059669);" type="button">
-<span class="material-symbols-outlined text-[20px]">edit_square</span>
-</button>
-</div>
-<!-- Pill Search Input -->
-<div class="relative w-full">
-<span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-emerald-700/70 text-[20px]">search</span>
-<input class="w-full pl-11 pr-4 py-2.5 rounded-full bg-white/90 border border-emerald-900/15 font-dg text-lg text-on-surface placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 shadow-sm transition-all" id="threadSearchInput" placeholder="Search conversations or peers..." type="text"/>
-</div>
-<!-- Filter Pill Chips -->
-<div class="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar text-nowrap">
-<button class="px-4 py-1.5 rounded-full text-white font-dg text-base shadow-[0_3px_10px_rgba(16,185,129,0.3)] font-bold transition-all" style="background: linear-gradient(135deg, #10b981, #059669);" type="button">All (4)</button>
-<button class="px-3.5 py-1.5 rounded-full bg-white/80 border border-emerald-900/10 text-on-surface-variant hover:text-emerald-900 hover:bg-emerald-50 font-dg text-base font-semibold transition-colors" type="button">Direct &amp; HOD</button>
-<button class="px-3.5 py-1.5 rounded-full bg-white/80 border border-emerald-900/10 text-on-surface-variant hover:text-emerald-900 hover:bg-emerald-50 font-dg text-base font-semibold transition-colors" type="button">Idea Hub</button>
-<button class="px-3.5 py-1.5 rounded-full bg-white/80 border border-emerald-900/10 text-on-surface-variant hover:text-emerald-900 hover:bg-emerald-50 font-dg text-base font-semibold transition-colors" type="button">Marketplace</button>
-</div>
-<!-- Threads List -->
-<div class="flex flex-col gap-2.5 pt-1" id="threadsListContainer">
-<!-- Thread 1: Gona Laxmi Narasimha Swami (Active Highlight) -->
-<article class="p-3.5 rounded-[24px] bg-gradient-to-r from-emerald-50/95 to-white/95 border-2 border-emerald-500/80 shadow-[0_6px_20px_rgba(16,185,129,0.14)] flex items-start gap-3.5 cursor-pointer transition-all hover:scale-[1.01]">
-<div class="relative shrink-0">
-<div class="w-12 h-12 rounded-full text-white font-dg text-xl flex items-center justify-center font-extrabold shadow-[0_4px_12px_rgba(16,185,129,0.4)]" style="background: linear-gradient(135deg, #34d399, #059669);">GL</div>
-<span class="absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full ring-2 ring-white" style="background-color: #10b981;"></span>
-</div>
-<div class="flex-grow min-w-0">
-<div class="flex items-center justify-between gap-1">
-<span class="font-dg text-xl text-emerald-950 font-extrabold truncate">GONA LAXMI NARASIMHA SWAMI</span>
-<span class="font-dg text-sm text-emerald-700 font-bold shrink-0">08:51 AM</span>
-</div>
-<div class="flex items-center gap-1.5 mt-0.5">
-<span class="font-dg text-sm text-emerald-900/70 font-semibold truncate">PIN: 24259-CS-001</span>
-<span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-dg text-xs font-bold leading-none">Idea Hub Collab</span>
-</div>
-<p class="font-dg text-base text-on-surface font-medium truncate mt-1 leading-snug">
-            Don't worry, submit the bonafide request in the Requests tab...
-          </p>
-</div>
-<div class="pt-2 shrink-0">
-<span class="w-3 h-3 rounded-full inline-block shadow-sm ring-2 ring-emerald-200" style="background-color: rgb(16, 185, 129);"></span>
-</div>
-</article>
-<!-- Thread 2: Dr. J. Vamshi Krishna HOD -->
-<article class="p-3.5 rounded-[24px] bg-white/60 hover:bg-white border border-emerald-900/5 hover:border-emerald-200/80 transition-all flex items-start gap-3.5 cursor-pointer shadow-sm">
-<div class="relative shrink-0">
-<div class="w-12 h-12 rounded-full bg-emerald-900/10 text-emerald-950 font-dg text-xl flex items-center justify-center font-extrabold">
-            VK
+  <!-- Main Viewport Layout -->
+  <main class="w-full pt-[80px] pb-12 flex-1">
+    <div class="campus-container flex flex-col gap-6 pt-4">
+
+      <!-- ============================================================== -->
+      <!-- TOP TITLE & TELEMETRY ROW                                      -->
+      <!-- ============================================================== -->
+      <section class="w-full flex flex-col md:flex-row md:items-end justify-between gap-4 pb-2" data-testid="tile-messages-header">
+        <div class="flex flex-col gap-1">
+          <div class="flex items-center gap-2 mb-1">
+            <span class="font-mono text-xs bg-[var(--color-feature-card)] text-[var(--color-lime)] px-3 py-1 rounded-full uppercase tracking-wider font-semibold" id="msgBadge">
+              SBTET Intranet · Node 259-CSE
+            </span>
+            <span class="w-1.5 h-1.5 rounded-full bg-[var(--color-lime)]"></span>
+            <span class="font-mono text-xs text-[var(--color-muted)] flex items-center gap-1">
+              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              Live Gateway Active
+            </span>
           </div>
-<span class="absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full bg-stone-300 ring-2 ring-white"></span>
-</div>
-<div class="flex-grow min-w-0">
-<div class="flex items-center justify-between gap-1">
-<span class="font-dg text-xl text-on-surface font-extrabold truncate">Dr. J. Vamshi Krishna</span>
-<span class="font-dg text-sm text-stone-500 font-bold shrink-0">Yesterday</span>
-</div>
-<div class="flex items-center gap-1.5 mt-0.5">
-<span class="font-dg text-sm text-stone-600 font-semibold truncate">HOD • CSE Dept</span>
-<span class="px-2 py-0.5 rounded-full bg-emerald-900/10 text-emerald-900 font-dg text-xs font-bold leading-none">HOD</span>
-</div>
-<p class="font-dg text-base text-on-surface-variant truncate mt-1 leading-snug">
-            Student KARNATI HIMESH: For formal leave app condonation review...
-          </p>
-</div>
-</article>
-<!-- Thread 3: Dulipudi Tarun -->
-<article class="p-3.5 rounded-[24px] bg-white/60 hover:bg-white border border-emerald-900/5 hover:border-emerald-200/80 transition-all flex items-start gap-3.5 cursor-pointer shadow-sm">
-<div class="relative shrink-0">
-<div class="w-12 h-12 rounded-full bg-emerald-900/10 text-emerald-950 font-dg text-xl flex items-center justify-center font-extrabold">
-            DT
+          <div class="flex items-baseline gap-2.5">
+            <h1 class="text-4xl lg:text-5xl font-medium tracking-tight text-[var(--color-ink)]">
+              Messages
+            </h1>
+            <span class="font-mono text-xs text-[var(--color-muted)]">v4.8.1</span>
           </div>
-<span class="absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full bg-emerald-500 ring-2 ring-white"></span>
-</div>
-<div class="flex-grow min-w-0">
-<div class="flex items-center justify-between gap-1">
-<span class="font-dg text-xl text-on-surface font-extrabold truncate">Dulipudi Tarun</span>
-<span class="font-dg text-sm text-stone-500 font-bold shrink-0">23 Feb</span>
-</div>
-<div class="flex items-center gap-1.5 mt-0.5">
-<span class="font-dg text-sm text-stone-600 font-semibold truncate">PIN: 24259-CS-002</span>
-<span class="px-2 py-0.5 rounded-full bg-emerald-100/70 text-emerald-800 font-dg text-xs font-bold leading-none">Idea Hub UI/UX</span>
-</div>
-<p class="font-dg text-base text-on-surface-variant truncate mt-1 leading-snug">
-            Shared the Figma wireframes for the project portal dashboard...
+          <p class="text-xs text-[var(--color-muted)] font-normal max-w-2xl">
+            Real-time peer, faculty, and institutional capstone communications.
           </p>
-</div>
-</article>
-<!-- Thread 4: Yendakurthi Shanmukh -->
-<article class="p-3.5 rounded-[24px] bg-white/60 hover:bg-white border border-emerald-900/5 hover:border-emerald-200/80 transition-all flex items-start gap-3.5 cursor-pointer shadow-sm">
-<div class="relative shrink-0">
-<div class="w-12 h-12 rounded-full bg-emerald-900/10 text-emerald-950 font-dg text-xl flex items-center justify-center font-extrabold">
-            YS
+        </div>
+
+        <!-- Telemetry Status Strip -->
+        <div class="flex items-center gap-2 bg-[var(--color-card)] border border-[var(--color-hairline)] px-3.5 py-1.5 rounded-full text-xs font-mono shadow-2xs self-start md:self-auto">
+          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+          <span class="font-medium text-[var(--color-ink)]">WI-FI MESH: ONLINE</span>
+          <span class="text-[var(--color-muted)]">·</span>
+          <span class="text-[var(--color-muted)]">ENC: AES-256-GCM</span>
+        </div>
+      </section>
+
+      <!-- ============================================================== -->
+      <!-- MAIN 2-PANE CHAT GRID: DISCUSSIONS LIST + ACTIVE CHAT VIEWPORT -->
+      <!-- ============================================================== -->
+      <section class="grid grid-cols-1 lg:grid-cols-12 gap-5 w-full items-start" data-testid="tile-messages-grid">
+        
+        <!-- LEFT PANE: DISCUSSIONS LIST (4 COLS) -->
+        <div class="lg:col-span-4 bento-card p-4 flex flex-col gap-3.5 border border-[var(--color-hairline)]" data-testid="tile-discussions-list">
+          
+          <!-- Discussions Header & Search -->
+          <div class="flex flex-col gap-2.5">
+            <div class="flex items-center justify-between">
+              <h2 class="text-sm font-semibold text-[var(--color-ink)]">Discussions</h2>
+              <span class="font-mono text-xs text-[var(--color-muted)]" id="unreadThreadsBadge">2 Unread</span>
+            </div>
+
+            <div class="relative w-full">
+              <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-muted)] text-[16px]">search</span>
+              <input type="text" id="searchThreadsInput" placeholder="Search conversations..." class="w-full bg-[var(--color-card-subtle)] border border-[var(--color-hairline)] text-[var(--color-ink)] placeholder-[var(--color-muted)] text-xs rounded-full pl-8 pr-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-[var(--color-lime)] transition-colors" />
+            </div>
           </div>
-<span class="absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full bg-stone-300 ring-2 ring-white"></span>
-</div>
-<div class="flex-grow min-w-0">
-<div class="flex items-center justify-between gap-1">
-<span class="font-dg text-xl text-on-surface font-extrabold truncate">Yendakurthi Shanmukh</span>
-<span class="font-dg text-sm text-stone-500 font-bold shrink-0">20 Feb</span>
-</div>
-<div class="flex items-center gap-1.5 mt-0.5">
-<span class="font-dg text-sm text-stone-600 font-semibold truncate">PIN: 24259-CS-023</span>
-<span class="px-2 py-0.5 rounded-full bg-stone-200/80 text-stone-800 font-dg text-xs font-bold leading-none">Marketplace Item</span>
-</div>
-<p class="font-dg text-base text-on-surface-variant truncate mt-1 leading-snug">
-            Is the Lab Coat still available for engineering chemistry lab?
-          </p>
-</div>
-</article>
-</div>
-<!-- Bottom Condonation Approvals Alert Pill Widget -->
-<div class="mt-auto p-4 rounded-[24px] bg-gradient-to-r from-emerald-100/70 via-emerald-50/60 to-white/70 border border-emerald-900/10 flex items-center justify-between gap-3 shadow-sm hover:border-emerald-300 transition-all">
-<div class="flex items-center gap-3">
-<div class="w-10 h-10 rounded-full flex items-center justify-center text-white shrink-0 shadow-[0_3px_10px_rgba(16,185,129,0.3)]" style="background: linear-gradient(135deg, #10b981, #059669);">
-<span class="material-symbols-outlined text-[20px]">verified_user</span>
-</div>
-<div class="flex flex-col">
-<span class="font-dg text-lg text-emerald-950 font-bold leading-tight">Condonation Approvals Alert</span>
-<span class="font-dg text-sm text-stone-600 font-semibold">Counter verification opens 09:30 AM</span>
-</div>
-</div>
-<span class="material-symbols-outlined text-emerald-800 text-[22px]">chevron_right</span>
-</div>
-</aside>
-<!-- Right Main Chat Pane (7 Cols) -->
-<section class="lg:col-span-7 bg-white/75 backdrop-blur-xl border border-emerald-900/10 rounded-[32px] p-5 flex flex-col justify-between shadow-[0_12px_40px_rgba(16,185,129,0.07)] min-h-[760px]">
-<!-- Active Chat Header -->
-<div class="flex items-center justify-between pb-4 border-b border-emerald-900/10 bg-transparent">
-<div class="flex items-center gap-3.5 min-w-0">
-<div class="relative shrink-0">
-<div id="activeChatAvatar" class="w-13 h-13 rounded-full text-white font-dg text-2xl flex items-center justify-center font-extrabold shadow-[0_4px_12px_rgba(16,185,129,0.4)]" style="width: 50px; height: 50px; background: linear-gradient(135deg, #34d399, #059669);">GL</div>
-<span class="absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full ring-2 ring-white" style="background-color: #10b981;"></span>
-</div>
-<div class="flex flex-col min-w-0">
-<div class="flex items-center gap-2">
-<span id="activeChatName" class="font-dg text-2xl text-emerald-950 font-extrabold truncate">GONA LAXMI NARASIMHA SWAMI</span>
-<span id="activeChatBadge" class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-dg text-xs font-bold hidden sm:inline">Idea Hub Collab</span>
-</div>
-<div class="flex items-center gap-2 font-dg text-sm text-stone-600 font-medium">
-<span id="activeChatPin" class="font-bold">PIN: 24259-CS-001</span>
-<span class="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-<span class="text-emerald-700 font-bold">Online</span>
-</div>
-</div>
-</div>
-<!-- Header Action Pills -->
-<div class="flex items-center gap-2 shrink-0">
-<button class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/90 border border-emerald-900/15 text-emerald-950 hover:bg-emerald-50 font-dg text-base font-bold transition-all shadow-sm" type="button">
-<span class="material-symbols-outlined text-[17px] text-emerald-700">call</span>
-<span class="hidden sm:inline">Call</span>
-</button>
-<button class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/90 border border-emerald-900/15 text-emerald-950 hover:bg-emerald-50 font-dg text-base font-bold transition-all shadow-sm" type="button">
-<span class="material-symbols-outlined text-[17px] text-emerald-700">badge</span>
-<span class="hidden sm:inline">Profile</span>
-</button>
-<button aria-label="More options" class="w-9 h-9 rounded-full bg-white/90 border border-emerald-900/15 text-stone-600 flex items-center justify-center hover:bg-emerald-50 shadow-sm transition-all" type="button">
-<span class="material-symbols-outlined text-[20px]">more_vert</span>
-</button>
-</div>
-</div>
-<!-- Chat Stream Body -->
-<div id="chatMessageStream" class="flex-grow py-5 flex flex-col gap-4 overflow-y-auto pr-1">
-<!-- Date Divider Pill -->
-<div class="flex justify-center my-1">
-<span class="px-4 py-1 rounded-full bg-emerald-100/60 border border-emerald-900/10 text-emerald-900 font-dg text-sm font-bold tracking-wider">
-          TODAY • 24 FEBRUARY 2025
-        </span>
-</div>
-<!-- Outgoing Message: Himesh -->
-<div class="flex flex-col items-end gap-1">
-<div class="max-w-[78%] px-5 py-3 rounded-2xl rounded-tr-sm text-white shadow-[0_4px_16px_rgba(16,185,129,0.28)]" style="background: linear-gradient(135deg, #10b981, #059669);">
-<p class="font-dg text-xl text-white font-medium leading-snug">Hiii ra nara</p>
-</div>
-<span class="font-dg text-sm text-stone-500 font-bold pr-1">08:48 AM</span>
-</div>
-<!-- Incoming Message: Narasimha Swami -->
-<div class="flex flex-col items-start gap-1">
-<div class="max-w-[80%] px-5 py-3 rounded-2xl rounded-tl-sm bg-white border border-emerald-900/10 text-on-surface shadow-[0_2px_10px_rgba(0,0,0,0.03)]">
-<p class="font-dg text-xl text-on-surface font-medium leading-snug">Hey Himesh, did you check the SBTET attendance portal update today?</p>
-</div>
-<span class="font-dg text-sm text-stone-500 font-bold pl-1">08:49 AM</span>
-</div>
-<!-- Outgoing Message with Embedded Card: Himesh -->
-<div class="flex flex-col items-end gap-1.5">
-<div class="max-w-[88%] sm:max-w-[82%] flex flex-col gap-2.5 p-4 rounded-2xl rounded-tr-sm text-white shadow-[0_6px_22px_rgba(16,185,129,0.3)]" style="background: linear-gradient(135deg, #10b981, #059669);">
-<p class="font-dg text-xl text-white font-medium leading-snug">Yeah, attendance dropped to 27.78% deficit... need condonation sign-off from HOD Dr. Vamshi Krishna.</p>
-<!-- Embedded SBTET Condonation Card -->
-<div class="p-3.5 rounded-xl bg-white text-on-surface flex flex-col gap-2.5 shadow-sm border border-emerald-100">
-<div class="flex items-start justify-between gap-2">
-<div class="flex items-center gap-2.5">
-<span class="w-9 h-9 rounded-full flex items-center justify-center shrink-0 bg-emerald-100 text-emerald-800">
-<span class="material-symbols-outlined text-[20px]">account_balance</span>
-</span>
-<div class="flex flex-col">
-<span class="font-dg text-lg font-bold text-emerald-950 leading-tight">SBTET Condonation Slab 65% - 75%</span>
-<span class="font-dg text-sm text-stone-500 font-semibold">Prescribed Form-B</span>
-</div>
-</div>
-<span class="px-2.5 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-900 font-dg text-sm font-bold">Req Fee: ₹600</span>
-</div>
-<div class="flex flex-col gap-1 pt-1">
-<div class="flex justify-between items-center font-dg text-base">
-<span class="text-stone-600 font-semibold">Current: 52.22%</span>
-<span class="font-bold text-emerald-700">Target: 65.00%</span>
-</div>
-<div class="w-full h-2.5 rounded-full bg-stone-100 overflow-hidden">
-<div class="h-full rounded-full" style="width: 52%; background: linear-gradient(90deg, #34d399, #10b981);"></div>
-</div>
-</div>
-<div class="flex justify-end pt-1">
-<a class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-white font-dg text-base font-bold shadow-sm hover:opacity-95 transition-opacity" href="./attendance.html" style="background: linear-gradient(135deg, #10b981, #059669);">
-<span>View Portal</span>
-<span class="material-symbols-outlined text-[15px]">arrow_forward</span>
-</a>
-</div>
-</div>
-</div>
-<span class="font-dg text-sm text-stone-500 font-bold pr-1">08:50 AM</span>
-</div>
-<!-- Incoming Message: Narasimha Swami -->
-<div class="flex flex-col items-start gap-1">
-<div class="max-w-[80%] px-5 py-3 rounded-2xl rounded-tl-sm bg-white border border-emerald-900/10 text-on-surface shadow-[0_2px_10px_rgba(0,0,0,0.03)]">
-<p class="font-dg text-xl text-on-surface font-medium leading-snug">Don't worry, submit the bonafide request in the Requests tab and get the OTP for counter pickup!</p>
-</div>
-<span class="font-dg text-sm text-stone-500 font-bold pl-1">08:51 AM</span>
-</div>
-</div>
-<!-- Bottom Chat Composer -->
-<div class="pt-3 border-t border-emerald-900/10 flex flex-col gap-2">
-<form class="flex items-center gap-2 p-1.5 rounded-full bg-white/90 border border-emerald-900/15 shadow-[0_4px_16px_rgba(16,185,129,0.08)] focus-within:border-emerald-500 focus-within:ring-2 focus-within:ring-emerald-500/20 transition-all" onsubmit="event.preventDefault();">
-<!-- Attachment Pill -->
-<button aria-label="Add attachment" class="w-10 h-10 rounded-full bg-stone-100 flex items-center justify-center text-stone-600 hover:bg-emerald-100 hover:text-emerald-800 transition-colors shrink-0" type="button">
-<span class="material-symbols-outlined text-[20px]">attach_file</span>
-</button>
-<!-- Message Input Field -->
-<input class="flex-grow px-3 py-2 bg-transparent font-dg text-xl text-on-surface placeholder:text-stone-400 focus:outline-none" id="chatInput" placeholder="Type your message... (Press Enter to send)" type="text"/>
-<!-- Emoji Trigger -->
-<button aria-label="Add emoji" class="w-10 h-10 rounded-full hover:bg-stone-100 flex items-center justify-center text-stone-500 hover:text-emerald-700 transition-colors shrink-0" type="button">
-<span class="material-symbols-outlined text-[22px]">sentiment_satisfied</span>
-</button>
-<!-- Sleek Send Button Pill -->
-<button id="chatSendBtn" class="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full text-white font-dg text-lg font-bold transition-all shrink-0 shadow-[0_4px_14px_rgba(16,185,129,0.35)] hover:shadow-[0_6px_18px_rgba(16,185,129,0.45)] hover:scale-105 active:scale-95" style="background: linear-gradient(135deg, #10b981, #059669);" type="submit">
-<span id="sendBtnText">Send</span>
-<span class="material-symbols-outlined text-[17px]">send</span>
-</button>
-</form>
-<!-- Security Footnote Note -->
-<div class="flex items-center justify-center gap-1.5 text-center pt-0.5">
-<span class="material-symbols-outlined text-emerald-700 text-[16px]">shield</span>
-<span class="font-dg text-sm text-stone-600 font-semibold tracking-wide">End-to-end peer encrypted campus gateway • All sessions logged under SBTET-259 protocol</span>
-</div>
-</div>
-</section>
-</div>
-</div>
-</div>
+
+          <!-- Filter Tabs -->
+          <div class="flex items-center gap-1 overflow-x-auto pb-1 no-scrollbar text-xs border-b border-[var(--color-hairline)]" id="threadFilterTabs">
+            <button type="button" class="thread-filter-tab px-3 py-1 rounded-full bg-[var(--color-lime)] text-[var(--color-lime-ink)] font-medium active-tab cursor-pointer" data-filter="all">All</button>
+            <button type="button" class="thread-filter-tab px-3 py-1 rounded-full text-[var(--color-muted)] hover:text-[var(--color-ink)] hover:bg-[var(--color-card-subtle)] cursor-pointer" data-filter="hod">Faculty &amp; HOD</button>
+            <button type="button" class="thread-filter-tab px-3 py-1 rounded-full text-[var(--color-muted)] hover:text-[var(--color-ink)] hover:bg-[var(--color-card-subtle)] cursor-pointer" data-filter="peers">Peers</button>
+            <button type="button" class="thread-filter-tab px-3 py-1 rounded-full text-[var(--color-muted)] hover:text-[var(--color-ink)] hover:bg-[var(--color-card-subtle)] cursor-pointer" data-filter="unread">Unread</button>
+          </div>
+
+          <!-- Threads List Container -->
+          <div class="flex flex-col gap-1.5 overflow-y-auto max-h-[560px] pr-1" id="threadsListContainer">
+            <!-- Dynamically populated by messages.js -->
+          </div>
+
+        </div>
+
+        <!-- RIGHT PANE: ACTIVE CHAT VIEWPORT & COMPOSER (8 COLS) -->
+        <div class="lg:col-span-8 bento-card p-5 flex flex-col justify-between min-h-[620px] border border-[var(--color-hairline)]" data-testid="tile-chat-viewport">
+          
+          <!-- Chat Header -->
+          <div class="flex items-center justify-between pb-3.5 border-b border-[var(--color-hairline)]" id="chatHeaderBar">
+            <div class="flex items-center gap-3">
+              <div class="relative w-10 h-10 rounded-full bg-[var(--color-feature-card)] text-white flex items-center justify-center font-mono font-bold text-xs" id="chatHeaderAvatar">
+                HD
+                <span class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 ring-2 ring-[var(--color-card)]"></span>
+              </div>
+              <div class="flex flex-col">
+                <div class="flex items-center gap-2">
+                  <h3 class="text-sm font-bold text-[var(--color-ink)]" id="chatHeaderName">HOD Academic Dispatch</h3>
+                  <span class="font-mono text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[var(--color-lavender)] text-[#22174C]" id="chatHeaderBadge">HOD OFFICIAL</span>
+                </div>
+                <span class="font-mono text-[11px] text-[var(--color-muted)]" id="chatHeaderSubtitle">Node 259-CSE · Dr. Vamshi Krishna</span>
+              </div>
+            </div>
+
+            <!-- Action Controls -->
+            <div class="flex items-center gap-2">
+              <button type="button" id="btnAudioCall" class="w-8 h-8 rounded-full bg-[var(--color-card-subtle)] hover:bg-[var(--color-hairline)] flex items-center justify-center text-[var(--color-ink)] cursor-pointer transition-colors" title="Voice Channel">
+                <span class="material-symbols-outlined text-[18px]">call</span>
+              </button>
+              <button type="button" id="btnChatInfo" class="w-8 h-8 rounded-full bg-[var(--color-card-subtle)] hover:bg-[var(--color-hairline)] flex items-center justify-center text-[var(--color-ink)] cursor-pointer transition-colors" title="Channel Info">
+                <span class="material-symbols-outlined text-[18px]">info</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Message Stream -->
+          <div class="flex-1 overflow-y-auto py-4 flex flex-col gap-3.5 pr-1" id="chatMessagesContainer">
+            <!-- Dynamically populated messages -->
+          </div>
+
+          <!-- Chat Composer -->
+          <div class="pt-3 border-t border-[var(--color-hairline)] flex flex-col gap-2.5">
+            <!-- Quick Reply Chips -->
+            <div class="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar text-xs" id="quickReplyChips">
+              <button type="button" class="quick-reply-chip px-2.5 py-1 rounded-full bg-[var(--color-card-subtle)] hover:bg-[var(--color-hairline)] text-[var(--color-ink)] text-[11px] whitespace-nowrap cursor-pointer transition-colors">"Noted, thank you sir"</button>
+              <button type="button" class="quick-reply-chip px-2.5 py-1 rounded-full bg-[var(--color-card-subtle)] hover:bg-[var(--color-hairline)] text-[var(--color-ink)] text-[11px] whitespace-nowrap cursor-pointer transition-colors">"Will submit by tomorrow"</button>
+              <button type="button" class="quick-reply-chip px-2.5 py-1 rounded-full bg-[var(--color-card-subtle)] hover:bg-[var(--color-hairline)] text-[var(--color-ink)] text-[11px] whitespace-nowrap cursor-pointer transition-colors">"Confirmed for Lab Session"</button>
+            </div>
+
+            <!-- Input and Send Button Form -->
+            <form id="chatComposerForm" class="flex items-center gap-2" onsubmit="event.preventDefault();">
+              <button type="button" id="btnAttachment" class="w-9 h-9 rounded-full bg-[var(--color-card-subtle)] hover:bg-[var(--color-hairline)] flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-ink)] cursor-pointer transition-colors shrink-0" title="Attach Document / Code">
+                <span class="material-symbols-outlined text-[18px]">attach_file</span>
+              </button>
+              
+              <input type="text" id="chatInput" placeholder="Type message to channel..." class="w-full bg-[var(--color-card-subtle)] border border-[var(--color-hairline)] text-[var(--color-ink)] placeholder-[var(--color-muted)] text-xs rounded-full px-4 py-2.5 focus:outline-none focus:ring-1 focus:ring-[var(--color-lime)] transition-colors" />
+
+              <button type="submit" id="btnSendMessage" class="px-5 py-2.5 rounded-full bg-[var(--color-lime)] text-[var(--color-lime-ink)] text-xs font-semibold hover:opacity-90 active:scale-95 transition-all cursor-pointer flex items-center gap-1.5 shrink-0 shadow-xs">
+                <span>Send</span>
+                <span class="material-symbols-outlined text-[16px]">send</span>
+              </button>
+            </form>
+          </div>
+
+        </div>
+
+      </section>
+
     </div>
   </main>
 
-  <!-- Shared Samskruti Institutional Footer -->
-  <footer class="w-full bg-[#f3efe6]/90 border-t border-emerald-900/10 mt-12 relative z-10"><div class="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 py-8"><div class="flex flex-col md:flex-row items-center justify-between gap-4 pb-6 border-b border-emerald-900/10"><div class="flex flex-col gap-1 text-center md:text-left"><div class="flex items-center justify-center md:justify-start gap-2"><span class="font-title-editorial text-2xl text-emerald-950 font-bold">Samskruti College of Engineering &amp; Technology</span><span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-dg text-sm font-bold">Code 259</span></div><p class="font-dg text-base text-stone-600 font-medium">Permanent SBTET &amp; AICTE Affiliation. Autonomous Campus Registry &amp; Academic Management Portal.</p></div><div class="flex flex-wrap items-center justify-center gap-2"><div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/90 border border-emerald-900/10 shadow-sm"><span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span><span class="font-dg text-sm text-on-surface font-bold">Biometric Sync Online</span></div><div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/90 border border-emerald-900/10 shadow-sm"><span class="material-symbols-outlined text-emerald-700 text-[16px]">verified</span><span class="font-dg text-sm text-on-surface font-bold">SBTET Verified Hub</span></div></div></div><div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-4 text-stone-600"><span class="font-dg text-base">© 2025 Samskruti College. PIN 24259-CS-025 Registry. All rights reserved.</span><div class="flex items-center gap-4"><a class="font-dg text-base font-semibold hover:text-emerald-800 transition-colors" href="#">Academic Regulations</a><a class="font-dg text-base font-semibold hover:text-emerald-800 transition-colors" href="#">Attendance Mandates</a><a class="font-dg text-base font-semibold hover:text-emerald-800 transition-colors" href="#">Campus Support</a></div></div></div></footer>
-
   <!-- Toast Notification -->
-  <div id="toastNotification" class="fixed bottom-6 right-6 z-[30000] hidden px-5 py-3 rounded-2xl bg-emerald-900 text-white font-bold text-base shadow-2xl flex items-center gap-3 border border-emerald-400/40 transform transition-all duration-300">
-    <span class="material-symbols-outlined text-emerald-300 text-[20px]" id="toastIcon">check_circle</span>
-    <span id="toastMsg">Action completed successfully</span>
+  <div id="toastNotification" class="fixed bottom-6 right-6 z-50 transform transition-all duration-300 hidden">
+    <div class="bento-card py-3 px-5 flex items-center gap-3 shadow-xl border border-[var(--color-hairline)] bg-[var(--color-card)] text-[var(--color-ink)]">
+      <span class="material-symbols-outlined text-[20px] text-[var(--color-lime-ink)] bg-[var(--color-lime)] rounded-full p-1">check</span>
+      <span id="toastMsg" class="text-xs font-medium">Operation completed successfully</span>
+    </div>
   </div>
 
-  <!-- Messages Page Controller Script -->
-  <script src="/screens/02-student-portal/messages.js"></script>
+  <!-- Shared Institutional Footer -->
+  <footer class="w-full py-8 border-t border-[var(--color-hairline)] mt-auto bg-[var(--color-canvas)]">
+    <div class="campus-container flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-[var(--color-muted)]">
+      <div class="flex items-center gap-2">
+        <span class="font-medium text-[var(--color-ink)]">Samskruti College of Engineering &amp; Technology</span>
+        <span>•</span>
+        <span>Institution Code 259</span>
+      </div>
+      <div>
+        <span>Affiliated to SBTET &amp; JNTUH • Autonomous Academic Council</span>
+      </div>
+    </div>
+  </footer>
 </body>
 </html>

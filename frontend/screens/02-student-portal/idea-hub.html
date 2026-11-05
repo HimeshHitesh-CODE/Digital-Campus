@@ -3,536 +3,299 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Idea Hub & Peer Directory — Samskruti College</title>
+  <title>Samskruti Digital Campus — Idea Hub &amp; Peer Directory | Code 259</title>
   
-  <!-- Material Symbols & Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Darker+Grotesque:wght@400;500;600;700;800;900&family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..700&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet" />
-  
-  <!-- Tailwind CSS & Master Config -->
-  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-  <script src="/js/stitch-tailwind-config.js"></script>
-
-  <!-- Stitch Design System & Nav Dock Styles -->
+  <!-- Self-Hosted Fonts & Master Tokens -->
+  <link rel="stylesheet" href="/css/fonts.css" />
+  <link rel="stylesheet" href="/css/theme-tokens.css" />
   <link rel="stylesheet" href="/css/stitch-design-system.css" />
   <link rel="stylesheet" href="/css/top-nav.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  
+  <!-- Tailwind CSS & Master Config -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/js/stitch-tailwind-config.js"></script>
 
-  <!-- Lucide Icons & Shared State -->
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Shared State & Dynamic Island -->
   <script src="/js/stitch-state.js"></script>
   <script src="/js/dc-dynamic-island.js" defer></script>
+  <script src="/screens/02-student-portal/idea-hub.js" defer></script>
 </head>
 
-<body class="bg-surface font-sans text-on-surface min-h-screen flex flex-col antialiased selection:bg-emerald-200 selection:text-emerald-950" 
-      style="background-color: #FAF7F0; background-image: radial-gradient(circle at 10% 8%, rgba(16, 185, 129, 0.14) 0%, transparent 45%), radial-gradient(circle at 90% 12%, rgba(52, 211, 153, 0.12) 0%, transparent 42%), radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.05) 0%, transparent 60%), radial-gradient(circle at 80% 85%, rgba(5, 150, 105, 0.12) 0%, transparent 50%), radial-gradient(rgba(16, 185, 129, 0.08) 1px, transparent 1px); background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%, 28px 28px; background-attachment: fixed;">
+<body class="bg-[var(--color-canvas)] text-[var(--color-ink)] min-h-screen flex flex-col antialiased">
+  <!-- Dynamic Island Header Mounts Automatically via dc-dynamic-island.js -->
 
-  <!-- Main Content Viewport Wrapper (Offset below persistent top navigation) -->
-  <main class="w-full flex-grow pt-[84px] md:pt-[92px]">
-    <div class="max-w-[1240px] mx-auto px-4 sm:px-6 pb-12 flex flex-col gap-6 w-full">
-      
-<div class="max-w-[1220px] w-full mx-auto px-5 sm:px-8 flex flex-col gap-10">
-<!-- Editorial Header Section -->
-<div class="flex flex-col lg:flex-row lg:items-end justify-between gap-6 pb-2 border-b border-emerald-900/10">
-<div class="flex flex-col gap-2 max-w-2xl">
-<div class="flex items-center gap-2.5 flex-wrap">
-<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100/90 border border-emerald-300/60 shadow-sm">
-<span class="inline-block w-2 h-2 rounded-full bg-emerald-600 animate-pulse"></span>
-<span class="font-grotesque text-base font-bold text-emerald-900 tracking-wider uppercase">Student Collaboration &amp; Talent Pool</span>
-</span>
-<span class="px-2.5 py-0.5 rounded-full bg-stone-200/80 text-stone-700 font-mono-code text-xs font-medium border border-stone-300/60">
-              Registry 2024-25
+  <!-- Main Viewport Layout -->
+  <main class="w-full pt-[80px] pb-12 flex-1">
+    <div class="campus-container flex flex-col gap-6 pt-4">
+
+      <!-- ============================================================== -->
+      <!-- TOP TITLE & PROFILE ACTION ROW                                 -->
+      <!-- ============================================================== -->
+      <section class="w-full flex flex-col md:flex-row md:items-end justify-between gap-4 pb-2" data-testid="tile-hub-header">
+        <div class="flex flex-col gap-1">
+          <div class="flex items-center gap-2 mb-1">
+            <span class="font-mono text-xs bg-[var(--color-feature-card)] text-[var(--color-lime)] px-3 py-1 rounded-full uppercase tracking-wider font-semibold" id="hubBadge">
+              SBTET Code 259 · Innovation Hub
             </span>
-</div>
-<h1 class="font-grotesque text-5xl sm:text-6xl font-extrabold text-[#053820] tracking-tight leading-[0.95] mt-1">
-            Idea Hub &amp; Peer Directory
+            <span class="w-1.5 h-1.5 rounded-full bg-[var(--color-lime)]"></span>
+            <span class="font-mono text-xs text-[var(--color-muted)]">
+              Peer Directory &amp; Collabs
+            </span>
+          </div>
+          <h1 class="text-4xl lg:text-5xl font-medium tracking-tight text-[var(--color-ink)]">
+            Idea Hub
           </h1>
-<p class="text-sm sm:text-base text-stone-600 font-normal leading-relaxed mt-1">
-            Discover teammates, showcase technical &amp; creative skillsets, and build multi-disciplinary project squads across diploma &amp; engineering branches.
+          <p class="text-xs text-[var(--color-muted)] font-normal max-w-2xl">
+            Discover teammates, showcase technical skills, and collaborate on polytechnic capstone projects.
           </p>
-</div>
-<!-- Header Actions -->
-<div class="flex flex-wrap items-center gap-2.5">
+        </div>
 
-</div>
-</div>
-<!-- CRITICAL ALIGNMENT FIX: Student Profile Highlight Banner Tile -->
-<div class="relative overflow-hidden rounded-[28px] border border-emerald-300/50 shadow-[0_16px_36px_-10px_rgba(5,150,105,0.45)] text-white p-6 sm:p-8" style="background: linear-gradient(135deg, #024021 0%, #047857 45%, #10B981 100%);">
-<!-- Ambient radial glows inside card -->
-<div class="absolute -right-16 -top-16 w-80 h-80 rounded-full bg-emerald-300/25 blur-3xl pointer-events-none"></div>
-<div class="absolute -left-12 -bottom-16 w-72 h-72 rounded-full bg-teal-400/20 blur-2xl pointer-events-none"></div>
-<div class="relative z-10 flex flex-col gap-6">
-<!-- Upper Row: Avatar + Info (Left) & Collab Badge + Metrics + Actions (Right) -->
-<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-<!-- Left Info Block -->
-<div class="flex items-center gap-4 sm:gap-5">
-<!-- Avatar Circle -->
-<div class="relative shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white/15 backdrop-blur-md border border-white/30 flex items-center justify-center shadow-inner">
-<span class="font-grotesque text-3xl sm:text-4xl font-black text-white tracking-wide">KH</span>
-<span class="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-emerald-300 ring-2 ring-emerald-900 shadow"></span>
-</div>
-<!-- Student Meta Details -->
-<div class="flex flex-col justify-center">
-<div class="flex flex-wrap items-center gap-2.5">
-<h2 class="font-grotesque text-3xl sm:text-4xl font-extrabold text-white tracking-tight leading-none">
-                    <span id="hubStudentName">Karnati Himesh</span>
-                  </h2>
-<span class="px-2.5 py-0.5 rounded-full bg-black/25 text-emerald-100 font-mono-code text-[11px] font-semibold border border-white/20">
-                    <span id="hubStudentPin">PIN: 24259-CS-025</span>
-                  </span>
-</div>
-<div class="text-emerald-100/90 text-xs sm:text-sm font-medium mt-1">
-                  CSE 4th Semester · Samskruti College of Engineering &amp; Technology
-                </div>
-<div class="flex items-center gap-1.5 mt-1.5 text-emerald-200">
-<span class="material-symbols-outlined text-[16px] text-emerald-300">verified_user</span>
-<span class="font-mono-code text-[11px] tracking-wide text-emerald-100 font-medium">Autonomous SBTET Verified Student</span>
-</div>
-</div>
-</div>
-<!-- Right Interactive Pill & Stats Container -->
-<div class="flex flex-wrap items-center gap-3 sm:gap-4 self-start lg:self-center">
-<!-- Available for Projects Pill -->
-<div class="inline-flex items-center gap-2.5 px-3.5 py-2 rounded-full bg-black/25 backdrop-blur-md border border-white/20 shadow-inner">
-<span class="relative flex h-2.5 w-2.5">
-<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-300 opacity-75"></span>
-<span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-400"></span>
-</span>
-<span class="font-grotesque text-lg font-bold text-white leading-none" id="collabStatusText">Available for Projects</span>
-</div>
-<!-- Collab Toggle Switch -->
-<div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20">
-<span class="font-grotesque text-base font-bold text-emerald-100">Ready</span>
-<button aria-pressed="true" class="w-10 h-5 flex items-center bg-emerald-300 rounded-full p-0.5 transition-colors focus:outline-none" id="collab-toggle" type="button">
-<span class="w-4 h-4 bg-emerald-950 rounded-full shadow-md transform translate-x-5 transition-transform" id="collab-knob"></span>
-</button>
-</div>
-<!-- Compact Counters -->
-<div class="flex items-center gap-4 px-4 py-1.5 rounded-2xl bg-black/20 backdrop-blur-md border border-white/15">
-<div class="text-center">
-<div class="font-grotesque text-2xl font-black text-white leading-tight">2</div>
-<div class="font-grotesque text-xs font-semibold text-emerald-200 uppercase tracking-wider">Squads</div>
-</div>
-<div class="w-px h-6 bg-white/20"></div>
-<div class="text-center">
-<div class="font-grotesque text-2xl font-black text-white leading-tight">5</div>
-<div class="font-grotesque text-xs font-semibold text-emerald-200 uppercase tracking-wider">Invites</div>
-</div>
-<div class="w-px h-6 bg-white/20"></div>
-<div class="text-center">
-<div class="font-grotesque text-2xl font-black text-emerald-300 leading-tight">98%</div>
-<div class="font-grotesque text-xs font-semibold text-emerald-200 uppercase tracking-wider">Response</div>
-</div>
-</div>
-</div>
-</div>
-<!-- Lower Row: Published Skills Tags & Add Skill Button (Balanced and Aligned) -->
-<div id="skillsTagsContainer" class="pt-4 border-t border-white/15 flex flex-wrap items-center gap-2">
-<span class="font-grotesque text-base font-extrabold text-emerald-200 uppercase tracking-wider mr-1">
-              Published Skills:
-            </span>
-<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-950/40 border border-white/25 text-white font-grotesque text-base font-bold shadow-sm">
-              Python
-              <button aria-label="Remove skill Python" class="w-4 h-4 rounded-full flex items-center justify-center hover:bg-white/20 text-emerald-200" onclick="this.parentElement.remove()" type="button">
-<span class="material-symbols-outlined text-[13px]">close</span>
-</button>
-</span>
-<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-950/40 border border-white/25 text-white font-grotesque text-base font-bold shadow-sm">
-              Web Development (HTML/CSS/JS)
-              <button aria-label="Remove skill Web Development" class="w-4 h-4 rounded-full flex items-center justify-center hover:bg-white/20 text-emerald-200" onclick="this.parentElement.remove()" type="button">
-<span class="material-symbols-outlined text-[13px]">close</span>
-</button>
-</span>
-<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-950/40 border border-white/25 text-white font-grotesque text-base font-bold shadow-sm">
-              FastAPI
-              <button aria-label="Remove skill FastAPI" class="w-4 h-4 rounded-full flex items-center justify-center hover:bg-white/20 text-emerald-200" onclick="this.parentElement.remove()" type="button">
-<span class="material-symbols-outlined text-[13px]">close</span>
-</button>
-</span>
-<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-950/40 border border-white/25 text-white font-grotesque text-base font-bold shadow-sm">
-              UI/UX Sprint
-              <button aria-label="Remove skill UI/UX Sprint" class="w-4 h-4 rounded-full flex items-center justify-center hover:bg-white/20 text-emerald-200" onclick="this.parentElement.remove()" type="button">
-<span class="material-symbols-outlined text-[13px]">close</span>
-</button>
-</span>
-<button id="btnAddSkillBtn" class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-white text-emerald-900 hover:bg-emerald-100 font-grotesque text-base font-bold transition-all shadow-md ml-1 cursor-pointer" type="button">
-<span class="material-symbols-outlined text-[16px]">add</span>
-<span>Add Skill</span>
-</button>
-</div>
-</div>
-</div>
-<!-- Search & Skill Filters Section -->
-<div class="flex flex-col gap-4">
-<!-- Search Input Bar -->
-<div class="relative w-full">
-<span class="absolute left-5 top-1/2 -translate-y-1/2 material-symbols-outlined text-emerald-800/70 text-[22px]">search</span>
-<input class="w-full pl-13 pr-28 py-3.5 rounded-full bg-white/95 text-stone-900 placeholder:text-stone-400 border border-emerald-900/15 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20 shadow-[0_4px_16px_rgba(0,0,0,0.04)] outline-none transition-all text-sm sm:text-base" id="peer-search-input" placeholder="Search by skill, peer name, branch or PIN... Ctrl+K" type="text"/>
-<div class="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-1">
-<kbd class="px-2 py-0.5 rounded-md bg-stone-100 border border-stone-300 text-stone-600 font-mono-code text-[11px] shadow-sm">Ctrl</kbd>
-<kbd class="px-2 py-0.5 rounded-md bg-stone-100 border border-stone-300 text-stone-600 font-mono-code text-[11px] shadow-sm">K</kbd>
-</div>
-</div>
-<!-- Specified Skill Filter Pills -->
-<div class="flex items-center gap-2 overflow-x-auto pb-1.5 scrollbar-none">
-<button class="skill-filter-btn shrink-0 px-4 py-1.5 rounded-full bg-emerald-600 text-white font-grotesque text-lg font-bold shadow-[0_4px_12px_rgba(5,150,105,0.35)] transition-all border border-emerald-600" data-filter="all" type="button">
-            All Skills <span class="font-mono-code text-xs opacity-85 font-normal ml-1">(179)</span>
-</button>
-<button class="skill-filter-btn shrink-0 px-4 py-1.5 rounded-full bg-white hover:bg-emerald-50 text-stone-800 font-grotesque text-lg font-bold border border-emerald-900/15 shadow-sm transition-all" data-filter="poster" type="button">
-            Poster Design
+        <!-- Action Controls: Edit Skills & Invites Buttons -->
+        <div class="flex items-center gap-3 self-start md:self-auto">
+          <button type="button" 
+                  class="inline-flex items-center gap-2 bg-[var(--color-card)] hover:bg-[var(--color-card-subtle)] text-[var(--color-ink)] border border-[var(--color-hairline)] px-4 py-2.5 rounded-full text-xs font-medium transition-all active:scale-95 cursor-pointer shadow-2xs" 
+                  id="open-edit-skills-btn"
+                  data-testid="btn-edit-skills">
+            <span class="material-symbols-outlined text-[18px]">edit</span>
+            <span>Edit my skills</span>
           </button>
-<button class="skill-filter-btn shrink-0 px-4 py-1.5 rounded-full bg-white hover:bg-emerald-50 text-stone-800 font-grotesque text-lg font-bold border border-emerald-900/15 shadow-sm transition-all" data-filter="ppt" type="button">
-            PPT Making
+
+          <button type="button"
+                  class="inline-flex items-center gap-2 bg-[var(--color-card)] hover:bg-[var(--color-card-subtle)] text-[var(--color-ink)] border border-[var(--color-hairline)] pl-4 pr-2.5 py-2 rounded-full text-xs font-medium transition-all active:scale-95 cursor-pointer shadow-2xs"
+                  id="open-invites-btn"
+                  data-testid="btn-open-invites">
+            <span>Invites</span>
+            <span class="w-5 h-5 rounded-full bg-[var(--color-lime)] text-[var(--color-lime-ink)] font-mono text-[11px] font-bold flex items-center justify-center" id="invitesCountPill">3</span>
           </button>
-<button class="skill-filter-btn shrink-0 px-4 py-1.5 rounded-full bg-white hover:bg-emerald-50 text-stone-800 font-grotesque text-lg font-bold border border-emerald-900/15 shadow-sm transition-all" data-filter="web" type="button">
-            Web Development
-          </button>
-<button class="skill-filter-btn shrink-0 px-4 py-1.5 rounded-full bg-white hover:bg-emerald-50 text-stone-800 font-grotesque text-lg font-bold border border-emerald-900/15 shadow-sm transition-all" data-filter="python" type="button">
-            Python
-          </button>
-<button class="skill-filter-btn shrink-0 px-4 py-1.5 rounded-full bg-white hover:bg-emerald-50 text-stone-800 font-grotesque text-lg font-bold border border-emerald-900/15 shadow-sm transition-all" data-filter="design" type="button">
-            UI/UX Design
-          </button>
-<button class="skill-filter-btn shrink-0 px-4 py-1.5 rounded-full bg-white hover:bg-emerald-50 text-stone-800 font-grotesque text-lg font-bold border border-emerald-900/15 shadow-sm transition-all" data-filter="video" type="button">
-            Video Editing
-          </button>
-</div>
-</div>
-<!-- 2x3 Collaborator Grid Cards -->
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-<!-- Card 1: Gona Laxmi Narasimha Swami -->
-<div class="peer-card group flex flex-col justify-between p-6 rounded-[24px] bg-white/90 hover:bg-white border border-emerald-900/15 hover:border-emerald-500/50 shadow-[0_8px_24px_rgba(0,0,0,0.03)] hover:shadow-[0_14px_32px_rgba(16,185,129,0.18)] transition-all duration-300">
-<div class="flex flex-col gap-4">
-<div class="flex items-start justify-between gap-3">
-<div class="flex items-center gap-3">
-<div class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-900 border border-emerald-300 flex items-center justify-center font-grotesque text-2xl font-black shrink-0">
-                  GL
-                </div>
-<div>
-<h3 class="font-grotesque text-2xl font-extrabold text-stone-900 group-hover:text-emerald-800 leading-tight transition-colors">
-                    Gona Laxmi Narasimha Swami
-                  </h3>
-<div class="font-mono-code text-xs text-stone-500 mt-0.5">CSE · Yr 2 · Rank #4</div>
-</div>
-</div>
-<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-300 font-mono-code text-[11px] font-medium shrink-0">
-<span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span> Online
-              </span>
-</div>
-<p class="text-xs sm:text-sm text-stone-600 leading-relaxed line-clamp-2">
-              Focused on scalable microservices and async data pipelines. Eager to collaborate on state hackathons and backend architectures.
+        </div>
+      </section>
+
+      <!-- ============================================================== -->
+      <!-- FEATURE CARD: YOUR PUBLISHED SKILL PROFILE (INTENTIONAL DARK)  -->
+      <!-- ============================================================== -->
+      <section class="w-full bg-[var(--color-feature-card)] text-white rounded-[28px] p-6 lg:p-7 flex flex-col lg:flex-row lg:items-center justify-between gap-6 shadow-md border border-white/5" data-testid="tile-hub-hero">
+        <div class="flex flex-col sm:flex-row sm:items-center gap-4">
+          <div class="relative w-16 h-16 rounded-full bg-[var(--color-lime)] flex items-center justify-center shrink-0 text-[var(--color-lime-ink)]">
+            <span class="font-mono text-xl font-bold" id="hubStudentInitials">KH</span>
+            <span class="absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full bg-emerald-500 ring-2 ring-[var(--color-feature-card)]"></span>
+          </div>
+
+          <div class="flex flex-col gap-1">
+            <div class="flex flex-wrap items-center gap-2">
+              <h2 class="text-xl font-bold text-white tracking-tight" id="hubStudentName">Karnati Himesh</h2>
+              <span class="font-mono text-[11px] px-2.5 py-0.5 rounded-full bg-white/10 text-white font-medium" id="hubStudentPin">PIN: 24259-CS-025</span>
+              <span class="font-mono text-[11px] px-2.5 py-0.5 rounded-full bg-[var(--color-lime)] text-[var(--color-lime-ink)] font-semibold" id="collabStatusBadge">Open to Collaborate</span>
+            </div>
+            <p class="text-xs text-stone-300 max-w-xl" id="hubStudentBio">
+              Full-Stack Developer &amp; IoT telemetry enthusiast building automated campus tools for Samskruti College.
             </p>
-<div class="flex flex-wrap gap-1.5">
-<span class="px-2.5 py-0.5 rounded-full bg-stone-100 group-hover:bg-emerald-50 text-stone-700 font-grotesque text-base font-bold border border-stone-200">Python</span>
-<span class="px-2.5 py-0.5 rounded-full bg-stone-100 group-hover:bg-emerald-50 text-stone-700 font-grotesque text-base font-bold border border-stone-200">FastAPI</span>
-<span class="px-2.5 py-0.5 rounded-full bg-stone-100 group-hover:bg-emerald-50 text-stone-700 font-grotesque text-base font-bold border border-stone-200">Backend Arch</span>
-</div>
-</div>
-<div class="pt-5 mt-5 border-t border-stone-100 flex items-center justify-between gap-2.5">
-<button class="flex-1 inline-flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-full text-white font-grotesque text-lg font-extrabold shadow-[0_4px_14px_rgba(16,185,129,0.35)] hover:shadow-[0_6px_18px_rgba(5,150,105,0.45)] transition-all" style="background: linear-gradient(135deg, #047857 0%, #10B981 100%);" type="button">
-<span>Invite to Project</span>
-<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
-</button>
-<button aria-label="Chat with Gona" class="w-10 h-10 rounded-full bg-stone-100 hover:bg-emerald-100 border border-stone-200 text-stone-700 hover:text-emerald-900 flex items-center justify-center transition-colors" type="button">
-<span class="material-symbols-outlined text-[19px]">chat_bubble_outline</span>
-</button>
-</div>
-</div>
-<!-- Card 2: Dulipudi Tarun -->
-<div class="peer-card group flex flex-col justify-between p-6 rounded-[24px] bg-white/90 hover:bg-white border border-emerald-900/15 hover:border-emerald-500/50 shadow-[0_8px_24px_rgba(0,0,0,0.03)] hover:shadow-[0_14px_32px_rgba(16,185,129,0.18)] transition-all duration-300">
-<div class="flex flex-col gap-4">
-<div class="flex items-start justify-between gap-3">
-<div class="flex items-center gap-3">
-<div class="w-12 h-12 rounded-2xl bg-teal-100 text-teal-900 border border-teal-300 flex items-center justify-center font-grotesque text-2xl font-black shrink-0">
-                  DT
-                </div>
-<div>
-<h3 class="font-grotesque text-2xl font-extrabold text-stone-900 group-hover:text-emerald-800 leading-tight transition-colors">
-                    Dulipudi Tarun
-                  </h3>
-<div class="font-mono-code text-xs text-stone-500 mt-0.5">CSE · Creative Lead</div>
-</div>
-</div>
-<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-stone-100 text-stone-600 border border-stone-300 font-mono-code text-[11px] font-medium shrink-0">
-                Offline 2h ago
-              </span>
-</div>
-<p class="text-xs sm:text-sm text-stone-600 leading-relaxed line-clamp-2">
-              Specialized in human-centered component design, interactive prototyping, and collegiate symposium branding kits.
-            </p>
-<div class="flex flex-wrap gap-1.5">
-<span class="px-2.5 py-0.5 rounded-full bg-stone-100 group-hover:bg-emerald-50 text-stone-700 font-grotesque text-base font-bold border border-stone-200">UI/UX Design</span>
-<span class="px-2.5 py-0.5 rounded-full bg-stone-100 group-hover:bg-emerald-50 text-stone-700 font-grotesque text-base font-bold border border-stone-200">Figma</span>
-<span class="px-2.5 py-0.5 rounded-full bg-stone-100 group-hover:bg-emerald-50 text-stone-700 font-grotesque text-base font-bold border border-stone-200">Poster Design</span>
-</div>
-</div>
-<div class="pt-5 mt-5 border-t border-stone-100 flex items-center justify-between gap-2.5">
-<button class="flex-1 inline-flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-full text-white font-grotesque text-lg font-extrabold shadow-[0_4px_14px_rgba(16,185,129,0.35)] hover:shadow-[0_6px_18px_rgba(5,150,105,0.45)] transition-all" style="background: linear-gradient(135deg, #047857 0%, #10B981 100%);" type="button">
-<span>Invite to Project</span>
-<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
-</button>
-<button aria-label="Chat with Dulipudi" class="w-10 h-10 rounded-full bg-stone-100 hover:bg-emerald-100 border border-stone-200 text-stone-700 hover:text-emerald-900 flex items-center justify-center transition-colors" type="button">
-<span class="material-symbols-outlined text-[19px]">chat_bubble_outline</span>
-</button>
-</div>
-</div>
-<!-- Card 3: Anaboina Dilip -->
-<div class="peer-card group flex flex-col justify-between p-6 rounded-[24px] bg-white/90 hover:bg-white border border-emerald-900/15 hover:border-emerald-500/50 shadow-[0_8px_24px_rgba(0,0,0,0.03)] hover:shadow-[0_14px_32px_rgba(16,185,129,0.18)] transition-all duration-300">
-<div class="flex flex-col gap-4">
-<div class="flex items-start justify-between gap-3">
-<div class="flex items-center gap-3">
-<div class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-900 border border-emerald-300 flex items-center justify-center font-grotesque text-2xl font-black shrink-0">
-                  AD
-                </div>
-<div>
-<h3 class="font-grotesque text-2xl font-extrabold text-stone-900 group-hover:text-emerald-800 leading-tight transition-colors">
-                    Anaboina Dilip
-                  </h3>
-<div class="font-mono-code text-xs text-stone-500 mt-0.5">CSE · Academic Orator</div>
-</div>
-</div>
-<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-300 font-mono-code text-[11px] font-medium shrink-0">
-<span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span> Online
-              </span>
-</div>
-<p class="text-xs sm:text-sm text-stone-600 leading-relaxed line-clamp-2">
-              State-level paper presentation delegate. Experienced in academic documentation, IEEE formatting, and LaTeX reports.
-            </p>
-<div class="flex flex-wrap gap-1.5">
-<span class="px-2.5 py-0.5 rounded-full bg-stone-100 group-hover:bg-emerald-50 text-stone-700 font-grotesque text-base font-bold border border-stone-200">PPT Making</span>
-<span class="px-2.5 py-0.5 rounded-full bg-stone-100 group-hover:bg-emerald-50 text-stone-700 font-grotesque text-base font-bold border border-stone-200">Technical Writing</span>
-<span class="px-2.5 py-0.5 rounded-full bg-stone-100 group-hover:bg-emerald-50 text-stone-700 font-grotesque text-base font-bold border border-stone-200">LaTeX</span>
-</div>
-</div>
-<div class="pt-5 mt-5 border-t border-stone-100 flex items-center justify-between gap-2.5">
-<button class="flex-1 inline-flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-full text-white font-grotesque text-lg font-extrabold shadow-[0_4px_14px_rgba(16,185,129,0.35)] hover:shadow-[0_6px_18px_rgba(5,150,105,0.45)] transition-all" style="background: linear-gradient(135deg, #047857 0%, #10B981 100%);" type="button">
-<span>Invite to Project</span>
-<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
-</button>
-<button aria-label="Chat with Anaboina" class="w-10 h-10 rounded-full bg-stone-100 hover:bg-emerald-100 border border-stone-200 text-stone-700 hover:text-emerald-900 flex items-center justify-center transition-colors" type="button">
-<span class="material-symbols-outlined text-[19px]">chat_bubble_outline</span>
-</button>
-</div>
-</div>
-<!-- Card 4: Pittala Bhavya -->
-<div class="peer-card group flex flex-col justify-between p-6 rounded-[24px] bg-white/90 hover:bg-white border border-emerald-900/15 hover:border-emerald-500/50 shadow-[0_8px_24px_rgba(0,0,0,0.03)] hover:shadow-[0_14px_32px_rgba(16,185,129,0.18)] transition-all duration-300">
-<div class="flex flex-col gap-4">
-<div class="flex items-start justify-between gap-3">
-<div class="flex items-center gap-3">
-<div class="w-12 h-12 rounded-2xl bg-teal-100 text-teal-900 border border-teal-300 flex items-center justify-center font-grotesque text-2xl font-black shrink-0">
-                  PB
-                </div>
-<div>
-<h3 class="font-grotesque text-2xl font-extrabold text-stone-900 group-hover:text-emerald-800 leading-tight transition-colors">
-                    Pittala Bhavya
-                  </h3>
-<div class="font-mono-code text-xs text-stone-500 mt-0.5">CSE · Full-Stack</div>
-</div>
-</div>
-<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-300 font-mono-code text-[11px] font-medium shrink-0">
-<span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span> Online
-              </span>
-</div>
-<p class="text-xs sm:text-sm text-stone-600 leading-relaxed line-clamp-2">
-              Building responsive client platforms and relational database modeling. Passionate about performant Next.js applications.
-            </p>
-<div class="flex flex-wrap gap-1.5">
-<span class="px-2.5 py-0.5 rounded-full bg-stone-100 group-hover:bg-emerald-50 text-stone-700 font-grotesque text-base font-bold border border-stone-200">React/Next.js</span>
-<span class="px-2.5 py-0.5 rounded-full bg-stone-100 group-hover:bg-emerald-50 text-stone-700 font-grotesque text-base font-bold border border-stone-200">Web Dev</span>
-<span class="px-2.5 py-0.5 rounded-full bg-stone-100 group-hover:bg-emerald-50 text-stone-700 font-grotesque text-base font-bold border border-stone-200">SQL</span>
-</div>
-</div>
-<div class="pt-5 mt-5 border-t border-stone-100 flex items-center justify-between gap-2.5">
-<button class="flex-1 inline-flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-full text-white font-grotesque text-lg font-extrabold shadow-[0_4px_14px_rgba(16,185,129,0.35)] hover:shadow-[0_6px_18px_rgba(5,150,105,0.45)] transition-all" style="background: linear-gradient(135deg, #047857 0%, #10B981 100%);" type="button">
-<span>Invite to Project</span>
-<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
-</button>
-<button aria-label="Chat with Pittala" class="w-10 h-10 rounded-full bg-stone-100 hover:bg-emerald-100 border border-stone-200 text-stone-700 hover:text-emerald-900 flex items-center justify-center transition-colors" type="button">
-<span class="material-symbols-outlined text-[19px]">chat_bubble_outline</span>
-</button>
-</div>
-</div>
-<!-- Card 5: Chaganti Srija -->
-<div class="peer-card group flex flex-col justify-between p-6 rounded-[24px] bg-white/90 hover:bg-white border border-emerald-900/15 hover:border-emerald-500/50 shadow-[0_8px_24px_rgba(0,0,0,0.03)] hover:shadow-[0_14px_32px_rgba(16,185,129,0.18)] transition-all duration-300">
-<div class="flex flex-col gap-4">
-<div class="flex items-start justify-between gap-3">
-<div class="flex items-center gap-3">
-<div class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-900 border border-emerald-300 flex items-center justify-center font-grotesque text-2xl font-black shrink-0">
-                  CS
-                </div>
-<div>
-<h3 class="font-grotesque text-2xl font-extrabold text-stone-900 group-hover:text-emerald-800 leading-tight transition-colors">
-                    Chaganti Srija
-                  </h3>
-<div class="font-mono-code text-xs text-stone-500 mt-0.5">ECE/CSE · Hardware Lead</div>
-</div>
-</div>
-<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-300 font-mono-code text-[11px] font-medium shrink-0">
-<span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span> In Lab Session
-              </span>
-</div>
-<p class="text-xs sm:text-sm text-stone-600 leading-relaxed line-clamp-2">
-              Prototyping microcontrollers, sensor nodes, and real-time firmware telemetry for automated IoT campus tracking.
-            </p>
-<div class="flex flex-wrap gap-1.5">
-<span class="px-2.5 py-0.5 rounded-full bg-stone-100 group-hover:bg-emerald-50 text-stone-700 font-grotesque text-base font-bold border border-stone-200">Arduino/IoT</span>
-<span class="px-2.5 py-0.5 rounded-full bg-stone-100 group-hover:bg-emerald-50 text-stone-700 font-grotesque text-base font-bold border border-stone-200">Circuit Design</span>
-<span class="px-2.5 py-0.5 rounded-full bg-stone-100 group-hover:bg-emerald-50 text-stone-700 font-grotesque text-base font-bold border border-stone-200">Embedded C</span>
-</div>
-</div>
-<div class="pt-5 mt-5 border-t border-stone-100 flex items-center justify-between gap-2.5">
-<button class="flex-1 inline-flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-full text-white font-grotesque text-lg font-extrabold shadow-[0_4px_14px_rgba(16,185,129,0.35)] hover:shadow-[0_6px_18px_rgba(5,150,105,0.45)] transition-all" style="background: linear-gradient(135deg, #047857 0%, #10B981 100%);" type="button">
-<span>Invite to Project</span>
-<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
-</button>
-<button aria-label="Chat with Chaganti" class="w-10 h-10 rounded-full bg-stone-100 hover:bg-emerald-100 border border-stone-200 text-stone-700 hover:text-emerald-900 flex items-center justify-center transition-colors" type="button">
-<span class="material-symbols-outlined text-[19px]">chat_bubble_outline</span>
-</button>
-</div>
-</div>
-<!-- Card 6: Bolloju Satya Pavani -->
-<div class="peer-card group flex flex-col justify-between p-6 rounded-[24px] bg-white/90 hover:bg-white border border-emerald-900/15 hover:border-emerald-500/50 shadow-[0_8px_24px_rgba(0,0,0,0.03)] hover:shadow-[0_14px_32px_rgba(16,185,129,0.18)] transition-all duration-300">
-<div class="flex flex-col gap-4">
-<div class="flex items-start justify-between gap-3">
-<div class="flex items-center gap-3">
-<div class="w-12 h-12 rounded-2xl bg-teal-100 text-teal-900 border border-teal-300 flex items-center justify-center font-grotesque text-2xl font-black shrink-0">
-                  BS
-                </div>
-<div>
-<h3 class="font-grotesque text-2xl font-extrabold text-stone-900 group-hover:text-emerald-800 leading-tight transition-colors">
-                    Bolloju Satya Pavani
-                  </h3>
-<div class="font-mono-code text-xs text-stone-500 mt-0.5">CSE · ML Enthusiast</div>
-</div>
-</div>
-<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-300 font-mono-code text-[11px] font-medium shrink-0">
-<span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span> Online
-              </span>
-</div>
-<p class="text-xs sm:text-sm text-stone-600 leading-relaxed line-clamp-2">
-              Exploratory data analysis, statistical classification, and predictive modeling for academic research journals.
-            </p>
-<div class="flex flex-wrap gap-1.5">
-<span class="px-2.5 py-0.5 rounded-full bg-stone-100 group-hover:bg-emerald-50 text-stone-700 font-grotesque text-base font-bold border border-stone-200">AI/ML</span>
-<span class="px-2.5 py-0.5 rounded-full bg-stone-100 group-hover:bg-emerald-50 text-stone-700 font-grotesque text-base font-bold border border-stone-200">Python</span>
-<span class="px-2.5 py-0.5 rounded-full bg-stone-100 group-hover:bg-emerald-50 text-stone-700 font-grotesque text-base font-bold border border-stone-200">Data Analytics</span>
-</div>
-</div>
-<div class="pt-5 mt-5 border-t border-stone-100 flex items-center justify-between gap-2.5">
-<button class="flex-1 inline-flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-full text-white font-grotesque text-lg font-extrabold shadow-[0_4px_14px_rgba(16,185,129,0.35)] hover:shadow-[0_6px_18px_rgba(5,150,105,0.45)] transition-all" style="background: linear-gradient(135deg, #047857 0%, #10B981 100%);" type="button">
-<span>Invite to Project</span>
-<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
-</button>
-<button aria-label="Chat with Bolloju" class="w-10 h-10 rounded-full bg-stone-100 hover:bg-emerald-100 border border-stone-200 text-stone-700 hover:text-emerald-900 flex items-center justify-center transition-colors" type="button">
-<span class="material-symbols-outlined text-[19px]">chat_bubble_outline</span>
-</button>
-</div>
-</div>
-</div>
-</div>
+            <div class="flex flex-wrap items-center gap-1.5 pt-1" id="hubMySkillsContainer">
+              <span class="font-mono text-[10px] px-2.5 py-0.5 rounded-full bg-white/10 text-stone-200">Python</span>
+              <span class="font-mono text-[10px] px-2.5 py-0.5 rounded-full bg-white/10 text-stone-200">FastAPI</span>
+              <span class="font-mono text-[10px] px-2.5 py-0.5 rounded-full bg-white/10 text-stone-200">TailwindCSS</span>
+              <span class="font-mono text-[10px] px-2.5 py-0.5 rounded-full bg-white/10 text-stone-200">React</span>
+              <span class="font-mono text-[10px] px-2.5 py-0.5 rounded-full bg-white/10 text-stone-200">Embedded C</span>
+              <span class="font-mono text-[10px] px-2.5 py-0.5 rounded-full bg-white/10 text-stone-200">IoT</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-4 pt-3 lg:pt-0 border-t lg:border-t-0 border-white/10 shrink-0">
+          <div class="flex flex-col items-center px-4 py-2 rounded-xl bg-white/5 border border-white/10">
+            <span class="text-lg font-mono font-bold text-white" id="statProjects">3</span>
+            <span class="font-mono text-[10px] text-stone-400 uppercase">Projects</span>
+          </div>
+          <div class="flex flex-col items-center px-4 py-2 rounded-xl bg-white/5 border border-white/10">
+            <span class="text-lg font-mono font-bold text-white" id="statCollabs">5</span>
+            <span class="font-mono text-[10px] text-stone-400 uppercase">Collabs</span>
+          </div>
+          <div class="flex flex-col items-center px-4 py-2 rounded-xl bg-white/5 border border-white/10">
+            <span class="text-lg font-mono font-bold text-[var(--color-lime)]" id="statEndorsements">12</span>
+            <span class="font-mono text-[10px] text-stone-400 uppercase">Endorsed</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================== -->
+      <!-- SEARCH, DOMAIN FILTERS & PEER DIRECTORY                        -->
+      <!-- ============================================================== -->
+      <section class="bento-card p-4 flex flex-col gap-3.5 border border-[var(--color-hairline)]" data-testid="tile-hub-toolbar">
+        
+        <!-- Search Input -->
+        <div class="relative w-full">
+          <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--color-muted)] text-[18px]">search</span>
+          <input type="text" id="peerSearchInput" placeholder="Search peers by name, skill, or project specialty..." class="w-full bg-[var(--color-card-subtle)] border border-[var(--color-hairline)] text-[var(--color-ink)] placeholder-[var(--color-muted)] text-xs rounded-full pl-10 pr-9 py-2.5 focus:outline-none focus:ring-1 focus:ring-[var(--color-lime)] transition-colors" />
+          <button type="button" id="clearPeerSearchBtn" class="absolute right-3.5 top-1/2 -translate-y-1/2 text-[var(--color-muted)] hover:text-[var(--color-ink)] hidden cursor-pointer text-xs">✕</button>
+        </div>
+
+        <!-- Domain Filter Pills & Counter Row -->
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pt-1 border-t border-[var(--color-hairline)]">
+          <div class="flex items-center gap-1.5 overflow-x-auto max-w-full pb-1 no-scrollbar text-xs" id="skillFilterPills">
+            <button type="button" class="skill-pill px-3.5 py-1.5 rounded-full font-medium bg-[var(--color-lime)] text-[var(--color-lime-ink)] shadow-2xs whitespace-nowrap active-pill cursor-pointer" data-skill="all">All Domains</button>
+            <button type="button" class="skill-pill px-3.5 py-1.5 rounded-full text-[var(--color-muted)] hover:text-[var(--color-ink)] bg-[var(--color-card-subtle)] hover:bg-[var(--color-hairline)] whitespace-nowrap transition-colors cursor-pointer" data-skill="frontend">Frontend &amp; UI</button>
+            <button type="button" class="skill-pill px-3.5 py-1.5 rounded-full text-[var(--color-muted)] hover:text-[var(--color-ink)] bg-[var(--color-card-subtle)] hover:bg-[var(--color-hairline)] whitespace-nowrap transition-colors cursor-pointer" data-skill="backend">Backend &amp; APIs</button>
+            <button type="button" class="skill-pill px-3.5 py-1.5 rounded-full text-[var(--color-muted)] hover:text-[var(--color-ink)] bg-[var(--color-card-subtle)] hover:bg-[var(--color-hairline)] whitespace-nowrap transition-colors cursor-pointer" data-skill="aiml">AI &amp; Machine Learning</button>
+            <button type="button" class="skill-pill px-3.5 py-1.5 rounded-full text-[var(--color-muted)] hover:text-[var(--color-ink)] bg-[var(--color-card-subtle)] hover:bg-[var(--color-hairline)] whitespace-nowrap transition-colors cursor-pointer" data-skill="iot">IoT &amp; Embedded</button>
+          </div>
+
+          <span class="font-mono text-xs text-[var(--color-muted)] shrink-0">
+            Showing <strong class="text-[var(--color-ink)] font-bold" id="peersCount">6</strong> student innovators
+          </span>
+        </div>
+
+      </section>
+
+      <!-- ============================================================== -->
+      <!-- PEERS BENTO GRID                                               -->
+      <!-- ============================================================== -->
+      <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="peersGrid" data-testid="tile-peers-grid">
+        <!-- Dynamically rendered peer cards by idea-hub.js -->
+      </section>
 
     </div>
   </main>
 
-  <!-- Shared Samskruti Institutional Footer -->
-  <footer class="w-full bg-[#F3EDE2]/80 border-t border-emerald-950/10 mt-auto">
-<div class="max-w-[1220px] mx-auto px-5 sm:px-8 py-8">
-<div class="flex flex-col md:flex-row items-center justify-between gap-6 pb-6 border-b border-stone-300/60">
-<div class="flex flex-col gap-1 text-center md:text-left">
-<div class="flex items-center justify-center md:justify-start gap-2 flex-wrap">
-<span class="font-grotesque text-2xl font-black text-[#053820]">Samskruti College of Engineering &amp; Technology</span>
-<span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300 font-mono-code text-[11px] font-bold">Code 259</span>
-</div>
-<p class="text-xs text-stone-600">Permanent SBTET &amp; AICTE Affiliation. Autonomous Campus Registry &amp; Academic Management Portal.</p>
-</div>
-<div class="flex flex-wrap items-center justify-center gap-3">
-<div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-stone-200 shadow-sm">
-<span class="w-2 h-2 rounded-full bg-emerald-600 animate-pulse"></span>
-<span class="font-mono-code text-xs text-stone-700">Biometric Sync Online</span>
-</div>
-<div class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white border border-stone-200 shadow-sm">
-<span class="material-symbols-outlined text-emerald-700 text-[16px]">verified</span>
-<span class="font-mono-code text-xs text-stone-700">SBTET Verified Hub</span>
-</div>
-</div>
-</div>
-<div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-5 text-xs text-stone-600">
-<span>© 2025 Samskruti College. PIN 24259-CS-025 Registry. All rights reserved.</span>
-<div class="flex items-center gap-5">
-<a class="font-mono-code hover:text-emerald-900 transition-colors" href="#">Academic Regulations</a>
-<a class="font-mono-code hover:text-emerald-900 transition-colors" href="#">Attendance Mandates</a>
-<a class="font-mono-code hover:text-emerald-900 transition-colors" href="#">Campus Support</a>
-</div>
-</div>
-</div>
-</footer>
-
-  <!-- Add Skill Modal -->
-  <div id="modalAddSkill" class="fixed inset-0 z-[20000] hidden bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-md w-full p-6 md:p-8 shadow-2xl border border-emerald-500/20 flex flex-col gap-5">
-      <div class="flex items-center justify-between">
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-800 flex items-center justify-center">
-            <span class="material-symbols-outlined text-[24px]">add_circle</span>
-          </div>
-          <h3 class="text-2xl font-bold text-on-surface">Add Technical Skill</h3>
+  <!-- ============================================================== -->
+  <!-- MODAL: EDIT MY SKILLS                                          -->
+  <!-- ============================================================== -->
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-xs hidden p-4" id="editSkillsModal">
+    <div class="bento-card max-w-lg w-full p-6 flex flex-col gap-4 shadow-2xl relative border border-[var(--color-hairline)]">
+      <div class="flex items-center justify-between pb-3 border-b border-[var(--color-hairline)]">
+        <div class="flex items-center gap-2">
+          <span class="w-8 h-8 rounded-full bg-[var(--color-lime)] text-[var(--color-lime-ink)] flex items-center justify-center">
+            <span class="material-symbols-outlined text-[18px]">psychology</span>
+          </span>
+          <h2 class="text-base font-semibold text-[var(--color-ink)]">Edit your published skills</h2>
         </div>
-        <button type="button" class="close-modal-btn text-stone-400 hover:text-stone-700 p-1">
-          <span class="material-symbols-outlined text-[22px]">close</span>
+        <button type="button" class="w-8 h-8 rounded-full bg-[var(--color-card-subtle)] hover:bg-[var(--color-hairline)] flex items-center justify-center text-[var(--color-muted)] close-skills-btn cursor-pointer">
+          <span class="material-symbols-outlined text-[18px]">close</span>
         </button>
       </div>
-      <form id="formAddSkill" class="flex flex-col gap-4">
-        <div>
-          <label class="block text-sm font-bold text-on-surface mb-1">Skill Name</label>
-          <input type="text" id="newSkillInput" required placeholder="e.g. Docker / Flutter / IoT Telemetry" class="w-full px-4 py-2.5 rounded-xl border border-stone-200 text-base focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
+
+      <form id="editSkillsForm" class="flex flex-col gap-3.5 text-xs">
+        <div class="flex flex-col gap-1">
+          <label class="font-medium text-[var(--color-ink)]">Professional Bio / Focus Statement</label>
+          <textarea id="modalBioInput" rows="2" class="w-full bg-[var(--color-card-subtle)] border border-[var(--color-hairline)] rounded-xl px-3 py-2 text-[var(--color-ink)] focus:outline-none focus:ring-1 focus:ring-[var(--color-lime)] resize-none"></textarea>
         </div>
-        <div class="flex items-center justify-end gap-3 mt-2">
-          <button type="button" class="close-modal-btn px-5 py-2 rounded-full border border-stone-200 font-bold text-on-surface-variant hover:bg-stone-50">Cancel</button>
-          <button type="submit" class="px-6 py-2 rounded-full bg-primary hover:bg-emerald-800 text-white font-bold shadow-md transition-all">Add Skill</button>
+
+        <div class="flex flex-col gap-1">
+          <label class="font-medium text-[var(--color-ink)]">Skills (Comma-separated)</label>
+          <input type="text" id="modalSkillsInput" placeholder="e.g. Python, Docker, Flutter, C++, Robotics" class="w-full bg-[var(--color-card-subtle)] border border-[var(--color-hairline)] rounded-xl px-3 py-2 text-[var(--color-ink)] font-mono focus:outline-none focus:ring-1 focus:ring-[var(--color-lime)]" />
+        </div>
+
+        <div class="p-3 rounded-xl bg-[var(--color-card-subtle)] border border-[var(--color-hairline)] flex items-center justify-between">
+          <div class="flex flex-col">
+            <span class="font-medium text-[var(--color-ink)]">Collaboration Availability</span>
+            <span class="text-[11px] text-[var(--color-muted)]">Allow classmates to send capstone invites</span>
+          </div>
+          <input type="checkbox" id="modalCollabCheckbox" checked class="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500 cursor-pointer" />
+        </div>
+
+        <div class="flex items-center justify-end gap-2 pt-2 border-t border-[var(--color-hairline)]">
+          <button type="button" class="px-4 py-2 rounded-full border border-[var(--color-hairline)] text-[var(--color-muted)] hover:text-[var(--color-ink)] close-skills-btn cursor-pointer">
+            Cancel
+          </button>
+          <button type="submit" id="btnSaveSkills" class="px-5 py-2 rounded-full bg-[var(--color-lime)] text-[var(--color-lime-ink)] font-semibold hover:opacity-90 active:scale-95 transition-all cursor-pointer">
+            Save Skill Profile
+          </button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- Pending Invites Modal -->
-  <div id="modalInvites" class="fixed inset-0 z-[20000] hidden bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-lg w-full p-6 md:p-8 shadow-2xl border border-emerald-500/20 flex flex-col gap-5">
-      <div class="flex items-center justify-between pb-3 border-b border-stone-200">
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-800 flex items-center justify-center">
-            <span class="material-symbols-outlined text-[24px]">mark_email_unread</span>
-          </div>
-          <h3 class="text-2xl font-bold text-on-surface">Project Collaboration Invites</h3>
+  <!-- ============================================================== -->
+  <!-- MODAL: INVITE TO PROJECT                                       -->
+  <!-- ============================================================== -->
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-xs hidden p-4" id="inviteProjectModal">
+    <div class="bento-card max-w-md w-full p-6 flex flex-col gap-4 shadow-2xl relative border border-[var(--color-hairline)]">
+      <div class="flex items-center justify-between pb-3 border-b border-[var(--color-hairline)]">
+        <div class="flex items-center gap-2">
+          <span class="w-8 h-8 rounded-full bg-[var(--color-lime)] text-[var(--color-lime-ink)] flex items-center justify-center">
+            <span class="material-symbols-outlined text-[18px]">group_add</span>
+          </span>
+          <h2 class="text-sm font-semibold text-[var(--color-ink)]">Invite to project</h2>
         </div>
-        <button type="button" class="close-modal-btn text-stone-400 hover:text-stone-700 p-1">
-          <span class="material-symbols-outlined text-[22px]">close</span>
+        <button type="button" class="w-8 h-8 rounded-full bg-[var(--color-card-subtle)] hover:bg-[var(--color-hairline)] flex items-center justify-center text-[var(--color-muted)] close-invite-btn cursor-pointer">
+          <span class="material-symbols-outlined text-[18px]">close</span>
         </button>
       </div>
-      <div class="flex flex-col gap-3">
-        <div class="p-4 rounded-2xl bg-surface-container-low border border-surface-container-highest flex items-center justify-between">
-          <div class="flex items-center gap-3">
-            <div class="w-9 h-9 rounded-full bg-emerald-100 text-emerald-800 font-bold text-sm flex items-center justify-center">GL</div>
-            <div class="flex flex-col">
-              <span class="font-bold text-base text-on-surface">Gona Laxmi Narasimha</span>
-              <span class="text-xs text-stone-500">Project: State Hackathon 2025</span>
-            </div>
+
+      <div class="flex flex-col gap-3 text-xs">
+        <span class="text-[var(--color-muted)]">Inviting <strong class="text-[var(--color-ink)]" id="inviteTargetName">Peer</strong> to collaborate</span>
+        
+        <div class="flex flex-col gap-1">
+          <label class="font-medium text-[var(--color-ink)]">Select Project</label>
+          <select id="inviteProjectSelect" class="w-full bg-[var(--color-card-subtle)] border border-[var(--color-hairline)] rounded-xl px-3 py-2 text-[var(--color-ink)] focus:outline-none focus:ring-1 focus:ring-[var(--color-lime)]">
+            <option value="Smart Campus Biometric IoT Telemetry">Smart Campus Biometric IoT Telemetry</option>
+            <option value="SBTET Autonomous AI Question Predictor">SBTET Autonomous AI Question Predictor</option>
+            <option value="Autonomous Solar Rover Platform">Autonomous Solar Rover Platform</option>
+          </select>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label class="font-medium text-[var(--color-ink)]">Role / Responsibilities</label>
+          <input type="text" id="inviteRoleInput" placeholder="e.g. Firmware Engineer, Backend Lead, UI Designer" class="w-full bg-[var(--color-card-subtle)] border border-[var(--color-hairline)] rounded-xl px-3 py-2 text-[var(--color-ink)] focus:outline-none focus:ring-1 focus:ring-[var(--color-lime)]" />
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label class="font-medium text-[var(--color-ink)]">Personal Note</label>
+          <textarea id="inviteNoteInput" rows="2" placeholder="Tell them why you want them on the team..." class="w-full bg-[var(--color-card-subtle)] border border-[var(--color-hairline)] rounded-xl px-3 py-2 text-[var(--color-ink)] placeholder-[var(--color-muted)] focus:outline-none focus:ring-1 focus:ring-[var(--color-lime)] resize-none"></textarea>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-end gap-2 pt-2 border-t border-[var(--color-hairline)]">
+        <button type="button" class="px-4 py-2 rounded-full border border-[var(--color-hairline)] text-[var(--color-muted)] close-invite-btn cursor-pointer text-xs">
+          Cancel
+        </button>
+        <button type="button" id="btnSendInvite" class="px-5 py-2 rounded-full bg-[var(--color-lime)] text-[var(--color-lime-ink)] font-semibold hover:opacity-90 active:scale-95 transition-all cursor-pointer text-xs flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-[16px]">send</span>
+          <span>Send Invitation</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- MODAL: COLLABORATION INVITES LIST                              -->
+  <!-- ============================================================== -->
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-xs hidden p-4" id="collaborationInvitesModal">
+    <div class="bento-card max-w-lg w-full p-6 flex flex-col gap-4 shadow-2xl relative border border-[var(--color-hairline)]">
+      <div class="flex items-center justify-between pb-3 border-b border-[var(--color-hairline)]">
+        <div class="flex items-center gap-2">
+          <span class="w-8 h-8 rounded-full bg-[var(--color-lime)] text-[var(--color-lime-ink)] flex items-center justify-center">
+            <span class="material-symbols-outlined text-[18px]">inbox</span>
+          </span>
+          <h2 class="text-base font-semibold text-[var(--color-ink)]">Collaboration Invites</h2>
+        </div>
+        <button type="button" class="w-8 h-8 rounded-full bg-[var(--color-card-subtle)] hover:bg-[var(--color-hairline)] flex items-center justify-center text-[var(--color-muted)] close-invites-modal-btn cursor-pointer">
+          <span class="material-symbols-outlined text-[18px]">close</span>
+        </button>
+      </div>
+
+      <div class="flex flex-col gap-3 text-xs" id="invitesListContainer">
+        <!-- Default sample invites -->
+        <div class="p-3.5 rounded-xl bg-[var(--color-card-subtle)] border border-[var(--color-hairline)] flex flex-col gap-2">
+          <div class="flex items-center justify-between">
+            <span class="font-medium text-[var(--color-ink)]">Smart Energy Monitoring IoT</span>
+            <span class="font-mono text-[11px] text-[var(--color-muted)]">From: Srija C. (CS-005)</span>
           </div>
-          <div class="flex gap-2">
-            <button type="button" onclick="window.acceptInvite(this)" class="px-3 py-1 rounded-full bg-primary text-white text-xs font-bold hover:bg-emerald-800">Accept</button>
-            <button type="button" onclick="this.closest('.p-4').remove()" class="px-3 py-1 rounded-full border border-stone-200 text-stone-600 text-xs font-bold hover:bg-stone-50">Decline</button>
+          <p class="text-[var(--color-muted)]">"Hey Himesh, we need your FastAPI backend skills for our final year IoT power telemetry rig."</p>
+          <div class="flex items-center justify-end gap-2 pt-1">
+            <button type="button" class="btn-decline-invite px-3 py-1 rounded-full border border-[var(--color-hairline)] text-[var(--color-muted)] hover:text-[#B42318] cursor-pointer">Decline</button>
+            <button type="button" class="btn-accept-invite px-3.5 py-1 rounded-full bg-[var(--color-lime)] text-[var(--color-lime-ink)] font-semibold hover:opacity-90 cursor-pointer">Accept</button>
           </div>
         </div>
-        <div class="p-4 rounded-2xl bg-surface-container-low border border-surface-container-highest flex items-center justify-between">
-          <div class="flex items-center gap-3">
-            <div class="w-9 h-9 rounded-full bg-emerald-100 text-emerald-800 font-bold text-sm flex items-center justify-center">DT</div>
-            <div class="flex flex-col">
-              <span class="font-bold text-base text-on-surface">Dulipudi Tarun</span>
-              <span class="text-xs text-stone-500">Project: Campus Smart Canteen</span>
-            </div>
+
+        <div class="p-3.5 rounded-xl bg-[var(--color-card-subtle)] border border-[var(--color-hairline)] flex flex-col gap-2">
+          <div class="flex items-center justify-between">
+            <span class="font-medium text-[var(--color-ink)]">SBTET Autonomous Exam Hall App</span>
+            <span class="font-mono text-[11px] text-[var(--color-muted)]">From: Tarun D. (CS-002)</span>
           </div>
-          <div class="flex gap-2">
-            <button type="button" onclick="window.acceptInvite(this)" class="px-3 py-1 rounded-full bg-primary text-white text-xs font-bold hover:bg-emerald-800">Accept</button>
-            <button type="button" onclick="this.closest('.p-4').remove()" class="px-3 py-1 rounded-full border border-stone-200 text-stone-600 text-xs font-bold hover:bg-stone-50">Decline</button>
+          <p class="text-[var(--color-muted)]">"Looking for someone to lead the dynamic timetable layout and student QR scanner."</p>
+          <div class="flex items-center justify-end gap-2 pt-1">
+            <button type="button" class="btn-decline-invite px-3 py-1 rounded-full border border-[var(--color-hairline)] text-[var(--color-muted)] hover:text-[#B42318] cursor-pointer">Decline</button>
+            <button type="button" class="btn-accept-invite px-3.5 py-1 rounded-full bg-[var(--color-lime)] text-[var(--color-lime-ink)] font-semibold hover:opacity-90 cursor-pointer">Accept</button>
           </div>
         </div>
       </div>
@@ -540,12 +303,25 @@
   </div>
 
   <!-- Toast Notification -->
-  <div id="toastNotification" class="fixed bottom-6 right-6 z-[30000] hidden px-5 py-3 rounded-2xl bg-emerald-900 text-white font-bold text-base shadow-2xl flex items-center gap-3 border border-emerald-400/40 transform transition-all duration-300">
-    <span class="material-symbols-outlined text-emerald-300 text-[20px]" id="toastIcon">check_circle</span>
-    <span id="toastMsg">Action completed successfully</span>
+  <div id="toastNotification" class="fixed bottom-6 right-6 z-50 transform transition-all duration-300 hidden">
+    <div class="bento-card py-3 px-5 flex items-center gap-3 shadow-xl border border-[var(--color-hairline)] bg-[var(--color-card)] text-[var(--color-ink)]">
+      <span class="material-symbols-outlined text-[20px] text-[var(--color-lime-ink)] bg-[var(--color-lime)] rounded-full p-1">check</span>
+      <span id="toastMsg" class="text-xs font-medium">Operation completed successfully</span>
+    </div>
   </div>
 
-  <!-- Idea Hub Page Controller Script -->
-  <script src="/screens/02-student-portal/idea-hub.js"></script>
+  <!-- Shared Institutional Footer -->
+  <footer class="w-full py-8 border-t border-[var(--color-hairline)] mt-auto bg-[var(--color-canvas)]">
+    <div class="campus-container flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-[var(--color-muted)]">
+      <div class="flex items-center gap-2">
+        <span class="font-medium text-[var(--color-ink)]">Samskruti College of Engineering &amp; Technology</span>
+        <span>•</span>
+        <span>Institution Code 259</span>
+      </div>
+      <div>
+        <span>Affiliated to SBTET &amp; JNTUH • Autonomous Academic Council</span>
+      </div>
+    </div>
+  </footer>
 </body>
 </html>
