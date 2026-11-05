@@ -5783,7 +5783,7 @@ Original source file for `top-nav.css` under `frontend/css/top-nav.css`. Contain
 }
 
 .dock-monogram,
-.dock-cc-monogram {
+.campus-nav-link {
   font-family: var(--font-display, var(--font-sans));
   font-weight: 900;
   font-size: 20px;
@@ -5794,7 +5794,7 @@ Original source file for `top-nav.css` under `frontend/css/top-nav.css`. Contain
 }
 
 [data-theme="dark"] .dock-monogram,
-[data-theme="dark"] .dock-cc-monogram {
+[data-theme="dark"] .campus-nav-link {
   color: var(--color-apricot);
   text-shadow: 0 0 14px rgba(255, 207, 153, 0.55);
 }
@@ -11077,7 +11077,7 @@ Original source file for `dc-dynamic-island.js` under `frontend/js/dc-dynamic-is
   const DOCK_MODE = 'hover-expand'; // 'hover-expand' (default) | 'always-expanded'
   const EXPAND_DELAY_MS = 35;
   const COLLAPSE_BUFFER_MS = 220;
-  const COLLAPSE_WIDTH_PX = 72;
+  // Navigation is always open (no collapse)
 
   // Real Navigation Roster (7 student items; ZERO Profile in dock)
   const STUDENT_NAV = [
@@ -11262,7 +11262,7 @@ Original source file for `dc-dynamic-island.js` under `frontend/js/dc-dynamic-is
     if (isAuth) {
       mount.innerHTML = `
         <nav class="dc-dynamic-island-nav" id="campusDynamicIsland" aria-label="Primary">
-          <div class="dock-cc-monogram">CC</div>
+          <nav class="campus-primary-nav"></nav>
         </nav>
       `;
       return;
@@ -11282,7 +11282,7 @@ Original source file for `dc-dynamic-island.js` under `frontend/js/dc-dynamic-is
                 class="dock-collapsed-trigger" 
                 id="dockCollapsedBtn" 
                 aria-label="Expand Campus Navigation">
-          <span class="dock-cc-monogram">CC</span>
+          <!-- Permanent open navigation -->
         </button>
 
         <!-- Expanded State: Navigation Items with Icon ABOVE Label -->
@@ -11350,7 +11350,7 @@ Original source file for `dc-dynamic-island.js` under `frontend/js/dc-dynamic-is
       clearTimeout(expandTimer);
       collapseTimer = setTimeout(() => {
         if (!dock.contains(document.activeElement)) {
-          dock.style.width = `${COLLAPSE_WIDTH_PX}px`;
+          // Permanent open navigation
           dock.classList.remove('is-expanded');
           dock.setAttribute('aria-expanded', 'false');
         }
@@ -11365,7 +11365,7 @@ Original source file for `dc-dynamic-island.js` under `frontend/js/dc-dynamic-is
     }
 
     // Default collapsed width
-    dock.style.width = `${COLLAPSE_WIDTH_PX}px`;
+    // Permanent open navigation
 
     // Hover-intent
     dock.addEventListener('mouseenter', expandDock);
@@ -11378,7 +11378,7 @@ Original source file for `dc-dynamic-island.js` under `frontend/js/dc-dynamic-is
     // Escape collapses
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
-        dock.style.width = `${COLLAPSE_WIDTH_PX}px`;
+        // Permanent open navigation
         dock.classList.remove('is-expanded');
         dock.setAttribute('aria-expanded', 'false');
         collapsedBtn?.focus();
@@ -11397,7 +11397,7 @@ Original source file for `dc-dynamic-island.js` under `frontend/js/dc-dynamic-is
 
     document.addEventListener('click', (e) => {
       if (!dock.contains(e.target) && dock.classList.contains('is-expanded')) {
-        dock.style.width = `${COLLAPSE_WIDTH_PX}px`;
+        // Permanent open navigation
         dock.classList.remove('is-expanded');
         dock.setAttribute('aria-expanded', 'false');
       }

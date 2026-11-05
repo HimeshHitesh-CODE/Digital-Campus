@@ -1,16 +1,18 @@
 /* ================================================================
    STITCH CAMPUS CONNECT — MASTER DESIGN SYSTEM & UTILITY STYLES
-   Visual, interactive, and typography definitions for all 7 screens
+   Visual, interactive, and typography definitions for Kinetic Bento
    ================================================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Darker+Grotesque:wght@400;500;600;700;800;900&family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..700&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap');
+@import url('/css/theme-tokens.css');
 
-/* Base Clean Reset for Stitch Views */
+/* Base Clean Reset for Kinetic Bento Views */
 html, body {
   margin: 0;
   padding: 0;
-  font-family: 'Darker Grotesque', sans-serif;
-  overscroll-behavior: none;
+  font-family: var(--font-sans, 'Plus Jakarta Sans', sans-serif);
+  background-color: var(--color-canvas) !important;
+  color: var(--color-ink) !important;
+  min-height: 100dvh;
 }
 
 /* Hide native scrollbar while retaining smooth touch scrolling */
@@ -25,7 +27,7 @@ html, body {
   -ms-overflow-style: none !important;
 }
 
-/* Material Symbols alignment fix */
+/* Material Symbols alignment */
 .material-symbols-outlined {
   font-family: 'Material Symbols Outlined' !important;
   font-weight: normal;
@@ -44,87 +46,42 @@ html, body {
 }
 
 /* Typography Utility Helper Classes */
-.font-darker { font-family: 'Darker Grotesque', sans-serif; }
-.font-dg { font-family: 'Darker Grotesque', sans-serif; }
-.font-grotesque { font-family: 'Darker Grotesque', sans-serif; }
-.font-editorial { font-family: 'Newsreader', serif; }
-.font-headline-hero { font-family: 'Newsreader', 'Darker Grotesque', serif; }
-.font-title-editorial { font-family: 'Newsreader', 'Darker Grotesque', serif; }
-.font-mono-code { font-family: 'IBM Plex Mono', monospace; }
-.font-code { font-family: 'IBM Plex Mono', monospace; }
+.font-sans { font-family: var(--font-sans, 'Plus Jakarta Sans', sans-serif); }
+.font-mono { font-family: var(--font-mono, 'IBM Plex Mono', monospace); }
+.font-code { font-family: var(--font-mono, 'IBM Plex Mono', monospace); }
+.font-script { font-family: var(--font-script, 'Caveat', cursive); }
 
-/* ── Stitch Glass Cards & Volumetric Surfaces ─────────────────── */
-.glass-card {
-  background: rgba(255, 255, 255, 0.78);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(16, 185, 129, 0.16);
-  box-shadow: 0 14px 34px -8px rgba(16, 185, 129, 0.09), 0 2px 10px rgba(0, 0, 0, 0.02);
+/* ── Tactile Bento Cards (Flat surfaces bounded by micro-hairlines) ── */
+.glass-card,
+.card-volumetric,
+.bento-card {
+  background: var(--color-card) !important;
+  border-radius: var(--radius-card, 28px);
+  border: 1px solid var(--color-hairline, rgba(0, 0, 0, 0.08)) !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.feature-card-dark,
+.bento-card-dark {
+  background: var(--color-feature-card, #1E1E1F) !important;
+  border-radius: var(--radius-card, 28px);
+  border: 1px solid var(--color-hairline, rgba(255, 255, 255, 0.08)) !important;
+  color: var(--color-feature-card-ink, #F2F2F2) !important;
+  box-shadow: none !important;
 }
 
 .glass-card-subtle {
-  background: rgba(255, 255, 255, 0.65);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(16, 185, 129, 0.12);
-}
-
-.glass-card-inner {
-  background: rgba(240, 253, 244, 0.55);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(16, 185, 129, 0.14);
-}
-
-.glass-glow {
-  box-shadow: 0 20px 45px -12px rgba(16, 185, 129, 0.28), inset 0 1px 1px 0 rgba(255, 255, 255, 0.4);
-}
-
-.card-volumetric {
-  box-shadow: 0 16px 36px -10px rgba(16, 185, 129, 0.12), 0 4px 12px -2px rgba(5, 150, 105, 0.05);
-  border: 1px solid rgba(16, 185, 129, 0.22);
-  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
-}
-
-.card-volumetric:hover {
-  box-shadow: 0 22px 42px -10px rgba(16, 185, 129, 0.20), 0 6px 16px -2px rgba(5, 150, 105, 0.08);
-  border-color: rgba(16, 185, 129, 0.42);
-}
-
-.emerald-glow-shadow {
-  box-shadow: 0 10px 30px -5px rgba(16, 185, 129, 0.38), 0 0 16px rgba(52, 211, 153, 0.22);
-}
-
-.otp-box-glow {
-  box-shadow: inset 0 0 30px rgba(16, 185, 129, 0.07), 0 12px 32px -8px rgba(5, 150, 105, 0.16);
-}
-
-/* ── Ambient Mesh Grids & Background Textures ─────────────────── */
-.bg-mesh-pattern {
-  background-color: #fbf9f2;
-  background-image: 
-    radial-gradient(at 10% 12%, rgba(52, 211, 153, 0.22) 0px, transparent 52%),
-    radial-gradient(at 88% 18%, rgba(16, 185, 129, 0.18) 0px, transparent 48%),
-    radial-gradient(at 50% 50%, rgba(167, 243, 208, 0.25) 0px, transparent 60%),
-    radial-gradient(at 15% 82%, rgba(5, 150, 105, 0.14) 0px, transparent 50%),
-    radial-gradient(at 85% 88%, rgba(110, 231, 183, 0.22) 0px, transparent 55%),
-    radial-gradient(rgba(16, 185, 129, 0.08) 1px, transparent 0);
-  background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 24px 24px;
-}
-
-.bg-mesh-grid {
-  background-image: radial-gradient(rgba(16, 185, 129, 0.08) 1px, transparent 1px);
-  background-size: 24px 24px;
-}
-
-.bg-dot-pattern {
-  background-image: radial-gradient(rgba(16, 185, 129, 0.12) 1.2px, transparent 1.2px);
-  background-size: 24px 24px;
+  background: var(--color-card-subtle, #F5F5F3) !important;
+  border-radius: 18px;
+  border: 1px solid var(--color-hairline, rgba(0, 0, 0, 0.08)) !important;
+  box-shadow: none !important;
 }
 
 /* ── Stitch Page Layout Container (Offsets below fixed nav) ───── */
 .stitch-layout-wrapper {
-  min-height: 100vh;
+  min-height: 100dvh;
   width: 100%;
   padding-top: 80px; /* Space for our persistent navigation header */
   display: flex;
@@ -133,46 +90,32 @@ html, body {
 
 @media (max-width: 640px) {
   .stitch-layout-wrapper {
-    padding-top: 72px;
+    padding-top: 76px;
   }
 }
-
 
 /* Elevated Tactile Button System & Hover Physics */
 button, .tactile-btn, input[type="button"], input[type="submit"] {
   cursor: pointer;
-  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.15s ease;
 }
 
-button:hover, .tactile-btn:hover {
-  transform: translateY(-1.5px);
+/* Primary Button with Signal Lime */
+.btn-primary,
+.bg-lime-btn {
+  background-color: var(--color-lime, #D6F25E) !important;
+  color: var(--color-lime-ink, #1A1A1A) !important;
+  border-radius: var(--radius-pill, 9999px);
+  font-weight: 500;
+  box-shadow: none !important;
 }
 
-button:active, .tactile-btn:active {
-  transform: scale(0.97) translateY(0);
-}
-
-/* Luminous Gradient Action Buttons */
-button.bg-gradient-to-r:hover, .btn-primary:hover {
-  box-shadow: 0 10px 25px -4px rgba(4, 120, 87, 0.35);
-  filter: brightness(1.03);
-}
-
-/* Glass Card Elevation */
-.glass-card {
-  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+.btn-primary:hover,
+.bg-lime-btn:hover {
+  filter: brightness(0.95);
 }
 
 /* Table Row Elevation */
 tbody tr {
-  transition: background-color 0.18s ease;
-}
-
-/* Pulsing Beacon */
-@keyframes azurePulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.5; transform: scale(1.15); }
-}
-.azure-pulse {
-  animation: azurePulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  transition: background-color 0.15s ease;
 }

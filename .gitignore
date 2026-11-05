@@ -24,3 +24,6 @@ backend/__pycache__/
 
 *.bak
 *.bak_*
+
+stitch_exports/
+scratch/

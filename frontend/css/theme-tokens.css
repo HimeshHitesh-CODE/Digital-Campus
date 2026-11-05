@@ -1,292 +1,226 @@
 /* ================================================================
    SAMSKRUTI DIGITAL CAMPUS (INSTITUTION CODE: 259)
-   MASTER DESIGN SYSTEM TOKENS — PALETTE & TYPOGRAPHY SPECIFICATION
-   
-   Color Palette Source (Coolors Luxury Editorial Academic):
-   1. #FFCF99 — Apricot Cream (Warm Highlight / Soft Tints / Badges)
-   2. #9E2B25 — Brown Red / Terracotta (Bold Primary Accent / Action CTAs)
-   3. #51355A — Vintage Grape (Sophisticated Deep Plum / Mid-tones / Borders)
-   4. #2A0C4E — Dark Amethyst (Imperial Midnight Purple / Headings & Dark Canvas)
-   5. #8A9720 — Olive Green (Vitality / Progress / Success / Telemetry / Sparklines)
+   MASTER KINETIC BENTO DESIGN SYSTEM TOKENS
+   Specification: Tactile Flat Bento with Electric Lime & Lavender Accents
    ================================================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Caveat:wght@600;700&display=swap');
+@import url('/css/fonts.css');
 
 /* ================================================================
-   1. LIGHT THEME (Warm Alabaster Canvas + Amethyst & Terracotta)
+   1. LIGHT THEME (Master Palette from DESIGN.md)
    ================================================================ */
 :root,
 [data-theme="light"] {
   color-scheme: light;
 
-  /* ── Layout & Spatial Metrics ───────────────────────────────── */
-  --container-max-width: 1240px;
-  --header-height: 72px;
-  --radius-card: 26px;
-  --radius-tile: 18px;
-  --radius-input: 13px;
-  --radius-pill: 9999px;
-  --z-header: 1000;
-  --z-dock: 10000;
-  --z-dropdown: 10050;
-  --z-modal: 20000;
+  /* ── Canvas & Surface Tokens ────────────────────────────────── */
+  --color-canvas:              #E4E4E1;
+  --color-card:                #FFFFFF;
+  --color-card-subtle:         #F5F5F3;
+  --color-feature-card:        #1E1E1F; /* Intentional dark feature card in light mode */
+  --color-feature-card-ink:    #F2F2F2;
+  --color-feature-card-muted:  #9A9A9A;
 
-  /* ── The 5 Master Palette Tokens ────────────────────────────── */
-  --color-apricot:       #FFCF99;
-  --color-terracotta:    #9E2B25;
-  --color-grape:         #51355A;
-  --color-amethyst:      #2A0C4E;
-  --color-olive:         #8A9720;
+  /* ── Typography Ink Tokens ──────────────────────────────────── */
+  --color-ink:                 #1A1A1A;
+  --color-muted:               #6E6E6E;
+  --color-hairline:            rgba(0, 0, 0, 0.08);
 
-  /* ── Canvas Background & Ambient Editorial Lighting ─────────── */
-  --bg-app:              #FAF6F0;
-  --bg-canvas:           #F6F0E8;
-  --bg-gradient:         radial-gradient(circle at 10% 8%, rgba(255, 207, 153, 0.40) 0%, transparent 45%),
-                         radial-gradient(circle at 90% 12%, rgba(138, 151, 32, 0.12) 0%, transparent 50%),
-                         radial-gradient(circle at 85% 85%, rgba(81, 53, 90, 0.08) 0%, transparent 55%),
-                         linear-gradient(180deg, #FAF6F0 0%, #F5EFE6 50%, #EFE7DC 100%);
+  /* ── Accent Signal Layers ───────────────────────────────────── */
+  --color-lime:                #D6F25E;
+  --color-lime-ink:            #1A1A1A; /* Text on lime is ALWAYS #1A1A1A */
+  --color-lavender:            #B9AEF2;
 
-  /* ── Glass Surfaces & Card Backdrops ────────────────────────── */
-  --surface-0:           #ffffff;
-  --surface-card:        rgba(255, 255, 255, 0.88);
-  --surface-card-hover:  rgba(255, 255, 255, 0.96);
-  --surface-glass:       rgba(255, 255, 255, 0.75);
-  --surface-pill:        rgba(255, 255, 255, 0.92);
-  --surface-elevated:    #ffffff;
-  --surface-subtle:      rgba(255, 248, 238, 0.85);
-  --surface-overlay:     rgba(42, 12, 78, 0.45);
+  /* ── Header & Navigation Surfaces ───────────────────────────── */
+  --header-bg-transparent:     transparent;
+  --header-bg-scrolled:        rgba(228, 228, 225, 0.88);
+  --color-nav-bg:              #FFFFFF;
+  --color-nav-border:          rgba(0, 0, 0, 0.08);
+  --color-nav-inactive:        #6E6E6E;
+  --color-nav-hover:           rgba(0, 0, 0, 0.04);
+  --color-nav-active-bg:       #D6F25E;
+  --color-nav-active-ink:      #1A1A1A;
 
-  /* ── Brand Primary & Accents ────────────────────────────────── */
-  --brand-primary:       #9E2B25;                 /* Terracotta Crimson */
-  --brand-primary-hover: #801F1A;
-  --brand-primary-tint:  rgba(158, 43, 37, 0.10);
-  --brand-primary-light: rgba(158, 43, 37, 0.16);
+  /* ── Semantic Status Colors (DESIGN.md) ─────────────────────── */
+  --color-danger-bg:           #FFE1DE;
+  --color-danger-ink:          #B42318;
+  --color-danger-border:       rgba(180, 35, 24, 0.15);
 
-  --brand-accent:        #8A9720;                 /* Olive Green */
-  --brand-accent-hover:  #717C17;
-  --brand-mint:          #8A9720;
-  --brand-mint-deep:     #5F6812;
-  --brand-mint-tint:     rgba(138, 151, 32, 0.14);
-  --brand-active-glow:   rgba(138, 151, 32, 0.30);
+  --color-warning-bg:          #FFF0C7;
+  --color-warning-ink:         #8A5A00;
+  --color-warning-border:      rgba(138, 90, 0, 0.15);
 
-  /* ── Rich Typography & Readability ──────────────────────────── */
-  --text-primary:        #2A0C4E;                 /* Deep Imperial Amethyst */
-  --text-heading:        #2A0C4E;
-  --text-secondary:      #51355A;                 /* Vintage Grape */
-  --text-body:           #432A4B;
-  --text-muted:          #6F5379;
-  --text-subtle:         #8F7399;
-  --text-inverse:        #FFFFFF;
-  --text-link:           #9E2B25;
-  --text-link-hover:     #801F1A;
+  --color-info-bg:             #E3ECF9;
+  --color-info-ink:            #2F5D8A;
+  --color-info-border:         rgba(47, 93, 138, 0.15);
 
-  /* ── Borders & Hairline Outlines ────────────────────────────── */
-  --border-subtle:       rgba(81, 53, 90, 0.08);
-  --border-default:      rgba(81, 53, 90, 0.14);
-  --border-medium:       rgba(81, 53, 90, 0.22);
-  --border-glass:        rgba(255, 255, 255, 0.90);
-  --border-card:         rgba(81, 53, 90, 0.10);
-  --border-card-outer:   rgba(255, 207, 153, 0.45);
-  --border-active:       #9E2B25;
+  --color-success-bg:          #D6F25E;
+  --color-success-ink:         #1A1A1A;
+  --color-success-border:      rgba(0, 0, 0, 0.08);
 
-  /* ── Luxury Soft Shadows ────────────────────────────────────── */
-  --shadow-xs:           0 1px 3px rgba(42, 12, 78, 0.03);
-  --shadow-sm:           0 3px 10px rgba(42, 12, 78, 0.05), 0 1px 3px rgba(42, 12, 78, 0.03);
-  --shadow-md:           0 8px 24px rgba(42, 12, 78, 0.07), 0 2px 6px rgba(42, 12, 78, 0.03);
-  --shadow-lg:           0 16px 40px rgba(42, 12, 78, 0.09), 0 4px 12px rgba(42, 12, 78, 0.04);
-  --shadow-card:         0 10px 30px rgba(42, 12, 78, 0.06), 0 1px 4px rgba(42, 12, 78, 0.03);
-  --shadow-card-hover:   0 18px 44px rgba(42, 12, 78, 0.11), 0 4px 12px rgba(158, 43, 37, 0.08);
-  --shadow-dock:         0 12px 36px rgba(42, 12, 78, 0.12), 0 2px 8px rgba(42, 12, 78, 0.06);
+  /* ── Geometry & Layout ──────────────────────────────────────── */
+  --radius-card:               28px;
+  --radius-pill:               9999px;
+  --radius-circle:             50%;
+  --size-icon-chip:            40px;
+  --hairline-width:            1px;
 
-  /* ── Dynamic Island Dock (Light Mode) ───────────────────────── */
-  --dock-bg:             rgba(255, 255, 255, 0.92);
-  --dock-bg-collapsed:   rgba(255, 255, 255, 0.95);
-  --dock-border:         rgba(81, 53, 90, 0.16);
-  --dock-border-hover:   rgba(158, 43, 37, 0.40);
-  --dock-glow:           0 12px 36px rgba(42, 12, 78, 0.10);
-  --dock-pill-w:         72px;
-  --dock-pill-h:         56px;
-  --dock-expanded-h:     56px;
-  --dock-active-bg:      #8A9720;
-  --dock-active-text:    #ffffff;
-  --dock-item-text:      #51355A;
-  --dock-item-hover:     #2A0C4E;
-  --dock-sliding-bg:     rgba(138, 151, 32, 0.18);
-  --dock-sliding-border: rgba(138, 151, 32, 0.45);
+  --container-max-width:       1280px;
+  --container-gutter:          clamp(20px, 4vw, 48px);
+  --header-height:             72px;
 
-  /* ── Badges & Status Indicators ─────────────────────────────── */
-  --state-success:       #5F6812;
-  --state-success-bg:    rgba(138, 151, 32, 0.16);
-  --state-warning:       #9E2B25;
-  --state-warning-bg:    rgba(255, 207, 153, 0.35);
-  --state-danger:        #9E2B25;
-  --state-danger-bg:     rgba(158, 43, 37, 0.12);
-
-  /* ── Wave Graphic Colors ────────────────────────────────────── */
-  --wave-color-1:        rgba(255, 207, 153, 0.45);
-  --wave-color-2:        rgba(138, 151, 32, 0.15);
-  --wave-color-3:        rgba(81, 53, 90, 0.09);
+  /* ── Typography Mappings ────────────────────────────────────── */
+  --font-sans:                 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-mono:                 'IBM Plex Mono', monospace;
+  --font-script:               'Caveat', cursive;
 }
 
 /* ================================================================
-   2. DARK THEME (Imperial Amethyst Velvet + Apricot Glow & Olive)
+   2. DARK THEME (Master Palette from DESIGN.md)
    ================================================================ */
-[data-theme="dark"] {
+[data-theme="dark"],
+.dark {
   color-scheme: dark;
 
-  /* ── Layout & Spatial Metrics ───────────────────────────────── */
-  --container-max-width: 1240px;
-  --header-height: 72px;
+  /* ── Canvas & Surface Tokens ────────────────────────────────── */
+  --color-canvas:              #121212;
+  --color-card:                #1C1C1C;
+  --color-card-subtle:         #242424;
+  --color-feature-card:        #262626;
+  --color-feature-card-ink:    #F2F2F2;
+  --color-feature-card-muted:  #9A9A9A;
 
-  /* ── The 5 Master Palette Tokens ────────────────────────────── */
-  --color-apricot:       #FFCF99;
-  --color-terracotta:    #9E2B25;
-  --color-grape:         #51355A;
-  --color-amethyst:      #2A0C4E;
-  --color-olive:         #8A9720;
+  /* ── Typography Ink Tokens ──────────────────────────────────── */
+  --color-ink:                 #F2F2F2;
+  --color-muted:               #9A9A9A;
+  --color-hairline:            rgba(255, 255, 255, 0.08);
 
-  /* ── Canvas Background & Ambient Lighting ───────────────────── */
-  --bg-app:              #140526;
-  --bg-canvas:           #1A0831;
-  --bg-gradient:         radial-gradient(circle at 12% 10%, rgba(81, 53, 90, 0.55) 0%, transparent 55%),
-                         radial-gradient(circle at 88% 88%, rgba(42, 12, 78, 0.90) 0%, transparent 60%),
-                         radial-gradient(circle at 50% 40%, rgba(138, 151, 32, 0.08) 0%, transparent 65%),
-                         linear-gradient(180deg, #120421 0%, #1A0831 50%, #140526 100%);
+  /* ── Accent Signal Layers ───────────────────────────────────── */
+  --color-lime:                #D6F25E;
+  --color-lime-ink:            #1A1A1A; /* Text on lime is ALWAYS #1A1A1A */
+  --color-lavender:            #A99CF0;
 
-  /* ── Glass Surfaces & Card Backdrops ────────────────────────── */
-  --surface-0:           #1D0937;
-  --surface-card:        rgba(42, 12, 78, 0.58);
-  --surface-card-hover:  rgba(55, 18, 100, 0.70);
-  --surface-glass:       rgba(34, 10, 64, 0.65);
-  --surface-pill:        rgba(42, 12, 78, 0.85);
-  --surface-elevated:    rgba(51, 16, 92, 0.95);
-  --surface-subtle:      rgba(81, 53, 90, 0.28);
-  --surface-overlay:     rgba(8, 2, 15, 0.82);
+  /* ── Header & Navigation Surfaces ───────────────────────────── */
+  --header-bg-transparent:     transparent;
+  --header-bg-scrolled:        rgba(18, 18, 18, 0.88);
+  --color-nav-bg:              #1E1E1F;
+  --color-nav-border:          rgba(255, 255, 255, 0.12);
+  --color-nav-inactive:        #9A9A9A;
+  --color-nav-hover:           rgba(255, 255, 255, 0.06);
+  --color-nav-active-bg:       #D6F25E;
+  --color-nav-active-ink:      #1A1A1A;
 
-  /* ── Brand Primary & Accents ────────────────────────────────── */
-  --brand-primary:       #FFCF99;                 /* Apricot Cream Highlight */
-  --brand-primary-hover: #FFE2C2;
-  --brand-primary-tint:  rgba(255, 207, 153, 0.14);
-  --brand-primary-light: rgba(255, 207, 153, 0.22);
+  /* ── Semantic Status Colors (Dark mode) ─────────────────────── */
+  --color-danger-bg:           rgba(180, 35, 24, 0.22);
+  --color-danger-ink:          #FFA49E;
+  --color-danger-border:       rgba(255, 164, 158, 0.25);
 
-  --brand-accent:        #8A9720;                 /* Olive Chartreuse */
-  --brand-accent-hover:  #A4B426;
-  --brand-mint:          #8A9720;
-  --brand-mint-deep:     #A4B426;
-  --brand-mint-tint:     rgba(138, 151, 32, 0.18);
-  --brand-active-glow:   rgba(138, 151, 32, 0.40);
+  --color-warning-bg:          rgba(138, 90, 0, 0.28);
+  --color-warning-ink:         #FFD271;
+  --color-warning-border:      rgba(255, 210, 113, 0.25);
 
-  /* ── Typography & Readability ───────────────────────────────── */
-  --text-primary:        #FFF5EA;                 /* Pristine Ivory Warm White */
-  --text-heading:        #FFFFFF;
-  --text-secondary:      #FFCF99;                 /* Apricot Cream */
-  --text-body:           #E2D5E8;
-  --text-muted:          #A892B3;
-  --text-subtle:         #7C6588;
-  --text-inverse:        #140526;
-  --text-link:           #FFCF99;
-  --text-link-hover:     #FFFFFF;
+  --color-info-bg:             rgba(47, 93, 138, 0.28);
+  --color-info-ink:            #A5C8F2;
+  --color-info-border:         rgba(165, 200, 242, 0.25);
 
-  /* ── Borders & Hairline Outlines ────────────────────────────── */
-  --border-subtle:       rgba(255, 207, 153, 0.10);
-  --border-default:      rgba(255, 207, 153, 0.16);
-  --border-medium:       rgba(255, 207, 153, 0.28);
-  --border-glass:        rgba(255, 207, 153, 0.20);
-  --border-card:         rgba(255, 207, 153, 0.15);
-  --border-card-outer:   rgba(81, 53, 90, 0.60);
-  --border-active:       #8A9720;
-
-  /* ── Shadows & Deep Glows ───────────────────────────────────── */
-  --shadow-xs:           0 1px 3px rgba(0, 0, 0, 0.6);
-  --shadow-sm:           0 3px 12px rgba(0, 0, 0, 0.65);
-  --shadow-md:           0 8px 26px rgba(0, 0, 0, 0.72);
-  --shadow-lg:           0 16px 48px rgba(0, 0, 0, 0.82);
-  --shadow-card:         0 14px 40px rgba(0, 0, 0, 0.60), 0 0 1px rgba(255, 207, 153, 0.20);
-  --shadow-card-hover:   0 20px 52px rgba(0, 0, 0, 0.75), 0 0 24px rgba(255, 207, 153, 0.18);
-  --shadow-dock:         0 16px 44px rgba(0, 0, 0, 0.85), 0 0 24px rgba(138, 151, 32, 0.28);
-
-  /* ── Dynamic Island Dock (Dark Mode) ────────────────────────── */
-  --dock-bg:             rgba(26, 8, 48, 0.94);
-  --dock-bg-collapsed:   rgba(26, 8, 48, 0.96);
-  --dock-border:         rgba(255, 207, 153, 0.24);
-  --dock-border-hover:   rgba(138, 151, 32, 0.65);
-  --dock-glow:           0 12px 36px rgba(0, 0, 0, 0.85), 0 0 22px rgba(138, 151, 32, 0.30);
-  --dock-active-bg:      #8A9720;
-  --dock-active-text:    #ffffff;
-  --dock-item-text:      #D8CDE0;
-  --dock-item-hover:     #FFFFFF;
-  --dock-sliding-bg:     rgba(138, 151, 32, 0.25);
-  --dock-sliding-border: rgba(138, 151, 32, 0.60);
-
-  /* ── Badges & Status Indicators ─────────────────────────────── */
-  --state-success:       #A4B426;
-  --state-success-bg:    rgba(138, 151, 32, 0.20);
-  --state-warning:       #FFCF99;
-  --state-warning-bg:    rgba(255, 207, 153, 0.18);
-  --state-danger:        #E25B54;
-  --state-danger-bg:     rgba(158, 43, 37, 0.25);
-
-  /* ── Wave Graphic Colors ────────────────────────────────────── */
-  --wave-color-1:        rgba(81, 53, 90, 0.35);
-  --wave-color-2:        rgba(42, 12, 78, 0.50);
-  --wave-color-3:        rgba(138, 151, 32, 0.12);
+  --color-success-bg:          #D6F25E;
+  --color-success-ink:         #1A1A1A;
+  --color-success-border:      rgba(214, 242, 94, 0.30);
 }
 
 /* ================================================================
-   3. GLOBAL METRICS, TYPOGRAPHY & TIMING (Shared across all themes)
+   3. GLOBAL BASE RESET & SPATIAL DISCIPLINE
    ================================================================ */
-:root {
-  /* ── Premium High-Fashion Typography ────────────────────────── */
-  --font-sans:           'Plus Jakarta Sans', 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-display:        'Outfit', 'Plus Jakarta Sans', sans-serif;
-  --font-mono:           'JetBrains Mono', monospace;
-  --font-script:         'Caveat', cursive, sans-serif;
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
 
-  /* ── Typography Scale ───────────────────────────────────────── */
-  --text-xs:             0.72rem;  /* 11.5px */
-  --text-sm:             0.82rem;  /* 13px */
-  --text-base:           0.92rem;  /* 14.7px */
-  --text-md:             1.02rem;  /* 16.3px */
-  --text-lg:             1.18rem;  /* 19px */
-  --text-xl:             1.35rem;  /* 21.6px */
-  --text-2xl:            1.65rem;  /* 26.4px */
-  --text-3xl:            2.15rem;  /* 34.4px */
-  --text-4xl:            2.75rem;  /* 44px */
+html, body {
+  background-color: var(--color-canvas) !important;
+  color: var(--color-ink) !important;
+  min-height: 100dvh;
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  max-width: 100%;
+}
 
-  /* ── Spacing Scale (4px base) ───────────────────────────────── */
-  --space-1:             4px;
-  --space-2:             8px;
-  --space-3:             12px;
-  --space-4:             16px;
-  --space-5:             20px;
-  --space-6:             24px;
-  --space-7:             28px;
-  --space-8:             32px;
-  --space-10:            40px;
-  --space-12:            48px;
-  --space-16:            64px;
+/* Single centered container alignment across header, hero, and content */
+.campus-container,
+.app-container-centered {
+  max-width: var(--container-max-width);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--container-gutter);
+  padding-right: var(--container-gutter);
+  width: 100%;
+}
 
-  /* ── Radii ──────────────────────────────────────────────────── */
-  --radius-xs:           6px;
-  --radius-sm:           10px;
-  --radius-md:           14px;
-  --radius-lg:           18px;
-  --radius-xl:           24px;
-  --radius-2xl:          32px;
-  --radius-pill:         9999px;
+/* ================================================================
+   4. TACTILE FLAT BENTO CARDS & COMPONENTS (NO SHADOWS, NO BLURS)
+   ================================================================ */
+.bento-card {
+  background-color: var(--color-card);
+  border-radius: var(--radius-card);
+  border: var(--hairline-width) solid var(--color-hairline);
+  box-shadow: none !important;
+}
 
-  /* ── Animation Durations & Easing ───────────────────────────── */
-  --dock-ease:           cubic-bezier(0.22, 1, 0.36, 1);
-  --ease-smooth:         cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-bounce:         cubic-bezier(0.34, 1.56, 0.64, 1);
-  --duration-fast:       180ms;
-  --duration-normal:     280ms;
-  --duration-slow:       420ms;
+/* The near-black feature card: intentionally dark in BOTH themes */
+.feature-card-dark,
+.bento-card-dark {
+  background-color: var(--color-feature-card) !important;
+  border-radius: var(--radius-card);
+  border: var(--hairline-width) solid var(--color-hairline);
+  color: var(--color-feature-card-ink) !important;
+  box-shadow: none !important;
+}
 
-  /* ── Z-Index Hierarchy ──────────────────────────────────────── */
-  --z-waves:             1;
-  --z-content:           10;
-  --z-header:            100;
-  --z-dropdown:          1000;
-  --z-dock:              99999;
+/* Round 40px icon chips */
+.icon-chip-40 {
+  width: var(--size-icon-chip);
+  height: var(--size-icon-chip);
+  border-radius: var(--radius-circle);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* Full capsule pills for buttons, chips, search */
+.capsule-pill {
+  border-radius: var(--radius-pill);
+}
+
+/* Focus styles for keyboard accessibility */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 2px;
+}
+
+.feature-card-dark a:focus-visible,
+.feature-card-dark button:focus-visible {
+  outline: 2px solid var(--color-lime);
+  outline-offset: 2px;
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
