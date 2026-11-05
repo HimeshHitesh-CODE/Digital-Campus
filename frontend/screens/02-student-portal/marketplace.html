@@ -3,537 +3,297 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Student Marketplace & Exchange — Samskruti College</title>
+  <title>Samskruti Digital Campus — Student Marketplace | Code 259</title>
   
-  <!-- Material Symbols & Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Darker+Grotesque:wght@400;500;600;700;800;900&family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..700&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet" />
-  
-  <!-- Tailwind CSS & Master Config -->
-  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-  <script src="/js/stitch-tailwind-config.js"></script>
-
-  <!-- Stitch Design System & Nav Dock Styles -->
+  <!-- Self-Hosted Fonts & Master Tokens -->
+  <link rel="stylesheet" href="/css/fonts.css" />
+  <link rel="stylesheet" href="/css/theme-tokens.css" />
   <link rel="stylesheet" href="/css/stitch-design-system.css" />
   <link rel="stylesheet" href="/css/top-nav.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  
+  <!-- Tailwind CSS & Master Config -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/js/stitch-tailwind-config.js"></script>
 
-  <!-- Lucide Icons & Shared State -->
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Shared State & Dynamic Island -->
   <script src="/js/stitch-state.js"></script>
   <script src="/js/dc-dynamic-island.js" defer></script>
+  <script src="/screens/02-student-portal/marketplace.js" defer></script>
 </head>
 
-<body class="bg-surface font-sans text-on-surface min-h-screen flex flex-col antialiased selection:bg-emerald-200 selection:text-emerald-950 bg-mesh-grid"
-      style="background-color: #fcfaf6; background-image: radial-gradient(at 0% 0%, rgba(16, 185, 129, 0.12) 0px, transparent 48%), radial-gradient(at 100% 20%, rgba(5, 150, 105, 0.10) 0px, transparent 44%), radial-gradient(at 48% 65%, rgba(52, 211, 153, 0.08) 0px, transparent 52%), radial-gradient(at 95% 90%, rgba(16, 185, 129, 0.09) 0px, transparent 45%), radial-gradient(circle at 1px 1px, rgba(16, 185, 129, 0.06) 1.2px, transparent 0px); background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%, 28px 28px;">
+<body class="bg-[var(--color-canvas)] text-[var(--color-ink)] min-h-screen flex flex-col antialiased">
+  <!-- Dynamic Island Header Mounts Automatically via dc-dynamic-island.js -->
 
-  <!-- Main Content Viewport Wrapper (Offset below persistent top navigation) -->
-  <main class="w-full flex-grow pt-[84px] md:pt-[92px]">
-    <div class="max-w-[1240px] mx-auto px-4 sm:px-6 pb-12 flex flex-col gap-6 w-full">
-      
-<div class="flex flex-col w-full">
-<div class="max-w-[1240px] w-full mx-auto px-6 py-8 flex flex-col gap-8">
-<!-- Hero / Header Block with Atmospheric Depth -->
-<section class="flex flex-col md:flex-row md:items-end justify-between gap-6 bg-gradient-to-br from-surface-container-low/95 via-emerald-50/40 to-surface-container-lowest/90 p-8 sm:p-10 rounded-[32px] relative overflow-hidden card-volumetric backdrop-blur-sm">
-<div class="absolute -right-16 -top-16 w-88 h-88 rounded-full bg-gradient-to-br from-emerald-400/25 to-mint-300/10 blur-3xl pointer-events-none"></div>
-<div class="flex flex-col gap-2 max-w-3xl relative z-10">
-<div class="flex flex-wrap items-center gap-2">
-<span class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-gradient-to-r from-emerald-100 to-mint-100 border border-emerald-300/60 text-emerald-900 font-code text-[11px] font-bold tracking-wider uppercase shadow-xs">
-<span class="w-2 h-2 rounded-full bg-emerald-600 animate-ping"></span>
-            PEER-TO-PEER STUDENT EXCHANGE &amp; SURPLUS
-          </span>
-<span class="px-3 py-1 rounded-full bg-surface-container-high/70 border border-emerald-900/10 text-on-surface-variant font-code text-[11px]">
-            Live SBTET Registry
-          </span>
-</div>
-<h1 class="font-darker font-extrabold text-4xl sm:text-5xl text-on-surface tracking-tight mt-1 leading-[1.05]">
-          Student Marketplace &amp; Exchange
-        </h1>
-<p class="font-darker font-medium text-lg sm:text-xl text-on-surface-variant max-w-2xl leading-snug">
-          Samskruti College (Code: 259) • <strong class="text-primary font-bold"><span id="mktStudentMeta">KARNATI HIMESH (PIN: 24259-CS-025)</span></strong> • Verified Peer-to-Peer Academic Hardware &amp; Supplies. Zero platform fee, strictly verified student handovers.
-        </p>
-</div>
-<div class="relative z-10 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 shrink-0">
-<button class="inline-flex items-center justify-center gap-2 px-7 py-3 rounded-full font-darker font-bold text-xl text-white transition-all duration-200 shadow-lg hover:shadow-emerald-500/30 hover:scale-[1.02] active:scale-95 group" id="open-sell-modal" style="background: linear-gradient(135deg, #047857 0%, #059669 45%, #10b981 100%); box-shadow: 0 10px 24px -4px rgba(16, 185, 129, 0.45); border: 1px solid rgba(110, 231, 183, 0.4);">
-<span class="material-symbols-outlined text-[20px] transition-transform group-hover:rotate-90">add</span>
-<span>Sell an Item</span>
-</button>
-</div>
-</section>
-<!-- Filters & Search Toolbar -->
-<section class="flex flex-col gap-4">
-<!-- Category Filter Pills -->
-<div class="flex items-center gap-2.5 overflow-x-auto pb-1 no-scrollbar text-nowrap">
-<button class="category-pill px-5 py-2 rounded-full font-darker font-bold text-lg transition-all text-white shadow-sm" data-cat="all" style="background: linear-gradient(135deg, #047857, #10b981); box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35); border: 1px solid rgba(110, 231, 183, 0.5);">
-          <span id="allSurplusCount" id="allSurplusCount">All Surplus (48)</span>
-        </button>
-<button class="category-pill px-5 py-2 rounded-full font-darker font-semibold text-lg bg-surface-container-lowest text-on-surface-variant hover:text-emerald-800 hover:bg-emerald-50/70 border border-emerald-900/10 transition-all" data-cat="textbooks">
-          Textbooks &amp; Notes
-        </button>
-<button class="category-pill px-5 py-2 rounded-full font-darker font-semibold text-lg bg-surface-container-lowest text-on-surface-variant hover:text-emerald-800 hover:bg-emerald-50/70 border border-emerald-900/10 transition-all" data-cat="drafters">
-          Mini Drafters &amp; Kits
-        </button>
-<button class="category-pill px-5 py-2 rounded-full font-darker font-semibold text-lg bg-surface-container-lowest text-on-surface-variant hover:text-emerald-800 hover:bg-emerald-50/70 border border-emerald-900/10 transition-all" data-cat="calculators">
-          Calculators
-        </button>
-<button class="category-pill px-5 py-2 rounded-full font-darker font-semibold text-lg bg-surface-container-lowest text-on-surface-variant hover:text-emerald-800 hover:bg-emerald-50/70 border border-emerald-900/10 transition-all" data-cat="labcoats">
-          Lab Coats &amp; Aprons
-        </button>
-<button class="category-pill px-5 py-2 rounded-full font-darker font-semibold text-lg bg-surface-container-lowest text-on-surface-variant hover:text-emerald-800 hover:bg-emerald-50/70 border border-emerald-900/10 transition-all" data-cat="devboards">
-          Dev Boards &amp; Arduinos
-        </button>
-</div>
-<!-- Search, Verification Indicator & Sort Bar -->
-<div class="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4 bg-surface-container-low/70 backdrop-blur-md p-2.5 sm:p-3 rounded-full border border-emerald-900/10">
-<!-- Search Field -->
-<div class="flex items-center gap-3 bg-surface-container-lowest rounded-full px-5 py-2 flex-grow max-w-2xl border border-emerald-800/15 shadow-xs">
-<span class="material-symbols-outlined text-emerald-600 text-[22px]">search</span>
-<input class="w-full bg-transparent font-darker font-semibold text-lg text-on-surface focus:outline-none placeholder:text-slate-400 placeholder:font-normal" id="market-search" placeholder="Search textbooks, drafters, calculators, PIN codes..." type="text"/>
-<button class="hidden text-slate-400 hover:text-on-surface text-[14px]" id="clear-search">
-<span class="material-symbols-outlined text-[18px]">close</span>
-</button>
-</div>
-<!-- Verification Pill + Sort Menu -->
-<div class="flex items-center justify-between sm:justify-end gap-3 shrink-0 px-2 lg:px-0">
+  <!-- Main Viewport Layout -->
+  <main class="w-full pt-[80px] pb-12 flex-1">
+    <div class="campus-container flex flex-col gap-6 pt-4">
 
-<div class="relative">
-<select class="appearance-none bg-surface-container-lowest text-on-surface font-darker font-bold text-base py-2 pl-4 pr-9 rounded-full border border-emerald-800/15 shadow-xs focus:outline-none cursor-pointer" id="sort-select">
-<option value="recent">Recently Added</option>
-<option value="price-low">Price: Low to High</option>
-<option value="price-high">Price: High to Low</option>
-<option value="verified">Verified Sellers Only</option>
-</select>
-<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none text-[18px]">
-              expand_more
+      <!-- ============================================================== -->
+      <!-- TOP TITLE & SELL ACTION ROW                                    -->
+      <!-- ============================================================== -->
+      <section class="w-full flex flex-col md:flex-row md:items-end justify-between gap-4 pb-2" data-testid="tile-market-header">
+        <div class="flex flex-col gap-1">
+          <div class="flex items-center gap-2 mb-1">
+            <span class="font-mono text-xs bg-[var(--color-feature-card)] text-[var(--color-lime)] px-3 py-1 rounded-full uppercase tracking-wider font-semibold" id="mktBadge">
+              SBTET Diploma Code 259
             </span>
-</div>
-</div>
-</div>
-</section>
-<!-- Marketplace Item Grid with Hairline Emerald Borders & Volumetric Shadows -->
-<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7" id="marketplace-cards">
-<!-- Item 1: SCET Lab Coat -->
-<article class="group flex flex-col bg-surface-container-lowest rounded-[30px] overflow-hidden card-volumetric transition-all duration-300 transform hover:-translate-y-1" data-category="labcoats">
-<div class="relative w-full h-56 bg-surface-container-high overflow-hidden">
-<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="Official crisp white cotton engineering lab coat hanging neatly against a warm parchment workshop background with Samskruti College crest embroidery and soft academic morning studio light." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAQf8R9kfAZI67yKcBwxa729FSP46ByY3xnG4xYcVSbuqZqshwMt-yygTu7c5zPSMx8e5qebFeeieXqicro-R6_YrI3HA6RgcJjaG63Q5zQ7ZVfmNzCAzAdECvswzoN5CQW2s9NPUJQ2T8T1kBmEKQjSY2TqvDaECDiJQLjZlMmRIKLYAwwquqWx4mGi_Lx7x1LtcsHSm25pBRaNeEBt8OVHh7UO6Mjsr733Lr9qFvp"/>
-<div class="absolute top-4 left-4 flex gap-1.5">
-<span class="px-3 py-0.5 rounded-full bg-emerald-950/80 backdrop-blur-md text-emerald-200 font-darker font-bold text-sm tracking-wide border border-emerald-400/30 shadow-xs">
-              ACADEMIC GEAR
+            <span class="w-1.5 h-1.5 rounded-full bg-[var(--color-lime)]"></span>
+            <span class="font-mono text-xs text-[var(--color-muted)]">
+              Student Exchange &amp; Surplus
             </span>
-<span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-900 font-darker font-bold text-sm border border-emerald-300">
-              Good
-            </span>
-</div>
-<div class="absolute top-4 right-4 px-2.5 py-0.5 rounded-full bg-surface-container-lowest/90 backdrop-blur-md font-code text-[11px] text-on-surface font-semibold border border-emerald-200/60 shadow-xs">
-            Ref 24259-M01
           </div>
-</div>
-<div class="p-6 flex flex-col flex-grow justify-between gap-4">
-<div class="flex flex-col gap-1">
-<div class="flex items-baseline justify-between">
-<span class="font-darker text-3xl font-extrabold text-emerald-700 tracking-tight">₹180</span>
-<span class="font-darker text-base text-slate-500 font-semibold">Size 38 / M</span>
-</div>
-<h3 class="font-darker text-2xl text-on-surface font-bold group-hover:text-primary transition-colors leading-tight">
-              SCET Official White Lab Coat
-            </h3>
-<p class="font-darker text-lg text-on-surface-variant font-medium line-clamp-2 leading-snug">
-              Official institutional cotton coat with deep pocket slits, mandatory for Chem &amp; Workshop Labs. Cleaned and pressed.
-            </p>
-</div>
-<div class="flex flex-col gap-3 pt-1">
-<div class="flex items-center justify-between text-slate-600 border-t border-emerald-900/10 pt-2.5">
-<div class="flex items-center gap-2">
-<div class="w-7 h-7 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center font-code text-xs font-bold border border-emerald-300">YS</div>
-<div class="flex flex-col leading-none">
-<span class="font-darker text-base font-bold text-on-surface">Yendakurthi Shanmukh</span>
-<span class="font-code text-[10px] text-slate-500">PIN: 24259-EC-041</span>
-</div>
-</div>
-<span class="font-darker font-bold text-sm text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">ECE Dept</span>
-</div>
-<button class="w-full py-2.5 px-4 rounded-full font-darker font-bold text-lg text-emerald-900 bg-emerald-50/80 hover:bg-emerald-600 hover:text-white flex items-center justify-center gap-2 transition-all duration-200 border border-emerald-300 shadow-xs group-hover:bg-primary group-hover:text-white" onclick="handleDmClick('Yendakurthi Shanmukh', 'SCET Official White Lab Coat (₹180)')">
-<span>DM Seller</span>
-<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
-</button>
-</div>
-</div>
-</article>
-<!-- Item 2: Casio fx-991EX -->
-<article class="group flex flex-col bg-surface-container-lowest rounded-[30px] overflow-hidden card-volumetric transition-all duration-300 transform hover:-translate-y-1" data-category="calculators">
-<div class="relative w-full h-56 bg-surface-container-high overflow-hidden">
-<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="Casio fx-991EX ClassWiz scientific calculator resting on a scholarly wooden desk surrounded by engineering lecture notes in deep forest green and parchment tones with crisp high resolution LCD screen." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCsaY98Q5p2snH0srec4vD7ycRNh8H9bx9XuK2yToqRsFWXXX__ez_ffc5ZNuiGU-z2i1TBemFJYitfvt-Iz-KyHbSOq2JJbiemb18CasioFX"/>
-<div class="absolute top-4 left-4 flex gap-1.5">
-<span class="px-3 py-0.5 rounded-full bg-emerald-950/80 backdrop-blur-md text-emerald-200 font-darker font-bold text-sm tracking-wide border border-emerald-400/30 shadow-xs">
-              CALCULATOR
-            </span>
-<span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-900 font-darker font-bold text-sm border border-emerald-300">
-              Good
-            </span>
-</div>
-<div class="absolute top-4 right-4 px-2.5 py-0.5 rounded-full bg-surface-container-lowest/90 backdrop-blur-md font-code text-[11px] text-on-surface font-semibold border border-emerald-200/60 shadow-xs">
-            Ref 24259-M02
-          </div>
-</div>
-<div class="p-6 flex flex-col flex-grow justify-between gap-4">
-<div class="flex flex-col gap-1">
-<div class="flex items-baseline justify-between">
-<span class="font-darker text-3xl font-extrabold text-emerald-700 tracking-tight">₹600</span>
-<span class="font-darker text-base text-slate-500 font-semibold">ClassWiz Edition</span>
-</div>
-<h3 class="font-darker text-2xl text-on-surface font-bold group-hover:text-primary transition-colors leading-tight">
-              Casio fx-991EX Scientific Calculator
-            </h3>
-<p class="font-darker text-lg text-on-surface-variant font-medium line-clamp-2 leading-snug">
-              Natural textbook display, 552 functions. Original hard cover included with zero LCD bleed. Authorized for SBTET examinations.
-            </p>
-</div>
-<div class="flex flex-col gap-3 pt-1">
-<div class="flex items-center justify-between text-slate-600 border-t border-emerald-900/10 pt-2.5">
-<div class="flex items-center gap-2">
-<div class="w-7 h-7 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center font-code text-xs font-bold border border-emerald-300">GL</div>
-<div class="flex flex-col leading-none">
-<span class="font-darker text-base font-bold text-on-surface">Gona Laxmi N. Swami</span>
-<span class="font-code text-[10px] text-slate-500">PIN: 24259-CS-018</span>
-</div>
-</div>
-<span class="font-darker font-bold text-sm text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">CSE Dept</span>
-</div>
-<button class="w-full py-2.5 px-4 rounded-full font-darker font-bold text-lg text-emerald-900 bg-emerald-50/80 hover:bg-emerald-600 hover:text-white flex items-center justify-center gap-2 transition-all duration-200 border border-emerald-300 shadow-xs group-hover:bg-primary group-hover:text-white" onclick="handleDmClick('Gona Laxmi Narasimha Swami', 'Casio fx-991EX Calculator (₹600)')">
-<span>DM Seller</span>
-<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
-</button>
-</div>
-</div>
-</article>
-<!-- Item 3: AI & Deep Learning Mathematics Reference Guide -->
-<article class="group flex flex-col bg-surface-container-lowest rounded-[30px] overflow-hidden card-volumetric transition-all duration-300 transform hover:-translate-y-1" data-category="textbooks">
-<div class="relative w-full h-56 bg-surface-container-high overflow-hidden">
-<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="An academic mathematics textbook for Artificial Intelligence and Deep Learning displayed upright in an elegant college library room with dark forest wood and warm soft natural daylight illumination." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFwnAr_97x_ySxLzfWmXnG3ZoXuzCKONdqnfm-vmeBIF3L8md23P4YL4okECBxWzn3nBpCWaloAsMlWrFs5Qx3lBMzGMhqkVvhLRjvjg80co3sE_0_GjnicOdSrpbog7VULRdJQY4D_xAWUz6rBT32cXQZkxwGaFoNq7DkSTsAUT5Km4RkRbsXYhw6u8l0VlM0ocgDRf_0kRx9VmIV7gTQmN32IahP2Bv2ZD_78PHc"/>
-<div class="absolute top-4 left-4 flex gap-1.5">
-<span class="px-3 py-0.5 rounded-full bg-emerald-950/80 backdrop-blur-md text-emerald-200 font-darker font-bold text-sm tracking-wide border border-emerald-400/30 shadow-xs">
-              ACADEMIC GEAR
-            </span>
-<span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-900 font-darker font-bold text-sm border border-emerald-300">
-              Like New
-            </span>
-</div>
-<div class="absolute top-4 right-4 px-2.5 py-0.5 rounded-full bg-surface-container-lowest/90 backdrop-blur-md font-code text-[11px] text-on-surface font-semibold border border-emerald-200/60 shadow-xs">
-            Ref 24259-M03
-          </div>
-</div>
-<div class="p-6 flex flex-col flex-grow justify-between gap-4">
-<div class="flex flex-col gap-1">
-<div class="flex items-baseline justify-between">
-<span class="font-darker text-3xl font-extrabold text-emerald-700 tracking-tight">₹400</span>
-<span class="font-darker text-base text-slate-500 font-semibold">Hardcover · 4th Ed</span>
-</div>
-<h3 class="font-darker text-2xl text-on-surface font-bold group-hover:text-primary transition-colors leading-tight">
-              AI &amp; Deep Learning Mathematics Guide
-            </h3>
-<p class="font-darker text-lg text-on-surface-variant font-medium line-clamp-2 leading-snug">
-              Linear algebra, multivariate calculus and probability foundations. Clean pages with no ink markings or dog-ears.
-            </p>
-</div>
-<div class="flex flex-col gap-3 pt-1">
-<div class="flex items-center justify-between text-slate-600 border-t border-emerald-900/10 pt-2.5">
-<div class="flex items-center gap-2">
-<div class="w-7 h-7 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center font-code text-xs font-bold border border-emerald-300">KH</div>
-<div class="flex flex-col leading-none">
-<span class="font-darker text-base font-bold text-on-surface">Karnati Hitesh</span>
-<span class="font-code text-[10px] text-slate-500">PIN: 24259-AI-012</span>
-</div>
-</div>
-<span class="font-darker font-bold text-sm text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">AIML Dept</span>
-</div>
-<button class="w-full py-2.5 px-4 rounded-full font-darker font-bold text-lg text-emerald-900 bg-emerald-50/80 hover:bg-emerald-600 hover:text-white flex items-center justify-center gap-2 transition-all duration-200 border border-emerald-300 shadow-xs group-hover:bg-primary group-hover:text-white" onclick="handleDmClick('Karnati Hitesh', 'AI &amp; Deep Learning Mathematics Reference Guide (₹400)')">
-<span>DM Seller</span>
-<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
-</button>
-</div>
-</div>
-</article>
-<!-- Item 4: Omega Engineering Mini Drafter -->
-<article class="group flex flex-col bg-surface-container-lowest rounded-[30px] overflow-hidden card-volumetric transition-all duration-300 transform hover:-translate-y-1" data-category="drafters">
-<div class="relative w-full h-56 bg-surface-container-high overflow-hidden">
-<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="Engineering mini drafter tool with stainless steel double arms and clear acrylic protractor scale mounted on an ivory drafting board in a calm university design studio." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBmTwOIyF_F1_Kv5lJyzccOUVF6RCjhsJl_ihLaYh0JIaJa3W7nAZ-GD7yJMIvgmxASgiUDjRgyKaNdl3NPlpHFeyXKCdlr2cD-1QKGgSaLQwrK5KPZZGWd9ac91hRwk8gMftPSt7MjnckcQw3B3bSctIs_6H2ybkvVp4ZJAt8SjcqZAqQXVwIjbd_uaFqT5ft4KXQOGX4r8Xi7ESMFWF6g3bicPd_CcsoXoDABVxe1"/>
-<div class="absolute top-4 left-4 flex gap-1.5">
-<span class="px-3 py-0.5 rounded-full bg-emerald-950/80 backdrop-blur-md text-emerald-200 font-darker font-bold text-sm tracking-wide border border-emerald-400/30 shadow-xs">
-              MINI DRAFTER
-            </span>
-<span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-900 font-darker font-bold text-sm border border-emerald-300">
-              Good
-            </span>
-</div>
-<div class="absolute top-4 right-4 px-2.5 py-0.5 rounded-full bg-surface-container-lowest/90 backdrop-blur-md font-code text-[11px] text-on-surface font-semibold border border-emerald-200/60 shadow-xs">
-            Ref 24259-M04
-          </div>
-</div>
-<div class="p-6 flex flex-col flex-grow justify-between gap-4">
-<div class="flex flex-col gap-1">
-<div class="flex items-baseline justify-between">
-<span class="font-darker text-3xl font-extrabold text-emerald-700 tracking-tight">₹350</span>
-<span class="font-darker text-base text-slate-500 font-semibold">Steel Rods + Case</span>
-</div>
-<h3 class="font-darker text-2xl text-on-surface font-bold group-hover:text-primary transition-colors leading-tight">
-              Omega Engineering Mini Drafter
-            </h3>
-<p class="font-darker text-lg text-on-surface-variant font-medium line-clamp-2 leading-snug">
-              Unbreakable scales, frictionless clamp lock. Smooth movement calibrated for Engineering Graphics &amp; CAD drafting sheets.
-            </p>
-</div>
-<div class="flex flex-col gap-3 pt-1">
-<div class="flex items-center justify-between text-slate-600 border-t border-emerald-900/10 pt-2.5">
-<div class="flex items-center gap-2">
-<div class="w-7 h-7 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center font-code text-xs font-bold border border-emerald-300">DT</div>
-<div class="flex flex-col leading-none">
-<span class="font-darker text-base font-bold text-on-surface">Dulipudi Tarun</span>
-<span class="font-code text-[10px] text-slate-500">PIN: 24259-ME-029</span>
-</div>
-</div>
-<span class="font-darker font-bold text-sm text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">MECH Dept</span>
-</div>
-<button class="w-full py-2.5 px-4 rounded-full font-darker font-bold text-lg text-emerald-900 bg-emerald-50/80 hover:bg-emerald-600 hover:text-white flex items-center justify-center gap-2 transition-all duration-200 border border-emerald-300 shadow-xs group-hover:bg-primary group-hover:text-white" onclick="handleDmClick('Dulipudi Tarun', 'Omega Engineering Mini Drafter (₹350)')">
-<span>DM Seller</span>
-<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
-</button>
-</div>
-</div>
-</article>
-<!-- Item 5: Arduino Uno R3 + Sensor Starter Pack -->
-<article class="group flex flex-col bg-surface-container-lowest rounded-[30px] overflow-hidden card-volumetric transition-all duration-300 transform hover:-translate-y-1" data-category="devboards">
-<div class="relative w-full h-56 bg-surface-container-high overflow-hidden">
-<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="Original Arduino Uno R3 micro-controller board surrounded by ultrasonic sensors jumper wires breadboard and LED components arranged neatly on clean workbench surface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC3n7Tg--hR6IqVgENOag-Tli-9Ya1eKXBKvWnZnPVVtlJLnHmpNAqdb2inPIRyfA3Sw7UFqpcvq2KZYaahlel63zeYmZZE9vwz6HgnYBheNdi18UY9p_AdmNeup6kqD1u9ZezOA13tjuL3w2LbJYe7pV3o9767BamYLRxSMuNvvsrmvPsGzYI2wwRIembuwy1WpuYcl-4SiKAPRuNxaBBurejartSflrrDKTyPEJ4p"/>
-<div class="absolute top-4 left-4 flex gap-1.5">
-<span class="px-3 py-0.5 rounded-full bg-emerald-950/80 backdrop-blur-md text-emerald-200 font-darker font-bold text-sm tracking-wide border border-emerald-400/30 shadow-xs">
-              DEV BOARDS
-            </span>
-<span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-900 font-darker font-bold text-sm border border-emerald-300">
-              Good
-            </span>
-</div>
-<div class="absolute top-4 right-4 px-2.5 py-0.5 rounded-full bg-surface-container-lowest/90 backdrop-blur-md font-code text-[11px] text-on-surface font-semibold border border-emerald-200/60 shadow-xs">
-            Ref 24259-M05
-          </div>
-</div>
-<div class="p-6 flex flex-col flex-grow justify-between gap-4">
-<div class="flex flex-col gap-1">
-<div class="flex items-baseline justify-between">
-<span class="font-darker text-3xl font-extrabold text-emerald-700 tracking-tight">₹550</span>
-<span class="font-darker text-base text-slate-500 font-semibold">Complete Kit</span>
-</div>
-<h3 class="font-darker text-2xl text-on-surface font-bold group-hover:text-primary transition-colors leading-tight">
-              Arduino Uno R3 + Sensor Starter Pack
-            </h3>
-<p class="font-darker text-lg text-on-surface-variant font-medium line-clamp-2 leading-snug">
-              Genuine ATmega328P microcontroller with breadboard, DHT11 temp sensor, ultrasonic HC-SR04, and 40x jumper wires.
-            </p>
-</div>
-<div class="flex flex-col gap-3 pt-1">
-<div class="flex items-center justify-between text-slate-600 border-t border-emerald-900/10 pt-2.5">
-<div class="flex items-center gap-2">
-<div class="w-7 h-7 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center font-code text-xs font-bold border border-emerald-300">CS</div>
-<div class="flex flex-col leading-none">
-<span class="font-darker text-base font-bold text-on-surface">Chaganti Srija</span>
-<span class="font-code text-[10px] text-slate-500">PIN: 24259-EC-054</span>
-</div>
-</div>
-<span class="font-darker font-bold text-sm text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">IoT Lab</span>
-</div>
-<button class="w-full py-2.5 px-4 rounded-full font-darker font-bold text-lg text-emerald-900 bg-emerald-50/80 hover:bg-emerald-600 hover:text-white flex items-center justify-center gap-2 transition-all duration-200 border border-emerald-300 shadow-xs group-hover:bg-primary group-hover:text-white" onclick="handleDmClick('Chaganti Srija', 'Arduino Uno R3 Starter Pack (₹550)')">
-<span>DM Seller</span>
-<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
-</button>
-</div>
-</div>
-</article>
-<!-- Item 6: Data Structures using C (Oxford) -->
-<article class="group flex flex-col bg-surface-container-lowest rounded-[30px] overflow-hidden card-volumetric transition-all duration-300 transform hover:-translate-y-1" data-category="textbooks">
-<div class="relative w-full h-56 bg-surface-container-high overflow-hidden">
-<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="Data Structures Using C textbook published by Oxford University Press sitting elegantly beside an academic brass desk lamp and notebook on collegiate library desk." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDNgD2vb3Eu30llK2i9a13VfDsnL3j71WCLYX5BU90Bh_QOBzyOwuHPdfEoJuJAbyoFsKv8kSecePYb9df56SMW8C6QjcKAnr9Z8e1jfpyevYe3Ffo1old8W_pFoxcjSO6IYRgPWHlArva-0tMYppG1az_gQhklwPz0NPTSaY5WhDpWt5A6IKSsHnEE2WLdirvheFHBdkmRCIWecMYlSrjQnYYStYPa3DgvzTADsXAn"/>
-<div class="absolute top-4 left-4 flex gap-1.5">
-<span class="px-3 py-0.5 rounded-full bg-emerald-950/80 backdrop-blur-md text-emerald-200 font-darker font-bold text-sm tracking-wide border border-emerald-400/30 shadow-xs">
-              TEXTBOOKS
-            </span>
-<span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-900 font-darker font-bold text-sm border border-emerald-300">
-              Good
-            </span>
-</div>
-<div class="absolute top-4 right-4 px-2.5 py-0.5 rounded-full bg-surface-container-lowest/90 backdrop-blur-md font-code text-[11px] text-on-surface font-semibold border border-emerald-200/60 shadow-xs">
-            Ref 24259-M06
-          </div>
-</div>
-<div class="p-6 flex flex-col flex-grow justify-between gap-4">
-<div class="flex flex-col gap-1">
-<div class="flex items-baseline justify-between">
-<span class="font-darker text-3xl font-extrabold text-emerald-700 tracking-tight">₹220</span>
-<span class="font-darker text-base text-slate-500 font-semibold">Oxford Press · 2nd Ed</span>
-</div>
-<h3 class="font-darker text-2xl text-on-surface font-bold group-hover:text-primary transition-colors leading-tight">
-              Data Structures using C (Oxford)
-            </h3>
-<p class="font-darker text-lg text-on-surface-variant font-medium line-clamp-2 leading-snug">
-              Authored by Reema Thareja. Covers stacks, linked lists, binary search trees, and dynamic hashing algorithms per SBTET syllabus.
-            </p>
-</div>
-<div class="flex flex-col gap-3 pt-1">
-<div class="flex items-center justify-between text-slate-600 border-t border-emerald-900/10 pt-2.5">
-<div class="flex items-center gap-2">
-<div class="w-7 h-7 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center font-code text-xs font-bold border border-emerald-300">AD</div>
-<div class="flex flex-col leading-none">
-<span class="font-darker text-base font-bold text-on-surface">Anaboina Dilip</span>
-<span class="font-code text-[10px] text-slate-500">PIN: 24259-CS-007</span>
-</div>
-</div>
-<span class="font-darker font-bold text-sm text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">CSE Dept</span>
-</div>
-<button class="w-full py-2.5 px-4 rounded-full font-darker font-bold text-lg text-emerald-900 bg-emerald-50/80 hover:bg-emerald-600 hover:text-white flex items-center justify-center gap-2 transition-all duration-200 border border-emerald-300 shadow-xs group-hover:bg-primary group-hover:text-white" onclick="handleDmClick('Anaboina Dilip', 'Data Structures using C Book (₹220)')">
-<span>DM Seller</span>
-<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
-</button>
-</div>
-</div>
-</article>
-</section>
-<!-- Student Handover Guarantee Banner with Rich Atmospheric Emerald Depth -->
-<section class="rounded-[32px] p-8 sm:p-12 relative overflow-hidden text-white" style="background: linear-gradient(135deg, #022c22 0%, #064e3b 40%, #047857 75%, #059669 100%); box-shadow: 0 20px 45px -10px rgba(5, 150, 105, 0.4), 0 0 0 1px rgba(52, 211, 153, 0.25);">
-<div class="absolute right-0 bottom-0 opacity-10 pointer-events-none translate-x-12 translate-y-12">
-<svg fill="currentColor" height="400" viewbox="0 0 24 24" width="400">
-<path d="M12 2L1 21h22L12 2zm0 3.99L19.53 19H4.47L12 5.99zM11 16h2v2h-2zm0-6h2v4h-2z"></path>
-</svg>
-</div>
-<div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-8">
-<div class="flex flex-col gap-2 max-w-2xl">
-<div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-400/20 backdrop-blur-md w-fit border border-emerald-300/30 text-mint-light">
-<span class="material-symbols-outlined text-[16px] text-mint-accent">verified</span>
-<span class="font-code text-[11px] font-bold uppercase tracking-wider">Campus Protected Handshake</span>
-</div>
-<h2 class="font-darker text-3xl sm:text-4xl text-white tracking-tight font-extrabold mt-1 leading-tight">
-            SCET Peer-Safe Handover Guarantee
-          </h2>
-<p class="font-darker font-medium text-xl text-emerald-100/90 leading-relaxed">
-            Zero commission policy. 100% authenticated student listings tied to college PIN numbers. Inspection and peer payment handovers take place safely in designated college zones: the <span class="text-white font-bold underline decoration-mint-accent decoration-2 underline-offset-4">Central Library Quad</span> or the <span class="text-white font-bold underline decoration-mint-accent decoration-2 underline-offset-4">CS Department Lab Lobby</span>.
+          <h1 class="text-4xl lg:text-5xl font-medium tracking-tight text-[var(--color-ink)]">
+            Marketplace
+          </h1>
+          <p class="text-xs text-[var(--color-muted)] font-normal max-w-2xl">
+            Buy and sell verified lab equipment, books, and electronics within Samskruti College.
           </p>
-</div>
-<div class="flex flex-wrap lg:flex-col gap-3 shrink-0">
-<div class="flex items-center gap-3 px-5 py-3 rounded-full bg-white/10 backdrop-blur-md border border-emerald-200/20 shadow-xs">
-<span class="material-symbols-outlined text-mint-accent text-[22px]">local_library</span>
-<span class="font-darker font-bold text-lg text-white">Safe Zone: Central Library Quad</span>
-</div>
-<div class="flex items-center gap-3 px-5 py-3 rounded-full bg-white/10 backdrop-blur-md border border-emerald-200/20 shadow-xs">
-<span class="material-symbols-outlined text-mint-accent text-[22px]">terminal</span>
-<span class="font-darker font-bold text-lg text-white">Safe Zone: CS Department Lobby</span>
-</div>
-<div class="flex items-center gap-3 px-5 py-3 rounded-full bg-white/10 backdrop-blur-md border border-emerald-200/20 shadow-xs">
-<span class="material-symbols-outlined text-mint-accent text-[22px]">currency_rupee</span>
-<span class="font-darker font-bold text-lg text-white">0% Commission · UPI or Cash</span>
-</div>
-</div>
-</div>
-</section>
-</div>
-<!-- Interactive Modal for '+ Sell an Item' -->
-<div class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300" id="sell-modal">
-<div class="bg-surface-container-lowest max-w-xl w-full rounded-[32px] p-8 shadow-2xl flex flex-col gap-4 border border-emerald-500/30 transform scale-95 transition-transform duration-300" id="sell-modal-card">
-<div class="flex items-center justify-between pb-1">
-<div class="flex flex-col">
-<span class="font-code text-xs uppercase text-emerald-700 font-bold tracking-wider">Verified Student Posting</span>
-<h3 class="font-darker text-3xl text-on-surface font-extrabold leading-none mt-0.5">List Academic Item</h3>
-</div>
-<button class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-on-surface hover:bg-emerald-100 transition-colors" id="close-sell-modal">
-<span class="material-symbols-outlined text-[20px]">close</span>
-</button>
-</div>
-<form class="flex flex-col gap-3" id="sell-form" onsubmit="event.preventDefault(); submitListing();">
-<div class="flex flex-col gap-1">
-<label class="font-darker font-bold text-lg text-on-surface">Item Title</label>
-<input class="w-full bg-surface-container-low px-4 py-2.5 rounded-xl font-darker font-medium text-lg focus:outline-none focus:ring-2 focus:ring-primary border border-emerald-900/10 text-on-surface" id="item-title" placeholder="e.g. Drafter with Steel Arms / Chemistry Record" required="" type="text"/>
-</div>
-<div class="grid grid-cols-2 gap-3">
-<div class="flex flex-col gap-1">
-<label class="font-darker font-bold text-lg text-on-surface">Category</label>
-<select id="item-category" class="w-full bg-surface-container-low px-3 py-2.5 rounded-xl font-darker font-semibold text-lg focus:outline-none border border-emerald-900/10 text-on-surface cursor-pointer">
-<option>Textbooks &amp; Notes</option>
-<option>Mini Drafters &amp; Kits</option>
-<option>Calculators</option>
-<option>Lab Coats &amp; Aprons</option>
-<option>Dev Boards &amp; Arduinos</option>
-</select>
-</div>
-<div class="flex flex-col gap-1">
-<label class="font-darker font-bold text-lg text-on-surface">Price (₹ INR)</label>
-<input class="w-full bg-surface-container-low px-4 py-2.5 rounded-xl font-darker font-medium text-lg focus:outline-none focus:ring-2 focus:ring-primary border border-emerald-900/10 text-on-surface" id="item-price" placeholder="₹ Amount" required="" type="number"/>
-</div>
-</div>
-<div class="flex flex-col gap-1">
-<label class="font-darker font-bold text-lg text-on-surface">Condition &amp; Specification</label>
-<input class="w-full bg-surface-container-low px-4 py-2.5 rounded-xl font-darker font-medium text-lg focus:outline-none focus:ring-2 focus:ring-primary border border-emerald-900/10 text-on-surface" id="item-condition" placeholder="e.g. Like New, ClassWiz series, barely used" required="" type="text"/>
-</div>
-<div class="flex items-center gap-2 p-3 bg-emerald-50 rounded-xl mt-1 border border-emerald-200">
-<span class="material-symbols-outlined text-emerald-700 text-[20px]">badge</span>
-<span class="font-darker font-medium text-base text-emerald-900">Listing automatically attaches authenticated seller PIN: <strong class="font-bold font-code text-xs">24259-CS-025</strong></span>
-</div>
-<div class="flex items-center justify-end gap-3 pt-2 mt-1">
-<button class="px-6 py-2.5 rounded-full bg-surface-container text-on-surface font-darker font-bold text-lg hover:bg-surface-container-high transition-colors" id="cancel-sell-btn" type="button">
-            Cancel
+        </div>
+
+        <!-- Action Controls: Sell An Item Button -->
+        <div class="flex items-center gap-3 self-start md:self-auto">
+          <button type="button" 
+                  class="inline-flex items-center gap-2 bg-[var(--color-lime)] hover:opacity-90 active:scale-95 text-[var(--color-lime-ink)] px-5 py-2.5 rounded-full text-xs font-semibold transition-all cursor-pointer shadow-sm" 
+                  id="btnOpenSellModal"
+                  data-testid="btn-sell-item">
+            <span class="material-symbols-outlined text-[18px]">add</span>
+            <span>+ Sell an item</span>
           </button>
-<button class="px-7 py-2.5 rounded-full text-white font-darker font-bold text-lg transition-all shadow-md hover:scale-102" style="background: linear-gradient(135deg, #047857 0%, #10b981 100%);" type="submit">
-            Publish Listing
-          </button>
-</div>
-</form>
-</div>
-</div>
-<!-- Interactive DM Feedback Toast -->
-<div class="fixed bottom-8 right-8 z-50 bg-slate-900 text-emerald-100 px-6 py-3.5 rounded-full shadow-2xl flex items-center gap-3 opacity-0 translate-y-4 pointer-events-none transition-all duration-300 border border-emerald-500/30 font-darker font-bold text-lg" id="toast">
-<span class="material-symbols-outlined text-mint-accent text-[22px]">chat</span>
-<span id="toast-text">Opening direct student chat...</span>
-</div>
-</div>
+        </div>
+      </section>
+
+      <!-- ============================================================== -->
+      <!-- SEARCH, CATEGORIES & SORT TOOLBAR                              -->
+      <!-- ============================================================== -->
+      <section class="bento-card p-4 flex flex-col gap-3.5 border border-[var(--color-hairline)]" data-testid="tile-market-toolbar">
+        
+        <!-- Search and Sort Row -->
+        <div class="flex flex-col sm:flex-row items-center gap-3">
+          <div class="relative w-full">
+            <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--color-muted)] text-[18px]">search</span>
+            <input type="text" id="searchInput" placeholder="Search textbooks, drafters, calculators, component kits..." class="w-full bg-[var(--color-card-subtle)] border border-[var(--color-hairline)] text-[var(--color-ink)] placeholder-[var(--color-muted)] text-xs rounded-full pl-10 pr-9 py-2.5 focus:outline-none focus:ring-1 focus:ring-[var(--color-lime)] transition-colors" />
+            <button type="button" id="clearSearchBtn" class="absolute right-3.5 top-1/2 -translate-y-1/2 text-[var(--color-muted)] hover:text-[var(--color-ink)] hidden cursor-pointer text-xs">✕</button>
+          </div>
+          
+          <div class="relative inline-flex items-center shrink-0 w-full sm:w-auto">
+            <select id="sortSelect" class="w-full sm:w-auto appearance-none bg-[var(--color-card-subtle)] text-[var(--color-ink)] border border-[var(--color-hairline)] pl-4 pr-9 py-2.5 rounded-full text-xs font-medium cursor-pointer focus:outline-none focus:ring-1 focus:ring-[var(--color-lime)]">
+              <option value="recent">Recently Added</option>
+              <option value="price-asc">Price: Low to High</option>
+              <option value="price-desc">Price: High to Low</option>
+            </select>
+            <span class="material-symbols-outlined absolute right-3 pointer-events-none text-[18px] text-[var(--color-muted)]">keyboard_arrow_down</span>
+          </div>
+        </div>
+
+        <!-- Filter Category Pills & Counter Row -->
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pt-1 border-t border-[var(--color-hairline)]">
+          <div class="flex items-center gap-1.5 overflow-x-auto max-w-full pb-1 no-scrollbar text-xs" id="filterPillsContainer">
+            <button type="button" class="category-pill px-3.5 py-1.5 rounded-full font-medium bg-[var(--color-lime)] text-[var(--color-lime-ink)] shadow-2xs whitespace-nowrap active-pill cursor-pointer" data-cat="all">All Items</button>
+            <button type="button" class="category-pill px-3.5 py-1.5 rounded-full text-[var(--color-muted)] hover:text-[var(--color-ink)] bg-[var(--color-card-subtle)] hover:bg-[var(--color-hairline)] whitespace-nowrap transition-colors cursor-pointer" data-cat="books">Books &amp; Notes</button>
+            <button type="button" class="category-pill px-3.5 py-1.5 rounded-full text-[var(--color-muted)] hover:text-[var(--color-ink)] bg-[var(--color-card-subtle)] hover:bg-[var(--color-hairline)] whitespace-nowrap transition-colors cursor-pointer" data-cat="lab">Lab Equipment</button>
+            <button type="button" class="category-pill px-3.5 py-1.5 rounded-full text-[var(--color-muted)] hover:text-[var(--color-ink)] bg-[var(--color-card-subtle)] hover:bg-[var(--color-hairline)] whitespace-nowrap transition-colors cursor-pointer" data-cat="electronics">Electronics</button>
+            <button type="button" class="category-pill px-3.5 py-1.5 rounded-full text-[var(--color-muted)] hover:text-[var(--color-ink)] bg-[var(--color-card-subtle)] hover:bg-[var(--color-hairline)] whitespace-nowrap transition-colors cursor-pointer" data-cat="drawing">Drawing &amp; Tools</button>
+          </div>
+
+          <span class="font-mono text-xs text-[var(--color-muted)] shrink-0">
+            Showing <strong class="text-[var(--color-ink)] font-bold" id="itemsCount">6</strong> verified listings
+          </span>
+        </div>
+
+      </section>
+
+      <!-- ============================================================== -->
+      <!-- MARKETPLACE ITEMS BENTO GRID                                   -->
+      <!-- ============================================================== -->
+      <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5" id="marketGrid" data-testid="tile-market-grid">
+        <!-- Dynamically populated by marketplace.js -->
+      </section>
 
     </div>
   </main>
 
-  <!-- Shared Samskruti Institutional Footer -->
-  <footer class="w-full bg-[#f3efe6]/90 border-t border-emerald-900/10 mt-16 relative z-10">
-    <div class="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div class="flex flex-col md:flex-row items-center justify-between gap-4 pb-6 border-b border-emerald-900/10">
-        <div class="flex flex-col gap-1 text-center md:text-left">
-          <div class="flex items-center justify-center md:justify-start gap-2">
-            <span class="font-title-editorial text-2xl text-emerald-950 font-bold">Samskruti College of Engineering &amp; Technology</span>
-            <span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-dg text-sm font-bold">Code 259</span>
-          </div>
-          <p class="font-dg text-base text-stone-600 font-medium">Permanent SBTET &amp; AICTE Affiliation. Autonomous Campus Registry &amp; Academic Management Portal.</p>
+  <!-- ============================================================== -->
+  <!-- MODAL: SELL AN ITEM                                            -->
+  <!-- ============================================================== -->
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-xs hidden p-4" id="sellItemModal">
+    <div class="bento-card max-w-lg w-full p-6 flex flex-col gap-4 shadow-2xl relative border border-[var(--color-hairline)]">
+      <div class="flex items-center justify-between pb-3 border-b border-[var(--color-hairline)]">
+        <div class="flex items-center gap-2">
+          <span class="w-8 h-8 rounded-full bg-[var(--color-lime)] text-[var(--color-lime-ink)] flex items-center justify-center">
+            <span class="material-symbols-outlined text-[18px]">add_shopping_cart</span>
+          </span>
+          <h2 class="text-base font-semibold text-[var(--color-ink)]">List an item for sale</h2>
         </div>
-        <div class="flex flex-wrap items-center justify-center gap-2">
-          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/90 border border-emerald-900/10 shadow-sm">
-            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span class="font-dg text-sm text-on-surface font-bold">Biometric Sync Online</span>
-          </div>
-          <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/90 border border-emerald-900/10 shadow-sm">
-            <span class="material-symbols-outlined text-emerald-700 text-[16px]">verified</span>
-            <span class="font-dg text-sm text-on-surface font-bold">SBTET Verified Hub</span>
-          </div>
-        </div>
+        <button type="button" class="w-8 h-8 rounded-full bg-[var(--color-card-subtle)] hover:bg-[var(--color-hairline)] flex items-center justify-center text-[var(--color-muted)] close-modal-btn cursor-pointer">
+          <span class="material-symbols-outlined text-[18px]">close</span>
+        </button>
       </div>
-      <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-4 text-stone-600">
-        <span class="font-dg text-base">© 2025 Samskruti College. PIN 24259-CS-025 Registry. All rights reserved.</span>
-        <div class="flex items-center gap-4">
-          <a class="font-dg text-base font-semibold hover:text-emerald-800 transition-colors" href="#">Academic Regulations</a>
-          <a class="font-dg text-base font-semibold hover:text-emerald-800 transition-colors" href="#">Attendance Mandates</a>
-          <a class="font-dg text-base font-semibold hover:text-emerald-800 transition-colors" href="#">Campus Support</a>
+
+      <form id="sellItemForm" class="flex flex-col gap-3.5 text-xs">
+        <div class="flex flex-col gap-1">
+          <label class="font-medium text-[var(--color-ink)]">Item Title</label>
+          <input type="text" id="sellTitle" required placeholder="e.g. Casio fx-991EX Scientific Calculator" class="w-full bg-[var(--color-card-subtle)] border border-[var(--color-hairline)] rounded-xl px-3 py-2 text-[var(--color-ink)] focus:outline-none focus:ring-1 focus:ring-[var(--color-lime)]" />
         </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div class="flex flex-col gap-1">
+            <label class="font-medium text-[var(--color-ink)]">Category</label>
+            <select id="sellCategory" class="w-full bg-[var(--color-card-subtle)] border border-[var(--color-hairline)] rounded-xl px-3 py-2 text-[var(--color-ink)] focus:outline-none focus:ring-1 focus:ring-[var(--color-lime)]">
+              <option value="books">Books &amp; Notes</option>
+              <option value="lab">Lab Equipment</option>
+              <option value="electronics">Electronics</option>
+              <option value="drawing">Drawing &amp; Tools</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          <div class="flex flex-col gap-1">
+            <label class="font-medium text-[var(--color-ink)]">Price (₹ INR)</label>
+            <input type="number" id="sellPrice" required min="10" placeholder="e.g. 450" class="w-full bg-[var(--color-card-subtle)] border border-[var(--color-hairline)] rounded-xl px-3 py-2 text-[var(--color-ink)] font-mono focus:outline-none focus:ring-1 focus:ring-[var(--color-lime)]" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div class="flex flex-col gap-1">
+            <label class="font-medium text-[var(--color-ink)]">Condition</label>
+            <select id="sellCondition" class="w-full bg-[var(--color-card-subtle)] border border-[var(--color-hairline)] rounded-xl px-3 py-2 text-[var(--color-ink)] focus:outline-none focus:ring-1 focus:ring-[var(--color-lime)]">
+              <option value="Like New">Like New</option>
+              <option value="Gently Used">Gently Used</option>
+              <option value="Good">Good</option>
+              <option value="Fair">Fair</option>
+            </select>
+          </div>
+
+          <div class="flex flex-col gap-1">
+            <label class="font-medium text-[var(--color-ink)]">Contact Phone / WhatsApp</label>
+            <input type="tel" id="sellContact" value="+91 9876543210" class="w-full bg-[var(--color-card-subtle)] border border-[var(--color-hairline)] rounded-xl px-3 py-2 text-[var(--color-ink)] font-mono focus:outline-none focus:ring-1 focus:ring-[var(--color-lime)]" />
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label class="font-medium text-[var(--color-ink)]">Description / Notes</label>
+          <textarea id="sellDescription" rows="2" placeholder="Mention edition, semester usage, or included accessories..." class="w-full bg-[var(--color-card-subtle)] border border-[var(--color-hairline)] rounded-xl px-3 py-2 text-[var(--color-ink)] placeholder-[var(--color-muted)] focus:outline-none focus:ring-1 focus:ring-[var(--color-lime)] resize-none"></textarea>
+        </div>
+
+        <div class="flex items-center justify-end gap-2 pt-2">
+          <button type="button" class="px-4 py-2 rounded-full border border-[var(--color-hairline)] text-[var(--color-muted)] hover:text-[var(--color-ink)] close-modal-btn cursor-pointer">
+            Cancel
+          </button>
+          <button type="submit" id="btnPublishItem" class="px-5 py-2 rounded-full bg-[var(--color-lime)] text-[var(--color-lime-ink)] font-semibold hover:opacity-90 active:scale-95 transition-all cursor-pointer">
+            Publish Listing
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- MODAL: ITEM DETAIL VIEW                                        -->
+  <!-- ============================================================== -->
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-xs hidden p-4" id="itemDetailModal">
+    <div class="bento-card max-w-lg w-full p-6 flex flex-col gap-4 shadow-2xl relative border border-[var(--color-hairline)]">
+      <div class="flex items-center justify-between pb-3 border-b border-[var(--color-hairline)]">
+        <span class="font-mono text-xs font-semibold px-2.5 py-0.5 rounded-full bg-[var(--color-lavender)] text-[#22174C]" id="modalDetailCategory">Equipment</span>
+        <button type="button" class="w-8 h-8 rounded-full bg-[var(--color-card-subtle)] hover:bg-[var(--color-hairline)] flex items-center justify-center text-[var(--color-muted)] close-detail-btn cursor-pointer">
+          <span class="material-symbols-outlined text-[18px]">close</span>
+        </button>
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <h3 class="text-xl font-bold text-[var(--color-ink)]" id="modalDetailTitle">Item Title</h3>
+        <div class="flex items-baseline gap-2">
+          <span class="text-3xl font-mono font-bold text-[var(--color-ink)]" id="modalDetailPrice">₹0</span>
+          <span class="font-mono text-xs px-2 py-0.5 rounded-full bg-[var(--color-card-subtle)] text-[var(--color-muted)]" id="modalDetailCondition">Good</span>
+        </div>
+        <p class="text-xs text-[var(--color-muted)] leading-relaxed mt-1" id="modalDetailDesc">Description text...</p>
+      </div>
+
+      <div class="p-3.5 rounded-xl bg-[var(--color-card-subtle)] border border-[var(--color-hairline)] flex items-center justify-between text-xs">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-full bg-[var(--color-feature-card)] text-white flex items-center justify-center font-mono font-bold text-xs" id="modalDetailAvatar">SD</div>
+          <div class="flex flex-col">
+            <span class="font-medium text-[var(--color-ink)]" id="modalDetailSeller">Seller Name</span>
+            <span class="font-mono text-[11px] text-[var(--color-muted)]" id="modalDetailPin">PIN: 24259-CS-000</span>
+          </div>
+        </div>
+        <span class="font-mono font-semibold text-[var(--color-ink)]" id="modalDetailPhone">+91 On File</span>
+      </div>
+
+      <div class="flex items-center justify-end gap-2 pt-2 border-t border-[var(--color-hairline)]">
+        <button type="button" class="px-4 py-2 rounded-full border border-[var(--color-hairline)] text-[var(--color-muted)] close-detail-btn cursor-pointer text-xs">
+          Close
+        </button>
+        <button type="button" id="modalDetailMessageBtn" class="px-5 py-2 rounded-full bg-[var(--color-lime)] text-[var(--color-lime-ink)] font-semibold hover:opacity-90 active:scale-95 transition-all cursor-pointer text-xs flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-[16px]">chat</span>
+          <span>Message Seller</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- MODAL: MESSAGE SELLER                                          -->
+  <!-- ============================================================== -->
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-xs hidden p-4" id="messageSellerModal">
+    <div class="bento-card max-w-md w-full p-6 flex flex-col gap-4 shadow-2xl relative border border-[var(--color-hairline)]">
+      <div class="flex items-center justify-between pb-3 border-b border-[var(--color-hairline)]">
+        <div class="flex items-center gap-2">
+          <span class="w-8 h-8 rounded-full bg-[var(--color-lime)] text-[var(--color-lime-ink)] flex items-center justify-center">
+            <span class="material-symbols-outlined text-[18px]">forum</span>
+          </span>
+          <h2 class="text-sm font-semibold text-[var(--color-ink)]">Message Seller</h2>
+        </div>
+        <button type="button" class="w-8 h-8 rounded-full bg-[var(--color-card-subtle)] hover:bg-[var(--color-hairline)] flex items-center justify-center text-[var(--color-muted)] close-msg-btn cursor-pointer">
+          <span class="material-symbols-outlined text-[18px]">close</span>
+        </button>
+      </div>
+
+      <div class="flex flex-col gap-2.5 text-xs">
+        <span class="text-[var(--color-muted)]">To: <strong class="text-[var(--color-ink)]" id="msgSellerName">Seller</strong> regarding <strong class="text-[var(--color-ink)]" id="msgItemTitle">Item</strong></span>
+        
+        <!-- Quick Chips -->
+        <div class="flex flex-wrap gap-1.5 pt-1">
+          <button type="button" class="quick-chip px-2.5 py-1 rounded-full bg-[var(--color-card-subtle)] hover:bg-[var(--color-hairline)] text-[var(--color-ink)] text-[11px] cursor-pointer">Is this still available?</button>
+          <button type="button" class="quick-chip px-2.5 py-1 rounded-full bg-[var(--color-card-subtle)] hover:bg-[var(--color-hairline)] text-[var(--color-ink)] text-[11px] cursor-pointer">Can we meet at college canteen?</button>
+          <button type="button" class="quick-chip px-2.5 py-1 rounded-full bg-[var(--color-card-subtle)] hover:bg-[var(--color-hairline)] text-[var(--color-ink)] text-[11px] cursor-pointer">Is the price negotiable?</button>
+        </div>
+
+        <textarea id="sellerMsgText" rows="3" placeholder="Type your message to the seller..." class="w-full bg-[var(--color-card-subtle)] border border-[var(--color-hairline)] rounded-xl px-3 py-2 text-[var(--color-ink)] placeholder-[var(--color-muted)] focus:outline-none focus:ring-1 focus:ring-[var(--color-lime)] resize-none"></textarea>
+      </div>
+
+      <div class="flex items-center justify-end gap-2 pt-2 border-t border-[var(--color-hairline)]">
+        <button type="button" class="px-4 py-2 rounded-full border border-[var(--color-hairline)] text-[var(--color-muted)] close-msg-btn cursor-pointer text-xs">
+          Cancel
+        </button>
+        <button type="button" id="btnSendSellerMessage" class="px-5 py-2 rounded-full bg-[var(--color-feature-card)] text-[var(--color-feature-card-ink)] font-medium hover:opacity-90 active:scale-95 transition-all cursor-pointer text-xs flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-[16px]">send</span>
+          <span>Send Message</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toastNotification" class="fixed bottom-6 right-6 z-50 transform transition-all duration-300 hidden">
+    <div class="bento-card py-3 px-5 flex items-center gap-3 shadow-xl border border-[var(--color-hairline)] bg-[var(--color-card)] text-[var(--color-ink)]">
+      <span class="material-symbols-outlined text-[20px] text-[var(--color-lime-ink)] bg-[var(--color-lime)] rounded-full p-1">check</span>
+      <span id="toastMsg" class="text-xs font-medium">Operation completed successfully</span>
+    </div>
+  </div>
+
+  <!-- Shared Institutional Footer -->
+  <footer class="w-full py-8 border-t border-[var(--color-hairline)] mt-auto bg-[var(--color-canvas)]">
+    <div class="campus-container flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-[var(--color-muted)]">
+      <div class="flex items-center gap-2">
+        <span class="font-medium text-[var(--color-ink)]">Samskruti College of Engineering &amp; Technology</span>
+        <span>•</span>
+        <span>Institution Code 259</span>
+      </div>
+      <div>
+        <span>Affiliated to SBTET &amp; JNTUH • Autonomous Academic Council</span>
       </div>
     </div>
   </footer>
-
-  <!-- Toast Notification -->
-  <div id="toast" class="fixed bottom-6 right-6 z-[30000] hidden px-5 py-3 rounded-2xl bg-emerald-900 text-white font-bold text-base shadow-2xl flex items-center gap-3 border border-emerald-400/40 transform transition-all duration-300">
-    <span class="material-symbols-outlined text-emerald-300 text-[20px]" id="toast-icon">check_circle</span>
-    <span id="toast-message">Action completed successfully</span>
-  </div>
-
-  <!-- Marketplace Controller Script -->
-  <script src="/screens/02-student-portal/marketplace.js"></script>
 </body>
 </html>

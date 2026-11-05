@@ -1,305 +1,558 @@
 /**
- * Samskruti College Student Marketplace & Exchange Controller
- * Dynamic fill and full interactive logic for Stitch Campus Connect Marketplace
+ * Samskruti College Student Marketplace & Hardware Exchange Controller
+ * Kinetic Bento Tactile Design System Engine
+ * SBTET Code 259 Student Peer-to-Peer Exchange
  */
 
 document.addEventListener('DOMContentLoaded', () => {
   initMarketplace();
 });
 
-let currentCategory = 'all';
+let marketplaceItems = [];
+let activeCategory = 'all';
 let searchQuery = '';
 let currentSort = 'recent';
+let selectedItem = null;
 
 function initMarketplace() {
-  bindStudentMetadata();
-  bindFilterPills();
   bindSearchAndClear();
+  bindFilterPills();
   bindSortSelect();
   bindSellModal();
-  bindDmSellerButtons();
+  bindDetailModal();
+  bindMessageModal();
+  loadMarketplaceItems();
 }
 
 /**
- * 1. Bind Student Header Metadata
+ * 1. Default Baseline Items
  */
-function bindStudentMetadata() {
-  if (typeof StitchState === 'undefined') return;
-  const user = StitchState.getUser();
-
-  const metaEl = document.getElementById('mktStudentMeta');
-  if (metaEl) {
-    metaEl.textContent = `${user.name.toUpperCase()} (PIN: ${user.pin || '24259-CS-025'})`;
-  }
+function getDefaultItems() {
+  return [
+    {
+      id: 1,
+      title: 'Casio fx-991EX ClassWiz Scientific Calculator',
+      category: 'electronics',
+      categoryLabel: 'Electronics',
+      price: 950,
+      condition: 'Like New',
+      seller_name: 'Dulipudi Tarun',
+      seller_pin: '24259-CS-002',
+      seller_dept: 'CSE · Year II',
+      seller_phone: '+91 9849102938',
+      description: 'High-resolution natural textbook display with 552 functions. Used for 1 semester in Applied Mathematics. Original box and slide case included.',
+      created_at: '2026-11-04'
+    },
+    {
+      id: 2,
+      title: 'SCET Official White Lab Coat (Size L, Diploma Spec)',
+      category: 'lab',
+      categoryLabel: 'Lab Equipment',
+      price: 250,
+      condition: 'Gently Used',
+      seller_name: 'Chaganti Srija',
+      seller_pin: '24259-CS-005',
+      seller_dept: 'CSE · Year II',
+      seller_phone: '+91 9701827364',
+      description: 'Standard institutional 100% cotton white apron with embroidered Samskruti crest and pen pocket. Washed and ironed, ready for chemistry/hardware lab.',
+      created_at: '2026-11-03'
+    },
+    {
+      id: 3,
+      title: 'Omega Deluxe Mini Drafter Set with Steel Clamp',
+      category: 'drawing',
+      categoryLabel: 'Drawing & Tools',
+      price: 450,
+      condition: 'Like New',
+      seller_name: 'Katta Dhanush Goud',
+      seller_pin: '24259-CS-007',
+      seller_dept: 'CSE · Year II',
+      seller_phone: '+91 9866123456',
+      description: 'Complete engineering graphics mini drafter with unbreakable scale and heavy-duty steel desk clamp. Zero alignment error.',
+      created_at: '2026-11-02'
+    },
+    {
+      id: 4,
+      title: 'AI & Machine Learning: Foundations & Practice (C-24)',
+      category: 'books',
+      categoryLabel: 'Books & Notes',
+      price: 380,
+      condition: 'Good',
+      seller_name: 'Pittala Bhavya',
+      seller_pin: '24259-CS-004',
+      seller_dept: 'CSE · Year II',
+      seller_phone: '+91 9959876543',
+      description: 'Prescribed curriculum textbook for SBTET C-24 scheme. Contains handwritten summary notes and solved previous board question papers.',
+      created_at: '2026-11-01'
+    },
+    {
+      id: 5,
+      title: 'Arduino Uno R3 Starter Kit with 37 Sensor Modules',
+      category: 'electronics',
+      categoryLabel: 'Electronics',
+      price: 1200,
+      condition: 'Like New',
+      seller_name: 'Vadde Abhinay',
+      seller_pin: '24259-CS-008',
+      seller_dept: 'CSE · Year II',
+      seller_phone: '+91 9440123789',
+      description: 'Original ATmega328P microcontroller board with USB cable, breadboard, jumper wires, ultrasonic sensor, RFID kit, and relay modules.',
+      created_at: '2026-10-28'
+    },
+    {
+      id: 6,
+      title: 'Mechanical Workshop Measuring Kit (Vernier + Micrometer)',
+      category: 'lab',
+      categoryLabel: 'Lab Equipment',
+      price: 600,
+      condition: 'Good',
+      seller_name: 'Anaboina Dilip',
+      seller_pin: '24259-CS-003',
+      seller_dept: 'CSE · Year II',
+      seller_phone: '+91 9177654321',
+      description: 'Precision 0.02mm stainless steel vernier caliper and 0.01mm screw gauge micrometer in padded shockproof casing. Workshop certified.',
+      created_at: '2026-10-25'
+    }
+  ];
 }
 
 /**
- * 2. Category Filter Pills
+ * 2. Load Items from API and Local Storage
  */
-function bindFilterPills() {
-  const pills = document.querySelectorAll('.category-pill');
-  if (!pills.length) return;
+async function loadMarketplaceItems() {
+  let items = [];
 
-  pills.forEach(pill => {
-    pill.addEventListener('click', () => {
-      pills.forEach(p => {
-        p.removeAttribute('style');
-        p.className = 'category-pill px-5 py-2 rounded-full font-darker font-semibold text-lg bg-surface-container-lowest text-on-surface-variant hover:text-emerald-800 hover:bg-emerald-50/70 border border-emerald-900/10 transition-all cursor-pointer';
-      });
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 2000);
+    const res = await fetch('/api/v1/marketplace/items', { signal: controller.signal });
+    clearTimeout(timeoutId);
 
-      pill.className = 'category-pill px-5 py-2 rounded-full font-darker font-bold text-lg transition-all text-white shadow-sm cursor-pointer';
-      pill.style.background = 'linear-gradient(135deg, #047857, #10b981)';
-      pill.style.boxShadow = '0 4px 14px rgba(16, 185, 129, 0.35)';
-      pill.style.border = '1px solid rgba(110, 231, 183, 0.5)';
-
-      currentCategory = pill.getAttribute('data-cat') || 'all';
-      applyFilters();
-    });
-  });
-}
-
-/**
- * 3. Search Bar and Clear Action
- */
-function bindSearchAndClear() {
-  const searchInput = document.getElementById('market-search');
-  const clearBtn = document.getElementById('clear-search');
-  if (!searchInput) return;
-
-  searchInput.addEventListener('input', (e) => {
-    searchQuery = e.target.value.toLowerCase().trim();
-    if (clearBtn) {
-      if (searchQuery.length > 0) {
-        clearBtn.classList.remove('hidden');
-      } else {
-        clearBtn.classList.add('hidden');
+    if (res.ok) {
+      const data = await res.json();
+      if (data.items && Array.isArray(data.items)) {
+        items = data.items;
       }
     }
-    applyFilters();
+  } catch (err) {
+    console.warn('Backend marketplace items fetch fallback:', err);
+  }
+
+  // Local storage items
+  let localItems = [];
+  try {
+    localItems = JSON.parse(localStorage.getItem('dc_marketplace_items') || '[]');
+  } catch (e) {}
+
+  const defaults = getDefaultItems();
+  const combined = [...localItems, ...items, ...defaults];
+  const unique = [];
+  const seenIds = new Set();
+  for (const it of combined) {
+    const idKey = it.id || it.title;
+    if (!seenIds.has(idKey)) {
+      seenIds.add(idKey);
+      unique.push(it);
+    }
+  }
+
+  marketplaceItems = unique;
+  renderMarketplace();
+}
+
+/**
+ * 3. Search and Clear Handling
+ */
+function bindSearchAndClear() {
+  const input = document.getElementById('searchInput');
+  const clearBtn = document.getElementById('clearSearchBtn');
+
+  input?.addEventListener('input', (e) => {
+    searchQuery = e.target.value.trim().toLowerCase();
+    if (clearBtn) {
+      clearBtn.classList.toggle('hidden', searchQuery.length === 0);
+    }
+    renderMarketplace();
   });
 
   clearBtn?.addEventListener('click', () => {
-    searchInput.value = '';
+    if (input) input.value = '';
     searchQuery = '';
     clearBtn.classList.add('hidden');
-    applyFilters();
-    searchInput.focus();
+    renderMarketplace();
   });
 }
 
 /**
- * 4. Sort Dropdown
+ * 4. Category Filter Pills
  */
-function bindSortSelect() {
-  const sortSelect = document.getElementById('sort-select');
-  if (!sortSelect) return;
+function bindFilterPills() {
+  const pills = document.querySelectorAll('.category-pill');
+  pills.forEach(pill => {
+    pill.addEventListener('click', () => {
+      activeCategory = pill.getAttribute('data-cat') || 'all';
 
-  sortSelect.addEventListener('change', (e) => {
-    currentSort = e.target.value;
-    applyFilters();
-  });
-}
-
-/**
- * 5. Master Filter & Sort Application
- */
-function applyFilters() {
-  const cards = document.querySelectorAll('#marketplace-cards article');
-  let visibleCount = 0;
-
-  // Convert to array for sorting
-  const container = document.getElementById('marketplace-cards');
-  const cardArray = Array.from(cards);
-
-  cardArray.forEach(card => {
-    const cardCat = card.getAttribute('data-category') || '';
-    const textContent = card.textContent.toLowerCase();
-
-    const matchesCat = (currentCategory === 'all' || cardCat === currentCategory);
-    const matchesSearch = (!searchQuery || textContent.includes(searchQuery));
-
-    if (matchesCat && matchesSearch) {
-      card.style.display = '';
-      visibleCount++;
-    } else {
-      card.style.display = 'none';
-    }
-  });
-
-  // Re-sort visible cards if container exists
-  if (container) {
-    cardArray.sort((a, b) => {
-      const priceA = parseInt(a.getAttribute('data-price') || '0', 10);
-      const priceB = parseInt(b.getAttribute('data-price') || '0', 10);
-
-      if (currentSort === 'price-low') {
-        return priceA - priceB;
-      } else if (currentSort === 'price-high') {
-        return priceB - priceA;
-      }
-      return 0;
-    });
-
-    cardArray.forEach(c => container.appendChild(c));
-  }
-}
-
-/**
- * 6. DM Seller Action
- */
-function bindDmSellerButtons() {
-  document.addEventListener('click', (e) => {
-    const dmBtn = e.target.closest('.dm-seller-btn, button[onclick*="openDM"]');
-    if (!dmBtn) return;
-
-    e.preventDefault();
-    const card = dmBtn.closest('article');
-    const sellerName = card ? (card.querySelector('.seller-name, span.font-bold')?.textContent.trim() || 'Seller') : 'Seller';
-    const sellerPin = card ? (card.querySelector('.seller-pin, span.text-stone-500, span.text-on-surface-variant')?.textContent.trim() || '') : '';
-
-    showToast(`Redirecting to encrypted campus chat with ${sellerName}...`);
-
-    setTimeout(() => {
-      window.location.href = `./messages.html?seller=${encodeURIComponent(sellerName)}&pin=${encodeURIComponent(sellerPin)}`;
-    }, 1000);
-  });
-}
-
-/**
- * 7. Sell an Item Modal Logic
- */
-function bindSellModal() {
-  const openBtn = document.getElementById('open-sell-modal');
-  const closeBtn = document.getElementById('close-sell-modal');
-  const cancelBtn = document.getElementById('cancel-sell-btn');
-  const modal = document.getElementById('sell-modal');
-  const modalBackdrop = document.getElementById('sell-modal-backdrop');
-  const modalContent = document.getElementById('sell-modal-content') || document.getElementById('sell-modal-card');
-  const form = document.getElementById('sell-form');
-
-  function openModal() {
-    if (!modal) return;
-    modal.classList.remove('hidden', 'opacity-0', 'pointer-events-none');
-    if (modalBackdrop) modalBackdrop.classList.remove('opacity-0', 'pointer-events-none');
-    if (modalContent) {
-      modalContent.classList.remove('opacity-0', 'scale-95');
-      modalContent.classList.add('opacity-100', 'scale-100');
-    }
-  }
-
-  function closeModal() {
-    if (!modal) return;
-    modal.classList.add('opacity-0', 'pointer-events-none');
-    if (modalBackdrop) modalBackdrop.classList.add('opacity-0', 'pointer-events-none');
-    if (modalContent) {
-      modalContent.classList.remove('opacity-100', 'scale-100');
-      modalContent.classList.add('opacity-0', 'scale-95');
-    }
-    setTimeout(() => {
-      modal.classList.add('hidden');
-      if (form) form.reset();
-    }, 200);
-  }
-
-  openBtn?.addEventListener('click', openModal);
-  closeBtn?.addEventListener('click', closeModal);
-  cancelBtn?.addEventListener('click', closeModal);
-  modalBackdrop?.addEventListener('click', closeModal);
-
-  if (form) {
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-
-      const title = document.getElementById('item-title')?.value || form.querySelector('input[placeholder*="Drafter"]')?.value || 'Listed Campus Item';
-      const cat = document.getElementById('item-category')?.value || form.querySelector('select')?.value || 'textbooks';
-      const price = document.getElementById('item-price')?.value || form.querySelector('input[type="number"]')?.value || '150';
-      const cond = document.getElementById('item-condition')?.value || form.querySelector('input[placeholder*="Like New"]')?.value || 'Good';
-      const desc = document.getElementById('item-desc')?.value || '';
-
-      const user = StitchState ? StitchState.getUser() : { name: 'Karnati Himesh', pin: '24259-CS-025', branch: 'CSE' };
-
-      // Prepend to Marketplace grid
-      prependMarketItem({
-        title,
-        category: cat,
-        price,
-        condition: cond,
-        desc,
-        sellerName: user.name || 'Karnati Himesh',
-        sellerPin: user.pin || '24259-CS-025',
-        sellerDept: 'CSE Dept'
+      pills.forEach(p => {
+        p.className = 'category-pill px-3.5 py-1.5 rounded-full text-[var(--color-muted)] hover:text-[var(--color-ink)] bg-[var(--color-card-subtle)] hover:bg-[var(--color-hairline)] whitespace-nowrap transition-colors cursor-pointer';
       });
 
-      // Increment surplus count
-      const countEl = document.getElementById('allSurplusCount');
-      if (countEl) {
-        countEl.textContent = 'All Surplus (49)';
-      }
+      pill.className = 'category-pill px-3.5 py-1.5 rounded-full font-medium bg-[var(--color-lime)] text-[var(--color-lime-ink)] shadow-2xs whitespace-nowrap active-pill cursor-pointer';
 
-      closeModal();
-      showToast(`Item "${title}" successfully listed in Student Surplus Exchange!`);
+      renderMarketplace();
     });
-  }
-}
-
-function prependMarketItem(data) {
-  const container = document.getElementById('marketplace-cards');
-  if (!container) return;
-
-  const card = document.createElement('article');
-  card.className = 'card-volumetric rounded-3xl bg-surface-container-lowest overflow-hidden flex flex-col group transition-all duration-300 hover:-translate-y-1';
-  card.setAttribute('data-category', data.category);
-  card.setAttribute('data-price', data.price);
-
-  card.innerHTML = `
-    <div class="relative h-56 overflow-hidden bg-surface-container-low">
-      <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=600&q=80" 
-           alt="${data.title}" 
-           class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-      <div class="absolute top-3 left-3 flex gap-2">
-        <span class="px-3 py-1 rounded-full bg-emerald-950/80 backdrop-blur-md text-emerald-200 font-mono text-xs font-semibold">New Listing</span>
-        <span class="px-3 py-1 rounded-full bg-white/90 backdrop-blur-md text-emerald-900 font-bold text-xs">${data.condition}</span>
-      </div>
-      <div class="absolute top-3 right-3">
-        <span class="px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md text-white font-mono text-[11px]">Ref 24259-NEW</span>
-      </div>
-    </div>
-    <div class="p-5 flex-1 flex flex-col justify-between gap-4">
-      <div class="flex flex-col gap-1.5">
-        <div class="flex items-baseline justify-between">
-          <span class="font-darker text-3xl font-extrabold text-emerald-900">₹${data.price}</span>
-          <span class="text-xs font-bold text-stone-500 uppercase tracking-wide">Campus Verified</span>
-        </div>
-        <h3 class="font-darker text-2xl font-bold text-on-surface leading-snug">${data.title}</h3>
-        <p class="text-xs text-on-surface-variant line-clamp-2">${data.desc || 'Clean and certified by student seller for campus exchange.'}</p>
-      </div>
-      <div class="pt-3 border-t border-emerald-900/10 flex items-center justify-between">
-        <div class="flex items-center gap-2">
-          <div class="w-7 h-7 rounded-full bg-emerald-100 text-emerald-800 font-bold text-xs flex items-center justify-center">KH</div>
-          <div class="flex flex-col leading-none">
-            <span class="font-bold text-xs text-on-surface">${data.sellerName}</span>
-            <span class="text-[10px] text-stone-500">${data.sellerPin}</span>
-          </div>
-        </div>
-        <button type="button" class="dm-seller-btn px-4 py-1.5 rounded-full bg-primary hover:bg-emerald-800 text-white font-bold text-xs shadow-sm flex items-center gap-1 transition-all">
-          <span>DM Seller</span>
-          <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
-        </button>
-      </div>
-    </div>
-  `;
-
-  container.insertBefore(card, container.firstChild);
+  });
 }
 
 /**
- * 8. Toast Helper
+ * 5. Sort Select
+ */
+function bindSortSelect() {
+  const sortSelect = document.getElementById('sortSelect');
+  sortSelect?.addEventListener('change', (e) => {
+    currentSort = e.target.value;
+    renderMarketplace();
+  });
+}
+
+/**
+ * 6. Render Filtered and Sorted Items
+ */
+function renderMarketplace() {
+  const grid = document.getElementById('marketGrid');
+  const countEl = document.getElementById('itemsCount');
+  if (!grid) return;
+
+  // Filter
+  let filtered = marketplaceItems.filter(item => {
+    const cat = (item.category || '').toLowerCase();
+    let matchesCat = (activeCategory === 'all');
+    if (!matchesCat) {
+      if (activeCategory === 'books') {
+        matchesCat = cat.includes('book') || cat.includes('text') || cat.includes('note');
+      } else if (activeCategory === 'lab') {
+        matchesCat = cat.includes('lab') || cat.includes('coat') || cat.includes('apron') || cat.includes('equip');
+      } else if (activeCategory === 'electronics') {
+        matchesCat = cat.includes('calc') || cat.includes('elect') || cat.includes('arduin') || cat.includes('sensor');
+      } else if (activeCategory === 'drawing') {
+        matchesCat = cat.includes('draft') || cat.includes('draw') || cat.includes('tool') || cat.includes('square');
+      } else {
+        matchesCat = (cat === activeCategory.toLowerCase());
+      }
+    }
+
+    const matchesSearch = !searchQuery || 
+      item.title.toLowerCase().includes(searchQuery) ||
+      (item.description && item.description.toLowerCase().includes(searchQuery)) ||
+      (item.seller_name && item.seller_name.toLowerCase().includes(searchQuery));
+
+    return matchesCat && matchesSearch;
+  });
+
+  // Sort
+  if (currentSort === 'price-asc') {
+    filtered.sort((a, b) => a.price - b.price);
+  } else if (currentSort === 'price-desc') {
+    filtered.sort((a, b) => b.price - a.price);
+  } else {
+    // recent
+    filtered.sort((a, b) => (b.id || 0) - (a.id || 0));
+  }
+
+  if (countEl) countEl.textContent = filtered.length;
+
+  if (filtered.length === 0) {
+    grid.innerHTML = `
+      <div class="col-span-full bento-card p-10 text-center flex flex-col items-center justify-center gap-3">
+        <span class="material-symbols-outlined text-4xl text-[var(--color-muted)]">search_off</span>
+        <h3 class="text-sm font-semibold text-[var(--color-ink)]">No items found matching your criteria</h3>
+        <p class="text-xs text-[var(--color-muted)]">Try adjusting your search terms or clearing category filters.</p>
+      </div>
+    `;
+    return;
+  }
+
+  grid.innerHTML = filtered.map(item => {
+    const initials = (item.seller_name || 'SC')
+      .split(' ')
+      .map(n => n[0])
+      .join('')
+      .slice(0, 2)
+      .toUpperCase();
+
+    return `
+      <div class="bento-card p-5 flex flex-col justify-between gap-4 border border-[var(--color-hairline)] hover:translate-y-[-2px] transition-all" data-id="${item.id}">
+        
+        <!-- Top Row: Seller Info + Category -->
+        <div class="flex items-center justify-between pb-2 border-b border-[var(--color-hairline)]">
+          <div class="flex items-center gap-2">
+            <div class="w-7 h-7 rounded-full bg-[var(--color-feature-card)] text-white flex items-center justify-center font-mono text-[10px] font-bold">
+              ${initials}
+            </div>
+            <div class="flex flex-col">
+              <span class="text-xs font-semibold text-[var(--color-ink)] truncate max-w-[130px]">${escapeHtml(item.seller_name || 'Student')}</span>
+              <span class="font-mono text-[10px] text-[var(--color-muted)]">${item.seller_dept || 'SCET Code 259'}</span>
+            </div>
+          </div>
+          <span class="font-mono text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[var(--color-lavender)] text-[#22174C]">
+            ${escapeHtml(item.categoryLabel || item.category || 'Other')}
+          </span>
+        </div>
+
+        <!-- Middle: Title, Description & Condition -->
+        <div class="flex flex-col gap-1.5 flex-1">
+          <h3 class="text-sm font-bold text-[var(--color-ink)] line-clamp-2 leading-snug">${escapeHtml(item.title)}</h3>
+          <p class="text-xs text-[var(--color-muted)] line-clamp-2 leading-relaxed">${escapeHtml(item.description || '')}</p>
+          <div class="flex items-center gap-2 pt-1">
+            <span class="font-mono text-[10px] font-medium px-2 py-0.5 rounded-full bg-[var(--color-card-subtle)] text-[var(--color-muted)] border border-[var(--color-hairline)]">
+              ${item.condition || 'Good'}
+            </span>
+            <span class="font-mono text-[10px] text-[var(--color-muted)]">Verified Seller</span>
+          </div>
+        </div>
+
+        <!-- Bottom: Price & Action Buttons -->
+        <div class="pt-3 border-t border-[var(--color-hairline)] flex items-center justify-between gap-2">
+          <div class="flex items-baseline">
+            <span class="text-xl font-bold font-mono text-[var(--color-ink)]">₹${item.price}</span>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <button type="button" onclick="openItemDetail(${item.id})" class="btn-view-details px-3 py-1.5 rounded-full bg-[var(--color-card-subtle)] hover:bg-[var(--color-hairline)] text-[var(--color-ink)] text-xs font-medium cursor-pointer transition-colors">
+              Details
+            </button>
+            <button type="button" onclick="openMessageSeller(${item.id})" class="btn-message-seller px-3 py-1.5 rounded-full bg-[var(--color-lime)] text-[var(--color-lime-ink)] text-xs font-semibold hover:opacity-90 active:scale-95 cursor-pointer transition-all flex items-center gap-1">
+              <span class="material-symbols-outlined text-[14px]">chat</span>
+              <span>Message</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    `;
+  }).join('');
+}
+
+/**
+ * 7. Sell Item Modal Logic
+ */
+function bindSellModal() {
+  const openBtn = document.getElementById('btnOpenSellModal');
+  const modal = document.getElementById('sellItemModal');
+  const form = document.getElementById('sellItemForm');
+  if (!modal) return;
+
+  openBtn?.addEventListener('click', () => {
+    modal.classList.remove('hidden');
+    document.getElementById('sellTitle')?.focus();
+  });
+
+  modal.querySelectorAll('.close-modal-btn').forEach(btn => {
+    btn.addEventListener('click', () => modal.classList.add('hidden'));
+  });
+
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) modal.classList.add('hidden');
+  });
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const title = document.getElementById('sellTitle')?.value.trim();
+    const category = document.getElementById('sellCategory')?.value || 'other';
+    const price = parseFloat(document.getElementById('sellPrice')?.value) || 0;
+    const condition = document.getElementById('sellCondition')?.value || 'Good';
+    const contact = document.getElementById('sellContact')?.value.trim() || '+91 9876543210';
+    const desc = document.getElementById('sellDescription')?.value.trim() || '';
+
+    const user = (typeof StitchState !== 'undefined' && StitchState.getUser) 
+      ? StitchState.getUser() 
+      : { name: 'Karnati Himesh', pin: '24259-CS-025', branch: 'CSE' };
+
+    const newItem = {
+      id: Date.now(),
+      title,
+      category,
+      categoryLabel: category.charAt(0).toUpperCase() + category.slice(1),
+      price,
+      condition,
+      seller_name: user.name || 'Karnati Himesh',
+      seller_pin: user.pin || '24259-CS-025',
+      seller_dept: `${user.branch || 'CSE'} · Year II`,
+      seller_phone: contact,
+      description: desc,
+      created_at: new Date().toISOString().split('T')[0]
+    };
+
+    // Try posting to backend API
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 2000);
+      await fetch('/api/v1/marketplace/items', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          seller_pin: newItem.seller_pin,
+          seller_name: newItem.seller_name,
+          title: newItem.title,
+          description: newItem.description,
+          price: newItem.price,
+          category: newItem.category,
+          condition: newItem.condition,
+          contact_info: newItem.seller_phone
+        }),
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
+    } catch (err) {
+      console.warn('Backend POST marketplace fallback to local cache:', err);
+    }
+
+    // Save to local cache
+    let localItems = [];
+    try {
+      localItems = JSON.parse(localStorage.getItem('dc_marketplace_items') || '[]');
+    } catch (e) {}
+
+    localItems.unshift(newItem);
+    localStorage.setItem('dc_marketplace_items', JSON.stringify(localItems));
+
+    marketplaceItems.unshift(newItem);
+    renderMarketplace();
+
+    modal.classList.add('hidden');
+    form.reset();
+    showToast(`"${newItem.title}" published to marketplace.`);
+  });
+}
+
+/**
+ * 8. Item Detail Modal
+ */
+function bindDetailModal() {
+  const modal = document.getElementById('itemDetailModal');
+  if (!modal) return;
+
+  modal.querySelectorAll('.close-detail-btn').forEach(btn => {
+    btn.addEventListener('click', () => modal.classList.add('hidden'));
+  });
+
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) modal.classList.add('hidden');
+  });
+
+  const msgBtn = document.getElementById('modalDetailMessageBtn');
+  msgBtn?.addEventListener('click', () => {
+    modal.classList.add('hidden');
+    if (selectedItem) {
+      openMessageSeller(selectedItem.id);
+    }
+  });
+}
+
+window.openItemDetail = function (id) {
+  const item = marketplaceItems.find(it => it.id == id);
+  if (!item) return;
+
+  selectedItem = item;
+  const modal = document.getElementById('itemDetailModal');
+  if (!modal) return;
+
+  document.getElementById('modalDetailTitle').textContent = item.title;
+  document.getElementById('modalDetailCategory').textContent = item.categoryLabel || item.category;
+  document.getElementById('modalDetailPrice').textContent = `₹${item.price}`;
+  document.getElementById('modalDetailCondition').textContent = item.condition;
+  document.getElementById('modalDetailDesc').textContent = item.description || 'No additional description provided.';
+  document.getElementById('modalDetailSeller').textContent = item.seller_name;
+  document.getElementById('modalDetailPin').textContent = `PIN: ${item.seller_pin}`;
+  document.getElementById('modalDetailPhone').textContent = item.seller_phone;
+
+  const initials = (item.seller_name || 'SC')
+    .split(' ')
+    .map(n => n[0])
+    .join('')
+    .slice(0, 2)
+    .toUpperCase();
+  document.getElementById('modalDetailAvatar').textContent = initials;
+
+  modal.classList.remove('hidden');
+};
+
+/**
+ * 9. Message Seller Modal
+ */
+function bindMessageModal() {
+  const modal = document.getElementById('messageSellerModal');
+  if (!modal) return;
+
+  modal.querySelectorAll('.close-msg-btn').forEach(btn => {
+    btn.addEventListener('click', () => modal.classList.add('hidden'));
+  });
+
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) modal.classList.add('hidden');
+  });
+
+  // Quick Chips
+  const chips = modal.querySelectorAll('.quick-chip');
+  const textarea = document.getElementById('sellerMsgText');
+  chips.forEach(chip => {
+    chip.addEventListener('click', () => {
+      if (textarea) {
+        textarea.value = chip.textContent;
+        textarea.focus();
+      }
+    });
+  });
+
+  const sendBtn = document.getElementById('btnSendSellerMessage');
+  sendBtn?.addEventListener('click', () => {
+    const text = textarea?.value.trim();
+    if (!text) {
+      showToast('Please type a message before sending.');
+      return;
+    }
+
+    modal.classList.add('hidden');
+    if (textarea) textarea.value = '';
+    showToast(`Message sent to seller (${selectedItem?.seller_name || 'Student'}).`);
+  });
+}
+
+window.openMessageSeller = function (id) {
+  const item = marketplaceItems.find(it => it.id == id);
+  if (!item) return;
+
+  selectedItem = item;
+  const modal = document.getElementById('messageSellerModal');
+  if (!modal) return;
+
+  document.getElementById('msgSellerName').textContent = item.seller_name;
+  document.getElementById('msgItemTitle').textContent = item.title;
+
+  modal.classList.remove('hidden');
+  document.getElementById('sellerMsgText')?.focus();
+};
+
+/**
+ * 10. Escape HTML Helper
+ */
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+/**
+ * 11. Toast Notification Helper
  */
 function showToast(message) {
-  let toast = document.getElementById('toast');
+  const toast = document.getElementById('toastNotification');
   if (!toast) return;
 
-  const msgEl = document.getElementById('toast-message');
+  const msgEl = document.getElementById('toastMsg');
   if (msgEl) msgEl.textContent = message;
 
   toast.classList.remove('hidden');
