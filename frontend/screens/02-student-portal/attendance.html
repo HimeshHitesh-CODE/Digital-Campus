@@ -3,423 +3,397 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Biometric Attendance & Academic Eligibility — Samskruti College</title>
+  <title>Samskruti Digital Campus — Attendance Ledger | Code 259</title>
   
-  <!-- Material Symbols & Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Darker+Grotesque:wght@400;500;600;700;800;900&family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..700&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet" />
-  
-  <!-- Tailwind CSS & Master Config -->
-  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-  <script src="/js/stitch-tailwind-config.js"></script>
-
-  <!-- Stitch Design System & Nav Dock Styles -->
+  <!-- Self-Hosted Fonts & Master Tokens -->
+  <link rel="stylesheet" href="/css/fonts.css" />
+  <link rel="stylesheet" href="/css/theme-tokens.css" />
   <link rel="stylesheet" href="/css/stitch-design-system.css" />
   <link rel="stylesheet" href="/css/top-nav.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  
+  <!-- Tailwind CSS & Master Config -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/js/stitch-tailwind-config.js"></script>
 
-  <!-- Lucide Icons & Shared State -->
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Chart.js for Monthly Attendance Trajectory -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <!-- Shared State & Formulas -->
+  <script src="/js/academic-formulas.js"></script>
   <script src="/js/stitch-state.js"></script>
   <script src="/js/dc-dynamic-island.js" defer></script>
 </head>
 
-<body class="bg-surface font-sans text-on-surface min-h-screen flex flex-col antialiased selection:bg-emerald-200 selection:text-emerald-900 bg-mesh-pattern">
+<body class="bg-[var(--color-canvas)] text-[var(--color-ink)] min-h-screen flex flex-col antialiased">
+  <!-- Dynamic Island Header Mounts Automatically via dc-dynamic-island.js -->
 
-  <!-- Main Content Viewport Wrapper (Offset below persistent top navigation) -->
-  <main class="w-full flex-grow pt-[84px] md:pt-[92px]">
-    <div class="max-w-[1240px] mx-auto px-4 sm:px-6 pb-12 flex flex-col gap-6 w-full">
-      <div class="max-w-[1240px] w-full mx-auto px-6 flex flex-col gap-7"><!-- Title & Student Status Header --><div class="flex flex-col gap-3">
-<div class="flex flex-wrap items-center justify-between gap-3">
-<div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-red-50 text-red-700 border border-red-200/80 shadow-sm">
-<span class="w-2 h-2 rounded-full bg-red-600 animate-ping"></span>
-<span class="font-black text-xs tracking-wider uppercase">BIOMETRIC ATTENDANCE &amp; SBTET COMPLIANCE</span>
-</div>
-<div class="flex items-center gap-1.5 text-secondary text-sm font-bold bg-white/70 backdrop-blur-sm px-3.5 py-1 rounded-full border border-emerald-500/15">
-<span class="material-symbols-outlined text-[18px] text-emerald-600">fingerprint</span>
-<span><span id="attLastPunch">Last Biometric Punch: Today, 09:12 AM (Device #Bio-CSE-04)</span></span>
-</div>
-</div>
-<div class="flex flex-col lg:flex-row lg:items-end justify-between gap-5">
-<div class="flex flex-col gap-2 max-w-3xl">
-<h1 class="text-4xl sm:text-5xl font-extrabold text-on-surface tracking-tight leading-none">
-            Biometric Attendance &amp; Academic Eligibility
+  <!-- Main Viewport Layout -->
+  <main class="w-full pt-[80px] pb-12 flex-1">
+    <div class="campus-container flex flex-col gap-6 pt-4">
+
+      <!-- ============================================================== -->
+      <!-- TOP TITLE & ACTION CONTROLS ROW                                -->
+      <!-- ============================================================== -->
+      <section class="w-full flex flex-col md:flex-row md:items-end justify-between gap-4 pb-2" data-testid="tile-att-header">
+        <div class="flex flex-col gap-1">
+          <div class="flex items-center gap-2 mb-1">
+            <span class="font-mono text-xs bg-[var(--color-feature-card)] text-[var(--color-lime)] px-3 py-1 rounded-full uppercase tracking-wider font-semibold" id="attPinBadge">
+              PIN: 24259-CS-025 · SBTET C-24
+            </span>
+          </div>
+          <h1 class="text-4xl lg:text-5xl font-medium tracking-tight text-[var(--color-ink)]">
+            Attendance
           </h1>
-<!-- Student Meta Bar Pill -->
-<div class="flex flex-wrap items-center gap-x-3 gap-y-1 py-1.5 px-4 rounded-full bg-white/80 border border-emerald-500/20 text-on-surface font-semibold text-sm shadow-sm backdrop-blur-sm">
-<span class="font-extrabold text-emerald-800"><span id="attStudentName">Karnati Himesh</span></span>
-<span class="text-emerald-400 font-bold">•</span>
-<span class="text-on-surface-variant font-bold"><span id="attStudentPin">PIN: 24259-CS-025</span></span>
-<span class="text-emerald-400 font-bold">•</span>
-<span class="text-secondary font-medium">Scheme C-24</span>
-<span class="text-emerald-400 font-bold">•</span>
-<span class="text-secondary font-medium">Computer Science &amp; Engineering</span>
-<span class="text-emerald-400 font-bold">•</span>
-<span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-black text-xs"><span id="attStudentSem">Sem IV (2024-25)</span></span>
-</div>
-</div>
-<div class="flex flex-wrap items-center gap-2.5">
-<button class="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full bg-white/90 text-emerald-800 border border-emerald-500/25 hover:bg-emerald-50 hover:border-emerald-500/40 shadow-sm transition-all active:scale-95 font-bold text-base" id="resyncBtn">
-<span class="material-symbols-outlined text-[19px] transition-transform duration-700 text-emerald-600" id="syncIcon">sync</span>
-<span>Re-sync Latest Records</span>
-</button>
-<button class="inline-flex items-center gap-1.5 px-6 py-2.5 rounded-full text-white font-extrabold text-base shadow-[0_6px_20px_rgba(16,185,129,0.35)] hover:shadow-[0_8px_24px_rgba(16,185,129,0.45)] transition-all active:scale-95" style="background: linear-gradient(135deg, #059669 0%, #10b981 50%, #34d399 100%);">
-<span class="material-symbols-outlined text-[19px]">download</span>
-<span>Download Official Statement</span>
-</button>
-</div>
-</div>
-</div>
-<!-- Top KPI Row -->
-<div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-<!-- KPI 1: Live Gauge & Clearance Status -->
-<div class="lg:col-span-6 glass-card rounded-[28px] p-6 flex flex-col justify-between relative overflow-hidden">
-<div class="absolute -right-8 -top-8 w-48 h-48 rounded-full bg-red-400/10 blur-3xl pointer-events-none"></div>
-<div class="flex items-center justify-between pb-4 border-b border-emerald-500/10">
-<div class="flex items-center gap-2.5">
-<span class="w-9 h-9 rounded-2xl bg-red-100 text-red-600 flex items-center justify-center font-bold border border-red-200">
-<span class="material-symbols-outlined text-[20px]">warning</span>
-</span>
-<div class="flex flex-col">
-<span class="text-xs uppercase font-extrabold tracking-wider text-secondary">Statutory Evaluation Metric</span>
-<span class="text-2xl font-bold text-on-surface leading-tight">Cumulative Biometric Rate</span>
-</div>
-</div>
-<span class="px-3.5 py-1 rounded-full bg-red-100 text-red-700 border border-red-300 font-extrabold text-xs flex items-center gap-1.5 shadow-sm">
-<span class="w-2 h-2 rounded-full bg-red-600"></span>
-            Critical Detainment Alert (&lt;65%)
-          </span>
-</div>
-<div class="grid grid-cols-1 sm:grid-cols-12 items-center gap-5 py-4">
-<!-- Circular SVG Gauge -->
-<div class="sm:col-span-5 flex flex-col items-center justify-center relative">
-<div class="relative w-40 h-40 flex items-center justify-center">
-<svg class="w-full h-full -rotate-90" viewbox="0 0 120 120">
-<circle class="text-emerald-950/10" cx="60" cy="60" fill="transparent" r="48" stroke="currentColor" stroke-width="11"></circle>
-<!-- 27.78% of circumference (2 * PI * 48 ≈ 301.59): dashoffset = 301.59 * (1 - 0.2778) ≈ 217.8 -->
-<circle class="text-red-500 transition-all duration-1000 ease-out" cx="60" cy="60" fill="transparent" r="48" stroke="currentColor" stroke-dasharray="301.59" stroke-dashoffset="217.8" stroke-linecap="round" stroke-width="11"></circle>
-</svg>
-<div class="absolute inset-0 flex flex-col items-center justify-center text-center">
-<span class="text-3xl font-black text-red-600 leading-none tracking-tight" id="kpiGaugeRate">27.78%</span>
-<span class="text-xs font-extrabold text-secondary mt-1 tracking-wide" id="kpiGaugePresent">50 / 180 Sess</span>
-</div>
-</div>
-<div class="mt-2 text-center">
-<span class="inline-block px-3 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-500/20 font-bold text-xs">
-                Target: 135 Sess
-              </span>
-</div>
-</div>
-<!-- Quantitative Details & Thresholds -->
-<div class="sm:col-span-7 flex flex-col gap-2.5">
-<div class="p-3 rounded-2xl bg-white/70 border border-emerald-500/10 flex items-center justify-between">
-<div class="flex items-center gap-2">
-<span class="material-symbols-outlined text-[19px] text-emerald-700">gavel</span>
-<span class="text-sm font-bold text-secondary">Statutory SBTET Cutoff</span>
-</div>
-<span class="text-lg font-black text-on-surface">75.00%</span>
-</div>
-<div class="p-3 rounded-2xl bg-white/70 border border-emerald-500/10 flex items-center justify-between">
-<div class="flex items-center gap-2">
-<span class="material-symbols-outlined text-[19px] text-red-600">trending_down</span>
-<span class="text-sm font-bold text-secondary">Clearance Deficit</span>
-</div>
-<span class="text-lg font-black text-red-600" id="kpiGaugeDeficit">-47.22%</span>
-</div>
-<div class="p-3 rounded-2xl bg-red-50/80 border border-red-200/80 flex items-center justify-between">
-<div class="flex items-center gap-2">
-<span class="material-symbols-outlined text-[19px] text-red-700">cancel</span>
-<span class="text-sm font-bold text-red-900">Exam Clearance</span>
-</div>
-<span class="px-3 py-0.5 rounded-full bg-red-600 text-white font-black text-xs uppercase tracking-wider shadow-sm">
-                Ineligible
-              </span>
-</div>
-</div>
-</div>
-<div class="pt-2 border-t border-emerald-500/10 flex items-center justify-between text-secondary text-xs font-bold">
-<span>Regulation: SBTET C-24 § 14(a)</span>
-<span class="text-red-600 font-extrabold">Biometric Condonation Range: 65% - 74.9%</span>
-</div>
-</div>
-<!-- KPI 2: Recovery Prescription Card -->
-<div class="lg:col-span-6 glass-card rounded-[28px] p-6 flex flex-col justify-between relative overflow-hidden">
-<div class="absolute -right-10 -bottom-10 w-52 h-52 rounded-full bg-emerald-400/15 blur-3xl pointer-events-none"></div>
-<div class="flex items-center justify-between pb-3 border-b border-emerald-500/10">
-<div class="flex items-center gap-2.5">
-<span class="w-9 h-9 rounded-2xl bg-emerald-100 text-emerald-800 border border-emerald-300/40 flex items-center justify-center">
-<span class="material-symbols-outlined text-[20px]">verified_user</span>
-</span>
-<div class="flex flex-col">
-<span class="text-xs uppercase font-extrabold tracking-wider text-secondary">Prescribed Recovery Protocol</span>
-<span class="text-2xl font-bold text-on-surface leading-tight">Emergency Recovery Prescription</span>
-</div>
-</div>
+          <p class="text-xs text-[var(--color-muted)] font-normal">
+            Biometric attendance ledger and statutory SBTET condonation trajectory
+          </p>
+        </div>
 
-</div>
-<!-- 4 Stat Badges Grid -->
-<div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 py-4">
-<div class="p-3 rounded-2xl bg-white/70 border border-emerald-500/15 flex flex-col items-center text-center">
-<span class="text-xs uppercase font-black text-secondary tracking-wider">Working Days</span>
-<span class="text-3xl font-black text-on-surface mt-0.5 leading-none" id="kpiPrescriptionTotal">180</span>
-<span class="text-xs font-bold text-secondary mt-0.5">Total Prescribed</span>
-</div>
-<div class="p-3 rounded-2xl bg-emerald-100/60 border border-emerald-500/20 flex flex-col items-center text-center">
-<span class="text-xs uppercase font-black text-emerald-800 tracking-wider">Present</span>
-<span class="text-3xl font-black text-emerald-700 mt-0.5 leading-none" id="kpiPrescriptionPresent">50</span>
-<span class="text-xs font-bold text-emerald-800/80 mt-0.5">Validated Punch</span>
-</div>
-<div class="p-3 rounded-2xl bg-red-100/70 border border-red-300/60 flex flex-col items-center text-center">
-<span class="text-xs uppercase font-black text-red-700 tracking-wider">Absent</span>
-<span class="text-3xl font-black text-red-600 mt-0.5 leading-none" id="kpiPrescriptionAbsent">130</span>
-<span class="text-xs font-bold text-red-700/80 mt-0.5">Unaccounted</span>
-</div>
-<div class="p-3 rounded-2xl bg-white/70 border border-emerald-500/15 flex flex-col items-center text-center">
-<span class="text-xs uppercase font-black text-secondary tracking-wider">Remaining</span>
-<span class="text-3xl font-black text-on-surface mt-0.5 leading-none" id="kpiPrescriptionRemaining">08</span>
-<span class="text-xs font-bold text-secondary mt-0.5">Class Days Left</span>
-</div>
-</div>
-<!-- Recovery Advice Banner -->
-<div class="p-3.5 rounded-2xl bg-gradient-to-r from-emerald-50 to-mint-soft/50 border border-emerald-500/20 flex items-start gap-3">
-<span class="material-symbols-outlined text-[22px] text-emerald-700 mt-0.5">info</span>
-<div class="flex flex-col">
-<span class="font-black text-sm text-emerald-900 leading-tight">Mathematical Threshold Notice</span>
-<p class="text-sm font-semibold text-on-surface-variant leading-snug mt-0.5">
-              To cross the minimum 65% condonation baseline under SBTET rules, you must attend <span class="font-black text-red-600"><span id="kpiConsecutiveNeeded">33 consecutive sessions</span></span>. Since only 8 instructional days remain, immediate submission of Medical Certification with HOD endorsement is required.
-            </p>
-</div>
-</div>
-</div>
-</div>
-<!-- Middle Section: Chart and Granular Matrix -->
-<div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-<!-- Trajectory & Cutoff Chart -->
-<div class="lg:col-span-7 glass-card rounded-[28px] p-6 flex flex-col justify-between">
-<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-emerald-500/10">
-<div class="flex flex-col">
-<span class="text-xs uppercase font-extrabold tracking-wider text-secondary">Cumulative Velocity</span>
-<h2 class="text-2xl font-bold text-on-surface">Semester Trajectory &amp; Cutoff Boundary</h2>
-</div>
-<div class="flex items-center gap-3">
-<div class="flex items-center gap-1.5 text-xs font-bold text-red-600">
-<span class="w-4 h-0.5 bg-red-500 inline-block border-b-2 border-dashed border-red-500"></span>
-<span>75% Cutoff</span>
-</div>
-<div class="flex items-center gap-1.5 text-xs font-bold text-emerald-700">
-<span class="w-4 h-1 bg-emerald-600 rounded-full inline-block"></span>
-<span>Actual Trend</span>
-</div>
-</div>
-</div>
-<!-- Responsive Inline SVG Chart -->
-<div class="w-full h-56 relative flex items-center justify-center my-2">
-<svg class="w-full h-full overflow-visible" preserveaspectratio="none" viewbox="0 0 600 200">
-<!-- Grid Lines -->
-<line class="text-emerald-900/10" stroke="currentColor" stroke-width="1" x1="40" x2="580" y1="20" y2="20"></line>
-<line class="text-emerald-900/10" stroke="currentColor" stroke-width="1" x1="40" x2="580" y1="65" y2="65"></line>
-<line class="text-emerald-900/10" stroke="currentColor" stroke-width="1" x1="40" x2="580" y1="110" y2="110"></line>
-<line class="text-emerald-900/10" stroke="currentColor" stroke-width="1" x1="40" x2="580" y1="155" y2="155"></line>
-<line class="text-emerald-900/10" stroke="currentColor" stroke-width="1" x1="40" x2="580" y1="190" y2="190"></line>
-<!-- Y Axis Labels -->
-<text class="text-[12px] font-bold fill-secondary" text-anchor="end" x="32" y="24">100%</text>
-<text class="text-[12px] font-bold fill-secondary" text-anchor="end" x="32" y="69">75%</text>
-<text class="text-[12px] font-bold fill-secondary" text-anchor="end" x="32" y="114">50%</text>
-<text class="text-[12px] font-bold fill-secondary" text-anchor="end" x="32" y="159">25%</text>
-<!-- 75% Cutoff Dashed Line (y = 65) -->
-<line stroke="#DC2626" stroke-dasharray="6,4" stroke-width="2.5" x1="40" x2="580" y1="65" y2="65"></line>
-<text class="text-[12px] font-black fill-red-600" text-anchor="end" x="575" y="58">MANDATORY 75% SBTET</text>
-<!-- 65% Condonation Boundary Line (y = 82) -->
-<line opacity="0.6" stroke="#059669" stroke-dasharray="3,3" stroke-width="1.5" x1="40" x2="580" y1="82.5" y2="82.5"></line>
-<text class="text-[11px] font-bold fill-emerald-800" text-anchor="end" x="575" y="94">65% Condonable</text>
-<!-- Gradient Area under Curve -->
-<defs>
-<lineargradient id="chartGradient" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#10b981" stop-opacity="0.45"></stop><stop offset="50%" stop-color="#34d399" stop-opacity="0.25"></stop><stop offset="100%" stop-color="#a7f3d0" stop-opacity="0.0"></stop></lineargradient>
-</defs>
-<!-- Curve Polygon Fill -->
-<polygon fill="url(#chartGradient)" points="40,190 40,50 148,70 256,120 364,138 472,148 472,190"></polygon>
-<!-- Actual Attendance Trend Bezier Line -->
-<path d="M 40,60 C 90,65 110,80 148,85 C 200,95 220,128 256,132 C 310,140 330,142 364,144 C 420,148 440,150 472,151" fill="none" stroke="#059669" stroke-linecap="round" stroke-width="3.5"></path>
-<!-- Data Points -->
-<circle cx="40" cy="60" fill="#047857" r="5" stroke="#FFFFFF" stroke-width="1.5"></circle>
-<circle cx="148" cy="85" fill="#047857" r="5" stroke="#FFFFFF" stroke-width="1.5"></circle>
-<circle cx="256" cy="132" fill="#047857" r="5" stroke="#FFFFFF" stroke-width="1.5"></circle>
-<circle cx="364" cy="144" fill="#047857" r="5" stroke="#FFFFFF" stroke-width="1.5"></circle>
-<circle cx="472" cy="151" fill="#DC2626" r="6" stroke="#FFFFFF" stroke-width="2.5"></circle>
-<!-- Projection dotted line -->
-<path d="M 472,151 C 510,152 540,153 580,153" fill="none" stroke="#6b7280" stroke-dasharray="4,4" stroke-width="2"></path>
-</svg>
-</div>
-<div class="flex items-center justify-between pt-2 border-t border-emerald-500/10 text-secondary text-xs font-bold">
-<span>Jun (Wk 1-4)</span>
-<span>Jul (Wk 5-8)</span>
-<span>Aug (Wk 9-12)</span>
-<span>Sep (Wk 13-16)</span>
-<span class="text-on-surface font-black">Oct (Final Run)</span>
-</div>
-</div>
-<!-- Granular Biometric Matrix & Monthly Registry -->
-<div class="lg:col-span-5 glass-card rounded-[28px] p-6 flex flex-col justify-between">
-<div class="flex flex-col gap-1 border-b border-emerald-500/10 pb-2.5">
-<div class="flex items-center justify-between">
-<span class="text-xs uppercase font-extrabold tracking-wider text-secondary">Biometric Punch Log</span>
-<span class="text-xs px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-extrabold border border-emerald-500/20">Terminal Verified</span>
-</div>
-<h2 class="text-2xl font-bold text-on-surface">Monthly Registry Calendar</h2>
-</div>
-<!-- Month Filter Pills -->
-<div class="flex flex-wrap items-center gap-1.5 py-2.5" id="monthFilterContainer">
-<button class="month-pill px-3 py-1 rounded-full text-on-surface-variant hover:bg-emerald-50 font-bold text-sm transition-all" data-month="june">Jun</button>
-<button class="month-pill px-3 py-1 rounded-full text-on-surface-variant hover:bg-emerald-50 font-bold text-sm transition-all" data-month="july">Jul</button>
-<button class="month-pill px-3 py-1 rounded-full text-on-surface-variant hover:bg-emerald-50 font-bold text-sm transition-all" data-month="aug">Aug</button>
-<button class="month-pill px-3 py-1 rounded-full text-on-surface-variant hover:bg-emerald-50 font-bold text-sm transition-all" data-month="sep">Sep</button>
-<button class="month-pill px-4 py-1 rounded-full text-white font-extrabold text-sm transition-all shadow-[0_4px_12px_rgba(16,185,129,0.3)]" data-month="oct" style="background: linear-gradient(135deg, #059669 0%, #10b981 100%);">Oct 2024</button>
-</div>
-<!-- Legend Pills -->
-<div class="flex flex-wrap items-center gap-2 py-1 text-xs font-bold">
-<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-500/20">
-<span class="w-2 h-2 rounded-full bg-emerald-600"></span> Present
-          </span>
-<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-red-100 text-red-700 border border-red-200">
-<span class="w-2 h-2 rounded-full bg-red-600"></span> Absent
-          </span>
-<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-stone-100 text-stone-700 border border-stone-200">
-<span class="w-2 h-2 rounded-full bg-stone-500"></span> Holiday
-          </span>
-<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-stone-200/70 text-stone-600">
-            Week Off
-          </span>
-</div>
-<!-- October Calendar Matrix Grid -->
-<div class="grid grid-cols-7 gap-1.5 pt-2 text-center">
-<span class="text-secondary font-black text-xs">M</span>
-<span class="text-secondary font-black text-xs">T</span>
-<span class="text-secondary font-black text-xs">W</span>
-<span class="text-secondary font-black text-xs">T</span>
-<span class="text-secondary font-black text-xs">F</span>
-<span class="text-secondary font-black text-xs">S</span>
-<span class="text-secondary font-black text-xs">S</span>
-<!-- Days Grid with Pill styling -->
-<div class="h-8"></div>
-<div class="h-8 rounded-full bg-stone-100 text-stone-700 border border-stone-200 flex items-center justify-center font-bold text-xs" title="Gandhi Jayanti Prep">01</div>
-<div class="h-8 rounded-full bg-stone-100 text-stone-700 border border-stone-200 flex items-center justify-center font-bold text-xs" title="National Holiday">02</div>
-<div class="h-8 rounded-full bg-red-100 text-red-700 border border-red-200 font-extrabold flex items-center justify-center text-xs">03</div>
-<div class="h-8 rounded-full bg-red-100 text-red-700 border border-red-200 font-extrabold flex items-center justify-center text-xs">04</div>
-<div class="h-8 rounded-full bg-stone-200/80 text-stone-600 flex items-center justify-center font-semibold text-xs">05</div>
-<div class="h-8 rounded-full bg-stone-200/80 text-stone-600 flex items-center justify-center font-semibold text-xs">06</div>
-<div class="h-8 rounded-full bg-emerald-200 text-emerald-900 border border-emerald-400/50 font-black flex items-center justify-center text-xs shadow-sm" title="Present - Punch at 09:04 AM">07</div>
-<div class="h-8 rounded-full bg-red-100 text-red-700 border border-red-200 font-extrabold flex items-center justify-center text-xs" id="kpiPrescriptionRemaining">08</div>
-<div class="h-8 rounded-full bg-red-100 text-red-700 border border-red-200 font-extrabold flex items-center justify-center text-xs">09</div>
-<div class="h-8 rounded-full bg-stone-100 text-stone-700 border border-stone-200 flex items-center justify-center font-bold text-xs">10</div>
-<div class="h-8 rounded-full bg-stone-100 text-stone-700 border border-stone-200 flex items-center justify-center font-bold text-xs">11</div>
-<div class="h-8 rounded-full bg-stone-200/80 text-stone-600 flex items-center justify-center font-semibold text-xs">12</div>
-<div class="h-8 rounded-full bg-stone-200/80 text-stone-600 flex items-center justify-center font-semibold text-xs">13</div>
-<div class="h-8 rounded-full bg-red-100 text-red-700 border border-red-200 font-extrabold flex items-center justify-center text-xs">14</div>
-<div class="h-8 rounded-full bg-red-100 text-red-700 border border-red-200 font-extrabold flex items-center justify-center text-xs">15</div>
-<div class="h-8 rounded-full bg-emerald-200 text-emerald-900 border border-emerald-400/50 font-black flex items-center justify-center text-xs shadow-sm">16</div>
-<div class="h-8 rounded-full bg-red-100 text-red-700 border border-red-200 font-extrabold flex items-center justify-center text-xs">17</div>
-<div class="h-8 rounded-full bg-red-100 text-red-700 border border-red-200 font-extrabold flex items-center justify-center text-xs">18</div>
-<div class="h-8 rounded-full bg-stone-200/80 text-stone-600 flex items-center justify-center font-semibold text-xs">19</div>
-<div class="h-8 rounded-full bg-stone-200/80 text-stone-600 flex items-center justify-center font-semibold text-xs">20</div>
-<div class="h-8 rounded-full bg-emerald-200 text-emerald-900 border border-emerald-400/50 font-black flex items-center justify-center text-xs shadow-sm">21</div>
-<div class="h-8 rounded-full bg-red-100 text-red-700 border border-red-200 font-extrabold flex items-center justify-center text-xs">22</div>
-<div class="h-8 rounded-full bg-red-100 text-red-700 border border-red-200 font-extrabold flex items-center justify-center text-xs">23</div>
-<div class="h-8 rounded-full bg-emerald-200 text-emerald-900 border border-emerald-400/50 font-black flex items-center justify-center text-xs shadow-sm">24</div>
-<div class="h-8 rounded-full bg-gradient-to-r from-emerald-500 to-mint-accent text-white font-black flex items-center justify-center text-xs ring-2 ring-emerald-300 shadow-sm" title="Today">25</div>
-<div class="h-8 rounded-full bg-white/60 text-secondary flex items-center justify-center font-semibold text-xs">26</div>
-<div class="h-8 rounded-full bg-white/60 text-secondary flex items-center justify-center font-semibold text-xs">27</div>
-</div>
-<div class="pt-2 border-t border-emerald-500/10 flex items-center justify-between text-secondary text-xs font-bold">
-<span>This Month: 5 / 22 Sess</span>
-<span class="text-red-600 font-black">Rate: 22.7%</span>
-</div>
-</div>
-</div>
-<script>
-  // Re-sync interaction
-  const syncBtn = document.getElementById('resyncBtn');
-  const syncIcon = document.getElementById('syncIcon');
-  if (syncBtn && syncIcon) {
-    syncBtn.addEventListener('click', () => {
-      syncIcon.classList.add('rotate-180');
-      syncBtn.disabled = true;
-      setTimeout(() => {
-        syncIcon.classList.remove('rotate-180');
-        syncBtn.disabled = false;
-      }, 700);
-    });
-  }
+        <!-- Controls: Semester Dropdown & Sync Latest Button -->
+        <div class="flex items-center gap-3 self-start md:self-auto">
+          <!-- Semester Selector Pill -->
+          <div class="relative inline-flex items-center">
+            <select class="appearance-none bg-[var(--color-card)] text-[var(--color-ink)] border border-[var(--color-hairline)] pl-4 pr-9 py-2.5 rounded-full text-xs font-medium cursor-pointer focus:outline-none focus:ring-2 focus:ring-[var(--color-ink)]" id="attSemesterSelect">
+              <option value="5SEM">Semester V (Current)</option>
+              <option value="4SEM">Semester IV (Archived)</option>
+              <option value="3SEM">Semester III (Archived)</option>
+              <option value="2SEM">Semester II (Archived)</option>
+              <option value="1SEM">Semester I (Archived)</option>
+            </select>
+            <span class="material-symbols-outlined absolute right-3 pointer-events-none text-[18px] text-[var(--color-muted)]">keyboard_arrow_down</span>
+          </div>
 
-  // Month filter selector
-  const monthPills = document.querySelectorAll('.month-pill');
-  monthPills.forEach(pill => {
-    pill.addEventListener('click', () => {
-      monthPills.forEach(p => {
-        p.removeAttribute('style');
-        p.className = 'month-pill px-3 py-1 rounded-full text-on-surface-variant hover:bg-emerald-50 font-bold text-sm transition-all';
-      });
-      pill.className = 'month-pill px-4 py-1 rounded-full text-white font-extrabold text-sm transition-all shadow-[0_4px_12px_rgba(16,185,129,0.3)]';
-      pill.style.background = 'linear-gradient(135deg, #059669 0%, #10b981 100%)';
-    });
-  });
-</script>
+          <!-- Sync Latest Button -->
+          <button type="button" 
+                  class="inline-flex items-center gap-2 bg-[var(--color-card)] hover:bg-[var(--color-card-subtle)] text-[var(--color-ink)] border border-[var(--color-hairline)] px-4 py-2.5 rounded-full text-xs font-medium transition-all active:scale-95" 
+                  id="attSyncBtn">
+            <span class="material-symbols-outlined text-[18px] text-[var(--color-ink)]" id="attSyncIcon">sync</span>
+            <span>Sync latest</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- ============================================================== -->
+      <!-- ROW 1: STATUTORY ELIGIBILITY & 2 STACKED CARDS (8 + 4 COLS)    -->
+      <!-- ============================================================== -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+
+        <!-- 1. Large Statutory Eligibility Card (8 cols) -->
+        <section class="lg:col-span-8 bento-card p-6 flex flex-col justify-between" data-testid="tile-statutory-eligibility">
+          <div class="flex items-center justify-between pb-4 border-b border-[var(--color-hairline)]">
+            <div class="flex items-center gap-3">
+              <div class="icon-chip-40 bg-[var(--color-card-subtle)] text-[var(--color-ink)]">
+                <span class="material-symbols-outlined text-[20px]">verified_user</span>
+              </div>
+              <h2 class="text-lg font-medium text-[var(--color-ink)]">Statutory Eligibility</h2>
+            </div>
+            <span class="font-mono text-xs uppercase tracking-wider px-3 py-1 rounded-full font-semibold" id="attEligibilityTag">
+              Calculating...
+            </span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-6 my-auto items-center py-4">
+            <!-- Left Side: Overlapping Circles Visual Motif -->
+            <div class="md:col-span-6 flex flex-col items-center justify-center">
+              <div class="relative w-full max-w-[280px] h-[210px] flex items-center justify-center">
+                <!-- Absent Circle (140px, near-black) -->
+                <div class="absolute w-[140px] h-[140px] rounded-full bg-[var(--color-feature-card)] text-white flex flex-col items-center justify-center z-10 left-[20px] top-[20px]">
+                  <span class="text-xl font-mono font-bold leading-none" id="attCircleAbsent">130</span>
+                  <span class="text-[11px] font-sans text-white/70 mt-1">Absent</span>
+                </div>
+                <!-- Present Circle (110px, lavender) -->
+                <div class="absolute w-[110px] h-[110px] rounded-full bg-[var(--color-lavender)] text-[#1A1A1A] flex flex-col items-center justify-center z-20 right-[35px] top-[10px]">
+                  <span class="text-lg font-mono font-bold leading-none" id="attCirclePresent">50</span>
+                  <span class="text-[11px] font-sans font-semibold text-[#1A1A1A]/80 mt-1">Present</span>
+                </div>
+                <!-- Remaining Circle (80px, lime) -->
+                <div class="absolute w-[80px] h-[80px] rounded-full bg-[var(--color-lime)] text-[#1A1A1A] flex flex-col items-center justify-center z-30 right-[70px] bottom-[15px]">
+                  <span class="text-base font-mono font-bold leading-none" id="attCircleRemaining">0</span>
+                  <span class="text-[10px] font-sans font-semibold text-[#1A1A1A]/80 mt-0.5">Left</span>
+                </div>
+              </div>
+
+              <!-- Circles Legend underneath -->
+              <div class="flex items-center gap-4 mt-2 font-mono text-xs text-[var(--color-muted)]">
+                <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[var(--color-lavender)]"></span>Present: <strong class="text-[var(--color-ink)]" id="attLegPres">50</strong></span>
+                <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[var(--color-feature-card)]"></span>Absent: <strong class="text-[var(--color-ink)]" id="attLegAbs">130</strong></span>
+                <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[var(--color-lime)]"></span>Remaining: <strong class="text-[var(--color-ink)]" id="attLegRem">0</strong></span>
+              </div>
+            </div>
+
+            <!-- Right Side: Big Attendance Figure & Telemetry Matrix -->
+            <div class="md:col-span-6 flex flex-col gap-4">
+              <div class="flex flex-col gap-1">
+                <div class="flex items-center gap-3">
+                  <span class="text-4xl font-mono font-bold text-[var(--color-ink)] tracking-tight" id="attMetricPct">27.8%</span>
+                  <span class="inline-flex items-center px-3 py-1 rounded-full font-medium text-xs" id="attCutoffStatusBadge">
+                    Below 75% cutoff
+                  </span>
+                </div>
+                <p class="text-xs text-[var(--color-muted)]" id="attCalculationSummary">
+                  Aggregate percentage calculated across 180 total instructional terms.
+                </p>
+              </div>
+
+              <!-- Metrics Rows -->
+              <div class="bg-[var(--color-card-subtle)] rounded-[20px] p-4 flex flex-col gap-2.5 border border-[var(--color-hairline)]">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs text-[var(--color-muted)]">Required cutoff</span>
+                  <span class="font-mono text-xs font-semibold text-[var(--color-ink)]">75.0%</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="text-xs text-[var(--color-muted)]">Current aggregate</span>
+                  <span class="font-mono text-xs font-bold" id="attCurrentAggregateText">27.8%</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="text-xs text-[var(--color-muted)]">Clearance deficit</span>
+                  <span class="font-mono text-xs font-bold" id="attDeficitText">-47.2%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Three Statutory SBTET Rules -->
+          <div class="mt-4 pt-3 bg-[var(--color-card-subtle)] rounded-[20px] p-4 flex flex-col gap-2 border border-[var(--color-hairline)]">
+            <span class="font-mono text-[10px] uppercase text-[var(--color-muted)] tracking-wider">SBTET Statutory Norms</span>
+            <div class="flex items-start gap-2">
+              <span class="w-2 h-2 rounded-full bg-[#2E7D32] mt-1 shrink-0"></span>
+              <p class="text-xs text-[var(--color-ink)] leading-snug">
+                <strong>&ge; 75%:</strong> Regular Eligible for Board Hall Ticket without condonation requirement.
+              </p>
+            </div>
+            <div class="flex items-start gap-2">
+              <span class="w-2 h-2 rounded-full bg-[#E65100] mt-1 shrink-0"></span>
+              <p class="text-xs text-[var(--color-ink)] leading-snug">
+                <strong>65% – 74.9%:</strong> Condonable Range. Medical condonation petition required with HOD endorsement.
+              </p>
+            </div>
+            <div class="flex items-start gap-2">
+              <span class="w-2 h-2 rounded-full bg-[#B42318] mt-1 shrink-0"></span>
+              <p class="text-xs text-[var(--color-ink)] leading-snug">
+                <strong>&lt; 65%:</strong> Strict Detainment. Ineligible for board examinations under statutory norms.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- 2. Two Small Info Cards Stacked (4 cols) -->
+        <div class="lg:col-span-4 flex flex-col gap-4">
+          <!-- Top Card: Days Needed -->
+          <section class="flex-1 bento-card p-6 flex flex-col justify-between" data-testid="tile-days-needed">
+            <div class="flex items-center gap-3">
+              <div class="icon-chip-40 bg-[var(--color-card-subtle)] text-[var(--color-ink)]">
+                <span class="material-symbols-outlined text-[20px]">event_repeat</span>
+              </div>
+              <h3 class="text-base font-medium text-[var(--color-ink)]">Days needed</h3>
+            </div>
+
+            <div class="my-3">
+              <div class="text-4xl font-mono font-bold text-[var(--color-ink)] tracking-tight" id="attDaysNeededNum">
+                33
+              </div>
+              <p class="text-xs text-[var(--color-muted)] mt-1 font-normal">
+                consecutive sessions to reach 75% cutoff threshold
+              </p>
+            </div>
+
+            <div class="w-full bg-[var(--color-card-subtle)] h-2 rounded-full overflow-hidden">
+              <div class="bg-[var(--color-lavender)] h-full rounded-full transition-all duration-500" id="attDaysNeededBar" style="width: 48%;"></div>
+            </div>
+          </section>
+
+          <!-- Bottom Card: Sessions Left -->
+          <section class="flex-1 bento-card p-6 flex flex-col justify-between" data-testid="tile-sessions-left">
+            <div class="flex items-center gap-3">
+              <div class="icon-chip-40 bg-[var(--color-card-subtle)] text-[var(--color-ink)]">
+                <span class="material-symbols-outlined text-[20px]">hourglass_bottom</span>
+              </div>
+              <h3 class="text-base font-medium text-[var(--color-ink)]">Sessions left</h3>
+            </div>
+
+            <div class="my-3">
+              <div class="text-4xl font-mono font-bold text-[var(--color-ink)] tracking-tight" id="attSessionsLeftNum">
+                0
+              </div>
+              <p class="text-xs text-[var(--color-muted)] mt-1 font-normal">
+                sessions remaining in current instructional syllabus
+              </p>
+            </div>
+
+            <div class="w-full bg-[var(--color-card-subtle)] h-2 rounded-full overflow-hidden">
+              <div class="bg-[var(--color-lime)] h-full rounded-full transition-all duration-500" id="attSessionsLeftBar" style="width: 100%;"></div>
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <!-- ============================================================== -->
+      <!-- ROW 2: DARK MONTHLY ATTENDANCE TREND & CALENDAR (6 + 6 COLS)   -->
+      <!-- ============================================================== -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+
+        <!-- 3. Dark Monthly Attendance Trend Card (#1E1E1F) -->
+        <section class="lg:col-span-6 feature-card-dark p-6 flex flex-col justify-between" data-testid="tile-att-trend">
+          <div class="flex items-center justify-between pb-4 border-b border-white/10">
+            <div class="flex items-center gap-3">
+              <div class="icon-chip-40 bg-white/10 text-[var(--color-lime)]">
+                <span class="material-symbols-outlined text-[20px]">bar_chart</span>
+              </div>
+              <div>
+                <h3 class="text-base font-medium text-white">Monthly Attendance Trend</h3>
+                <span class="font-mono text-xs text-[var(--color-lime)]" id="attLastSyncedText">SBTET Biometric Sync Verified</span>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-3 font-mono text-xs text-[#9A9A9A]">
+              <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[var(--color-lime)]"></span>Present</span>
+              <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[var(--color-lavender)]"></span>Scheduled</span>
+            </div>
+          </div>
+
+          <!-- Chart Area with Dashed 75% Cutoff and Paired Bars -->
+          <div class="relative my-4 h-[220px] w-full">
+            <canvas id="attTrendCanvas"></canvas>
+          </div>
+
+          <div class="flex items-center justify-between pt-3 border-t border-white/10 text-xs text-[#9A9A9A] font-mono">
+            <span>--- 75% Cutoff Reference Line</span>
+            <span>PIN: 24259-CS-025</span>
+          </div>
+        </section>
+
+        <!-- 4. White Calendar Card (6 cols) -->
+        <section class="lg:col-span-6 bento-card p-6 flex flex-col justify-between" data-testid="tile-att-calendar">
+          <div>
+            <!-- Segmented Month Pills & Month Navigation -->
+            <div class="flex items-center justify-between pb-3 border-b border-[var(--color-hairline)]">
+              <div class="flex items-center gap-1 bg-[var(--color-card-subtle)] p-1 rounded-full overflow-x-auto" id="attMonthPills">
+                <button class="px-3 py-1 rounded-full font-mono text-xs text-[var(--color-muted)] hover:text-[var(--color-ink)] transition-colors month-pill" data-month="Jul" type="button">Jul</button>
+                <button class="px-3 py-1 rounded-full font-mono text-xs text-[var(--color-muted)] hover:text-[var(--color-ink)] transition-colors month-pill" data-month="Aug" type="button">Aug</button>
+                <button class="px-3 py-1 rounded-full font-mono text-xs text-[var(--color-muted)] hover:text-[var(--color-ink)] transition-colors month-pill" data-month="Sep" type="button">Sep</button>
+                <button class="px-3 py-1 rounded-full font-mono text-xs bg-[var(--color-ink)] text-[var(--color-lime)] font-semibold month-pill active" data-month="Oct" type="button">Oct</button>
+                <button class="px-3 py-1 rounded-full font-mono text-xs text-[var(--color-muted)] hover:text-[var(--color-ink)] transition-colors month-pill" data-month="Nov" type="button">Nov</button>
+              </div>
+
+              <div class="flex items-center gap-1.5">
+                <button type="button" class="w-8 h-8 rounded-full bg-[var(--color-card-subtle)] flex items-center justify-center text-[var(--color-ink)] hover:bg-[var(--color-card)] border border-[var(--color-hairline)]" id="calPrevMonth" aria-label="Previous month">
+                  <span class="material-symbols-outlined text-[16px]">chevron_left</span>
+                </button>
+                <button type="button" class="w-8 h-8 rounded-full bg-[var(--color-card-subtle)] flex items-center justify-center text-[var(--color-ink)] hover:bg-[var(--color-card)] border border-[var(--color-hairline)]" id="calNextMonth" aria-label="Next month">
+                  <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Legend Row -->
+            <div class="flex flex-wrap items-center gap-3 py-3">
+              <div class="flex items-center gap-1.5">
+                <span class="w-2.5 h-2.5 rounded-full bg-[var(--color-lime)]"></span>
+                <span class="text-xs text-[var(--color-muted)] font-medium">Present</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <span class="w-2.5 h-2.5 rounded-full bg-[#FFE1DE]"></span>
+                <span class="text-xs text-[var(--color-muted)] font-medium">Absent</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <span class="w-2.5 h-2.5 rounded-full bg-[var(--color-card-subtle)] border border-[var(--color-hairline)]"></span>
+                <span class="text-xs text-[var(--color-muted)] font-medium">Holiday</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <span class="w-2.5 h-2.5 rounded-full bg-[var(--color-muted)] opacity-30"></span>
+                <span class="text-xs text-[var(--color-muted)] font-medium">Week off</span>
+              </div>
+            </div>
+
+            <!-- Calendar Day Matrix -->
+            <div class="mt-2">
+              <!-- Weekday Header -->
+              <div class="grid grid-cols-7 text-center pb-2 font-mono text-xs text-[var(--color-muted)]">
+                <span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span>
+              </div>
+              <!-- Days Grid Container -->
+              <div class="grid grid-cols-7 gap-y-2 gap-x-1 justify-items-center" id="attCalendarGrid">
+                <!-- Dynamically populated day cells -->
+              </div>
+            </div>
+          </div>
+
+          <div class="pt-4 border-t border-[var(--color-hairline)] mt-3 flex items-center justify-between text-xs text-[var(--color-muted)]">
+            <span id="calMonthSummary">October Clearance: 8 of 22 sessions</span>
+            <span class="font-mono text-xs text-[var(--color-ink)] font-semibold bg-[var(--color-card-subtle)] px-3 py-1 rounded-full border border-[var(--color-hairline)]" id="calMonthRate">36.4%</span>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- ============================================================== -->
+      <!-- ROW 3: 4 STAT CARDS ROW (4 COLS)                               -->
+      <!-- ============================================================== -->
+      <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" data-testid="tile-att-stats">
+        <!-- Card 1: Working Days -->
+        <div class="bento-card p-6 flex flex-col justify-between">
+          <div class="flex items-center justify-between pb-2">
+            <span class="text-xs text-[var(--color-muted)] uppercase tracking-wider font-medium">Working days</span>
+            <span class="material-symbols-outlined text-[18px] text-[var(--color-muted)]">calendar_today</span>
+          </div>
+          <div class="flex items-baseline gap-2 mt-1">
+            <span class="text-3xl font-mono font-bold text-[var(--color-ink)]" id="statWorkingDays">180</span>
+            <span class="text-xs text-[var(--color-muted)]">total</span>
+          </div>
+        </div>
+
+        <!-- Card 2: Present Days -->
+        <div class="bento-card p-6 flex flex-col justify-between">
+          <div class="flex items-center justify-between pb-2">
+            <span class="text-xs text-[var(--color-muted)] uppercase tracking-wider font-medium">Present</span>
+            <span class="material-symbols-outlined text-[18px] text-[var(--color-lime-ink)]">check_circle</span>
+          </div>
+          <div class="flex items-baseline gap-2 mt-1">
+            <span class="text-3xl font-mono font-bold text-[var(--color-ink)]" id="statPresentDays">50</span>
+            <span class="text-xs text-[var(--color-muted)]">sessions</span>
+          </div>
+        </div>
+
+        <!-- Card 3: Absent Days -->
+        <div class="bento-card p-6 flex flex-col justify-between">
+          <div class="flex items-center justify-between pb-2">
+            <span class="text-xs text-[var(--color-muted)] uppercase tracking-wider font-medium">Absent</span>
+            <span class="material-symbols-outlined text-[18px] text-[#B42318]">cancel</span>
+          </div>
+          <div class="flex items-baseline gap-2 mt-1">
+            <span class="text-3xl font-mono font-bold text-[#B42318]" id="statAbsentDays">130</span>
+            <span class="text-xs text-[var(--color-muted)]">sessions</span>
+          </div>
+        </div>
+
+        <!-- Card 4: Remaining Days -->
+        <div class="bento-card p-6 flex flex-col justify-between">
+          <div class="flex items-center justify-between pb-2">
+            <span class="text-xs text-[var(--color-muted)] uppercase tracking-wider font-medium">Remaining</span>
+            <span class="material-symbols-outlined text-[18px] text-[var(--color-muted)]">pending_actions</span>
+          </div>
+          <div class="flex items-baseline gap-2 mt-1">
+            <span class="text-3xl font-mono font-bold text-[var(--color-ink)]" id="statRemainingDays">0</span>
+            <span class="text-xs text-[var(--color-muted)]">sessions</span>
+          </div>
+        </div>
+      </section>
+
     </div>
   </main>
 
-  <!-- Shared Samskruti Institutional Footer -->
-  <footer class="w-full bg-white/60 border-t border-emerald-500/15 backdrop-blur-md mt-10"><div class="max-w-[1240px] mx-auto px-6 py-8"><div class="flex flex-col md:flex-row items-center justify-between gap-4 pb-6 border-b border-emerald-500/10"><div class="flex flex-col gap-1 text-center md:text-left"><div class="flex items-center justify-center md:justify-start gap-2"><span class="text-2xl text-on-surface font-extrabold">Samskruti College of Engineering &amp; Technology</span><span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-xs font-black border border-emerald-500/20">Code 259</span></div><p class="text-sm font-semibold text-secondary">Permanent SBTET &amp; AICTE Affiliation. Autonomous Campus Registry &amp; Academic Management Portal.</p></div><div class="flex flex-wrap items-center justify-center gap-2.5"><div class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-white border border-emerald-500/20 shadow-sm"><span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span><span class="text-xs font-extrabold text-emerald-900">Biometric Sync Online</span></div><div class="inline-flex items-center gap-1 px-3.5 py-1 rounded-full bg-white border border-emerald-500/20 shadow-sm"><span class="material-symbols-outlined text-emerald-600 text-[16px]">verified</span><span class="text-xs font-extrabold text-emerald-900">SBTET Verified Hub</span></div></div></div><div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-4 text-secondary text-sm font-semibold"><span>© 2025 Samskruti College. PIN 24259-CS-025 Registry. All rights reserved.</span><div class="flex items-center gap-4"><a class="hover:text-emerald-800 transition-colors font-bold" href="#">Academic Regulations</a><a class="hover:text-emerald-800 transition-colors font-bold" href="#">Attendance Mandates</a><a class="hover:text-emerald-800 transition-colors font-bold" href="#">Campus Support</a></div></div></div></footer>
+  <!-- Global Footer Mounts Automatically via dc-dynamic-island.js -->
 
-  <!-- Medical Appeal Modal -->
-  <div id="modalMedicalAppeal" class="fixed inset-0 z-[20000] hidden bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-lg w-full p-6 md:p-8 shadow-2xl border border-emerald-500/20 flex flex-col gap-5">
-      <div class="flex items-center justify-between">
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-800 flex items-center justify-center">
-            <span class="material-symbols-outlined text-[24px]">medical_services</span>
-          </div>
-          <h3 class="text-2xl font-bold text-on-surface">File Medical Condonation Appeal</h3>
-        </div>
-        <button type="button" class="close-modal-btn text-stone-400 hover:text-stone-700 p-1">
-          <span class="material-symbols-outlined text-[22px]">close</span>
-        </button>
-      </div>
-      <p class="text-base text-on-surface-variant font-medium">
-        Submit clinical certificate and hospital records for statutory SBTET condonation slab approval (65% – 74.9%).
-      </p>
-      <form id="formMedicalAppeal" class="flex flex-col gap-4">
-        <div>
-          <label class="block text-sm font-bold text-on-surface mb-1">Medical Diagnosis / Hospitalization Reason</label>
-          <input type="text" required placeholder="e.g. Acute Dengue / Clinical Bedrest" class="w-full px-4 py-2.5 rounded-xl border border-stone-200 text-base focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
-        </div>
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block text-sm font-bold text-on-surface mb-1">Period From</label>
-            <input type="date" required class="w-full px-3 py-2 rounded-xl border border-stone-200 text-base focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
-          </div>
-          <div>
-            <label class="block text-sm font-bold text-on-surface mb-1">Period To</label>
-            <input type="date" required class="w-full px-3 py-2 rounded-xl border border-stone-200 text-base focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
-          </div>
-        </div>
-        <div>
-          <label class="block text-sm font-bold text-on-surface mb-1">Attach Signed Medical Certificate (PDF / Image)</label>
-          <input type="file" required accept=".pdf,.jpg,.jpeg,.png" class="w-full text-sm text-stone-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100" />
-        </div>
-        <div class="flex items-center justify-end gap-3 mt-2">
-          <button type="button" class="close-modal-btn px-5 py-2 rounded-full border border-stone-200 font-bold text-on-surface-variant hover:bg-stone-50">Cancel</button>
-          <button type="submit" class="px-6 py-2 rounded-full bg-primary hover:bg-emerald-800 text-white font-bold shadow-md transition-all">Submit for HOD Endorsement</button>
-        </div>
-      </form>
+  <!-- Toast Notification Container -->
+  <div id="attToast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+    <div class="bg-[var(--color-feature-card)] text-white px-5 py-3 rounded-full shadow-lg flex items-center gap-3 border border-white/10 text-xs font-medium">
+      <span class="material-symbols-outlined text-[18px] text-[var(--color-lime)]">check_circle</span>
+      <span id="attToastMsg">Biometric records synchronized successfully.</span>
     </div>
   </div>
 
-  <!-- Toast Notification -->
-  <div id="toastNotification" class="fixed bottom-6 right-6 z-[30000] hidden px-5 py-3 rounded-2xl bg-emerald-900 text-white font-bold text-base shadow-2xl flex items-center gap-3 border border-emerald-400/40 transform transition-all duration-300">
-    <span class="material-symbols-outlined text-emerald-300 text-[20px]" id="toastIcon">check_circle</span>
-    <span id="toastMsg">Action completed successfully</span>
-  </div>
-
-  <!-- Attendance Page Controller Script -->
+  <!-- Attendance Controller Script -->
   <script src="/screens/02-student-portal/attendance.js"></script>
 </body>
 </html>
