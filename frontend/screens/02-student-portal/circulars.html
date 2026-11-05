@@ -1,186 +1,189 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Official Circulars & Notices | Samskruti College (Code: 259)</title>
+  <title>Official Circulars &amp; Gazettes | Samskruti College Code 259</title>
+  
+  <!-- Self-Hosted Fonts & Master Tokens -->
+  <link rel="stylesheet" href="/css/fonts.css" />
+  <link rel="stylesheet" href="/css/theme-tokens.css" />
+  <link rel="stylesheet" href="/css/stitch-design-system.css" />
+  <link rel="stylesheet" href="/css/top-nav.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  
+  <!-- Tailwind CSS & Master Config -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/js/stitch-tailwind-config.js"></script>
 
-  <!-- Google Fonts: Urbanist & JetBrains Mono -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
-
-  <!-- Master Stylesheets -->
-  <link rel="stylesheet" href="../../css/reset.css?v=3.4.0" />
-  <link rel="stylesheet" href="../../css/theme-tokens.css?v=3.4.0" />
-  <link rel="stylesheet" href="../../css/dc-global-theme.css?v=3.4.0" />
-  <link rel="stylesheet" href="../../css/top-nav.css?v=3.4.0" />
-
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <script src="../../js/dc-dynamic-island.js?v=3.4.0"></script>
-
-  <style>
-    .page-header-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 24px;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-    .page-title {
-      font-size: 1.85rem;
-      font-weight: 800;
-      color: var(--text-heading);
-      letter-spacing: -0.02em;
-    }
-    .page-subtitle {
-      font-size: 0.90rem;
-      color: var(--text-muted);
-      margin-top: 4px;
-    }
-    .circulars-list {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-    .circular-item-card {
-      background: var(--surface-card);
-      backdrop-filter: blur(24px) saturate(180%);
-      -webkit-backdrop-filter: blur(24px) saturate(180%);
-      border: 1px solid var(--border-card);
-      border-radius: var(--radius-card, 28px);
-      padding: 24px;
-      box-shadow: var(--shadow-sm);
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      transition: all 0.2s ease;
-    }
-    .circular-item-card:hover {
-      transform: translateY(-2px);
-      border-color: rgba(16, 185, 129, 0.4);
-      box-shadow: var(--shadow-md);
-    }
-    .circular-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-    }
-    .circular-badge {
-      font-family: var(--font-mono);
-      font-size: 0.74rem;
-      font-weight: 800;
-      padding: 4px 12px;
-      border-radius: 9999px;
-      background: #dcfce7;
-      color: #065f46;
-    }
-    [data-theme="dark"] .circular-badge {
-      background: rgba(16, 185, 129, 0.2);
-      color: #34d399;
-    }
-    .circular-badge.amber {
-      background: #fef3c7;
-      color: #92400e;
-    }
-    [data-theme="dark"] .circular-badge.amber {
-      background: rgba(245, 158, 11, 0.2);
-      color: #fbbf24;
-    }
-    .circular-date {
-      font-size: 0.82rem;
-      font-weight: 600;
-      color: var(--text-muted);
-    }
-    .circular-title {
-      font-size: 1.15rem;
-      font-weight: 800;
-      color: var(--text-heading);
-    }
-    .circular-body {
-      font-size: 0.88rem;
-      color: var(--text-muted);
-      line-height: 1.6;
-    }
-    .circular-footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-top: 1px solid var(--border-subtle);
-      padding-top: 14px;
-      font-size: 0.80rem;
-    }
-    .circular-ref {
-      font-family: var(--font-mono);
-      color: var(--text-muted);
-      font-weight: 600;
-    }
-  </style>
+  <!-- Shared State & Dynamic Island -->
+  <script src="/js/stitch-state.js"></script>
+  <script src="/js/dc-dynamic-island.js" defer></script>
+  <script src="/screens/02-student-portal/circulars.js" defer></script>
 </head>
-<body class="student-portal-body">
 
-  <div class="portal-viewport-wrapper">
-    <div class="page-header-row">
-      <div>
-        <h1 class="page-title">Official Circulars &amp; Examination Bulletins</h1>
-        <p class="page-subtitle">Samskruti College of Engineering &amp; Technology (Code: 259) &bull; Verified State Board Gazettes</p>
+<body class="bg-[var(--color-canvas)] text-[var(--color-ink)] min-h-screen flex flex-col antialiased">
+  <!-- Dynamic Island Header Mounts Automatically via dc-dynamic-island.js -->
+
+  <!-- Main Viewport Layout -->
+  <main class="w-full pt-[80px] pb-12 flex-1">
+    <div class="campus-container flex flex-col gap-6 pt-4">
+
+      <!-- ============================================================== -->
+      <!-- TOP TITLE & BREADCRUMB ROW                                      -->
+      <!-- ============================================================== -->
+      <section class="w-full flex flex-col md:flex-row md:items-end justify-between gap-4 pb-2" data-testid="tile-circulars-header">
+        <div class="flex flex-col gap-1">
+          <div class="flex items-center gap-2 mb-1">
+            <span class="font-mono text-xs bg-[var(--color-feature-card)] text-[var(--color-lime)] px-3 py-1 rounded-full uppercase tracking-wider font-semibold">
+              SBTET Code 259 &bull; Official Bulletins
+            </span>
+            <span class="w-1.5 h-1.5 rounded-full bg-[var(--color-lime)]"></span>
+            <span class="font-mono text-xs text-[var(--color-muted)]">
+              Verified Gazettes
+            </span>
+          </div>
+          <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight text-[var(--color-ink)]">
+            Official Circulars &amp; Notices
+          </h1>
+          <p class="text-sm text-[var(--color-muted)] max-w-2xl font-normal">
+            Authoritative state board notifications, examination timetables, fee schedules, and institutional memorandums.
+          </p>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[var(--color-card)] border border-[var(--color-hairline)] shadow-xs">
+            <span class="w-2 h-2 rounded-full bg-[var(--color-lime)] animate-pulse"></span>
+            <span class="font-mono text-xs font-semibold text-[var(--color-ink)]" id="activeNoticeCountBadge">6 Notices Active</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================== -->
+      <!-- SEARCH & FILTER TOOLBAR BENTO                                  -->
+      <!-- ============================================================== -->
+      <section class="w-full rounded-[var(--radius-card)] bg-[var(--color-card)] border border-[var(--color-hairline)] p-4 sm:p-5 flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm" data-testid="tile-circulars-toolbar">
+        
+        <!-- Category Filter Pills -->
+        <div class="flex items-center gap-1.5 overflow-x-auto w-full md:w-auto pb-1 md:pb-0" id="circularCategoryPills" role="tablist">
+          <button type="button" class="category-pill px-4 py-2 rounded-full text-xs font-semibold tracking-wide bg-[var(--color-lime)] text-[#1A1A1A] transition shadow-xs cursor-pointer" data-category="all">
+            All (6)
+          </button>
+          <button type="button" class="category-pill px-4 py-2 rounded-full text-xs font-semibold tracking-wide bg-[var(--color-card-subtle)] text-[var(--color-muted)] hover:text-[var(--color-ink)] transition cursor-pointer" data-category="examination">
+            Examination
+          </button>
+          <button type="button" class="category-pill px-4 py-2 rounded-full text-xs font-semibold tracking-wide bg-[var(--color-card-subtle)] text-[var(--color-muted)] hover:text-[var(--color-ink)] transition cursor-pointer" data-category="academic">
+            Academic
+          </button>
+          <button type="button" class="category-pill px-4 py-2 rounded-full text-xs font-semibold tracking-wide bg-[var(--color-card-subtle)] text-[var(--color-muted)] hover:text-[var(--color-ink)] transition cursor-pointer" data-category="scholarship">
+            Scholarship
+          </button>
+          <button type="button" class="category-pill px-4 py-2 rounded-full text-xs font-semibold tracking-wide bg-[var(--color-card-subtle)] text-[var(--color-muted)] hover:text-[var(--color-ink)] transition cursor-pointer" data-category="events">
+            Events &amp; Hackathons
+          </button>
+        </div>
+
+        <!-- Search Input with Clear Button -->
+        <div class="relative w-full md:w-80 shrink-0">
+          <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--color-muted)] text-[18px]">search</span>
+          <input type="text" id="circularSearchInput" placeholder="Search notices or Ref ID..." 
+                 class="w-full pl-10 pr-9 py-2 rounded-full bg-[var(--color-card-subtle)] border border-[var(--color-hairline)] text-xs font-medium text-[var(--color-ink)] placeholder:text-[var(--color-muted)] focus:outline-none focus:ring-1 focus:ring-[var(--color-lime)] transition" />
+          <button type="button" id="circularClearSearch" class="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--color-muted)] hover:text-[var(--color-ink)] hidden cursor-pointer" aria-label="Clear search">
+            <span class="material-symbols-outlined text-[16px]">close</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- ============================================================== -->
+      <!-- CIRCULARS BENTO GRID                                           -->
+      <!-- ============================================================== -->
+      <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="circularsGrid" data-testid="circulars-list">
+        <!-- Rendered dynamically by circulars.js -->
+      </section>
+
+      <!-- Empty State -->
+      <div id="circularsEmptyState" class="hidden w-full py-16 text-center rounded-[var(--radius-card)] bg-[var(--color-card)] border border-[var(--color-hairline)] flex flex-col items-center justify-center gap-3">
+        <span class="material-symbols-outlined text-4xl text-[var(--color-muted)]">search_off</span>
+        <h3 class="text-base font-bold text-[var(--color-ink)]">No circulars found</h3>
+        <p class="text-xs text-[var(--color-muted)] max-w-sm">No notices matched your current search criteria. Try selecting another category or clearing your search term.</p>
+        <button type="button" onclick="resetCircularFilters()" class="mt-2 px-4 py-2 rounded-full bg-[var(--color-lime)] text-[#1A1A1A] text-xs font-semibold hover:opacity-90 transition cursor-pointer">
+          Reset Filters
+        </button>
       </div>
-      <a href="./dashboard.html" class="btn-hero-primary">
-        <i data-lucide="arrow-left"></i>
-        <span>Back to Home</span>
-      </a>
-    </div>
 
-    <div class="circulars-list">
+    </div>
+  </main>
+
+  <!-- ================================================================ -->
+  <!-- MODAL: CIRCULAR DETAILS & OFFICIAL GAZETTE VIEWER                -->
+  <!-- ================================================================ -->
+  <div id="circularModal" class="fixed inset-0 z-[1000] hidden items-center justify-center p-4 bg-black/60 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="modalCircularTitle">
+    <div class="relative w-full max-w-2xl rounded-[var(--radius-card)] bg-[var(--color-card)] border border-[var(--color-hairline)] shadow-2xl p-6 sm:p-8 flex flex-col gap-5 max-h-[90vh] overflow-y-auto" id="circularModalCard">
       
-      <div class="circular-item-card">
-        <div class="circular-top">
-          <span class="circular-badge">EXAMINATION NOTIFICATION</span>
-          <span class="circular-date">October 26, 2026</span>
+      <!-- Modal Header -->
+      <div class="flex items-start justify-between gap-4 pb-4 border-b border-[var(--color-hairline)]">
+        <div class="flex flex-col gap-1.5">
+          <div class="flex items-center gap-2">
+            <span class="font-mono text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-[var(--color-card-subtle)] text-[var(--color-ink)] border border-[var(--color-hairline)]" id="modalCategoryBadge">
+              EXAMINATION
+            </span>
+            <span class="font-mono text-[11px] text-[var(--color-muted)]" id="modalRefId">
+              REF: SCET/EXAM/2026-11/C24
+            </span>
+          </div>
+          <h2 class="text-xl sm:text-2xl font-bold text-[var(--color-ink)] tracking-tight" id="modalCircularTitle">
+            Notice Title
+          </h2>
+          <span class="font-mono text-xs text-[var(--color-muted)]" id="modalDate">
+            Issued on: October 26, 2026
+          </span>
         </div>
-        <h3 class="circular-title">SBTET C-24 Diploma Regular &amp; Supplementary Examinations Schedule</h3>
-        <p class="circular-body">All eligible students with a minimum of 75% biometric attendance are instructed to download their hall tickets from the examination branch desk. Fee submission clearance window closes on Nov 15.</p>
-        <div class="circular-footer">
-          <span class="circular-ref">REF: SCET/EXAM/2026-11/C24</span>
-          <a href="./results.html" class="btn-hero-primary" style="height: 38px; padding: 0 16px; font-size: 0.80rem;">
-            <span>Check Exam Eligibility &rarr;</span>
-          </a>
+        <button type="button" id="closeCircularModal" class="w-8 h-8 rounded-full bg-[var(--color-card-subtle)] hover:bg-[var(--color-canvas)] text-[var(--color-muted)] hover:text-[var(--color-ink)] flex items-center justify-center transition cursor-pointer" aria-label="Close dialog">
+          <span class="material-symbols-outlined text-[18px]">close</span>
+        </button>
+      </div>
+
+      <!-- Official Gazette Content Body -->
+      <div class="flex flex-col gap-4 text-xs sm:text-sm text-[var(--color-ink)] leading-relaxed font-normal" id="modalCircularBody">
+        <!-- Injected via JS -->
+      </div>
+
+      <!-- Institutional Sign-Off Card -->
+      <div class="p-4 rounded-2xl bg-[var(--color-card-subtle)] border border-[var(--color-hairline)] flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full bg-[var(--color-lime)] text-[#1A1A1A] flex items-center justify-center font-bold text-xs">
+            <span class="material-symbols-outlined text-[20px]">verified</span>
+          </div>
+          <div class="flex flex-col">
+            <span class="font-bold text-xs text-[var(--color-ink)]">Autonomous Examination Branch</span>
+            <span class="text-[11px] text-[var(--color-muted)]">Samskruti College of Engineering &amp; Technology (Code 259)</span>
+          </div>
+        </div>
+        <div class="text-right">
+          <span class="font-mono text-[10px] text-[var(--color-muted)] uppercase block">Digital Stamp</span>
+          <span class="font-mono text-xs font-semibold text-[var(--color-lime-ink)] bg-[var(--color-lime)] px-2 py-0.5 rounded">AUTHENTIC</span>
         </div>
       </div>
 
-      <div class="circular-item-card">
-        <div class="circular-top">
-          <span class="circular-badge amber">SCHOLARSHIP RENEWAL</span>
-          <span class="circular-date">October 24, 2026</span>
-        </div>
-        <h3 class="circular-title">Telangana State ePASS Post-Matric Scholarship Biometric Verification</h3>
-        <p class="circular-body">Candidates renewing scholarship entitlements must complete biometric authentication at Student Service Counter 3. Required clearances include Bonafide Certificate and Fee Remittance Receipt.</p>
-        <div class="circular-footer">
-          <span class="circular-ref">REF: SCET/EPASS/2026-B4</span>
-          <a href="./document-logistics.html" class="btn-hero-primary" style="height: 38px; padding: 0 16px; font-size: 0.80rem;">
-            <span>Request Bonafide &rarr;</span>
-          </a>
-        </div>
-      </div>
-
-      <div class="circular-item-card">
-        <div class="circular-top">
-          <span class="circular-badge">INNOVATION &amp; HACKATHON</span>
-          <span class="circular-date">October 20, 2026</span>
-        </div>
-        <h3 class="circular-title">Smart India Hackathon (SIH 2026) Institutional Team Registrations</h3>
-        <p class="circular-body">CSE &amp; AIML project teams are invited to submit solution abstracts via Idea Hub. Shortlisted teams will receive dedicated mentor support from the Samskruti T-Hub Incubation Center.</p>
-        <div class="circular-footer">
-          <span class="circular-ref">REF: SCET/INNOV/2026-H1</span>
-          <a href="./idea-hub.html" class="btn-hero-primary" style="height: 38px; padding: 0 16px; font-size: 0.80rem;">
-            <span>Open Idea Hub &rarr;</span>
-          </a>
-        </div>
+      <!-- Modal Footer Action Buttons -->
+      <div class="flex items-center justify-end gap-3 pt-3 border-t border-[var(--color-hairline)]">
+        <button type="button" id="downloadNoticePdfBtn" class="px-4 py-2.5 rounded-full bg-[var(--color-card-subtle)] hover:bg-[var(--color-canvas)] text-[var(--color-ink)] border border-[var(--color-hairline)] text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer">
+          <span class="material-symbols-outlined text-[16px]">download</span>
+          <span>Download PDF Memo</span>
+        </button>
+        <button type="button" id="printNoticeBtn" class="px-4 py-2.5 rounded-full bg-[var(--color-lime)] text-[#1A1A1A] text-xs font-semibold flex items-center gap-1.5 transition shadow-xs cursor-pointer hover:opacity-95">
+          <span class="material-symbols-outlined text-[16px]">print</span>
+          <span>Print Gazette</span>
+        </button>
       </div>
 
     </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="circularToast" class="fixed bottom-6 right-6 z-[30000] hidden px-4 py-2.5 rounded-xl bg-[var(--color-card)] text-[var(--color-ink)] text-xs font-semibold shadow-xl flex items-center gap-2 border border-[var(--color-hairline)] transform transition-all duration-300">
+    <span class="material-symbols-outlined text-[var(--color-lime)] text-[18px]">check_circle</span>
+    <span id="circularToastMsg">Action completed</span>
   </div>
 
 </body>

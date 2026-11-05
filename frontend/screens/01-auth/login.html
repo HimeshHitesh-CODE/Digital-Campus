@@ -1,40 +1,40 @@
 <!DOCTYPE html>
-<html lang="en" class="light">
+<html lang="en">
 <head>
   <meta charset="utf-8"/>
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
   <title>Campus Connect &bull; Unified Authentication Gateway | Samskruti College (Code: 259)</title>
 
-  <!-- Google Fonts: Plus Jakarta Sans & Darker Grotesque & Newsreader -->
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
-  <link href="https://fonts.googleapis.com/css2?family=Darker+Grotesque:wght@600;700;800;900&family=IBM+Plex+Mono:wght@500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,500;0,6..72,700;1,6..72,500&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
-  <!-- Material Symbols Outlined -->
+  <!-- Self-Hosted Fonts & Master Tokens -->
+  <link rel="stylesheet" href="/css/fonts.css" />
+  <link rel="stylesheet" href="/css/theme-tokens.css" />
+  <link rel="stylesheet" href="/css/stitch-design-system.css" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 
-  <!-- Tailwind CSS CDN -->
+  <!-- Tailwind CSS CDN & Config -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Unified Tailwind Configuration -->
   <script src="/js/stitch-tailwind-config.js"></script>
 
-  <!-- Master Design System Stylesheets -->
-  <link rel="stylesheet" href="/css/stitch-design-system.css"/>
-  <link rel="stylesheet" href="/css/top-nav.css"/>
+  <!-- Early Theme Engine Initialization -->
+  <script>
+    (function() {
+      const saved = localStorage.getItem('theme') || localStorage.getItem('dc_theme');
+      const theme = (saved === 'dark' || saved === 'light') ? saved : 
+        (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+      if (theme === 'dark') {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    })();
+  </script>
 
   <style>
-    /* Dot pattern & radial mesh background */
-    .bg-dot-pattern {
-      background-image: radial-gradient(rgba(4, 120, 87, 0.12) 1px, transparent 1px);
-      background-size: 20px 20px;
-    }
-    .radial-mesh-top {
-      background: radial-gradient(circle 600px at 50% -100px, rgba(16, 185, 129, 0.15), transparent 70%);
-    }
-    .radial-mesh-bottom {
-      background: radial-gradient(circle 500px at 50% 110%, rgba(4, 120, 87, 0.12), transparent 70%);
-    }
-    .glass-card-shadow {
-      box-shadow: 0 24px 60px -15px rgba(2, 44, 34, 0.14), 0 0 0 1px rgba(16, 185, 129, 0.2);
+    .login-glass-card {
+      background: var(--color-card);
+      border: 1px solid var(--color-hairline);
+      box-shadow: 0 20px 48px -12px rgba(0, 0, 0, 0.12), 0 0 0 1px var(--color-hairline);
     }
     .shake-error {
       animation: shake 0.45s cubic-bezier(.36,.07,.19,.97) both;
@@ -48,35 +48,49 @@
   </style>
 </head>
 
-<body class="bg-[#fcfaf6] text-emerald-950 font-sans antialiased min-h-screen flex flex-col justify-between relative selection:bg-emerald-500 selection:text-white">
-  <!-- Background Meshes -->
-  <div class="fixed inset-0 pointer-events-none bg-dot-pattern opacity-70 z-0"></div>
-  <div class="fixed inset-0 pointer-events-none radial-mesh-top z-0"></div>
-  <div class="fixed inset-0 pointer-events-none radial-mesh-bottom z-0"></div>
+<body class="bg-[var(--color-canvas)] text-[var(--color-ink)] font-sans antialiased min-h-screen flex flex-col justify-between relative selection:bg-[var(--color-lime)] selection:text-[#1A1A1A]">
 
-  <!-- Top Header removed for clean centered glassmorphic card -->
+  <!-- Top Action Bar (Minimal theme switcher & institutional badge) -->
+  <header class="w-full max-w-[1280px] mx-auto px-6 py-4 flex items-center justify-between relative z-20">
+    <div class="flex items-center gap-2">
+      <div class="w-7 h-7 rounded-full bg-[var(--color-lime)] flex items-center justify-center text-[#1A1A1A] font-bold text-xs shadow-xs">
+        <span class="material-symbols-outlined text-[16px]">school</span>
+      </div>
+      <div class="flex flex-col">
+        <span class="font-bold text-sm tracking-tight leading-tight">Samskruti College</span>
+        <span class="font-mono text-[11px] text-[var(--color-muted)]">Code 259 &bull; Autonomous SBTET</span>
+      </div>
+    </div>
+
+    <!-- Theme Toggle Pill -->
+    <button type="button" id="authThemeToggleBtn" aria-label="Toggle light or dark theme" title="Toggle Theme"
+            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[var(--color-card)] border border-[var(--color-hairline)] text-[var(--color-ink)] hover:bg-[var(--color-card-subtle)] transition shadow-xs text-xs font-semibold cursor-pointer">
+      <span class="material-symbols-outlined text-[16px]" id="authThemeIcon">dark_mode</span>
+      <span id="authThemeLabel" class="text-xs">Theme</span>
+    </button>
+  </header>
 
   <!-- Main Content Gateway -->
-  <main class="relative z-10 flex-grow flex items-center justify-center px-4 py-8">
+  <main class="relative z-10 flex-grow flex items-center justify-center px-4 py-6">
     <div class="w-full max-w-[460px]">
-      <!-- Elevated Glassmorphic Card -->
-      <div class="rounded-[32px] bg-white/90 backdrop-blur-xl border border-emerald-500/25 p-8 sm:p-9 glass-card-shadow transition-all duration-300 relative overflow-hidden" id="loginCard">
-        <!-- Luminous Top Glow Line -->
-        <div class="absolute top-0 left-8 right-8 h-[2.5px] bg-gradient-to-r from-transparent via-emerald-400 to-transparent"></div>
+      <!-- Elevated Tactile Card -->
+      <div class="rounded-[28px] login-glass-card p-7 sm:p-8 transition-all duration-300 relative overflow-hidden" id="loginCard">
+        <!-- Luminous Accent Line -->
+        <div class="absolute top-0 left-8 right-8 h-[2px] bg-gradient-to-r from-transparent via-[var(--color-lime)] to-transparent opacity-80"></div>
 
         <!-- Role Switcher Pill Container -->
         <div class="flex justify-center mb-6">
-          <div class="inline-flex p-1 bg-emerald-950/85 backdrop-blur-md rounded-full border border-emerald-500/40 shadow-inner relative" id="rolePillTrack">
+          <div class="inline-flex p-1 bg-[var(--color-card-subtle)] rounded-full border border-[var(--color-hairline)] shadow-inner relative" id="rolePillTrack">
             <!-- Sliding Active Pill Indicator -->
-            <div class="absolute top-1 bottom-1 rounded-full bg-gradient-to-r from-[#047857] to-[#10b981] shadow-md transition-all duration-300 ease-out" id="activePillIndicator" style="left: 4px; width: 108px;"></div>
+            <div class="absolute top-1 bottom-1 rounded-full bg-[var(--color-lime)] shadow-sm transition-all duration-300 ease-out" id="activePillIndicator" style="left: 4px; width: 108px;"></div>
             
             <!-- Student Pill Button -->
-            <button class="relative z-10 flex items-center gap-1.5 px-5 py-2 rounded-full text-white font-dg text-sm font-bold tracking-wide transition-colors focus:outline-none" id="studentRoleBtn" type="button">
+            <button class="relative z-10 flex items-center gap-1.5 px-5 py-2 rounded-full text-[#1A1A1A] text-sm font-semibold tracking-wide transition-colors focus:outline-none cursor-pointer" id="studentRoleBtn" type="button">
               <span class="material-symbols-outlined text-[17px]">school</span>
               <span>Student</span>
             </button>
             <!-- HOD / Faculty Pill Button -->
-            <button class="relative z-10 flex items-center gap-1.5 px-5 py-2 rounded-full text-emerald-200 hover:text-white font-dg text-sm font-bold tracking-wide transition-colors focus:outline-none" id="hodRoleBtn" type="button">
+            <button class="relative z-10 flex items-center gap-1.5 px-5 py-2 rounded-full text-[var(--color-muted)] hover:text-[var(--color-ink)] text-sm font-semibold tracking-wide transition-colors focus:outline-none cursor-pointer" id="hodRoleBtn" type="button">
               <span class="material-symbols-outlined text-[17px]">shield_person</span>
               <span>HOD / Faculty</span>
             </button>
@@ -84,153 +98,163 @@
         </div>
 
         <!-- ======================================================== -->
-        <!-- VIEW 1: STUDENT LOGIN & FIRST-TIME ONBOARDING            -->
+        <!-- VIEW 1: STUDENT LOGIN & FIRST-TIME ACTIVATION            -->
         <!-- ======================================================== -->
-        <div id="studentLoginView" class="transition-all duration-300">
-          <div class="text-center mb-6">
-            <h2 class="font-dg text-3xl font-extrabold text-emerald-950 tracking-tight leading-tight">Student Gateway</h2>
-            <p class="font-dg text-base text-stone-600 font-medium mt-0.5">Welcome back, scholar &bull; Enter your permanent PIN</p>
+        <div id="studentLoginView" class="space-y-5">
+          <div class="text-center space-y-1">
+            <h1 class="text-2xl font-bold tracking-tight text-[var(--color-ink)]">Student Portal Login</h1>
+            <p class="text-xs text-[var(--color-muted)] font-medium">SBTET Polytechnic Diploma &bull; Samskruti College</p>
           </div>
 
-          <form id="studentLoginForm" class="space-y-4" onsubmit="event.preventDefault(); handleStudentSubmit();">
+          <form id="studentLoginForm" onsubmit="event.preventDefault(); handleStudentSubmit();" class="space-y-4">
             <!-- Student PIN Input -->
             <div class="space-y-1.5">
-              <label class="block font-dg text-base font-bold text-emerald-950" for="studentPin">State Board PIN / Roll Number</label>
+              <label class="block text-xs font-semibold uppercase tracking-wider text-[var(--color-muted)]" for="studentPin">State Board Student PIN</label>
               <div class="relative">
-                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-emerald-700/70 text-[20px]">badge</span>
-                <input class="w-full pl-11 pr-4 py-3 rounded-full bg-[#f8fcf9] border border-emerald-900/15 font-mono text-base text-emerald-950 placeholder:text-stone-400 placeholder:font-sans focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500 transition-all shadow-xs" id="studentPin" placeholder="Enter Student PIN" required="" type="text" />
+                <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--color-muted)] text-[19px]">tag</span>
+                <input class="w-full pl-11 pr-4 py-2.5 rounded-xl bg-[var(--color-card-subtle)] border border-[var(--color-hairline)] font-mono text-sm text-[var(--color-ink)] placeholder:text-[var(--color-muted)] placeholder:font-sans focus:outline-none focus:ring-2 focus:ring-[var(--color-lime)] focus:border-transparent transition-all" 
+                       id="studentPin" 
+                       placeholder="Enter Student PIN" 
+                       autocomplete="username"
+                       required 
+                       type="text" />
               </div>
             </div>
 
             <!-- Password Input -->
             <div class="space-y-1.5">
               <div class="flex items-center justify-between">
-                <label class="block font-dg text-base font-bold text-emerald-950" for="password">Password</label>
-                <a class="font-dg text-sm font-bold text-emerald-700 hover:text-emerald-900 hover:underline transition-colors" href="javascript:void(0)" onclick="openForgotPassword()">Forgot password?</a>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-[var(--color-muted)]" for="password">Password</label>
+                <button type="button" onclick="openForgotPassword()" class="text-xs font-semibold text-[var(--color-muted)] hover:text-[var(--color-ink)] transition-colors">Setup / Recover Key</button>
               </div>
               <div class="relative">
-                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-emerald-700/70 text-[20px]">lock</span>
-                <input class="w-full pl-11 pr-12 py-3 rounded-full bg-[#f8fcf9] border border-emerald-900/15 font-sans text-base text-emerald-950 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500 transition-all shadow-xs" id="password" placeholder="Enter Password" required="" type="password" />
-                <!-- Eye Toggle -->
-                <button aria-label="Toggle password visibility" class="absolute right-4 top-1/2 -translate-y-1/2 text-stone-500 hover:text-emerald-700 transition-colors focus:outline-none" id="togglePasswordVisibility" type="button">
-                  <span class="material-symbols-outlined text-[20px]" id="eyeIcon">visibility</span>
+                <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--color-muted)] text-[19px]">lock</span>
+                <input class="w-full pl-11 pr-11 py-2.5 rounded-xl bg-[var(--color-card-subtle)] border border-[var(--color-hairline)] font-sans text-sm text-[var(--color-ink)] placeholder:text-[var(--color-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-lime)] focus:border-transparent transition-all" 
+                       id="password" 
+                       placeholder="Enter Password" 
+                       autocomplete="current-password"
+                       required 
+                       type="password" />
+                <button aria-label="Toggle password visibility" class="absolute right-3.5 top-1/2 -translate-y-1/2 text-[var(--color-muted)] hover:text-[var(--color-ink)] transition-colors focus:outline-none cursor-pointer" id="togglePasswordVisibility" type="button">
+                  <span class="material-symbols-outlined text-[19px]" id="eyeIcon">visibility</span>
                 </button>
               </div>
             </div>
 
-            <!-- Remember Me Session Toggle -->
-            <div class="flex items-center justify-between pt-1">
-              <label class="flex items-center gap-2 cursor-pointer select-none">
-                <input class="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500 border-stone-300" id="rememberMe" type="checkbox" checked=""/>
-                <span class="font-dg text-base text-stone-700 font-semibold">Keep session active (30 Days)</span>
-              </label>
-            </div>
-
             <!-- Primary Submit Button -->
-            <div class="pt-2">
-              <button class="w-full py-3.5 px-6 rounded-full text-white font-dg text-xl font-bold tracking-wide transition-all shadow-lg hover:shadow-emerald-500/35 hover:-translate-y-0.5 active:scale-[0.98] flex items-center justify-center gap-2 group" id="studentLoginBtn" style="background: linear-gradient(135deg, #022c22 0%, #047857 50%, #10b981 100%);" type="submit">
+            <div class="pt-1">
+              <button class="w-full py-3 px-5 rounded-full bg-[var(--color-lime)] text-[#1A1A1A] font-semibold text-sm tracking-wide transition-all shadow-sm hover:opacity-95 active:scale-[0.99] flex items-center justify-center gap-2 group cursor-pointer" id="studentLoginBtn" type="submit">
                 <span id="studentBtnText">Login to Portal</span>
-                <span class="material-symbols-outlined text-[19px] transition-transform group-hover:translate-x-1" id="studentBtnIcon">arrow_forward</span>
+                <span class="material-symbols-outlined text-[18px] transition-transform group-hover:translate-x-1" id="studentBtnIcon">arrow_forward</span>
               </button>
             </div>
           </form>
 
-          <!-- First-Time Onboarding Activation Callout Box -->
-          <div class="mt-6 pt-5 border-t border-emerald-900/10">
-            <div class="p-4 rounded-2xl bg-gradient-to-r from-emerald-50/90 to-amber-50/60 border border-emerald-200/80 flex flex-col gap-2 shadow-xs transition-all" id="onboardingCallout">
-              <div class="flex items-start justify-between gap-3">
-                <div class="flex flex-col">
-                  <span class="font-dg text-sm font-extrabold uppercase tracking-wider text-emerald-800">First-Time Student Onboarding</span>
-                  <p class="font-dg text-base text-stone-700 font-medium leading-snug">Activate account with your HOD Anti-Spoofing Key</p>
+          <!-- First-Time Student Activation Callout -->
+          <div class="pt-2 border-t border-[var(--color-hairline)]">
+            <button type="button" onclick="toggleOnboardingDrawer()" class="w-full py-2.5 px-3 rounded-xl bg-[var(--color-card-subtle)] hover:bg-[var(--color-canvas)] border border-[var(--color-hairline)] flex items-center justify-between text-left transition cursor-pointer">
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-[var(--color-lime-ink)] bg-[var(--color-lime)] p-1 rounded-lg text-[16px]">key</span>
+                <div>
+                  <div class="text-xs font-semibold text-[var(--color-ink)]">First-time student login?</div>
+                  <div class="text-[11px] text-[var(--color-muted)]">Activate with your HOD Security Key</div>
                 </div>
-                <button class="shrink-0 inline-flex items-center gap-1 px-3.5 py-1.5 rounded-full bg-emerald-800 hover:bg-emerald-900 text-white font-dg text-sm font-bold shadow-xs hover:shadow-sm transition-all active:scale-95" id="openOnboardingBtn" type="button" onclick="toggleOnboardingDrawer()">
-                  <span>Activate Key</span>
-                  <span class="material-symbols-outlined text-[15px]">key</span>
-                </button>
+              </div>
+              <span class="material-symbols-outlined text-[var(--color-muted)] text-[18px]">expand_more</span>
+            </button>
+
+            <!-- Collapsible Activation Drawer -->
+            <div id="onboardingDrawer" class="hidden mt-3 p-4 rounded-2xl bg-[var(--color-card-subtle)] border border-[var(--color-hairline)] space-y-3">
+              <div class="text-xs font-bold text-[var(--color-ink)]">First-Time Password &amp; Key Setup</div>
+              
+              <div class="space-y-1">
+                <label class="block text-[11px] font-semibold text-[var(--color-muted)]" for="onboardPin">Student PIN</label>
+                <input class="w-full px-3 py-2 rounded-lg bg-[var(--color-card)] border border-[var(--color-hairline)] font-mono text-xs text-[var(--color-ink)] placeholder:text-[var(--color-muted)] focus:outline-none focus:ring-1 focus:ring-[var(--color-lime)]" id="onboardPin" placeholder="Enter Student PIN" type="text" />
               </div>
 
-              <!-- Collapsible First-Time Activation Drawer -->
-              <div class="hidden pt-3 border-t border-emerald-900/10 flex flex-col gap-3 transition-all" id="onboardingDrawer">
-                <div class="space-y-1">
-                  <label class="block font-dg text-sm font-bold text-emerald-950">Student PIN</label>
-                  <input class="w-full px-3.5 py-2 rounded-xl bg-white border border-emerald-900/20 font-mono text-sm text-emerald-950 uppercase placeholder:text-stone-400 placeholder:font-sans focus:outline-none focus:ring-2 focus:ring-emerald-500" id="onboardPin" placeholder="Enter Student PIN" type="text" />
-                </div>
-                <div class="space-y-1">
-                  <label class="block font-dg text-sm font-bold text-emerald-950">Anti-Spoofing Security Key</label>
-                  <input class="w-full px-3.5 py-2 rounded-xl bg-white border border-emerald-900/20 font-mono text-sm text-emerald-950 uppercase placeholder:text-stone-400 placeholder:font-sans focus:outline-none focus:ring-2 focus:ring-emerald-500" id="onboardKey" placeholder="Enter Unique Security Key" type="text" />
-                </div>
-                <div class="space-y-1">
-                  <label class="block font-dg text-sm font-bold text-emerald-950">Create New Password</label>
-                  <input class="w-full px-3.5 py-2 rounded-xl bg-white border border-emerald-900/20 font-sans text-sm text-emerald-950 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-emerald-500" id="onboardPass" placeholder="Enter New Password (min 6 chars)" type="password" />
-                </div>
-                <div class="space-y-1">
-                  <label class="block font-dg text-sm font-bold text-emerald-950">Confirm New Password</label>
-                  <input class="w-full px-3.5 py-2 rounded-xl bg-white border border-emerald-900/20 font-sans text-sm text-emerald-950 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-emerald-500" id="onboardPassConfirm" placeholder="Confirm Password" type="password" />
-                </div>
-                <button class="w-full py-2.5 px-4 rounded-full bg-gradient-to-r from-emerald-700 to-teal-600 text-white font-dg text-base font-bold shadow-sm hover:opacity-95 active:scale-95 transition-all cursor-pointer" type="button" onclick="handleActivateAccount()">
-                  Verify Key &amp; Set Password &rarr;
-                </button>
+              <div class="space-y-1">
+                <label class="block text-[11px] font-semibold text-[var(--color-muted)]" for="onboardKey">Anti-Spoofing Security Key (STD-XXXXXX)</label>
+                <input class="w-full px-3 py-2 rounded-lg bg-[var(--color-card)] border border-[var(--color-hairline)] font-mono text-xs text-[var(--color-ink)] placeholder:text-[var(--color-muted)] focus:outline-none focus:ring-1 focus:ring-[var(--color-lime)]" id="onboardKey" placeholder="Enter Unique Security Key" type="text" />
               </div>
+
+              <div class="grid grid-cols-2 gap-2">
+                <div class="space-y-1">
+                  <label class="block text-[11px] font-semibold text-[var(--color-muted)]" for="onboardPass">Create Password</label>
+                  <input class="w-full px-3 py-2 rounded-lg bg-[var(--color-card)] border border-[var(--color-hairline)] text-xs text-[var(--color-ink)] placeholder:text-[var(--color-muted)] focus:outline-none focus:ring-1 focus:ring-[var(--color-lime)]" id="onboardPass" placeholder="Min 6 chars" type="password" />
+                </div>
+                <div class="space-y-1">
+                  <label class="block text-[11px] font-semibold text-[var(--color-muted)]" for="onboardPassConfirm">Confirm Password</label>
+                  <input class="w-full px-3 py-2 rounded-lg bg-[var(--color-card)] border border-[var(--color-hairline)] text-xs text-[var(--color-ink)] placeholder:text-[var(--color-muted)] focus:outline-none focus:ring-1 focus:ring-[var(--color-lime)]" id="onboardPassConfirm" placeholder="Repeat password" type="password" />
+                </div>
+              </div>
+
+              <button type="button" onclick="handleActivateAccount()" class="w-full py-2 px-3 rounded-lg bg-[var(--color-ink)] text-[var(--color-canvas)] text-xs font-semibold hover:opacity-90 transition flex items-center justify-center gap-1.5 cursor-pointer">
+                <span class="material-symbols-outlined text-[15px]">verified_user</span>
+                <span>Verify Key &amp; Activate Account</span>
+              </button>
             </div>
           </div>
         </div>
 
         <!-- ======================================================== -->
-        <!-- VIEW 2: HOD EXECUTIVE LOGIN                             -->
+        <!-- VIEW 2: HOD / FACULTY EXECUTIVE LOGIN                    -->
         <!-- ======================================================== -->
-        <div id="hodLoginView" class="hidden transition-all duration-300">
-          <div class="text-center mb-6">
-            <div class="inline-flex items-center gap-1 px-3 py-0.5 rounded-full bg-emerald-100 text-emerald-900 font-mono text-xs font-bold mb-1 border border-emerald-300">
-              <span class="material-symbols-outlined text-[14px] text-emerald-700">verified_user</span>
-              <span>Institutional Level 3 Clearance</span>
-            </div>
-            <h2 class="font-dg text-3xl font-extrabold text-emerald-950 tracking-tight leading-tight">Executive Gateway</h2>
-            <p class="font-dg text-base text-stone-600 font-medium mt-0.5">Computer Science &amp; AIML Departments &bull; Executive Node</p>
+        <div id="hodLoginView" class="hidden space-y-5">
+          <div class="text-center space-y-1">
+            <h1 class="text-2xl font-bold tracking-tight text-[var(--color-ink)]">HOD Executive Login</h1>
+            <p class="text-xs text-[var(--color-muted)] font-medium">Department Head Clearance &bull; Samskruti Node 259</p>
           </div>
 
-          <form id="hodLoginForm" class="space-y-4" onsubmit="event.preventDefault(); handleHodSubmit();">
-            <!-- Faculty / HOD ID Input -->
+          <form id="hodLoginForm" onsubmit="event.preventDefault(); handleHodSubmit();" class="space-y-4">
+            <!-- HOD Credential ID Input -->
             <div class="space-y-1.5">
               <div class="flex items-center justify-between">
-                <label class="block font-dg text-base font-bold text-emerald-950" for="hodIdInput">Executive / HOD Credential ID</label>
-                <div class="flex items-center gap-1.5">
-                  <button type="button" class="hod-preset-pill px-2.5 py-0.5 rounded-full bg-emerald-100 hover:bg-emerald-200 text-emerald-900 font-mono text-[10px] font-bold border border-emerald-300 transition cursor-pointer" data-id="PADMA-AIML-HOD">Prof. Padma (AIML)</button>
-                  <button type="button" class="hod-preset-pill px-2.5 py-0.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-mono text-[10px] font-bold border border-slate-300 transition cursor-pointer" data-id="VAMSHI-CS-HOD">Dr. Vamshi (CSE)</button>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-[var(--color-muted)]" for="hodIdInput">Executive / HOD ID</label>
+                <div class="flex items-center gap-1">
+                  <button type="button" class="hod-preset-pill px-2 py-0.5 rounded-full bg-[var(--color-card-subtle)] hover:bg-[var(--color-canvas)] text-[var(--color-ink)] font-mono text-[10px] font-semibold border border-[var(--color-hairline)] transition cursor-pointer" data-id="AIML-HOD">AIML-HOD</button>
+                  <button type="button" class="hod-preset-pill px-2 py-0.5 rounded-full bg-[var(--color-card-subtle)] hover:bg-[var(--color-canvas)] text-[var(--color-ink)] font-mono text-[10px] font-semibold border border-[var(--color-hairline)] transition cursor-pointer" data-id="VAMSHI-CS-HOD">CS-HOD</button>
                 </div>
               </div>
               <div class="relative">
-                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-emerald-700/70 text-[20px]">badge</span>
-                <input class="w-full pl-11 pr-4 py-3 rounded-full bg-[#f8fcf9] border border-emerald-900/15 font-mono text-base text-emerald-950 placeholder:text-stone-400 placeholder:font-sans focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500 transition-all shadow-xs" id="hodIdInput" placeholder="Enter Executive / HOD ID" required="" type="text" />
+                <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--color-muted)] text-[19px]">badge</span>
+                <input class="w-full pl-11 pr-4 py-2.5 rounded-xl bg-[var(--color-card-subtle)] border border-[var(--color-hairline)] font-mono text-sm text-[var(--color-ink)] placeholder:text-[var(--color-muted)] placeholder:font-sans focus:outline-none focus:ring-2 focus:ring-[var(--color-lime)] focus:border-transparent transition-all" 
+                       id="hodIdInput" 
+                       placeholder="Enter Executive / HOD ID" 
+                       required 
+                       type="text" />
               </div>
             </div>
 
             <!-- Master Password Input -->
             <div class="space-y-1.5">
               <div class="flex items-center justify-between">
-                <label class="block font-dg text-base font-bold text-emerald-950" for="passwordInput">Master Authorization Password</label>
-                <span class="font-dg text-xs font-bold text-stone-500">256-Bit Encrypted</span>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-[var(--color-muted)]" for="passwordInput">Master Password</label>
+                <span class="font-mono text-[11px] text-[var(--color-muted)]">256-Bit Encrypted</span>
               </div>
               <div class="relative">
-                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-emerald-700/70 text-[20px]">vpn_key</span>
-                <input class="w-full pl-11 pr-12 py-3 rounded-full bg-[#f8fcf9] border border-emerald-900/15 font-sans text-base text-emerald-950 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500 transition-all shadow-xs" id="passwordInput" placeholder="Enter Password" required="" type="password" />
-                <!-- Eye Toggle -->
-                <button aria-label="Toggle password visibility" class="absolute right-4 top-1/2 -translate-y-1/2 text-stone-500 hover:text-emerald-700 transition-colors focus:outline-none" id="togglePasswordBtn" type="button">
-                  <span class="material-symbols-outlined text-[20px]" id="hodEyeIcon">visibility</span>
+                <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--color-muted)] text-[19px]">vpn_key</span>
+                <input class="w-full pl-11 pr-11 py-2.5 rounded-xl bg-[var(--color-card-subtle)] border border-[var(--color-hairline)] font-sans text-sm text-[var(--color-ink)] placeholder:text-[var(--color-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-lime)] focus:border-transparent transition-all" 
+                       id="passwordInput" 
+                       placeholder="Enter Password" 
+                       required 
+                       type="password" />
+                <button aria-label="Toggle password visibility" class="absolute right-3.5 top-1/2 -translate-y-1/2 text-[var(--color-muted)] hover:text-[var(--color-ink)] transition-colors focus:outline-none cursor-pointer" id="togglePasswordBtn" type="button">
+                  <span class="material-symbols-outlined text-[19px]" id="hodEyeIcon">visibility</span>
                 </button>
               </div>
             </div>
 
             <!-- Hardware Security Notice -->
-            <div class="p-3 rounded-2xl bg-emerald-50/90 border border-emerald-200 flex items-center gap-2.5">
-              <span class="material-symbols-outlined text-emerald-700 text-[18px]">security</span>
-              <span class="font-dg text-sm text-emerald-900 font-semibold leading-tight">FIDO2 / Cryptographic Department Relay Active for Node 259</span>
+            <div class="p-2.5 rounded-xl bg-[var(--color-card-subtle)] border border-[var(--color-hairline)] flex items-center gap-2">
+              <span class="material-symbols-outlined text-[var(--color-lime-ink)] bg-[var(--color-lime)] p-1 rounded-lg text-[15px]">security</span>
+              <span class="text-xs text-[var(--color-muted)] font-medium">Cryptographic Department Relay Active for Node 259</span>
             </div>
 
             <!-- Primary Submit Button -->
-            <div class="pt-2">
-              <button class="w-full py-3.5 px-6 rounded-full text-white font-dg text-xl font-bold tracking-wide transition-all shadow-lg hover:shadow-emerald-500/35 hover:-translate-y-0.5 active:scale-[0.98] flex items-center justify-center gap-2 group" id="hodLoginBtn" style="background: linear-gradient(135deg, #003519 0%, #047857 50%, #10b981 100%);" type="submit">
+            <div class="pt-1">
+              <button class="w-full py-3 px-5 rounded-full bg-[var(--color-lime)] text-[#1A1A1A] font-semibold text-sm tracking-wide transition-all shadow-sm hover:opacity-95 active:scale-[0.99] flex items-center justify-center gap-2 group cursor-pointer" id="hodLoginBtn" type="submit">
                 <span id="hodBtnText">Authenticate &amp; Enter Console</span>
-                <span class="material-symbols-outlined text-[19px] transition-transform group-hover:translate-x-1" id="hodBtnIcon">arrow_forward</span>
+                <span class="material-symbols-outlined text-[18px] transition-transform group-hover:translate-x-1" id="hodBtnIcon">arrow_forward</span>
               </button>
             </div>
           </form>
@@ -241,18 +265,48 @@
   </main>
 
   <!-- Institutional Footer -->
-  <footer class="w-full relative z-20 py-4 px-4 text-center border-t border-emerald-900/10 bg-white/50 backdrop-blur-sm">
-    <p class="font-dg text-sm text-stone-600 font-medium">
-      &copy; 2025 Samskruti College of Engineering &amp; Technology. Permanent SBTET &bull; AICTE Affiliation.
+  <footer class="w-full relative z-20 py-4 px-6 text-center border-t border-[var(--color-hairline)] bg-[var(--color-canvas)]">
+    <p class="text-xs text-[var(--color-muted)]">
+      &copy; 2025 Samskruti College of Engineering &amp; Technology &bull; Permanent SBTET &amp; AICTE Affiliation.
     </p>
   </footer>
 
   <!-- Toast Notification -->
-  <div id="toastNotification" class="fixed bottom-6 right-6 z-[30000] hidden px-5 py-3 rounded-2xl bg-emerald-900 text-white font-dg text-lg font-bold shadow-2xl flex items-center gap-3 border border-emerald-400/40 transform transition-all duration-300">
-    <span class="material-symbols-outlined text-emerald-300 text-[22px]" id="toastIcon">check_circle</span>
+  <div id="toastNotification" class="fixed bottom-6 right-6 z-[30000] hidden px-4 py-2.5 rounded-xl bg-[var(--color-card)] text-[var(--color-ink)] text-sm font-semibold shadow-xl flex items-center gap-2 border border-[var(--color-hairline)] transform transition-all duration-300">
+    <span class="material-symbols-outlined text-[var(--color-lime)] text-[20px]" id="toastIcon">check_circle</span>
     <span id="toastMsg">Action completed successfully</span>
   </div>
 
   <script src="/screens/01-auth/login.js"></script>
+  <script>
+    // Theme Switcher for Login Screen
+    const authThemeBtn = document.getElementById('authThemeToggleBtn');
+    const authThemeIcon = document.getElementById('authThemeIcon');
+    const authThemeLabel = document.getElementById('authThemeLabel');
+
+    function updateAuthThemeUI(th) {
+      if (authThemeIcon) authThemeIcon.textContent = th === 'dark' ? 'light_mode' : 'dark_mode';
+      if (authThemeLabel) authThemeLabel.textContent = th === 'dark' ? 'Light' : 'Dark';
+    }
+
+    const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+    updateAuthThemeUI(currentTheme);
+
+    authThemeBtn?.addEventListener('click', () => {
+      const now = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+      const target = now === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', target);
+      if (target === 'dark') {
+        document.documentElement.classList.add('dark');
+        document.body.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+        document.body.classList.remove('dark');
+      }
+      localStorage.setItem('theme', target);
+      localStorage.setItem('dc_theme', target);
+      updateAuthThemeUI(target);
+    });
+  </script>
 </body>
 </html>

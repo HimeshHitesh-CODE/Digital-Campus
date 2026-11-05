@@ -28,10 +28,10 @@ function initRoleSwitcher() {
     if (role === 'student') {
       indicator.style.left = '4px';
       indicator.style.width = '108px';
-      studentBtn.classList.remove('text-emerald-200');
-      studentBtn.classList.add('text-white');
-      hodBtn.classList.remove('text-white');
-      hodBtn.classList.add('text-emerald-200');
+      studentBtn.classList.remove('text-[var(--color-muted)]', 'text-emerald-200');
+      studentBtn.classList.add('text-[#1A1A1A]');
+      hodBtn.classList.remove('text-[#1A1A1A]', 'text-white');
+      hodBtn.classList.add('text-[var(--color-muted)]');
 
       hodView.classList.add('hidden');
       studentView.classList.remove('hidden');
@@ -39,9 +39,9 @@ function initRoleSwitcher() {
       indicator.style.left = '112px';
       indicator.style.width = '140px';
       hodBtn.classList.remove('text-emerald-200');
-      hodBtn.classList.add('text-white');
+      hodBtn.classList.add('text-[#1A1A1A]');
       studentBtn.classList.remove('text-white');
-      studentBtn.classList.add('text-emerald-200');
+      studentBtn.classList.add('text-[var(--color-muted)]');
 
       studentView.classList.add('hidden');
       hodView.classList.remove('hidden');

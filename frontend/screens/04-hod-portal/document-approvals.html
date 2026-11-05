@@ -19,6 +19,9 @@
   <script src="/js/stitch-tailwind-config.js"></script>
 
   <!-- Master Design System Stylesheets -->
+    <!-- Self-Hosted Fonts & Master Tokens -->
+  <link rel="stylesheet" href="/css/fonts.css" />
+  <link rel="stylesheet" href="/css/theme-tokens.css" />
   <link rel="stylesheet" href="/css/stitch-design-system.css"/>
   <link rel="stylesheet" href="/css/top-nav.css"/>
 
@@ -36,10 +39,42 @@
       border: 1px solid rgba(220, 215, 205, 0.8);
       box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.04);
     }
+  
+    .glass-card {
+      background: var(--color-card) !important;
+      border: 1px solid var(--color-hairline) !important;
+      color: var(--color-ink) !important;
+    }
+    .tactile-sheet {
+      background: var(--color-card) !important;
+      border: 1px solid var(--color-hairline) !important;
+      color: var(--color-ink) !important;
+    }
+    .tactile-tile {
+      background: var(--color-card-subtle) !important;
+      border: 1px solid var(--color-hairline) !important;
+      color: var(--color-ink) !important;
+    }
+    .dark .bg-white {
+      background-color: var(--color-card) !important;
+    }
+    .dark .bg-slate-50, .dark .bg-stone-50, .dark .bg-[#f7f9f7], .dark .bg-[#f8faf8] {
+      background-color: var(--color-card-subtle) !important;
+    }
+    .dark .border-slate-200, .dark .border-stone-200, .dark .border-stone-200\/80, .dark .border-slate-200\/80 {
+      border-color: var(--color-hairline) !important;
+    }
+    .dark .text-slate-900, .dark .text-slate-800, .dark .text-stone-900, .dark .text-stone-800 {
+      color: var(--color-ink) !important;
+    }
+    .dark .text-slate-700, .dark .text-slate-600, .dark .text-stone-600, .dark .text-stone-500 {
+      color: var(--color-muted) !important;
+    }
+
   </style>
 </head>
 
-<body class="bg-[#fcfaf6] dark:bg-[#020604] text-stone-800 dark:text-stone-100 font-sans antialiased min-h-screen flex flex-col justify-between relative selection:bg-emerald-500 selection:text-white">
+<body class="bg-[var(--color-canvas)] text-[var(--color-ink)] font-sans antialiased min-h-screen flex flex-col justify-between relative selection:bg-[var(--color-lime)] selection:text-[#1A1A1A]">
   <!-- Dynamic Island Dock mounts via dc-dynamic-island.js -->
 
   <main class="w-full flex-grow pt-[84px] md:pt-[92px]">

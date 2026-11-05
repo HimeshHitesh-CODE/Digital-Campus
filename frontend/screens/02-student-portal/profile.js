@@ -1,111 +1,217 @@
 /**
- * Samskruti College Student Profile Controller
- * Dynamic fill and contact editor logic
+ * Samskruti Digital Campus (Institution Code: 259)
+ * Student Profile & Academic Dossier Controller
  */
 
-document.addEventListener('DOMContentLoaded', () => {
-  initProfile();
-  initContactModal();
-});
+(function () {
+  'use strict';
 
-function initProfile() {
-  if (typeof StitchState === 'undefined') return;
-  const user = StitchState.getUser();
+  document.addEventListener('DOMContentLoaded', () => {
+    initProfileData();
+    initContactModal();
+    initPasswordModal();
+  });
 
-  // Dynamic user data binding
-  const nameEls = document.querySelectorAll('[data-bind="userName"]');
-  nameEls.forEach(el => el.textContent = user.name.toUpperCase());
-
-  const pinEls = document.querySelectorAll('[data-bind="userPin"]');
-  pinEls.forEach(el => el.textContent = user.pin || '24259-CS-025');
-
-  // Load custom contact info if stored
-  const customContact = localStorage.getItem('dc_student_contact');
-  if (customContact) {
+  function getActiveUser() {
     try {
-      const data = JSON.parse(customContact);
-      if (data.mobile) {
-        const mobEl = document.getElementById('displayMobile');
-        if (mobEl) mobEl.textContent = data.mobile;
+      const stored = localStorage.getItem('dc_user');
+      if (stored) {
+        const u = JSON.parse(stored);
+        if (u && (u.name || u.pin)) return u;
       }
-      if (data.parent) {
-        const parentEl = document.getElementById('displayParent');
-        if (parentEl) parentEl.textContent = data.parent;
-      }
-    } catch (e) {}
-  }
-}
+    } catch (_) {}
 
-function initContactModal() {
-  const modal = document.getElementById('editContactModal');
-  const card = document.getElementById('contactModalCard');
-  const closeBtn = document.getElementById('closeContactModal');
-  const cancelBtn = document.getElementById('cancelContactModal');
-
-  function openModal() {
-    if (!modal) return;
-    modal.classList.remove('hidden', 'opacity-0', 'pointer-events-none');
-    setTimeout(() => {
-      card?.classList.remove('scale-95');
-      card?.classList.add('scale-100');
-    }, 20);
+    const name = localStorage.getItem('user_name') || 'KARNATI HIMESH';
+    const pin = localStorage.getItem('student_pin') || localStorage.getItem('user_pin') || '24259-CS-025';
+    const branch = localStorage.getItem('student_branch') || 'CS';
+    return {
+      name,
+      pin,
+      branch: branch === 'AIML' ? 'Artificial Intelligence & Machine Learning' : 'Computer Science & Engineering',
+      branchCode: branch,
+      cgpa: branch === 'AIML' ? 7.53 : 9.11
+    };
   }
 
-  function closeModal() {
-    if (!modal) return;
-    card?.classList.remove('scale-100');
-    card?.classList.add('scale-95');
-    modal.classList.add('opacity-0', 'pointer-events-none');
-    setTimeout(() => {
-      modal.classList.add('hidden');
-    }, 200);
-  }
+  function initProfileData() {
+    const user = getActiveUser();
+    const isAiml = (user.branch && user.branch.includes('AIML')) || (user.pin && user.pin.includes('AIML'));
 
-  // Find all buttons containing 'Edit Contact Info' or 'Update Contact Phone Numbers'
-  document.querySelectorAll('button').forEach(btn => {
-    const txt = btn.textContent || '';
-    if (txt.includes('Edit Contact Info') || txt.includes('Update Contact Phone Numbers')) {
-      btn.addEventListener('click', openModal);
+    // Dynamic Elements
+    const nameEl = document.getElementById('profileStudentName');
+    const pinEl = document.getElementById('profileStudentPin');
+    const branchEl = document.getElementById('profileStudentBranch');
+    const avatarEl = document.getElementById('profileInitialsAvatar');
+    const cgpaEl = document.getElementById('profileCgpaVal');
+    const attEl = document.getElementById('profileAttendanceVal');
+    const keyEl = document.getElementById('profileSecurityKey');
+    const hodEl = document.getElementById('profileHodSignatory');
+
+    if (nameEl) nameEl.textContent = (user.name || (isAiml ? 'KARNATI HITESH' : 'KARNATI HIMESH')).toUpperCase();
+    if (pinEl) pinEl.textContent = `PIN: ${user.pin || (isAiml ? '24259-AIML-119' : '24259-CS-025')} • SBTET REG #${isAiml ? '2024259119' : '2024259025'}`;
+    if (branchEl) branchEl.textContent = isAiml ? 'Department of Artificial Intelligence & Machine Learning' : 'Department of Computer Science & Engineering';
+
+    const displayName = user.name || (isAiml ? 'Hitesh Karnati' : 'Himesh Karnati');
+    const initials = displayName.split(/\s+/).map(n => n[0]).slice(0, 2).join('').toUpperCase();
+    if (avatarEl) avatarEl.textContent = initials || 'KH';
+
+    if (cgpaEl) cgpaEl.textContent = isAiml ? '7.53' : '9.11';
+    if (attEl) attEl.textContent = isAiml ? '82.50%' : '84.82%';
+    if (keyEl) keyEl.textContent = isAiml ? 'STD-AI77B2' : 'STD-3472C6';
+    if (hodEl) hodEl.textContent = isAiml ? 'Prof. Padma (PIN: AIML-HOD)' : 'Dr. J. Vamshi Krishna (PIN: VAMSHI-CS-HOD)';
+
+    // Load custom contact info if stored
+    const customContact = localStorage.getItem('dc_student_contact');
+    if (customContact) {
+      try {
+        const data = JSON.parse(customContact);
+        if (data.mobile) {
+          const mob = document.getElementById('displayMobile');
+          if (mob) mob.textContent = data.mobile;
+        }
+        if (data.parent) {
+          const par = document.getElementById('displayParent');
+          if (par) par.textContent = data.parent;
+        }
+      } catch (_) {}
     }
-  });
+  }
 
-  closeBtn?.addEventListener('click', closeModal);
-  cancelBtn?.addEventListener('click', closeModal);
-  modal?.addEventListener('click', (e) => {
-    if (e.target === modal) closeModal();
-  });
+  function initContactModal() {
+    const modal = document.getElementById('editContactModal');
+    const openBtn = document.getElementById('openEditContactModalBtn');
+    const closeBtn = document.getElementById('closeContactModal');
+    const cancelBtn = document.getElementById('cancelContactModal');
+    const mobileInput = document.getElementById('editMobile');
+    const parentInput = document.getElementById('editParentContact');
 
-  window.saveContactDetails = function() {
-    const mobile = document.getElementById('editMobile')?.value.trim();
-    const parent = document.getElementById('editParentContact')?.value.trim();
+    function openModal() {
+      const curMobile = document.getElementById('displayMobile')?.textContent || '';
+      const curParent = document.getElementById('displayParent')?.textContent || '';
+      if (mobileInput) mobileInput.value = curMobile.trim();
+      if (parentInput) parentInput.value = curParent.trim();
 
-    localStorage.setItem('dc_student_contact', JSON.stringify({ mobile, parent }));
+      modal?.classList.remove('hidden');
+      modal?.classList.add('flex');
+      document.body.style.overflow = 'hidden';
+    }
 
-    // Update live DOM displays
-    document.querySelectorAll('.font-mono').forEach(el => {
-      if (el.textContent.includes('+91 98765 43210') && mobile) {
-        el.textContent = mobile;
-      }
-      if (el.textContent.includes('+91 98765 43211') && parent) {
-        el.textContent = parent;
+    function closeModal() {
+      modal?.classList.add('hidden');
+      modal?.classList.remove('flex');
+      document.body.style.overflow = '';
+    }
+
+    openBtn?.addEventListener('click', openModal);
+    closeBtn?.addEventListener('click', closeModal);
+    cancelBtn?.addEventListener('click', closeModal);
+
+    modal?.addEventListener('click', (e) => {
+      if (e.target === modal) closeModal();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !modal?.classList.contains('hidden')) {
+        closeModal();
       }
     });
 
-    closeModal();
-    showToast('Contact details successfully updated in campus registry!');
-  };
-}
+    window.saveContactDetails = function () {
+      const mob = mobileInput?.value.trim();
+      const par = parentInput?.value.trim();
 
-function showToast(message) {
-  const toast = document.getElementById('toastNotification');
-  const msgEl = document.getElementById('toastMsg');
-  if (!toast) return;
+      if (!mob || !par) {
+        showToast('Please enter valid mobile numbers', 'error');
+        return;
+      }
 
-  msgEl.textContent = message;
-  toast.classList.remove('hidden');
+      const curMobile = document.getElementById('displayMobile');
+      const curParent = document.getElementById('displayParent');
+      if (curMobile) curMobile.textContent = mob;
+      if (curParent) curParent.textContent = par;
 
-  clearTimeout(window._profileToastTimeout);
-  window._profileToastTimeout = setTimeout(() => {
-    toast.classList.add('hidden');
-  }, 3500);
-}
+      localStorage.setItem('dc_student_contact', JSON.stringify({ mobile: mob, parent: par }));
+      closeModal();
+      showToast('Contact phone numbers updated successfully');
+    };
+  }
+
+  function initPasswordModal() {
+    const modal = document.getElementById('changePassModal');
+    const openBtn = document.getElementById('openChangePassModalBtn');
+    const closeBtn = document.getElementById('closePassModal');
+    const cancelBtn = document.getElementById('cancelPassModal');
+    const curInput = document.getElementById('currentPassInput');
+    const newInput = document.getElementById('newPassInput');
+    const confirmInput = document.getElementById('confirmPassInput');
+
+    function openModal() {
+      if (curInput) curInput.value = '';
+      if (newInput) newInput.value = '';
+      if (confirmInput) confirmInput.value = '';
+
+      modal?.classList.remove('hidden');
+      modal?.classList.add('flex');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      modal?.classList.add('hidden');
+      modal?.classList.remove('flex');
+      document.body.style.overflow = '';
+    }
+
+    openBtn?.addEventListener('click', openModal);
+    closeBtn?.addEventListener('click', closeModal);
+    cancelBtn?.addEventListener('click', closeModal);
+
+    modal?.addEventListener('click', (e) => {
+      if (e.target === modal) closeModal();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !modal?.classList.contains('hidden')) {
+        closeModal();
+      }
+    });
+
+    window.saveNewPassword = function () {
+      const cur = curInput?.value.trim();
+      const nw = newInput?.value.trim();
+      const cf = confirmInput?.value.trim();
+
+      if (!cur) {
+        showToast('Please enter your current password', 'error');
+        return;
+      }
+      if (!nw || nw.length < 6) {
+        showToast('New password must be at least 6 characters', 'error');
+        return;
+      }
+      if (nw !== cf) {
+        showToast('Passwords do not match. Please re-enter', 'error');
+        return;
+      }
+
+      const user = getActiveUser();
+      const pin = user.pin || '24259-CS-025';
+      localStorage.setItem(`pass_${pin}`, nw);
+
+      closeModal();
+      showToast('Account password updated successfully');
+    };
+  }
+
+  function showToast(msg, type = 'success') {
+    const toast = document.getElementById('profileToast');
+    const text = document.getElementById('profileToastMsg');
+    if (!toast || !text) return;
+    text.textContent = msg;
+    toast.classList.remove('hidden');
+    clearTimeout(window._profToastTimeout);
+    window._profToastTimeout = setTimeout(() => {
+      toast.classList.add('hidden');
+    }, 3000);
+  }
+
+})();
