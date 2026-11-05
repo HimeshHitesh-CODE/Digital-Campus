@@ -1,313 +1,456 @@
 /* ================================================================
    SAMSKRUTI DIGITAL CAMPUS (INSTITUTION CODE: 259)
-   MASTER KINETIC BENTO APP SHELL: HEADER, PERMANENT NAV & FOOTER
-   Strictly permanent open navigation, NO collapsed dock, NO glass blur, NO card shadows.
+   MASTER KINETIC BENTO APP SHELL: S13 DYNAMIC ISLAND CC DOCK & HEADER
+   Specification: S13 Dock States Sheet & S15 Style Spec
    ================================================================ */
 
 @import url('/css/theme-tokens.css');
 
 /* ================================================================
-   1. APP GLOBAL HEADER
+   1. FIXED GLOBAL HEADER (h-20 / 80px)
    ================================================================ */
 .app-global-header {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  height: var(--header-height, 72px);
+  height: 80px;
   z-index: 1000;
   background: var(--header-bg-transparent, transparent);
   border-bottom: 1px solid transparent;
-  transition: background 0.2s ease, border-color 0.2s ease, backdrop-filter 0.2s ease;
+  transition: background 0.25s ease, border-color 0.25s ease, backdrop-filter 0.25s ease;
+  pointer-events: none; /* Let clicks pass through outside interactive elements */
 }
 
 .app-global-header.is-scrolled {
-  background: var(--header-bg-scrolled, rgba(228, 228, 225, 0.88));
-  border-bottom: 1px solid var(--color-hairline, rgba(0, 0, 0, 0.08));
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: var(--header-bg-scrolled, rgba(19, 19, 19, 0.92));
+  border-bottom: 1px solid var(--hairline, rgba(255, 255, 255, 0.08));
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
 }
 
 .app-global-header-inner {
   max-width: var(--container-max-width, 1280px);
   width: 100%;
-  margin: 0 auto;
-  padding: 0 var(--container-gutter, clamp(20px, 4vw, 48px));
   height: 100%;
-  display: grid;
-  grid-template-columns: auto 1fr auto;
+  margin: 0 auto;
+  padding: 0 var(--container-gutter, 1.5rem);
+  display: flex;
   align-items: center;
-  gap: 16px;
+  justify-content: space-between;
+  position: relative;
+}
+
+/* Enable pointer events on interactive children */
+.header-brand-meta,
+.dynamic-island-anchor,
+.header-right-actions {
+  pointer-events: auto;
 }
 
 /* ================================================================
-   2. HEADER LEFT: INSTITUTION BRAND & STUDENT/HOD IDENTITY
+   2. HEADER LEFT: INSTITUTION & REAL STUDENT PIN
    ================================================================ */
 .header-brand-meta {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   text-decoration: none;
-  min-width: 170px;
+  color: var(--on-surface, #e5e2e1);
+  user-select: none;
+  z-index: 20;
 }
 
 .header-brand-title {
-  font-family: var(--font-sans, 'Plus Jakarta Sans', sans-serif);
-  font-size: 16px;
-  font-weight: 500;
-  color: var(--color-ink, #1A1A1A);
-  line-height: 1.25;
-  letter-spacing: -0.01em;
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 1.05rem;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  color: var(--on-surface, #e5e2e1);
 }
 
 .header-brand-sub {
-  font-family: var(--font-mono, 'IBM Plex Mono', monospace);
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--color-muted, #6E6E6E);
-  line-height: 1.25;
-  margin-top: 2px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-/* Azure live sync pill inside header brand */
-.header-azure-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 1px 6px;
-  border-radius: var(--radius-pill, 9999px);
-  background: rgba(214, 242, 94, 0.25);
-  border: 1px solid rgba(214, 242, 94, 0.5);
-  color: var(--color-ink, #1A1A1A);
-  font-size: 10px;
-  font-weight: 600;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--on-surface-variant, #c6c8b1);
+  letter-spacing: 0.02em;
 }
 
 /* ================================================================
-   3. HEADER CENTER: PERMANENT OPEN NAVIGATION PILL (DESKTOP >= 1100px)
+   3. S13 DYNAMIC ISLAND "CC" DOCK (CENTERED)
    ================================================================ */
-.header-nav-container {
+.dynamic-island-anchor {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 50;
   display: flex;
+  align-items: center;
   justify-content: center;
-  align-items: center;
-  justify-self: center;
 }
 
-.campus-primary-nav {
-  display: inline-flex;
-  align-items: center;
-  padding: 4px 6px;
-  border-radius: var(--radius-pill, 9999px);
-  background: var(--color-nav-bg, #FFFFFF);
-  border: 1px solid var(--color-nav-border, rgba(0, 0, 0, 0.08));
-  box-shadow: none !important;
-  list-style: none;
-  margin: 0;
-}
-
-.campus-nav-item {
+/* Expanded/Collapsed Dock Container */
+.cc-island-dock {
+  position: relative;
+  background-color: var(--surface-container-highest, #353534);
+  border: 1px solid var(--hairline, rgba(255, 255, 255, 0.08));
+  box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.35);
+  border-radius: 9999px;
   display: flex;
   align-items: center;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  position: relative;
+  justify-content: center;
+  transition: width 380ms cubic-bezier(0.22, 1, 0.36, 1),
+              height 380ms cubic-bezier(0.22, 1, 0.36, 1),
+              padding 380ms cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 250ms ease,
+              background-color 200ms ease;
+  user-select: none;
 }
 
-.campus-nav-divider {
+/* Hitbox padding pseudo-element to prevent hover edge-flicker (84x64px hitbox) */
+.cc-island-dock::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  bottom: -6px;
+  left: -6px;
+  right: -6px;
+  z-index: -1;
+  pointer-events: auto;
+}
+
+/* --- STATE A: COLLAPSED DEFAULT PILL (72px × 52px) --- */
+.cc-island-dock.is-collapsed {
+  width: 72px;
+  height: 52px;
+  padding: 0;
+  cursor: pointer;
+}
+
+.cc-island-dock.is-collapsed:hover {
+  transform: scale(1.04);
+}
+
+.cc-island-dock.is-collapsed .dock-collapsed-view {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.cc-island-dock.is-collapsed .dock-expanded-view {
+  display: none !important;
+}
+
+/* Monogram "CC" text */
+.dock-monogram-text {
+  font-family: var(--font-mono);
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: var(--primary-container, #d3ef5b);
+}
+
+/* Micro radar ping dot */
+.dock-radar-dot {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background-color: var(--primary-container, #d3ef5b);
+  box-shadow: 0 0 0 3px var(--surface-container-highest, #353534);
+}
+
+/* --- STATE B: EXPANDED DESKTOP (Student: 690×60px / HOD: 720×64px) --- */
+.cc-island-dock.is-expanded {
+  width: 690px;
+  height: 60px;
+  padding: 0 8px;
+  justify-content: space-between;
+  cursor: default;
+}
+
+.cc-island-dock.is-expanded.is-hod {
+  width: 720px;
+  height: 64px;
+}
+
+.cc-island-dock.is-expanded .dock-collapsed-view {
+  display: none !important;
+}
+
+.cc-island-dock.is-expanded .dock-expanded-view {
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  z-index: 10;
+}
+
+/* Staggered Entrance Animation for 7 Slots */
+.cc-island-dock.is-expanded .dock-slot-item {
+  animation: dockItemFadeIn 280ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.cc-island-dock.is-expanded .dock-slot-item:nth-child(1) { animation-delay: 30ms; }
+.cc-island-dock.is-expanded .dock-slot-item:nth-child(3) { animation-delay: 60ms; }
+.cc-island-dock.is-expanded .dock-slot-item:nth-child(5) { animation-delay: 90ms; }
+.cc-island-dock.is-expanded .dock-slot-item:nth-child(7) { animation-delay: 120ms; }
+.cc-island-dock.is-expanded .dock-slot-item:nth-child(9) { animation-delay: 150ms; }
+.cc-island-dock.is-expanded .dock-slot-item:nth-child(11) { animation-delay: 180ms; }
+.cc-island-dock.is-expanded .dock-slot-item:nth-child(13) { animation-delay: 210ms; }
+
+@keyframes dockItemFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* 1px Vertical Dividers */
+.dock-slot-divider {
   width: 1px;
   height: 24px;
-  background: var(--color-hairline, rgba(0, 0, 0, 0.08));
-  margin: 0 1px;
+  background-color: var(--surface-container-high, #2a2a2a);
+  flex-shrink: 0;
 }
 
-.campus-nav-link {
+/* Inactive Slot Styling */
+.dock-slot-item {
+  height: 48px;
+  padding: 0 14px;
+  border-radius: 9999px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 6px 14px;
-  min-width: 66px;
-  border-radius: var(--radius-pill, 9999px);
+  color: var(--on-surface-variant, #c6c8b1);
   text-decoration: none;
-  font-family: var(--font-sans, 'Plus Jakarta Sans', sans-serif);
-  font-size: 12px;
-  font-weight: 500;
-  line-height: 1.1;
-  color: var(--color-nav-inactive, #6E6E6E);
-  transition: background 0.15s ease, color 0.15s ease;
   position: relative;
+  transition: all 150ms cubic-bezier(0.22, 1, 0.36, 1);
+  cursor: pointer;
+  white-space: nowrap;
 }
 
-.campus-nav-link:hover {
-  background: var(--color-nav-hover, rgba(0, 0, 0, 0.04));
-}
-
-.campus-nav-link.active,
-.campus-nav-link[aria-current="page"] {
-  background: var(--color-nav-active-bg, #D6F25E) !important;
-  color: var(--color-nav-active-ink, #1A1A1A) !important;
-  font-weight: 500;
-}
-
-.campus-nav-icon {
-  font-size: 18px;
-  width: 18px;
-  height: 18px;
+.dock-slot-icon {
+  font-size: 18px !important;
   line-height: 1;
-  margin-bottom: 3px;
-  display: inline-flex;
+  margin-bottom: 2px;
+  transition: color 150ms ease, transform 150ms ease;
+}
+
+.dock-slot-label {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  line-height: 1;
+  font-weight: 500;
+  transition: color 150ms ease;
+}
+
+/* --- STATE C: HOVER FEEDBACK ON NON-ACTIVE SLOT --- */
+.dock-slot-item:not(.is-active):hover {
+  background-color: var(--surface-bright, #393939);
+  color: var(--on-surface, #e5e2e1);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.dock-slot-item:not(.is-active):hover .dock-slot-icon {
+  color: var(--primary-container, #d3ef5b);
+}
+
+.dock-slot-item:not(.is-active):hover .dock-slot-label {
+  color: var(--primary, #ffffff);
+  font-weight: 600;
+}
+
+/* --- ACTIVE SLOT STYLING (Solid High-Contrast Pill) --- */
+.dock-slot-item.is-active {
+  background-color: var(--primary, #ffffff);
+  color: var(--on-secondary, #312762) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  padding: 0 16px;
+  cursor: default;
+}
+
+.dock-slot-item.is-active .dock-slot-icon {
+  color: var(--on-secondary, #312762) !important;
+  font-variation-settings: 'FILL' 1;
+}
+
+.dock-slot-item.is-active .dock-slot-label {
+  color: var(--on-secondary, #312762) !important;
+  font-weight: 700;
+}
+
+/* Lime Status Pip beneath active slot */
+.dock-active-pip {
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background-color: var(--primary-container, #d3ef5b);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+.dock-slot-icon-wrap {
+  position: relative;
+  display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.campus-nav-badge {
+/* --- UNREAD MICRO-BADGES --- */
+.dock-slot-badge {
   position: absolute;
-  top: 3px;
-  right: 8px;
-  min-width: 14px;
-  height: 14px;
+  top: -3px;
+  right: -12px;
+  min-width: 16px;
+  height: 16px;
   padding: 0 4px;
   border-radius: 9999px;
-  background: #B42318;
-  color: #FFFFFF;
-  font-family: var(--font-mono, monospace);
-  font-size: 9px;
-  font-weight: 600;
+  background-color: var(--primary-container, #d3ef5b);
+  color: #1A1A1A !important;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
   line-height: 1;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 /* ================================================================
-   4. HEADER RIGHT: THEME TOGGLE & ACCOUNT DROPDOWN
+   4. HEADER RIGHT: 44×44px THEME TOGGLE & PROFILE PILL
    ================================================================ */
 .header-right-actions {
   display: flex;
   align-items: center;
   gap: 10px;
-  justify-self: end;
-  min-width: 170px;
-  justify-content: flex-end;
-  position: relative;
+  z-index: 20;
 }
 
 .theme-toggle-btn {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: transparent;
-  border: 1px solid var(--color-hairline, rgba(0, 0, 0, 0.08));
-  color: var(--color-ink, #1A1A1A);
+  width: 44px;
+  height: 44px;
+  border-radius: 9999px;
+  background-color: var(--surface-container, #201f1f);
+  border: 1px solid var(--hairline, rgba(255, 255, 255, 0.08));
+  color: var(--on-surface, #e5e2e1);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background 0.15s ease, border-color 0.15s ease;
-  padding: 0;
+  transition: all 180ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .theme-toggle-btn:hover {
-  background: var(--color-nav-hover, rgba(0, 0, 0, 0.04));
-  border-color: var(--color-ink, #1A1A1A);
+  background-color: var(--surface-bright, #393939);
+  color: var(--primary-container, #d3ef5b);
+  transform: translateY(-1px);
 }
 
 .avatar-pill-btn {
+  height: 44px;
+  padding: 0 14px 0 6px;
+  border-radius: 9999px;
+  background-color: var(--surface-container, #201f1f);
+  border: 1px solid var(--hairline, rgba(255, 255, 255, 0.08));
+  color: var(--on-surface, #e5e2e1);
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 4px 10px 4px 4px;
-  border-radius: var(--radius-pill, 9999px);
-  background: transparent;
-  border: 1px solid var(--color-hairline, rgba(0, 0, 0, 0.08));
   cursor: pointer;
-  color: var(--color-ink, #1A1A1A);
-  font-family: var(--font-sans, 'Plus Jakarta Sans', sans-serif);
-  transition: background 0.15s ease;
+  transition: all 180ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .avatar-pill-btn:hover {
-  background: var(--color-nav-hover, rgba(0, 0, 0, 0.04));
+  background-color: var(--surface-bright, #393939);
 }
 
 .avatar-initials-chip {
   width: 32px;
   height: 32px;
-  border-radius: 50%;
-  background: var(--color-lime, #D6F25E);
-  color: var(--color-lime-ink, #1A1A1A);
+  border-radius: 9999px;
+  background-color: var(--primary-container, #d3ef5b);
+  color: var(--on-primary-container, #1A1A1A);
+  font-family: var(--font-mono);
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
 }
 
 .avatar-first-name {
+  font-family: var(--font-sans);
   font-size: 13px;
-  font-weight: 500;
-  color: var(--color-ink, #1A1A1A);
-  line-height: 1;
+  font-weight: 600;
+  letter-spacing: -0.01em;
 }
 
 .avatar-chevron {
-  font-size: 18px;
-  color: var(--color-muted, #6E6E6E);
-  transition: transform 0.2s ease;
+  font-size: 18px !important;
+  color: var(--on-surface-variant, #c6c8b1);
+  transition: transform 200ms ease;
 }
 
 .avatar-pill-btn[aria-expanded="true"] .avatar-chevron {
   transform: rotate(180deg);
 }
 
-/* ================================================================
-   5. PROFILE & SETTINGS DROPDOWN CARD
-   ================================================================ */
+/* User Profile Dropdown Menu */
 .profile-dropdown-card {
   position: absolute;
-  top: calc(100% + 8px);
-  right: 0;
-  min-width: 260px;
-  background: var(--color-card, #FFFFFF);
-  border: 1px solid var(--color-hairline, rgba(0, 0, 0, 0.08));
+  top: calc(100% + 12px);
+  right: var(--container-gutter, 1.5rem);
+  width: 280px;
+  background-color: var(--surface-container-low, #1c1b1b);
+  border: 1px solid var(--hairline, rgba(255, 255, 255, 0.08));
   border-radius: 20px;
-  padding: 12px;
+  padding: 16px;
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.4);
   display: none;
   flex-direction: column;
-  gap: 6px;
-  z-index: 10050;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+  gap: 10px;
+  z-index: 1050;
+  animation: dropdownFadeIn 180ms ease both;
 }
 
 .profile-dropdown-card.is-open {
   display: flex;
 }
 
+@keyframes dropdownFadeIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 .dropdown-user-header {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 4px 6px 8px 6px;
-  border-bottom: 1px solid var(--color-hairline, rgba(0, 0, 0, 0.08));
-}
-
-.dropdown-user-avatar {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: var(--color-lime, #D6F25E);
-  color: var(--color-lime-ink, #1A1A1A);
-  font-size: 13px;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
+  gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--hairline);
 }
 
 .dropdown-user-meta {
@@ -316,16 +459,15 @@
 }
 
 .dropdown-user-name {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--color-ink, #1A1A1A);
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--on-surface);
 }
 
 .dropdown-user-sub {
-  font-family: var(--font-mono, monospace);
+  font-family: var(--font-mono);
   font-size: 11px;
-  color: var(--color-muted, #6E6E6E);
-  margin-top: 1px;
+  color: var(--on-surface-variant);
 }
 
 .dropdown-menu-item {
@@ -334,217 +476,139 @@
   gap: 10px;
   padding: 8px 12px;
   border-radius: 12px;
+  color: var(--on-surface);
   text-decoration: none;
-  color: var(--color-ink, #1A1A1A);
   font-size: 13px;
   font-weight: 500;
-  cursor: pointer;
-  background: transparent;
-  border: none;
-  width: 100%;
-  text-align: left;
-  transition: background 0.15s ease;
+  transition: background 150ms ease;
 }
 
 .dropdown-menu-item:hover {
-  background: var(--color-nav-hover, rgba(0, 0, 0, 0.04));
+  background-color: var(--surface-container-high);
 }
 
-.dropdown-menu-item.logout-item {
-  color: #B42318;
-}
-
-[data-theme="dark"] .dropdown-menu-item.logout-item,
-.dark .dropdown-menu-item.logout-item {
-  color: #FFA49E;
-}
-
-.dropdown-theme-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 8px 12px;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--color-ink, #1A1A1A);
-}
-
-.dropdown-theme-row .row-label {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-/* Switch control styling */
-.switch-control {
-  position: relative;
-  display: inline-block;
-  width: 36px;
-  height: 20px;
-  cursor: pointer;
-}
-
-.switch-control input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-.switch-slider {
-  pointer-events: none;
-  position: absolute;
-  cursor: pointer;
-  inset: 0;
-  background-color: var(--color-hairline, rgba(0,0,0,0.15));
-  border-radius: 20px;
-  transition: 0.2s ease;
-}
-
-.switch-slider::before {
-  position: absolute;
-  content: "";
-  height: 14px;
-  width: 14px;
-  left: 3px;
-  bottom: 3px;
-  background-color: white;
-  border-radius: 50%;
-  transition: 0.2s ease;
-}
-
-.switch-control input:checked + .switch-slider {
-  pointer-events: none;
-  background-color: var(--color-lime, #D6F25E);
-}
-
-.switch-control input:checked + .switch-slider::before {
-  transform: translateX(16px);
-  background-color: #1A1A1A;
+.dropdown-logout-item {
+  color: var(--error, #ffb4ab);
 }
 
 /* ================================================================
-   6. RESPONSIVE NAVIGATION: MOBILE BOTTOM BAR (< 1100px)
+   5. STATE D: MOBILE VIEWPORT (< 1024px / 390px Canvas)
    ================================================================ */
-.campus-mobile-bottom-nav {
-  display: none;
-}
-
-@media (max-width: 1099px) {
-  .header-nav-container {
-    display: none !important;
-  }
-
-  .app-global-header-inner {
-    grid-template-columns: 1fr auto;
-  }
-
-  body {
-    padding-bottom: 76px !important;
-  }
-
-  .campus-mobile-bottom-nav {
-    display: block;
+@media (max-width: 1023px) {
+  /* On mobile/tablet, position dock at bottom of viewport */
+  .dynamic-island-anchor {
     position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 1000;
-    padding: 6px 12px calc(6px + env(safe-area-inset-bottom, 0px));
-    background: transparent;
-    pointer-events: none;
+    top: auto;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: auto;
+    max-width: calc(100vw - 32px);
   }
 
-  .campus-mobile-dock-inner {
-    max-width: 480px;
-    margin: 0 auto;
-    border-radius: var(--radius-pill, 9999px);
-    background: var(--color-nav-bg, #FFFFFF);
-    border: 1px solid var(--color-nav-border, rgba(0, 0, 0, 0.08));
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-    height: 56px;
-    padding: 0 6px;
-    pointer-events: auto;
-    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+  .cc-island-dock.is-collapsed {
+    width: 72px;
+    height: 52px;
   }
 
-  .mobile-nav-link {
-    min-width: 44px;
-    min-height: 44px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    border-radius: var(--radius-pill, 9999px);
-    color: var(--color-nav-inactive, #6E6E6E);
-    text-decoration: none;
-    padding: 6px 12px;
-    font-family: var(--font-sans, 'Plus Jakarta Sans', sans-serif);
-    font-size: 12px;
-    font-weight: 500;
-    transition: background 0.15s ease, color 0.15s ease;
-    position: relative;
+  /* Expanded Mobile Dock (Adaptive Density) */
+  .cc-island-dock.is-expanded,
+  .cc-island-dock.is-expanded.is-hod {
+    width: 390px;
+    max-width: calc(100vw - 32px);
+    height: 58px;
+    padding: 6px;
   }
 
-  .mobile-nav-link:hover {
-    background: var(--color-nav-hover, rgba(0, 0, 0, 0.04));
-  }
-
-  .mobile-nav-link.active {
-    background: var(--color-nav-active-bg, #D6F25E) !important;
-    color: var(--color-nav-active-ink, #1A1A1A) !important;
-  }
-
-  .mobile-nav-label {
+  .cc-island-dock.is-expanded .dock-slot-divider {
     display: none;
   }
 
-  .mobile-nav-link.active .mobile-nav-label {
-    display: inline;
+  /* Active item has pill with label */
+  .cc-island-dock.is-expanded .dock-slot-item.is-active {
+    height: 44px;
+    padding: 0 14px;
+    flex-direction: row;
+    gap: 6px;
   }
 
-  .mobile-nav-badge {
-    position: absolute;
-    top: 4px;
-    right: 6px;
-    min-width: 12px;
-    height: 12px;
+  .cc-island-dock.is-expanded .dock-slot-item.is-active .dock-active-pip {
+    display: none;
+  }
+
+  /* Inactive items condense to 44x44px icon-only targets */
+  .cc-island-dock.is-expanded .dock-slot-item:not(.is-active) {
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .cc-island-dock.is-expanded .dock-slot-item:not(.is-active) .dock-slot-label {
+    display: none;
+  }
+
+  /* Hide items beyond 5 on mobile, reveal via ellipsis trigger */
+  .cc-island-dock.is-expanded .dock-slot-item:nth-child(n+10) {
+    display: none;
+  }
+
+  .dock-mobile-overflow-btn {
+    width: 44px;
+    height: 44px;
     border-radius: 9999px;
-    background: #B42318;
-    color: #FFFFFF;
-    font-size: 8px;
-    font-weight: 700;
+    background-color: var(--surface-container, #201f1f);
+    color: var(--on-surface, #e5e2e1);
     display: flex;
     align-items: center;
     justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .dock-mobile-overflow-menu {
+    position: absolute;
+    bottom: calc(100% + 12px);
+    right: 0;
+    min-width: 180px;
+    background-color: var(--surface-container-high, #2a2a2a);
+    border: 1px solid var(--hairline, rgba(255, 255, 255, 0.08));
+    border-radius: 20px;
+    padding: 8px;
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4);
+    display: none;
+    flex-direction: column;
+    gap: 4px;
+    z-index: 100;
+  }
+
+  .dock-mobile-overflow-menu.is-open {
+    display: flex;
+  }
+
+  .dock-mobile-overflow-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border-radius: 12px;
+    color: var(--on-surface, #e5e2e1);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    transition: background-color 150ms ease;
+  }
+
+  .dock-mobile-overflow-item:hover {
+    background-color: var(--surface-bright, #393939);
+    color: var(--primary, #ffffff);
   }
 }
 
-/* ================================================================
-   7. APP GLOBAL FOOTER
-   ================================================================ */
-.app-global-footer {
-  width: 100%;
-  background: var(--color-canvas, #E4E4E1);
-  border-top: 1px solid var(--color-hairline, rgba(0, 0, 0, 0.08));
-  padding: 24px 16px;
-  margin-top: auto;
-  text-align: center;
-  position: relative;
-  z-index: 10;
-}
-
-.app-global-footer-inner {
-  max-width: var(--container-max-width, 1280px);
-  margin: 0 auto;
-}
-
-.app-global-footer p {
-  margin: 0;
-  font-family: var(--font-sans, 'Plus Jakarta Sans', sans-serif);
-  font-size: 13px;
-  font-weight: 400;
-  color: var(--color-muted, #6E6E6E);
-  line-height: 1.4;
+@media (min-width: 1024px) {
+  .dock-mobile-overflow-btn,
+  .dock-mobile-overflow-menu {
+    display: none !important;
+  }
 }

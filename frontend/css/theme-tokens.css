@@ -1,131 +1,192 @@
 /* ================================================================
    SAMSKRUTI DIGITAL CAMPUS (INSTITUTION CODE: 259)
    MASTER KINETIC BENTO DESIGN SYSTEM TOKENS
-   Specification: Tactile Flat Bento with Electric Lime & Lavender Accents
+   Specification: S13, S14, S15 & DESIGN.md
    ================================================================ */
 
 @import url('/css/fonts.css');
 
 /* ================================================================
-   1. LIGHT THEME (Master Palette from DESIGN.md)
+   1. LIGHT THEME (Warm Bone-Chalk Canvas)
    ================================================================ */
 :root,
 [data-theme="light"] {
   color-scheme: light;
 
-  /* ── Canvas & Surface Tokens ────────────────────────────────── */
-  --color-canvas:              #E4E4E1;
-  --color-card:                #FFFFFF;
-  --color-card-subtle:         #F5F5F3;
-  --color-feature-card:        #1E1E1F; /* Intentional dark feature card in light mode */
-  --color-feature-card-ink:    #F2F2F2;
-  --color-feature-card-muted:  #9A9A9A;
+  /* ── Stitch S15 Material / Kinetic Bento Surfaces ──────────── */
+  --surface:                    #E4E4E1;
+  --surface-dim:                #DCDCD8;
+  --surface-bright:             #F0F0ED;
+  --surface-container-lowest:   #EFEFEA;
+  --surface-container-low:      #FFFFFF; /* Standard L1 Bento Card */
+  --surface-container:          #F5F5F3; /* Inset input/row fill */
+  --surface-container-high:     #1E1E1F; /* L2 Inverted Feature Card */
+  --surface-container-highest:  #262626; /* Dock & Elevated Chips */
+  --surface-variant:            #262626;
 
-  /* ── Typography Ink Tokens ──────────────────────────────────── */
-  --color-ink:                 #1A1A1A;
-  --color-muted:               #6E6E6E;
-  --color-hairline:            rgba(0, 0, 0, 0.08);
+  /* ── Typography & Ink Tokens ───────────────────────────────── */
+  --on-surface:                 #1A1A1A;
+  --on-surface-variant:         #6E6E6E;
+  --outline:                    rgba(0, 0, 0, 0.15);
+  --outline-variant:            rgba(0, 0, 0, 0.08);
+  --hairline:                   rgba(0, 0, 0, 0.08);
 
-  /* ── Accent Signal Layers ───────────────────────────────────── */
-  --color-lime:                #D6F25E;
-  --color-lime-ink:            #1A1A1A; /* Text on lime is ALWAYS #1A1A1A */
-  --color-lavender:            #B9AEF2;
+  /* ── Accent Signal Layers ──────────────────────────────────── */
+  --primary:                    #1A1A1A;
+  --on-primary:                 #FFFFFF;
+  --primary-container:          #D6F25E; /* Signal Lime */
+  --on-primary-container:       #1A1A1A; /* Text on lime is ALWAYS #1A1A1A in light */
 
-  /* ── Header & Navigation Surfaces ───────────────────────────── */
-  --header-bg-transparent:     transparent;
-  --header-bg-scrolled:        rgba(228, 228, 225, 0.88);
-  --color-nav-bg:              #FFFFFF;
-  --color-nav-border:          rgba(0, 0, 0, 0.08);
-  --color-nav-inactive:        #6E6E6E;
-  --color-nav-hover:           rgba(0, 0, 0, 0.04);
-  --color-nav-active-bg:       #D6F25E;
-  --color-nav-active-ink:      #1A1A1A;
+  --secondary:                  #B9AEF2; /* Signal Lavender */
+  --on-secondary:               #1A1A1A;
+  --secondary-container:        #ECE8FA;
+  --on-secondary-container:     #2E255B;
 
-  /* ── Semantic Status Colors (DESIGN.md) ─────────────────────── */
-  --color-danger-bg:           #FFE1DE;
-  --color-danger-ink:          #B42318;
-  --color-danger-border:       rgba(180, 35, 24, 0.15);
+  /* ── Semantic Status Colors (DESIGN.md High-Contrast) ──────── */
+  --error:                      #B42318;
+  --on-error:                   #FFFFFF;
+  --error-container:            #FFE1DE;
+  --on-error-container:         #B42318;
 
-  --color-warning-bg:          #FFF0C7;
-  --color-warning-ink:         #8A5A00;
-  --color-warning-border:      rgba(138, 90, 0, 0.15);
+  --color-danger-bg:            #FFE1DE;
+  --color-danger-ink:           #B42318;
+  --color-danger-border:        rgba(180, 35, 24, 0.15);
 
-  --color-info-bg:             #E3ECF9;
-  --color-info-ink:            #2F5D8A;
-  --color-info-border:         rgba(47, 93, 138, 0.15);
+  --color-warning-bg:           #FFF0C7;
+  --color-warning-ink:          #8A5A00;
+  --color-warning-border:       rgba(138, 90, 0, 0.15);
 
-  --color-success-bg:          #D6F25E;
-  --color-success-ink:         #1A1A1A;
-  --color-success-border:      rgba(0, 0, 0, 0.08);
+  --color-info-bg:              #E3ECF9;
+  --color-info-ink:             #2F5D8A;
+  --color-info-border:          rgba(47, 93, 138, 0.15);
 
-  /* ── Geometry & Layout ──────────────────────────────────────── */
-  --radius-card:               28px;
-  --radius-pill:               9999px;
-  --radius-circle:             50%;
-  --size-icon-chip:            40px;
-  --hairline-width:            1px;
+  --color-success-bg:           #D6F25E;
+  --color-success-ink:          #1A1A1A;
+  --color-success-border:       rgba(0, 0, 0, 0.08);
 
-  --container-max-width:       1280px;
-  --container-gutter:          clamp(20px, 4vw, 48px);
-  --header-height:             72px;
+  /* ── Backward-Compatible Legacy Token Aliases ──────────────── */
+  --color-canvas:               var(--surface);
+  --color-card:                 var(--surface-container-low);
+  --color-card-subtle:          var(--surface-container);
+  --color-feature-card:         var(--surface-container-high);
+  --color-feature-card-ink:     #F2F2F2;
+  --color-feature-card-muted:   #9A9A9A;
+  --color-ink:                  var(--on-surface);
+  --color-muted:                var(--on-surface-variant);
+  --color-hairline:             var(--hairline);
+  --color-lime:                 var(--primary-container);
+  --color-lime-ink:             #1A1A1A;
+  --color-lavender:             var(--secondary);
 
-  /* ── Typography Mappings ────────────────────────────────────── */
-  --font-sans:                 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-  --font-mono:                 'IBM Plex Mono', monospace;
-  --font-script:               'Caveat', cursive;
+  /* ── Header & Navigation Dimensions ────────────────────────── */
+  --header-height:              80px;
+  --header-bg-transparent:      transparent;
+  --header-bg-scrolled:         rgba(228, 228, 225, 0.92);
+  --color-nav-bg:               #262626;
+  --color-nav-border:           rgba(0, 0, 0, 0.08);
+  --color-nav-inactive:         #9A9A9A;
+  --color-nav-hover:            #393939;
+  --color-nav-active-bg:        #FFFFFF;
+  --color-nav-active-ink:       #312762;
+
+  /* ── Geometry & Layout ─────────────────────────────────────── */
+  --radius-card:                28px;
+  --radius-pill:                9999px;
+  --radius-circle:              50%;
+  --size-icon-chip:             40px;
+  --hairline-width:             1px;
+
+  --container-max-width:        1280px;
+  --container-gutter:           clamp(16px, 3vw, 32px);
+
+  /* ── Typography Mappings ───────────────────────────────────── */
+  --font-sans:                  'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-mono:                  'IBM Plex Mono', monospace;
+  --font-script:                'Caveat', cursive;
 }
 
 /* ================================================================
-   2. DARK THEME (Master Palette from DESIGN.md)
+   2. DARK THEME (Architectural Asphalt Canvas - S13 / S15 Default)
    ================================================================ */
 [data-theme="dark"],
 .dark {
   color-scheme: dark;
 
-  /* ── Canvas & Surface Tokens ────────────────────────────────── */
-  --color-canvas:              #121212;
-  --color-card:                #1C1C1C;
-  --color-card-subtle:         #242424;
-  --color-feature-card:        #262626;
-  --color-feature-card-ink:    #F2F2F2;
-  --color-feature-card-muted:  #9A9A9A;
+  /* ── Stitch S15 Material / Kinetic Bento Surfaces ──────────── */
+  --surface:                    #131313;
+  --surface-dim:                #131313;
+  --surface-bright:             #393939;
+  --surface-container-lowest:   #0e0e0e;
+  --surface-container-low:      #1c1b1b; /* Standard L1 Bento Card */
+  --surface-container:          #201f1f; /* Inset input/row fill */
+  --surface-container-high:     #2a2a2a; /* L2 Dark Feature Card */
+  --surface-container-highest:  #353534; /* Dock & Elevated Chips */
+  --surface-variant:            #353534;
 
-  /* ── Typography Ink Tokens ──────────────────────────────────── */
-  --color-ink:                 #F2F2F2;
-  --color-muted:               #9A9A9A;
-  --color-hairline:            rgba(255, 255, 255, 0.08);
+  /* ── Typography & Ink Tokens ───────────────────────────────── */
+  --on-surface:                 #e5e2e1;
+  --on-surface-variant:         #c6c8b1;
+  --outline:                    #90937d;
+  --outline-variant:            #454836;
+  --hairline:                   rgba(255, 255, 255, 0.08);
 
-  /* ── Accent Signal Layers ───────────────────────────────────── */
-  --color-lime:                #D6F25E;
-  --color-lime-ink:            #1A1A1A; /* Text on lime is ALWAYS #1A1A1A */
-  --color-lavender:            #A99CF0;
+  /* ── Accent Signal Layers ──────────────────────────────────── */
+  --primary:                    #ffffff;
+  --on-primary:                 #2b3400;
+  --primary-container:          #d3ef5b; /* Signal Lime */
+  --on-primary-container:       #5a6b00;
 
-  /* ── Header & Navigation Surfaces ───────────────────────────── */
-  --header-bg-transparent:     transparent;
-  --header-bg-scrolled:        rgba(18, 18, 18, 0.88);
-  --color-nav-bg:              #1E1E1F;
-  --color-nav-border:          rgba(255, 255, 255, 0.12);
-  --color-nav-inactive:        #9A9A9A;
-  --color-nav-hover:           rgba(255, 255, 255, 0.06);
-  --color-nav-active-bg:       #D6F25E;
-  --color-nav-active-ink:      #1A1A1A;
+  --secondary:                  #c9beff; /* Signal Lavender */
+  --on-secondary:               #312762;
+  --secondary-container:        #483e7a;
+  --on-secondary-container:     #b8adf0;
 
-  /* ── Semantic Status Colors (Dark mode) ─────────────────────── */
-  --color-danger-bg:           rgba(180, 35, 24, 0.22);
-  --color-danger-ink:          #FFA49E;
-  --color-danger-border:       rgba(255, 164, 158, 0.25);
+  /* ── Semantic Status Colors (Dark mode) ────────────────────── */
+  --error:                      #ffb4ab;
+  --on-error:                   #690005;
+  --error-container:            #93000a;
+  --on-error-container:         #ffdad6;
 
-  --color-warning-bg:          rgba(138, 90, 0, 0.28);
-  --color-warning-ink:         #FFD271;
-  --color-warning-border:      rgba(255, 210, 113, 0.25);
+  --color-danger-bg:            rgba(147, 0, 10, 0.35);
+  --color-danger-ink:           #ffdad6;
+  --color-danger-border:        rgba(255, 180, 171, 0.25);
 
-  --color-info-bg:             rgba(47, 93, 138, 0.28);
-  --color-info-ink:            #A5C8F2;
-  --color-info-border:         rgba(165, 200, 242, 0.25);
+  --color-warning-bg:           rgba(138, 90, 0, 0.28);
+  --color-warning-ink:          #FFD271;
+  --color-warning-border:       rgba(255, 210, 113, 0.25);
 
-  --color-success-bg:          #D6F25E;
-  --color-success-ink:         #1A1A1A;
-  --color-success-border:      rgba(214, 242, 94, 0.30);
+  --color-info-bg:              rgba(47, 93, 138, 0.28);
+  --color-info-ink:             #A5C8F2;
+  --color-info-border:          rgba(165, 200, 242, 0.25);
+
+  --color-success-bg:           #d3ef5b;
+  --color-success-ink:          #2b3400;
+  --color-success-border:       rgba(211, 239, 91, 0.30);
+
+  /* ── Backward-Compatible Legacy Token Aliases ──────────────── */
+  --color-canvas:               var(--surface);
+  --color-card:                 var(--surface-container-low);
+  --color-card-subtle:          var(--surface-container);
+  --color-feature-card:         var(--surface-container-high);
+  --color-feature-card-ink:     #F2F2F2;
+  --color-feature-card-muted:   #9A9A9A;
+  --color-ink:                  var(--on-surface);
+  --color-muted:                var(--on-surface-variant);
+  --color-hairline:             var(--hairline);
+  --color-lime:                 var(--primary-container);
+  --color-lime-ink:             #1A1A1A;
+  --color-lavender:             var(--secondary);
+
+  /* ── Header & Navigation Dimensions ────────────────────────── */
+  --header-height:              80px;
+  --header-bg-transparent:      transparent;
+  --header-bg-scrolled:         rgba(19, 19, 19, 0.92);
+  --color-nav-bg:               #353534;
+  --color-nav-border:           rgba(255, 255, 255, 0.08);
+  --color-nav-inactive:         #c6c8b1;
+  --color-nav-hover:            #393939;
+  --color-nav-active-bg:        #ffffff;
+  --color-nav-active-ink:       #312762;
 }
 
 /* ================================================================
@@ -138,89 +199,194 @@
 }
 
 html, body {
-  background-color: var(--color-canvas) !important;
-  color: var(--color-ink) !important;
-  min-height: 100dvh;
   margin: 0;
   padding: 0;
   font-family: var(--font-sans);
+  background-color: var(--surface);
+  color: var(--on-surface);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
-  max-width: 100%;
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
 
-/* Single centered container alignment across header, hero, and content */
-.campus-container,
-.app-container-centered {
+/* Scrollbar aesthetic */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--surface);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--outline-variant);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--outline);
+}
+
+/* Master container utility */
+.campus-container {
   max-width: var(--container-max-width);
+  width: 100%;
   margin-left: auto;
   margin-right: auto;
   padding-left: var(--container-gutter);
   padding-right: var(--container-gutter);
-  width: 100%;
+}
+
+/* Micro-hairline border utility */
+.border-hairline {
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--hairline);
 }
 
 /* ================================================================
-   4. TACTILE FLAT BENTO CARDS & COMPONENTS (NO SHADOWS, NO BLURS)
+   4. BENTO ARCHETYPES (S14 Component Sheet & DESIGN.md)
    ================================================================ */
-.bento-card {
-  background-color: var(--color-card);
-  border-radius: var(--radius-card);
-  border: var(--hairline-width) solid var(--color-hairline);
-  box-shadow: none !important;
+
+/* Archetype 01: Standard Level-1 Card (28px Radius, Hairline Border) */
+.bento-card,
+.bento-archetype-01,
+.bento-archetype-1 {
+  background-color: var(--surface-container-low);
+  color: var(--on-surface);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-card, 28px);
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
-/* The near-black feature card: intentionally dark in BOTH themes */
-.feature-card-dark,
-.bento-card-dark {
-  background-color: var(--color-feature-card) !important;
-  border-radius: var(--radius-card);
-  border: var(--hairline-width) solid var(--color-hairline);
-  color: var(--color-feature-card-ink) !important;
-  box-shadow: none !important;
+/* Archetype 02: Dark Feature Surface (Elevated Focal Block) */
+.bento-archetype-02,
+.bento-archetype-2 {
+  background-color: var(--surface-container-high);
+  color: var(--inverse-surface, #e5e2e1);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-card, 28px);
+  box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.25);
+  transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.2s ease;
 }
 
-/* Round 40px icon chips */
-.icon-chip-40 {
-  width: var(--size-icon-chip);
-  height: var(--size-icon-chip);
-  border-radius: var(--radius-circle);
+[data-theme="light"] .bento-archetype-02,
+[data-theme="light"] .bento-archetype-2 {
+  background-color: #1E1E1F;
+  color: #F2F2F2;
+}
+
+/* Archetype 03: Signal Highlight Card (Solid Lime Container) */
+.bento-archetype-03,
+.bento-archetype-3 {
+  background-color: var(--primary-container, #d3ef5b);
+  color: var(--on-primary-container, #1A1A1A);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: var(--radius-card, 28px);
+  box-shadow: 0 8px 24px -4px rgba(211, 239, 91, 0.2);
+  transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.2s ease;
+}
+
+/* Inset pill badge / container inside bento cards */
+.bento-inset-pill {
+  background-color: var(--surface-container);
+  border: 1px solid var(--hairline);
+  border-radius: 9999px;
+}
+
+/* ================================================================
+   5. INTERACTIVE BUTTON & PILL MATRIX (S14 Component Sheet)
+   ================================================================ */
+.btn-pill-primary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 9999px;
+  background-color: var(--primary-container, #d3ef5b);
+  color: var(--on-primary, #1A1A1A);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  transition: transform 150ms cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 150ms ease,
+              filter 150ms ease;
+  user-select: none;
+  text-decoration: none;
 }
 
-/* Full capsule pills for buttons, chips, search */
-.capsule-pill {
-  border-radius: var(--radius-pill);
+.btn-pill-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+  filter: brightness(1.02);
 }
 
-/* Focus styles for keyboard accessibility */
-a:focus-visible,
-button:focus-visible,
-input:focus-visible,
-select:focus-visible,
-textarea:focus-visible {
-  outline: 2px solid var(--color-ink);
-  outline-offset: 2px;
+.btn-pill-primary:active {
+  transform: scale(0.98);
+  filter: brightness(0.95);
 }
 
-.feature-card-dark a:focus-visible,
-.feature-card-dark button:focus-visible {
-  outline: 2px solid var(--color-lime);
-  outline-offset: 2px;
+.btn-pill-primary:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
-/* Reduced motion support */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
+.btn-pill-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 9999px;
+  background-color: var(--surface-container-high);
+  color: var(--on-surface);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 500;
+  border: 1px solid var(--hairline);
+  cursor: pointer;
+  transition: transform 150ms cubic-bezier(0.22, 1, 0.36, 1),
+              background-color 150ms ease,
+              color 150ms ease;
+  user-select: none;
+  text-decoration: none;
+}
+
+.btn-pill-secondary:hover {
+  background-color: var(--surface-bright);
+  transform: translateY(-2px);
+  color: var(--primary, #ffffff);
+}
+
+.btn-pill-secondary:active {
+  transform: scale(0.98);
+}
+
+.btn-pill-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 9999px;
+  background-color: transparent;
+  color: var(--on-surface-variant);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: color 150ms ease, background-color 150ms ease;
+  user-select: none;
+  text-decoration: none;
+}
+
+.btn-pill-ghost:hover {
+  color: var(--on-surface);
+  background-color: var(--surface-container);
 }
