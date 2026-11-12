@@ -53,6 +53,7 @@ function initStudentsInfo() {
   bindStudentSearch();
   bindMassSyncModal();
   bindExportCsv();
+  bindExportPdf();
   bindModalActions();
 }
 
@@ -803,6 +804,72 @@ function bindExportCsv() {
     link.click();
     document.body.removeChild(link);
     showToast(`Exported ${currentStudentsList.length} students to CSV!`);
+  });
+}
+
+function bindExportPdf() {
+  const btn = document.getElementById('exportPdfBtn');
+  btn?.addEventListener('click', () => {
+    if (currentStudentsList.length === 0) return;
+    const printWin = window.open('', '_blank', 'width=900,height=900');
+    if (!printWin) {
+      window.print();
+      return;
+    }
+    const html = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Samskruti College - ${activeDepartment} Department Student Ledger</title>
+        <style>
+          body { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; padding: 30px; color: #111; }
+          h2 { margin: 0; text-transform: uppercase; font-size: 18px; }
+          .sub { color: #555; font-size: 12px; margin-bottom: 20px; }
+          table { width: 100%; border-collapse: collapse; font-size: 11px; }
+          th, td { border: 1px solid #ccc; padding: 6px 8px; text-align: left; }
+          th { background: #f3f4f6; font-weight: bold; }
+          .right { text-align: right; }
+          .center { text-align: center; }
+          @media print { body { padding: 0; } }
+        </style>
+      </head>
+      <body>
+        <h2>Samskruti College of Engineering & Technology (Code: 259)</h2>
+        <div class="sub">${activeDepartment} Department Master Student Ledger · Date: ${new Date().toLocaleDateString('en-IN')}</div>
+        <table>
+          <thead>
+            <tr>
+              <th>PIN</th>
+              <th>Student Name</th>
+              <th>Days Present</th>
+              <th class="right">Attendance %</th>
+              <th class="center">Status</th>
+              <th class="right">CGPA</th>
+              <th class="center">Backlogs</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${currentStudentsList.map(s => `
+              <tr>
+                <td>${s.pin}</td>
+                <td>${escapeHtml(s.name || '')}</td>
+                <td>${s.attendance ? `${s.attendance.daysPresent} / ${s.attendance.workingDays}` : '—'}</td>
+                <td class="right">${s.attendance && s.attendance.percentage !== null ? s.attendance.percentage.toFixed(1) + '%' : '—'}</td>
+                <td class="center">${s.attendance ? s.attendance.status : 'UNSYNCED'}</td>
+                <td class="right">${s.cgpa !== null ? Number(s.cgpa).toFixed(2) : '—'}</td>
+                <td class="center">${s.backlogs_count || s.backlogs || 0}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+        <script>window.onload = function() { window.print(); };</script>
+      </body>
+      </html>
+    `;
+    printWin.document.open();
+    printWin.document.write(html);
+    printWin.document.close();
+    showToast(`Generating ${activeDepartment} Student Ledger PDF...`);
   });
 }
 

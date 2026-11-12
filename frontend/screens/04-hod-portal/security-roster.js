@@ -35,6 +35,7 @@ function initSecurityRoster() {
   bindSearchInput();
   bindRevealAllModal();
   bindExportCsv();
+  bindExportPdf();
   loadSecurityRoster(activeDepartment);
 }
 
@@ -500,6 +501,74 @@ function bindExportCsv() {
     document.body.removeChild(link);
 
     showToast(`Exported ${currentRosterList.length} security keys to CSV`);
+  });
+}
+
+function bindExportPdf() {
+  const exportBtn = document.getElementById('btnExportPdf');
+  exportBtn?.addEventListener('click', () => {
+    if (!currentRosterList || currentRosterList.length === 0) {
+      showToast('No roster data to export');
+      return;
+    }
+
+    const printWin = window.open('', '_blank', 'width=900,height=900');
+    if (!printWin) {
+      window.print();
+      return;
+    }
+
+    const html = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Samskruti College - ${activeDepartment} Security Keys Roster</title>
+        <style>
+          body { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; padding: 30px; color: #111; }
+          h2 { margin: 0; text-transform: uppercase; font-size: 18px; }
+          .sub { color: #555; font-size: 12px; margin-bottom: 20px; }
+          table { width: 100%; border-collapse: collapse; font-size: 11px; }
+          th, td { border: 1px solid #ccc; padding: 6px 8px; text-align: left; }
+          th { background: #f3f4f6; font-weight: bold; }
+          .center { text-align: center; }
+          @media print { body { padding: 0; } }
+        </style>
+      </head>
+      <body>
+        <h2>Samskruti College of Engineering & Technology (Code: 259)</h2>
+        <div class="sub">Institutional Security Keys Roster · ${activeDepartment} Department · Date: ${new Date().toLocaleDateString('en-IN')}</div>
+        <table>
+          <thead>
+            <tr>
+              <th>Roll</th>
+              <th>PIN</th>
+              <th>Student Name</th>
+              <th>Department</th>
+              <th>Security Key</th>
+              <th class="center">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${currentRosterList.map(s => `
+              <tr>
+                <td>${s.roll}</td>
+                <td>${s.pin}</td>
+                <td>${s.name}</td>
+                <td>${s.department || activeDepartment}</td>
+                <td style="font-family: monospace;">${s.securityKey}</td>
+                <td class="center">${s.is_registered ? 'ACTIVE' : 'NOT ACTIVATED'}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+        <script>window.onload = function() { window.print(); };</script>
+      </body>
+      </html>
+    `;
+    printWin.document.open();
+    printWin.document.write(html);
+    printWin.document.close();
+    showToast(`Generating ${activeDepartment} Security Keys Roster PDF...`);
   });
 }
 

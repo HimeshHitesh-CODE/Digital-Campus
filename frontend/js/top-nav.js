@@ -309,6 +309,32 @@
         }
       }
     }, { passive: true });
+
+    // Magnetic Sliding Hover Pill (Physics-based gliding highlight)
+    const navContainer = document.querySelector('.cc-nav-pill-container');
+    if (navContainer) {
+      let slidingPill = navContainer.querySelector('.cc-nav-sliding-pill');
+      if (!slidingPill) {
+        slidingPill = document.createElement('div');
+        slidingPill.className = 'cc-nav-sliding-pill';
+        navContainer.prepend(slidingPill);
+      }
+
+      const slots = navContainer.querySelectorAll('.cc-nav-slot');
+      slots.forEach(slot => {
+        slot.addEventListener('mouseenter', () => {
+          const left = slot.offsetLeft;
+          const width = slot.offsetWidth;
+          slidingPill.style.transform = `translate3d(${left}px, 0, 0)`;
+          slidingPill.style.width = `${width}px`;
+          slidingPill.style.opacity = '1';
+        });
+      });
+
+      navContainer.addEventListener('mouseleave', () => {
+        slidingPill.style.opacity = '0';
+      });
+    }
   }
 
   // Public Badge API
@@ -358,6 +384,14 @@
     const navItems = role === 'HOD' ? HOD_NAV : STUDENT_NAV;
 
     renderHeader(user, role, navItems);
+
+    // Auto-load 60fps UI Enhancement Engine if not already present
+    if (!document.querySelector('script[src*="ui-enhancements.js"]')) {
+      const s = document.createElement('script');
+      s.src = '/js/ui-enhancements.js';
+      s.defer = true;
+      document.head.appendChild(s);
+    }
   }
 
   if (document.readyState === 'loading') {

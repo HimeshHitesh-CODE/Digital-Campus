@@ -17,7 +17,7 @@ const defaultThreads = [
   {
     id: 'thread-hod',
     name: 'HOD Academic Dispatch',
-    category: 'hod',
+    category: 'direct',
     badge: 'HOD OFFICIAL',
     badgeClass: 'bg-[var(--color-lavender)] text-[#22174C]',
     avatar: 'HD',
@@ -52,11 +52,11 @@ const defaultThreads = [
     id: 'thread-gl',
     name: 'Gona Laxmi Narasimha Swami',
     pin: '24259-CS-001',
-    category: 'peers',
-    badge: 'PROJECT PARTNER',
+    category: 'idea_hub',
+    badge: 'IDEA HUB',
     badgeClass: 'bg-[var(--color-lime)] text-[var(--color-lime-ink)]',
     avatar: 'GL',
-    subtitle: 'CSE · Year II · Roll #1',
+    subtitle: 'CSE · Year II · IoT Sensor Node Project',
     online: true,
     unread: 2,
     messages: [
@@ -87,7 +87,7 @@ const defaultThreads = [
     id: 'thread-tarun',
     name: 'Dulipudi Tarun',
     pin: '24259-CS-002',
-    category: 'peers',
+    category: 'direct',
     badge: 'CLASS REP',
     badgeClass: 'bg-[var(--color-card-subtle)] text-[var(--color-ink)] border border-[var(--color-hairline)]',
     avatar: 'DT',
@@ -115,11 +115,11 @@ const defaultThreads = [
     id: 'thread-bhavya',
     name: 'Pittala Bhavya',
     pin: '24259-CS-004',
-    category: 'peers',
+    category: 'idea_hub',
     badge: 'IDEA HUB',
     badgeClass: 'bg-[var(--color-lavender)] text-[#22174C]',
     avatar: 'PB',
-    subtitle: 'CSE · Year II · Roll #4',
+    subtitle: 'CSE · Year II · Transformer NLP Research',
     online: false,
     unread: 0,
     messages: [
@@ -133,9 +133,30 @@ const defaultThreads = [
     ]
   },
   {
+    id: 'thread-market-drafter',
+    name: 'K. Sai Teja',
+    pin: '24259-CS-012',
+    category: 'marketplace',
+    badge: 'MARKET INQUIRY',
+    badgeClass: 'bg-[var(--color-lime)] text-[var(--color-lime-ink)]',
+    avatar: 'ST',
+    subtitle: 'Buyer · Mini Drafter + Drawing Kit',
+    online: true,
+    unread: 1,
+    messages: [
+      {
+        id: 1,
+        sender: 'other',
+        name: 'K. Sai Teja',
+        time: 'Today 11:20',
+        text: 'Hi Himesh, is the Mini Drafter & Roller Scale kit still available? Can we meet at the C-Block canteen during lunch break?'
+      }
+    ]
+  },
+  {
     id: 'thread-broadcast',
     name: 'Samskruti Institutional Broadcast',
-    category: 'hod',
+    category: 'direct',
     badge: 'REGISTRY BROADCAST',
     badgeClass: 'bg-[var(--color-feature-card)] text-white',
     avatar: 'SC',
@@ -176,7 +197,18 @@ function loadDiscussions() {
     if (raw) saved = JSON.parse(raw);
   } catch (e) {}
 
-  discussions = saved || defaultThreads;
+  if (saved && Array.isArray(saved) && saved.length > 0) {
+    const existingIds = new Set(saved.map(t => t.id));
+    const merged = [...saved];
+    defaultThreads.forEach(dt => {
+      if (!existingIds.has(dt.id)) {
+        merged.push(dt);
+      }
+    });
+    discussions = merged;
+  } else {
+    discussions = defaultThreads;
+  }
   renderThreadsList();
   renderActiveChat();
 }
@@ -220,14 +252,16 @@ function renderThreadsList() {
   if (!container) return;
 
   const filtered = discussions.filter(t => {
+    const cat = (t.category || 'direct').toLowerCase();
+    const badge = (t.badge || '').toUpperCase();
     const matchesFilter = (activeFilter === 'all') ||
-      (activeFilter === 'hod' && t.category === 'hod') ||
-      (activeFilter === 'peers' && t.category === 'peers') ||
-      (activeFilter === 'unread' && t.unread > 0);
+      (activeFilter === 'direct' && (cat === 'direct' || cat === 'hod' || cat === 'peers' || badge.includes('HOD') || badge.includes('REP') || badge.includes('BROADCAST'))) ||
+      (activeFilter === 'idea_hub' && (cat === 'idea_hub' || cat === 'idea' || badge.includes('IDEA'))) ||
+      (activeFilter === 'marketplace' && (cat === 'marketplace' || cat === 'market' || badge.includes('MARKET')));
 
     const matchesSearch = !searchThreadQuery ||
       t.name.toLowerCase().includes(searchThreadQuery) ||
-      (t.messages.length > 0 && t.messages[t.messages.length - 1].text.toLowerCase().includes(searchThreadQuery));
+      (t.messages && t.messages.length > 0 && t.messages[t.messages.length - 1].text.toLowerCase().includes(searchThreadQuery));
 
     return matchesFilter && matchesSearch;
   });
@@ -417,10 +451,7 @@ function bindQuickReplyChips() {
  * 9. Auxiliary Buttons (Call, Info, Attachment)
  */
 function bindAuxiliaryButtons() {
-  // Audio call removed per v4.0 spec
-  // document.getElementById('btnAudioCall')?.addEventListener('click', () => {
-    showToast('Voice channel connection initiated on Node 259 Intranet.');
-  });
+  // Voice channel removed per v4.0 spec
 
   document.getElementById('btnChatInfo')?.addEventListener('click', () => {
     const thread = discussions.find(t => t.id === currentThreadId);

@@ -5,44 +5,44 @@
 
 :root,
 [data-theme="light"] {
-  --hod-bg-canvas: #edf2f7;
-  --hod-surface-card: #ffffff;
-  --hod-surface-card-hover: #ffffff;
-  --hod-surface-inset: #f8fafc;
-  --hod-border: #e2e8f0;
-  --hod-border-highlight: #cbd5e1;
+  --hod-bg-canvas: #E4E4E1;
+  --hod-surface-card: #FFFFFF;
+  --hod-surface-card-hover: #FFFFFF;
+  --hod-surface-inset: #F5F5F3;
+  --hod-border: rgba(0, 0, 0, 0.08);
+  --hod-border-highlight: rgba(0, 0, 0, 0.16);
   
-  --hod-glow-blue: 0 4px 14px rgba(37, 99, 235, 0.35);
-  --hod-glow-emerald: 0 4px 14px rgba(16, 185, 129, 0.3);
-  --hod-glow-ruby: 0 4px 14px rgba(239, 68, 68, 0.25);
-  --hod-glow-amber: 0 4px 14px rgba(245, 158, 11, 0.25);
+  --hod-glow-blue: 0 4px 14px rgba(37, 99, 235, 0.2);
+  --hod-glow-emerald: 0 4px 14px rgba(16, 185, 129, 0.2);
+  --hod-glow-ruby: 0 4px 14px rgba(239, 68, 68, 0.2);
+  --hod-glow-amber: 0 4px 14px rgba(245, 158, 11, 0.2);
 
-  --hod-text-main: #0f172a;
-  --hod-text-muted: #64748b;
-  --hod-text-sub: #94a3b8;
+  --hod-text-main: #1A1A1A;
+  --hod-text-muted: #6E6E6E;
+  --hod-text-sub: #8C8C8C;
   
-  --hod-shadow-card: 0 10px 25px -5px rgba(15, 23, 42, 0.04), 0 8px 10px -6px rgba(15, 23, 42, 0.02);
-  --hod-shadow-inset: inset 1px 1px 3px rgba(15, 23, 42, 0.04);
+  --hod-shadow-card: 0 8px 24px -4px rgba(0, 0, 0, 0.06), 0 4px 8px -4px rgba(0, 0, 0, 0.03);
+  --hod-shadow-inset: inset 1px 1px 3px rgba(0, 0, 0, 0.04);
 }
 
 [data-theme="dark"] {
-  --hod-bg-canvas: #0b1120;
-  --hod-surface-card: #131d33;
-  --hod-surface-card-hover: #17233d;
-  --hod-surface-inset: #0e172a;
+  --hod-bg-canvas: #121212;
+  --hod-surface-card: #1C1C1C;
+  --hod-surface-card-hover: #262626;
+  --hod-surface-inset: #18181A;
   --hod-border: rgba(255, 255, 255, 0.08);
   --hod-border-highlight: rgba(255, 255, 255, 0.16);
 
-  --hod-glow-blue: 0 0 20px rgba(59, 130, 246, 0.4);
-  --hod-glow-emerald: 0 0 20px rgba(16, 185, 129, 0.35);
-  --hod-glow-ruby: 0 0 20px rgba(239, 68, 68, 0.35);
-  --hod-glow-amber: 0 0 20px rgba(245, 158, 11, 0.35);
+  --hod-glow-blue: 0 0 20px rgba(59, 130, 246, 0.3);
+  --hod-glow-emerald: 0 0 20px rgba(16, 185, 129, 0.3);
+  --hod-glow-ruby: 0 0 20px rgba(239, 68, 68, 0.3);
+  --hod-glow-amber: 0 0 20px rgba(245, 158, 11, 0.3);
 
-  --hod-text-main: #f8fafc;
-  --hod-text-muted: #94a3b8;
-  --hod-text-sub: #64748b;
+  --hod-text-main: #F2F2F2;
+  --hod-text-muted: #9A9A9A;
+  --hod-text-sub: #7A7A7A;
 
-  --hod-shadow-card: 0 12px 36px 0 rgba(0, 0, 0, 0.45);
+  --hod-shadow-card: 0 12px 36px 0 rgba(0, 0, 0, 0.5);
   --hod-shadow-inset: inset 0 2px 4px 0 rgba(0, 0, 0, 0.5);
 }
 
@@ -50,7 +50,7 @@ body.hod-executive {
   background: var(--hod-bg-canvas) !important;
   color: var(--hod-text-main) !important;
   min-height: 100vh;
-  font-family: 'Urbanist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif !important;
   -webkit-font-smoothing: antialiased;
 }
 

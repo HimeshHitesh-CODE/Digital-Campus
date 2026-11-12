@@ -599,16 +599,16 @@ function bindToolbarActions() {
       return;
     }
 
-    const headers = ['Request ID', 'PIN', 'Student Name', 'Department', 'Document Type', 'Stated Purpose', 'Guardian Phone', 'Live Attendance %', 'Status', 'HOD Notes', 'Submitted Time'];
+    const headers = ['Request ID', 'PIN', 'Student Name', 'Document Type', 'Stated Purpose', 'Guardian Phone', 'Attendance %', 'Status', 'HOD Notes', 'Submitted Time'];
     const rows = currentRequests.map(r => [
       `"#REQ-24259-${r.id}"`,
       `"${r.student_pin}"`,
-      `"${r.student_name.replace(/"/g, '""')}"`,
+      `"${(r.student_name || '').replace(/"/g, '""')}"`,
       `"${r.request_type}"`,
-      `"${r.purpose.replace(/"/g, '""')}"`,
+      `"${(r.purpose || r.reason || '').replace(/"/g, '""')}"`,
+      `"${r.guardian_phone || ''}"`,
       `"${r.attendance_snapshot !== null ? Number(r.attendance_snapshot).toFixed(1) + '%' : 'Unsynced'}"`,
       `"${r.status}"`,
-      `"${r.pickup_otp || ''}"`,
       `"${(r.hod_notes || '').replace(/"/g, '""')}"`,
       `"${r.submitted_at}"`
     ]);
@@ -625,6 +625,76 @@ function bindToolbarActions() {
     document.body.removeChild(link);
 
     showToast(`Exported ${currentRequests.length} requests summary to CSV`);
+  });
+
+  // Download summary PDF
+  document.getElementById('btnDownloadPdf')?.addEventListener('click', () => {
+    if (!currentRequests || currentRequests.length === 0) {
+      showToast('No requests data to export');
+      return;
+    }
+
+    const printWin = window.open('', '_blank', 'width=900,height=900');
+    if (!printWin) {
+      window.print();
+      return;
+    }
+
+    const html = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Samskruti College - ${activeDepartment} Document Approvals Log</title>
+        <style>
+          body { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; padding: 30px; color: #111; }
+          h2 { margin: 0; text-transform: uppercase; font-size: 18px; }
+          .sub { color: #555; font-size: 12px; margin-bottom: 20px; }
+          table { width: 100%; border-collapse: collapse; font-size: 11px; }
+          th, td { border: 1px solid #ccc; padding: 6px 8px; text-align: left; }
+          th { background: #f3f4f6; font-weight: bold; }
+          .center { text-align: center; }
+          @media print { body { padding: 0; } }
+        </style>
+      </head>
+      <body>
+        <h2>Samskruti College of Engineering & Technology (Code: 259)</h2>
+        <div class="sub">HOD Document Approvals Log · ${activeDepartment} Department · Date: ${new Date().toLocaleDateString('en-IN')}</div>
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>PIN</th>
+              <th>Student Name</th>
+              <th>Document Type</th>
+              <th>Guardian Phone</th>
+              <th>Attendance</th>
+              <th class="center">Status</th>
+              <th>HOD Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${currentRequests.map(r => `
+              <tr>
+                <td>#REQ-${r.id}</td>
+                <td>${r.student_pin}</td>
+                <td>${r.student_name || ''}</td>
+                <td>${r.request_type}</td>
+                <td>${r.guardian_phone || '—'}</td>
+                <td>${r.attendance_snapshot !== null ? Number(r.attendance_snapshot).toFixed(1) + '%' : '—'}</td>
+                <td class="center"><strong>${r.status}</strong></td>
+                <td>${r.hod_notes || '—'}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+        <script>window.onload = function() { window.print(); };</script>
+      </body>
+      </html>
+    `;
+    printWin.document.open();
+    printWin.document.write(html);
+    printWin.document.close();
+    showToast(`Generating ${activeDepartment} Document Approvals PDF...`);
   });
 }
 

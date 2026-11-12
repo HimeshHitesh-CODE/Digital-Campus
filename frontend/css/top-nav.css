@@ -91,21 +91,50 @@
 .cc-nav-pill-container {
   display: flex;
   align-items: center;
+  position: relative;
   gap: 0;
-  background-color: #262626;
+  background-color: rgba(24, 24, 26, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 9999px;
   padding: 5px 6px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 16px 36px -12px rgba(0, 0, 0, 0.65);
   user-select: none;
-  transition: background-color 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
+  transition: width 380ms cubic-bezier(0.22, 1, 0.36, 1),
+              background-color 250ms ease,
+              border-color 250ms ease,
+              box-shadow 380ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 /* Light Theme Surface Parity for Nav Pill */
 [data-theme="light"] .cc-nav-pill-container {
-  background-color: #FFFFFF;
+  background-color: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(0, 0, 0, 0.08);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.08);
+}
+
+/* Magnetic Sliding Hover Pill behind active cursor */
+.cc-nav-sliding-pill {
+  position: absolute;
+  top: 5px;
+  bottom: 5px;
+  left: 0;
+  width: 0;
+  border-radius: 9999px;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0;
+  transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1),
+              width 260ms cubic-bezier(0.22, 1, 0.36, 1),
+              opacity 200ms ease;
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="light"] .cc-nav-sliding-pill {
+  background-color: rgba(0, 0, 0, 0.06);
 }
 
 .cc-nav-divider {
@@ -113,6 +142,8 @@
   height: 24px;
   background-color: rgba(255, 255, 255, 0.08);
   flex-shrink: 0;
+  z-index: 2;
+  transition: opacity 250ms ease;
 }
 
 [data-theme="light"] .cc-nav-divider {
@@ -122,28 +153,39 @@
 /* Individual Slot (Icon stacked above label) */
 .cc-nav-slot {
   position: relative;
+  z-index: 2;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 2px;
   padding: 6px 14px;
-  min-width: 62px;
+  min-width: 58px;
   border-radius: 9999px;
   text-decoration: none;
   cursor: pointer;
   background: transparent;
-  transition: all 180ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition: all 260ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .cc-nav-slot .nav-slot-icon {
   font-size: 19px !important;
   color: #9A9A9A;
-  transition: color 180ms ease, transform 180ms ease;
+  transition: transform 260ms cubic-bezier(0.34, 1.56, 0.64, 1), color 180ms ease;
 }
 
 [data-theme="light"] .cc-nav-slot .nav-slot-icon {
   color: #6E6E6E;
+}
+
+/* Icon Micro-Bounce on hover */
+.cc-nav-slot:hover .nav-slot-icon {
+  transform: translateY(-2px) scale(1.12);
+  color: #D6F25E;
+}
+
+[data-theme="light"] .cc-nav-slot:hover .nav-slot-icon {
+  color: #1A1A1A;
 }
 
 .cc-nav-slot .nav-slot-label {
@@ -153,40 +195,56 @@
   letter-spacing: 0.01em;
   color: #9A9A9A;
   white-space: nowrap;
-  transition: color 180ms ease;
+  transition: color 180ms ease, opacity 260ms ease, max-width 360ms cubic-bezier(0.22, 1, 0.36, 1), transform 360ms cubic-bezier(0.22, 1, 0.36, 1);
 }
+
+/* Smooth Hover-Expand: in idle state, non-active labels are compact */
+.cc-nav-slot:not(.is-active) .nav-slot-label {
+  max-width: 0;
+  opacity: 0;
+  transform: translateX(-4px);
+  margin-top: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.cc-nav-slot.is-active .nav-slot-label {
+  max-width: 90px;
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* On nav hover / focus-within: smoothly expand all labels with spring physics */
+.cc-nav-pill-container:hover .cc-nav-slot:not(.is-active) .nav-slot-label,
+.cc-nav-pill-container:focus-within .cc-nav-slot:not(.is-active) .nav-slot-label {
+  max-width: 90px;
+  opacity: 1;
+  transform: translateX(0);
+  margin-top: 2px;
+}
+
+/* Staggered label fade-in */
+.cc-nav-pill-container:hover .cc-nav-slot:nth-of-type(1) .nav-slot-label { transition-delay: 15ms; }
+.cc-nav-pill-container:hover .cc-nav-slot:nth-of-type(2) .nav-slot-label { transition-delay: 35ms; }
+.cc-nav-pill-container:hover .cc-nav-slot:nth-of-type(3) .nav-slot-label { transition-delay: 55ms; }
+.cc-nav-pill-container:hover .cc-nav-slot:nth-of-type(4) .nav-slot-label { transition-delay: 75ms; }
+.cc-nav-pill-container:hover .cc-nav-slot:nth-of-type(5) .nav-slot-label { transition-delay: 95ms; }
+.cc-nav-pill-container:hover .cc-nav-slot:nth-of-type(6) .nav-slot-label { transition-delay: 115ms; }
+.cc-nav-pill-container:hover .cc-nav-slot:nth-of-type(7) .nav-slot-label { transition-delay: 135ms; }
 
 [data-theme="light"] .cc-nav-slot .nav-slot-label {
   color: #6E6E6E;
-}
-
-/* Hover State on Inactive Slot */
-.cc-nav-slot:not(.is-active):hover {
-  background-color: #393939;
-  transform: translateY(-1px);
-}
-
-.cc-nav-slot:not(.is-active):hover .nav-slot-icon {
-  color: #D6F25E;
 }
 
 .cc-nav-slot:not(.is-active):hover .nav-slot-label {
   color: #FFFFFF;
 }
 
-[data-theme="light"] .cc-nav-slot:not(.is-active):hover {
-  background-color: #F5F5F3;
-}
-
-[data-theme="light"] .cc-nav-slot:not(.is-active):hover .nav-slot-icon {
-  color: #1A1A1A;
-}
-
 [data-theme="light"] .cc-nav-slot:not(.is-active):hover .nav-slot-label {
   color: #1A1A1A;
 }
 
-/* Active Slot: Lime Pill with Ink text (#D6F25E + #1A1A1A) */
+/* Active Slot: Solid Lime Pill with Ink text (#D6F25E + #1A1A1A) */
 .cc-nav-slot.is-active {
   background-color: #D6F25E !important;
   box-shadow: 0 2px 10px rgba(214, 242, 94, 0.28);
@@ -394,30 +452,54 @@
   background-color: #FFE1DE !important;
 }
 
+/* Light Mode Dropdown Colors */
+[data-theme="light"] .cc-profile-dropdown {
+  background-color: #FFFFFF;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12);
+}
+
+[data-theme="light"] .cc-dropdown-item {
+  color: #1A1A1A;
+}
+
+[data-theme="light"] .cc-dropdown-item:hover {
+  background-color: #F5F5F3;
+}
+
+[data-theme="light"] .cc-dropdown-full-name {
+  color: #1A1A1A;
+}
+
 /* ================================================================
-   MOBILE BOTTOM BAR (Below 1100px)
+   RESPONSIVE MOBILE FLOATING DOCK (Below 900px)
    ================================================================ */
 .cc-mobile-bottom-nav {
   position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 64px;
-  background-color: #262626;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 32px);
+  max-width: 440px;
+  height: 62px;
+  background-color: rgba(24, 24, 26, 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 9999px;
   display: none;
   align-items: center;
   justify-content: space-around;
-  padding: 0 8px;
+  padding: 4px 8px;
   z-index: 1000;
-  box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.35);
-  padding-bottom: env(safe-area-inset-bottom, 0px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+  box-sizing: border-box;
 }
 
 [data-theme="light"] .cc-mobile-bottom-nav {
-  background-color: #FFFFFF;
-  border-top: 1px solid rgba(0, 0, 0, 0.08);
-  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+  background-color: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.12);
 }
 
 .cc-mobile-slot {
@@ -429,10 +511,16 @@
   gap: 2px;
   padding: 6px 4px;
   text-decoration: none;
-  border-radius: 12px;
+  border-radius: 9999px;
   color: #9A9A9A;
-  transition: all 150ms ease;
+  transition: transform 150ms cubic-bezier(0.22, 1, 0.36, 1), color 150ms ease, background-color 150ms ease;
   position: relative;
+  cursor: pointer;
+}
+
+/* Touch feedback */
+.cc-mobile-slot:active {
+  transform: scale(0.92);
 }
 
 [data-theme="light"] .cc-mobile-slot {
@@ -440,19 +528,18 @@
 }
 
 .cc-mobile-slot.is-active {
-  color: #D6F25E;
-}
-
-[data-theme="light"] .cc-mobile-slot.is-active {
   color: #1A1A1A;
+  background-color: #D6F25E;
+  box-shadow: 0 2px 10px rgba(214, 242, 94, 0.28);
 }
 
 .cc-mobile-slot.is-active .nav-slot-icon {
-  color: #D6F25E;
+  color: #1A1A1A !important;
 }
 
-[data-theme="light"] .cc-mobile-slot.is-active .nav-slot-icon {
-  color: #1A1A1A;
+.cc-mobile-slot.is-active .nav-slot-label {
+  color: #1A1A1A !important;
+  font-weight: 700;
 }
 
 .cc-mobile-slot .cc-nav-badge {
@@ -460,7 +547,7 @@
   right: 14px;
 }
 
-@media (max-width: 1099px) {
+@media (max-width: 899px) {
   .cc-header-nav-anchor {
     display: none !important;
   }
@@ -468,11 +555,11 @@
     display: flex !important;
   }
   body {
-    padding-bottom: 74px !important;
+    padding-bottom: 84px !important;
   }
 }
 
-@media (min-width: 1100px) {
+@media (min-width: 900px) {
   .cc-mobile-bottom-nav {
     display: none !important;
   }

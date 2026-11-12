@@ -92,14 +92,16 @@ def get_version(db: Session = Depends(get_db)):
     except Exception:
         git_sha = "a74fe87"
     
-    cs_count = db.query(StudentDB).filter(StudentDB.branch == "CS").count()
-    aiml_count = db.query(StudentDB).filter(StudentDB.branch.in_(["AIML", "AI"])).count()
+    cs_count = db.query(StudentDB).filter(StudentDB.pin.like("24259-CS-%"), StudentDB.role == "STUDENT").count()
+    aiml_count = db.query(StudentDB).filter(StudentDB.pin.like("24259-AIML-%"), StudentDB.role == "STUDENT").count()
     
     return {
         "commit": git_sha,
         "version": "4.0.0",
         "cs_count": cs_count,
         "aiml_count": aiml_count,
+        "cs": cs_count,
+        "aiml": aiml_count,
         "timestamp": datetime.utcnow().isoformat()
     }
 

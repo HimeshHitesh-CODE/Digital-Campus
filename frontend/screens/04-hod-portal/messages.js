@@ -7,6 +7,7 @@
 let activeDepartment = 'CS';
 let activeStudent = null;
 let activeThreads = [];
+let activeCategoryFilter = 'all';
 let ws = null;
 
 const DEPARTMENT_HOD_INFO = {
@@ -28,6 +29,7 @@ const DEFAULT_CONVERSATIONS = {
       pin: '24259-CS-025',
       name: 'KARNATI HIMESH',
       branch: 'CS',
+      category: 'direct',
       tag: 'Medical Board Appeal',
       lastMessage: 'Respected Dr. Vamshi Krishna, I have submitted my Medical Board application for attendance condonation (Ref: SC-COND-041). Please consider my hospitalization records.',
       lastTime: '10:45 AM',
@@ -37,6 +39,7 @@ const DEFAULT_CONVERSATIONS = {
       pin: '24259-CS-037',
       name: 'EDAMANAPALLY SAMISAAC',
       branch: 'CS',
+      category: 'direct',
       tag: 'Internship NOC',
       lastMessage: 'Respected HOD Sir, I have received an internship offer from Infosys Springboard AI Cohort. Kindly approve my NOC.',
       lastTime: 'Yesterday',
@@ -46,6 +49,7 @@ const DEFAULT_CONVERSATIONS = {
       pin: '24259-CS-040',
       name: 'TALLAPALLI TULASI RAM GOUD',
       branch: 'CS',
+      category: 'direct',
       tag: 'Bonafide Certificate',
       lastMessage: 'Respected HOD Sir, I have submitted an urgent Bonafide Certificate request for passport physical verification.',
       lastTime: '2 days ago',
@@ -55,10 +59,31 @@ const DEFAULT_CONVERSATIONS = {
       pin: '24259-CS-001',
       name: 'GONA LAXMI NARASIMHA SWAMI',
       branch: 'CS',
-      tag: 'Hall Ticket Clearance',
-      lastMessage: 'Good morning Sir, request regarding my hall ticket clearance and biometric punch verification.',
+      category: 'idea_hub',
+      tag: 'Idea Hub · LoRa IoT Node',
+      lastMessage: 'Respected HOD Sir, submitted our LoRa telemetry node architecture under Idea Hub incubator for evaluation.',
       lastTime: '3 days ago',
       initials: 'GS'
+    },
+    {
+      pin: '24259-CS-004',
+      name: 'PITTALA BHAVYA',
+      branch: 'CS',
+      category: 'idea_hub',
+      tag: 'Idea Hub · NLP Transformer',
+      lastMessage: 'Respected HOD Sir, we uploaded the Transformer NLP research dataset on Idea Hub for academic grant review.',
+      lastTime: 'Nov 01',
+      initials: 'PB'
+    },
+    {
+      pin: '24259-CS-012',
+      name: 'K. SAI TEJA',
+      branch: 'CS',
+      category: 'marketplace',
+      tag: 'Market · Drafting Kit',
+      lastMessage: 'Sir, seeking permission to hand over the Mini Drafter & Roller Scale kit at the workshop store counter.',
+      lastTime: 'Today 11:20',
+      initials: 'ST'
     }
   ],
   AIML: [
@@ -66,6 +91,7 @@ const DEFAULT_CONVERSATIONS = {
       pin: '24259-AIML-019',
       name: 'KARNATI HITESH',
       branch: 'AIML',
+      category: 'direct',
       tag: 'Bonafide Request',
       lastMessage: 'Respected Prof. Padma, I have submitted my Bonafide certificate application for State scholarship verification. Kindly review and approve.',
       lastTime: '10:30 AM',
@@ -75,6 +101,7 @@ const DEFAULT_CONVERSATIONS = {
       pin: '24259-AIML-001',
       name: 'AMANCHA RASAGNA',
       branch: 'AIML',
+      category: 'direct',
       tag: 'Internship NOC',
       lastMessage: 'Respected HOD Sir, I have an internship offer from Tech Mahindra for AI Research. Requesting an Internship NOC on institutional letterhead.',
       lastTime: 'Yesterday',
@@ -84,10 +111,31 @@ const DEFAULT_CONVERSATIONS = {
       pin: '24259-AIML-010',
       name: 'ITTE NIKHIL TEJA',
       branch: 'AIML',
+      category: 'direct',
       tag: 'Bus Pass Form',
       lastMessage: 'Good morning Sir, TSRTC bus pass endorsement form uploaded. Kindly sign off when convenient.',
       lastTime: '2 days ago',
       initials: 'IN'
+    },
+    {
+      pin: '24259-AIML-015',
+      name: 'CHINTA SRILEKHA',
+      branch: 'AIML',
+      category: 'idea_hub',
+      tag: 'Idea Hub · Drone Vision',
+      lastMessage: 'Respected Madam, our Autonomous Drone Computer Vision project proposal has been submitted to Idea Hub.',
+      lastTime: 'Yesterday',
+      initials: 'CS'
+    },
+    {
+      pin: '24259-AIML-022',
+      name: 'M. HARSHITHA',
+      branch: 'AIML',
+      category: 'marketplace',
+      tag: 'Market · AI Textbooks',
+      lastMessage: 'Madam, verification inquiry regarding Deep Learning textbook hand-off at Central Library.',
+      lastTime: '2 days ago',
+      initials: 'MH'
     }
   ]
 };
@@ -113,12 +161,30 @@ function getActiveDepartment() {
 function initMessagesModule() {
   activeDepartment = getActiveDepartment();
   bindDepartmentSwitcher();
+  bindCategoryFilters();
   bindSearchInput();
   bindChatComposer();
   bindQuickChips();
   bindMobileBackButton();
   initWebSocket();
   loadConversations(activeDepartment);
+}
+
+function bindCategoryFilters() {
+  const tabs = document.querySelectorAll('.hod-filter-tab');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      activeCategoryFilter = tab.getAttribute('data-filter') || 'all';
+
+      tabs.forEach(t => {
+        t.className = 'hod-filter-tab px-3 py-1 rounded-full text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high font-code-mono text-[11px] font-bold cursor-pointer';
+      });
+
+      tab.className = 'hod-filter-tab px-3 py-1 rounded-full bg-primary text-on-primary font-code-mono text-[11px] font-bold active-tab cursor-pointer';
+
+      renderThreadList();
+    });
+  });
 }
 
 function bindDepartmentSwitcher() {
@@ -185,6 +251,15 @@ function renderThreadList() {
   const query = (document.getElementById('threadSearch')?.value || '').toLowerCase().trim();
 
   const filtered = activeThreads.filter(t => {
+    const cat = (t.category || 'direct').toLowerCase();
+    const tag = (t.tag || '').toUpperCase();
+    const matchesCategory = (activeCategoryFilter === 'all') ||
+      (activeCategoryFilter === 'direct' && (cat === 'direct' || tag.includes('APPEAL') || tag.includes('NOC') || tag.includes('BONAFIDE') || tag.includes('HALL TICKET') || tag.includes('BUS PASS'))) ||
+      (activeCategoryFilter === 'idea_hub' && (cat === 'idea_hub' || tag.includes('IDEA') || tag.includes('CAPSTONE') || tag.includes('VISION'))) ||
+      (activeCategoryFilter === 'marketplace' && (cat === 'marketplace' || tag.includes('MARKET') || tag.includes('DRAFT') || tag.includes('BOOK')));
+
+    if (!matchesCategory) return false;
+
     if (!query) return true;
     return (t.name || '').toLowerCase().includes(query) ||
            (t.pin || '').toLowerCase().includes(query) ||

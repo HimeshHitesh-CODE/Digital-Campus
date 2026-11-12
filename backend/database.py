@@ -399,7 +399,7 @@ def seed_database():
                     db.add(roster_entry)
             db.commit()
 
-        # 1B. Populate AIML Roster Keys (All 127 Students for both 24259-AI and 24259-AIML)
+        # 1B. Populate AIML Roster Keys (Exact 120 Students from aiml_120_security_keys_roster.md)
         aiml_roster_file = os.path.join(BASE_DIR, "all_120_aiml_roster_keys.json")
         aiml_keys_cache = {}
         if os.path.exists(aiml_roster_file):
@@ -409,21 +409,28 @@ def seed_database():
             except Exception:
                 pass
 
-        for i in range(1, 128):
-            for p_prefix in ["24259-AI-", "24259-AIML-"]:
-                pin = f"{p_prefix}{str(i).zfill(3)}"
-                if not db.query(RosterKeyDB).filter(RosterKeyDB.pin == pin).first():
-                    cached_entry = aiml_keys_cache.get(pin, {})
-                    key = cached_entry.get("secret_key") or cached_entry.get("secretKey") or generate_institutional_key("AIML", pin, i)
-                    roster_entry = RosterKeyDB(
-                        pin=pin,
-                        secret_key=key,
-                        department="Artificial Intelligence & Machine Learning",
-                        branch="AIML",
-                        scheme="C-24",
-                        is_registered=False
-                    )
-                    db.add(roster_entry)
+        # Clean any invalid or extra roster keys
+        db.query(RosterKeyDB).filter(RosterKeyDB.branch == "AIML", ~RosterKeyDB.pin.like("24259-AIML-%")).delete(synchronize_session=False)
+
+        for i in range(1, 121):
+            pin = f"24259-AIML-{str(i).zfill(3)}"
+            cached_entry = aiml_keys_cache.get(pin, {})
+            key = cached_entry.get("secret_key") or cached_entry.get("secretKey") or generate_institutional_key("AIML", pin, i)
+            existing_rk = db.query(RosterKeyDB).filter(RosterKeyDB.pin == pin).first()
+            if not existing_rk:
+                roster_entry = RosterKeyDB(
+                    pin=pin,
+                    secret_key=key,
+                    department="Artificial Intelligence & Machine Learning",
+                    branch="AIML",
+                    scheme="C-24",
+                    is_registered=False
+                )
+                db.add(roster_entry)
+            else:
+                existing_rk.secret_key = key
+                existing_rk.branch = "AIML"
+                existing_rk.department = "Artificial Intelligence & Machine Learning"
         db.commit()
 
         # 2. Pre-seed Institutional Staff (Both CSE & AIML HODs)
@@ -627,7 +634,7 @@ def seed_database():
                     role="STUDENT",
                     attendance_pct="0.0%",
                     attendance_val=0.0,
-                    working_days=88,
+                    working_days=None,
                     present_days=0,
                     cgpa=0.0,
                     credits_earned=0.0,
@@ -641,7 +648,7 @@ def seed_database():
                 st.semester = "5th Sem"
         db.commit()
 
-        # 3B. Seed & heal all 127 Diploma AIML students with Real SBTET Scraped Data
+        # 3B. Seed & heal exact 120 Diploma AIML students
         scraped_file = os.path.join(BASE_DIR, "scraped_aiml_students_127.json")
         aiml_students_data = []
         if os.path.exists(scraped_file):
@@ -651,7 +658,6 @@ def seed_database():
             except Exception as e:
                 print(f"[Seed Warning] Could not load scraped_aiml_students_127.json: {e}")
 
-        # Fallback names if scraped file unreadable
         aiml_names_file = os.path.join(BASE_DIR, "all_120_aiml_student_names.json")
         aiml_master_names = {}
         if os.path.exists(aiml_names_file):
@@ -664,23 +670,25 @@ def seed_database():
         # Build map by roll number
         scraped_map = {s["roll"]: s for s in aiml_students_data}
 
-        for i in range(1, 128):
+        # Purge legacy AI prefix records and any AIML records > 120
+        db.query(StudentDB).filter(StudentDB.pin.like("24259-AI-%")).delete(synchronize_session=False)
+
+        for i in range(1, 121):
+            pin_aiml = f"24259-AIML-{str(i).zfill(3)}"
+            pin_ai = f"24259-AI-{str(i).zfill(3)}"
             s_data = scraped_map.get(i, {})
-            pin_ai = s_data.get("pin_ai") or f"24259-AI-{str(i).zfill(3)}"
-            pin_aiml = s_data.get("pin_aiml") or f"24259-AIML-{str(i).zfill(3)}"
-            verified_name = s_data.get("name") or aiml_master_names.get(pin_ai) or aiml_master_names.get(pin_aiml) or f"AIML Student {str(i).zfill(3)}"
+            verified_name = aiml_master_names.get(pin_aiml) or s_data.get("name") or f"AIML Student {str(i).zfill(3)}"
             att_pct = float(s_data.get("percentage") or 0.0)
-            w_days = int(s_data.get("working_days") or 88)
+            w_days = int(s_data.get("working_days")) if s_data.get("working_days") is not None else None
             p_days = int(s_data.get("present_days") or 0)
             cgpa_val = float(s_data.get("cgpa") or 0.0)
             cr_gained = float(s_data.get("credits_gained") or 0.0)
             b_count = int(s_data.get("backlogs_count") or 0)
 
-            # Check if student exists under either pin_ai or pin_aiml
-            st = db.query(StudentDB).filter(or_(StudentDB.pin == pin_ai, StudentDB.pin == pin_aiml, StudentDB.roll_no == pin_ai, StudentDB.roll_no == pin_aiml)).first()
+            st = db.query(StudentDB).filter(or_(StudentDB.pin == pin_aiml, StudentDB.roll_no == pin_aiml, StudentDB.pin == pin_ai)).first()
             if not st:
                 new_st = StudentDB(
-                    pin=pin_ai,
+                    pin=pin_aiml,
                     roll_no=pin_aiml,
                     name=verified_name,
                     password="Password123",
@@ -690,7 +698,7 @@ def seed_database():
                     year="3rd Year",
                     semester="5th Sem",
                     role="STUDENT",
-                    attendance_pct=f"{att_pct:.2f}%",
+                    attendance_pct=f"{att_pct:.2f}%" if att_pct > 0 else "0.0%",
                     attendance_val=att_pct,
                     working_days=w_days,
                     present_days=p_days,
@@ -701,20 +709,19 @@ def seed_database():
                 )
                 db.add(new_st)
             else:
-                # Heal existing student record
-                st.pin = pin_ai
+                st.pin = pin_aiml
                 st.roll_no = pin_aiml
                 st.name = verified_name
                 st.branch = "AIML"
                 st.scheme = "C-24"
                 st.semester = "5th Sem"
                 st.department = "Artificial Intelligence & Machine Learning"
-                if att_pct > 0 or st.attendance_val == 0:
+                if att_pct > 0:
                     st.attendance_pct = f"{att_pct:.2f}%"
                     st.attendance_val = att_pct
                     st.working_days = w_days
                     st.present_days = p_days
-                if cgpa_val > 0 or st.cgpa == 0:
+                if cgpa_val > 0:
                     st.cgpa = cgpa_val
                     st.credits_earned = cr_gained
                     st.backlogs = b_count

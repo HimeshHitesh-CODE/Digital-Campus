@@ -12,6 +12,10 @@ class SBTETIntegrationService:
     """
     PRIMARY_API_URL = "https://0r1gmpo9bh.execute-api.ap-south-2.amazonaws.com"
     FALLBACK_API_URL = "https://sbtet-api-pgmbqcchaq-em.a.run.app"
+    GATEWAYS = [
+        "https://0r1gmpo9bh.execute-api.ap-south-2.amazonaws.com",
+        "https://sbtet-api-pgmbqcchaq-em.a.run.app"
+    ]
 
     COMMON_HEADERS = {
         "x-sbtet-connect-app": "true",
@@ -26,39 +30,54 @@ class SBTETIntegrationService:
     def _normalize_pin(self, pin: str) -> str:
         return pin.strip().upper()
 
+    def _get_pin_variants(self, pin: str) -> List[str]:
+        clean = self._normalize_pin(pin)
+        variants = [clean]
+        if "-AIML-" in clean:
+            variants.append(clean.replace("-AIML-", "-AI-"))
+        elif "-AI-" in clean:
+            variants.append(clean.replace("-AI-", "-AIML-"))
+        return variants
+
     async def fetch_student_attendance(self, pin: str) -> Dict[str, Any]:
         """
         Fetch live biometric attendance records from SBTET gateway with complete
-        day-by-day calendar matrices.
+        day-by-day calendar matrices, with alt-PIN retry and gateway fallback.
         """
         clean_pin = self._normalize_pin(pin)
-        url = f"{self.PRIMARY_API_URL}/api/attendance?pin={clean_pin}"
+        pin_variants = self._get_pin_variants(clean_pin)
+
+        raw_json = None
+        last_error = None
 
         async with httpx.AsyncClient(timeout=self.timeout) as client:
-            try:
-                response = await client.get(url, headers=self.COMMON_HEADERS)
-                if response.status_code == 404:
-                    return {
-                        "success": False,
-                        "pin": clean_pin,
-                        "error": "Student PIN not found on SBTET portal."
-                    }
-                response.raise_for_status()
-                raw_json = response.json()
-            except httpx.TimeoutException:
-                logger.error(f"[SBTET Sync] Timeout fetching attendance for PIN: {clean_pin}")
-                return {
-                    "success": False,
-                    "pin": clean_pin,
-                    "error": "SBTET portal request timed out. Please try again."
-                }
-            except Exception as e:
-                logger.error(f"[SBTET Sync] Connection error for PIN {clean_pin}: {e}")
-                return {
-                    "success": False,
-                    "pin": clean_pin,
-                    "error": f"Failed to connect to SBTET portal: {str(e)}"
-                }
+            for gw in self.GATEWAYS:
+                for p in pin_variants:
+                    url = f"{gw}/api/attendance?pin={p}"
+                    try:
+                        response = await client.get(url, headers=self.COMMON_HEADERS)
+                        if response.status_code == 200:
+                            data_candidate = response.json()
+                            if data_candidate.get("data", {}).get("Table"):
+                                raw_json = data_candidate
+                                break
+                        elif response.status_code == 404:
+                            last_error = "Student PIN not found on SBTET portal."
+                    except httpx.TimeoutException:
+                        last_error = "SBTET portal request timed out. Please try again."
+                        continue
+                    except Exception as e:
+                        last_error = f"Failed to connect to SBTET portal: {str(e)}"
+                        continue
+                if raw_json:
+                    break
+
+        if not raw_json:
+            return {
+                "success": False,
+                "pin": clean_pin,
+                "error": last_error or "No attendance records found for this student PIN."
+            }
 
         data = raw_json.get("data", {})
         table = data.get("Table", [])
@@ -140,29 +159,39 @@ class SBTETIntegrationService:
     async def fetch_student_results(self, pin: str, scheme: str = "C24") -> Dict[str, Any]:
         """
         Fetch consolidated semester results and backlogs from SBTET gateway,
-        formatting into semester subject breakdowns.
+        formatting into semester subject breakdowns with alt-PIN retry and gateway fallback.
         """
         clean_pin = self._normalize_pin(pin)
-        url = f"{self.PRIMARY_API_URL}/api/consolidated?pin={clean_pin}&scheme={scheme}"
+        pin_variants = self._get_pin_variants(clean_pin)
+
+        raw_json = None
+        last_error = None
 
         async with httpx.AsyncClient(timeout=self.timeout) as client:
-            try:
-                response = await client.get(url, headers=self.COMMON_HEADERS)
-                if response.status_code == 404:
-                    return {
-                        "success": False,
-                        "pin": clean_pin,
-                        "error": "No consolidated marksheet found for this PIN."
-                    }
-                response.raise_for_status()
-                raw_json = response.json()
-            except Exception as e:
-                logger.error(f"[SBTET Results] Error for PIN {clean_pin}: {e}")
-                return {
-                    "success": False,
-                    "pin": clean_pin,
-                    "error": f"Could not retrieve marksheet from SBTET: {str(e)}"
-                }
+            for gw in self.GATEWAYS:
+                for p in pin_variants:
+                    url = f"{gw}/api/consolidated?pin={p}&scheme={scheme}"
+                    try:
+                        response = await client.get(url, headers=self.COMMON_HEADERS)
+                        if response.status_code == 200:
+                            data_candidate = response.json()
+                            if data_candidate.get("subjects") or data_candidate.get("summary"):
+                                raw_json = data_candidate
+                                break
+                        elif response.status_code == 404:
+                            last_error = "No consolidated marksheet found for this PIN."
+                    except Exception as e:
+                        last_error = f"Could not retrieve marksheet from SBTET: {str(e)}"
+                        continue
+                if raw_json:
+                    break
+
+        if not raw_json:
+            return {
+                "success": False,
+                "pin": clean_pin,
+                "error": last_error or "No consolidated marksheet found for this PIN."
+            }
 
         summary = raw_json.get("summary", {})
         subjects = raw_json.get("subjects", [])
@@ -261,15 +290,21 @@ class SBTETIntegrationService:
             "results": results
         }
 
-    async def sync_bulk_department(self, pins: List[str], max_concurrency: int = 5) -> Dict[str, Any]:
+    async def sync_bulk_department(self, pins: List[str], max_concurrency: int = 4) -> Dict[str, Any]:
         """
-        Bulk synchronize an entire department roster with controlled concurrency.
+        Bulk synchronize an entire department roster with controlled concurrency (4) and retry with backoff.
         """
         semaphore = asyncio.Semaphore(max_concurrency)
 
         async def worker(pin: str):
             async with semaphore:
-                return await self.fetch_student_attendance(pin)
+                for attempt in range(2):
+                    res = await self.fetch_student_attendance(pin)
+                    if res.get("success"):
+                        return res
+                    if attempt == 0:
+                        await asyncio.sleep(0.5)
+                return res
 
         tasks = [worker(pin) for pin in pins]
         results = await asyncio.gather(*tasks)

@@ -92,6 +92,14 @@
             <input class="w-full h-9 pl-9 pr-4 rounded-full bg-surface-container-low text-on-surface placeholder:text-on-surface-variant/60 text-xs border border-hairline focus:outline-none focus:ring-1 focus:ring-primary-container" id="threadSearch" placeholder="Search by student PIN or name..." type="text"/>
           </div>
 
+          <!-- Category Filter Tabs -->
+          <div class="flex items-center gap-1 overflow-x-auto pb-1 no-scrollbar text-xs border-b border-hairline" id="threadFilterTabs">
+            <button type="button" class="hod-filter-tab px-3 py-1 rounded-full bg-primary text-on-primary font-code-mono text-[11px] font-bold active-tab cursor-pointer" data-filter="all">All</button>
+            <button type="button" class="hod-filter-tab px-3 py-1 rounded-full text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high font-code-mono text-[11px] font-bold cursor-pointer" data-filter="direct">Direct &amp; HOD</button>
+            <button type="button" class="hod-filter-tab px-3 py-1 rounded-full text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high font-code-mono text-[11px] font-bold cursor-pointer" data-filter="idea_hub">Idea Hub</button>
+            <button type="button" class="hod-filter-tab px-3 py-1 rounded-full text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high font-code-mono text-[11px] font-bold cursor-pointer" data-filter="marketplace">Market</button>
+          </div>
+
           <!-- Thread List Container -->
           <div class="flex-grow overflow-y-auto space-y-2 pr-0.5 max-h-[560px]" id="threadsListContainer">
             <!-- Rendered dynamically by messages.js -->

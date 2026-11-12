@@ -1,98 +1,123 @@
 /* ================================================================
    SAMSKRUTI DIGITAL CAMPUS (INSTITUTION CODE: 259)
-   MOTION SYSTEM SPECIFICATION — V4.0
-   Tasteful micro-interactions, staggered bento cards, and real-time alerts.
+   UNIFIED MOTION SYSTEM & 60FPS INTERACTION ENGINE — V4.0
    ================================================================ */
 
-/* 1. Page and Bento Card Staggered Entry */
+/* 1. Silky Staggered Bento Page Entrance */
 @keyframes bentoFadeUp {
-  from {
+  0% {
     opacity: 0;
-    transform: translateY(12px);
+    transform: translateY(14px) scale(0.99);
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes modalFadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes drawerSlideOver {
-  from {
-    transform: translateX(100%);
-  }
-  to {
-    transform: translateX(0);
-  }
-}
-
-@keyframes dropdownSlide {
-  from {
-    opacity: 0;
-    transform: translateY(-8px) scale(0.96);
-  }
-  to {
+  100% {
     opacity: 1;
     transform: translateY(0) scale(1);
   }
 }
 
-/* Real-Time WebSocket Row Pulse (Lime glow) */
-@keyframes realTimePulse {
-  0%, 100% {
-    background-color: transparent;
+@keyframes modalFadeIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.97);
   }
-  50% {
-    background-color: rgba(214, 242, 94, 0.16);
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes drawerSlideOver {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes dropdownSlide {
+  0% {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.96);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Real-Time WebSocket Arrival Pulse (Lime/Emerald glow) */
+@keyframes realTimePulse {
+  0% {
+    background-color: transparent;
+    box-shadow: 0 0 0 0 rgba(214, 242, 94, 0);
+  }
+  30% {
+    background-color: rgba(214, 242, 94, 0.18);
+    box-shadow: 0 0 24px rgba(214, 242, 94, 0.35);
+  }
+  100% {
+    background-color: transparent;
+    box-shadow: 0 0 0 0 rgba(214, 242, 94, 0);
+  }
+}
+
+/* Button Diagonal Sheen Sweep */
+@keyframes buttonSheen {
+  0% {
+    left: -70%;
+  }
+  100% {
+    left: 140%;
   }
 }
 
 /* 2. Utility Classes */
-.animate-entry {
-  animation: bentoFadeUp 280ms cubic-bezier(0.22, 1, 0.36, 1) both;
+.animate-entry,
+.bento-card,
+.feature-card-dark,
+.executive-card {
+  animation: bentoFadeUp 360ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-/* Bento Grid Stagger Delays (40ms per slot) */
-.stagger-1  { animation-delay:  40ms; }
-.stagger-2  { animation-delay:  80ms; }
-.stagger-3  { animation-delay: 120ms; }
-.stagger-4  { animation-delay: 160ms; }
-.stagger-5  { animation-delay: 200ms; }
-.stagger-6  { animation-delay: 240ms; }
-.stagger-7  { animation-delay: 280ms; }
-.stagger-8  { animation-delay: 320ms; }
-.stagger-9  { animation-delay: 360ms; }
-.stagger-10 { animation-delay: 400ms; }
-.stagger-11 { animation-delay: 440ms; }
-.stagger-12 { animation-delay: 480ms; }
+/* Bento Grid Stagger Delays (45ms per slot) */
+.stagger-1  { animation-delay:  45ms; }
+.stagger-2  { animation-delay:  90ms; }
+.stagger-3  { animation-delay: 135ms; }
+.stagger-4  { animation-delay: 180ms; }
+.stagger-5  { animation-delay: 225ms; }
+.stagger-6  { animation-delay: 270ms; }
+.stagger-7  { animation-delay: 315ms; }
+.stagger-8  { animation-delay: 360ms; }
+.stagger-9  { animation-delay: 405ms; }
+.stagger-10 { animation-delay: 450ms; }
+.stagger-11 { animation-delay: 495ms; }
+.stagger-12 { animation-delay: 540ms; }
+.stagger-13 { animation-delay: 585ms; }
+.stagger-14 { animation-delay: 630ms; }
+.stagger-15 { animation-delay: 675ms; }
+.stagger-16 { animation-delay: 720ms; }
 
-/* Drawers & Overlays */
+/* Drawers & Overlays with Spring Physics */
 .drawer-enter {
-  animation: drawerSlideOver 280ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: drawerSlideOver 320ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .backdrop-enter {
-  animation: modalFadeIn 200ms ease both;
+  animation: modalFadeIn 220ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .dropdown-enter {
-  animation: dropdownSlide 160ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: dropdownSlide 180ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-/* Real-Time highlight */
+/* Real-Time Arrival Glow Pulse */
+.pulse-arrival,
 .highlight-pulse {
-  animation: realTimePulse 1.2s ease 2;
+  animation: realTimePulse 1.4s cubic-bezier(0.22, 1, 0.36, 1) 2;
 }
 
-/* 3. Tactile Card Hover Lift (Disabled on Touch) */
+/* 3. Tactile Card Hover Lift & Interactive Radial Cursor Spotlight */
 @media (hover: hover) {
   .bento-card,
   .bento-archetype-01,
@@ -100,24 +125,156 @@
   .bento-archetype-02,
   .bento-archetype-2,
   .bento-archetype-03,
-  .bento-archetype-3 {
-    transition: transform 200ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 200ms ease, border-color 200ms ease;
+  .bento-archetype-3,
+  .executive-card,
+  .hod-stat-card,
+  .kpi-card {
+    position: relative;
+    overflow: hidden;
+    transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1),
+                box-shadow 260ms cubic-bezier(0.22, 1, 0.36, 1),
+                border-color 260ms ease;
+  }
+
+  /* Interactive Radial Cursor Spotlight Overlay */
+  .bento-card::before,
+  .executive-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0;
+    border-radius: inherit;
+    background: radial-gradient(400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(214, 242, 94, 0.08), transparent 70%);
+    transition: opacity 300ms ease;
+    z-index: 1;
+  }
+
+  [data-theme="light"] .bento-card::before,
+  [data-theme="light"] .executive-card::before {
+    background: radial-gradient(400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(214, 242, 94, 0.15), transparent 70%);
+  }
+
+  .bento-card:hover::before,
+  .executive-card:hover::before {
+    opacity: 1;
   }
 
   .bento-card:hover,
   .bento-archetype-01:hover,
-  .bento-archetype-1:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.10);
+  .bento-archetype-1:hover,
+  .executive-card:hover,
+  .hod-stat-card:hover,
+  .kpi-card:hover {
+    transform: translateY(-4px) scale(1.008);
+    box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.35);
+  }
+
+  [data-theme="light"] .bento-card:hover,
+  [data-theme="light"] .executive-card:hover {
+    box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.09);
+  }
+
+  /* Card Icon Chip Scale & Tilt on Card Hover */
+  .bento-card:hover .icon-chip-40,
+  .bento-card:hover .icon-chip-36,
+  .executive-card:hover .icon-chip-40,
+  .executive-card:hover .icon-chip-36 {
+    transform: scale(1.1) rotate(-5deg);
+    transition: transform 260ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  /* Table Row Hover Shift */
+  tbody tr.cursor-pointer:hover,
+  tbody tr.hover\:bg-surface-container\/60:hover {
+    transform: translateX(4px);
+    transition: transform 200ms cubic-bezier(0.22, 1, 0.36, 1), background-color 150ms ease;
+  }
+
+  /* Calendar Day Cell Hover Lift */
+  .calendar-day:hover,
+  [data-day]:hover {
+    transform: scale(1.06);
+    transition: transform 180ms cubic-bezier(0.34, 1.56, 0.64, 1);
+    z-index: 5;
   }
 }
 
-/* 4. Tactile Button Press */
-.btn-pill-primary:active,
-.btn-pill-secondary:active,
-.btn-pill-ghost:active,
-button:active {
-  transform: scale(0.98);
+/* 4. Interactive Buttons, Pills & Sheen Effects */
+button,
+.btn-pill-primary,
+.btn-pill-secondary,
+.btn-pill-ghost,
+.btn-action {
+  transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 180ms ease,
+              background-color 180ms ease,
+              opacity 180ms ease;
+}
+
+button:hover:not(:disabled),
+.btn-pill-primary:hover:not(:disabled),
+.btn-pill-secondary:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+
+button:active:not(:disabled),
+.btn-pill-primary:active:not(:disabled),
+.btn-pill-secondary:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+/* Diagonal Sheen Sweep on Primary CTAs */
+.btn-sheen,
+.btn-pill-primary,
+#btnSubmitDoc,
+#btnSyncSingle,
+#btnSyncLatest,
+#btnExportCsv,
+#exportCsvBtn,
+#btnExportPdf {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-sheen::after,
+.btn-pill-primary::after,
+#btnSubmitDoc::after,
+#btnSyncSingle::after,
+#btnSyncLatest::after,
+#btnExportCsv::after,
+#exportCsvBtn::after,
+#btnExportPdf::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -70%;
+  width: 45%;
+  height: 200%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.28), transparent);
+  transform: rotate(25deg);
+  pointer-events: none;
+}
+
+.btn-sheen:hover::after,
+.btn-pill-primary:hover::after,
+#btnSubmitDoc:hover::after,
+#btnSyncSingle:hover::after,
+#btnSyncLatest:hover::after,
+#btnExportCsv:hover::after,
+#exportCsvBtn:hover::after,
+#btnExportPdf:hover::after {
+  animation: buttonSheen 700ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Focus Visible Rings for Accessibility */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid #D6F25E;
+  outline-offset: 2px;
 }
 
 /* 5. Reduced Motion Override */

@@ -13,7 +13,7 @@ const __dirname = path.dirname(__filename);
 
 export const BRANCHES = [
   { code: 'CS', name: 'Computer Science & Engineering', count: 180 },
-  { code: 'AIML', name: 'Artificial Intelligence & Machine Learning', count: 60 },
+  { code: 'AIML', name: 'Artificial Intelligence & Machine Learning', count: 120 },
   { code: 'EC', name: 'Electronics & Communication Engineering', count: 60 },
   { code: 'EEE', name: 'Electrical & Electronics Engineering', count: 60 },
   { code: 'CE', name: 'Civil Engineering', count: 60 },
