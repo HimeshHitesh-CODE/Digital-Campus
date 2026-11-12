@@ -107,7 +107,7 @@
     cancelBtn?.addEventListener('click', closeModal);
 
     modal?.addEventListener('click', (e) => {
-      if (e.target === modal) closeModal();
+      if (e.target === modal || !e.target.closest('.bento-card, .rounded-2xl')) closeModal();
     });
 
     document.addEventListener('keydown', (e) => {
@@ -166,7 +166,7 @@
     cancelBtn?.addEventListener('click', closeModal);
 
     modal?.addEventListener('click', (e) => {
-      if (e.target === modal) closeModal();
+      if (e.target === modal || !e.target.closest('.bento-card, .rounded-2xl')) closeModal();
     });
 
     document.addEventListener('keydown', (e) => {

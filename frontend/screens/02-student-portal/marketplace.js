@@ -119,7 +119,7 @@ function getDefaultItems() {
 /**
  * 2. Load Items from API and Local Storage
  */
-async async function loadMarketplaceItems() {
+async function loadMarketplaceItems() {
   let items = [];
 
   try {
@@ -340,17 +340,26 @@ function bindSellModal() {
   const form = document.getElementById('sellItemForm');
   if (!modal) return;
 
+  const closeModal = () => {
+    modal.classList.add('hidden');
+    document.body.style.overflow = '';
+  };
+
   openBtn?.addEventListener('click', () => {
     modal.classList.remove('hidden');
     document.getElementById('sellTitle')?.focus();
   });
 
   modal.querySelectorAll('.close-modal-btn').forEach(btn => {
-    btn.addEventListener('click', () => modal.classList.add('hidden'));
+    btn.addEventListener('click', closeModal);
   });
 
   modal.addEventListener('click', (e) => {
-    if (e.target === modal) modal.classList.add('hidden');
+    if (e.target === modal || !e.target.closest('.bento-card')) closeModal();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal();
   });
 
   form?.addEventListener('submit', async (e) => {
@@ -431,17 +440,26 @@ function bindDetailModal() {
   const modal = document.getElementById('itemDetailModal');
   if (!modal) return;
 
+  const closeModal = () => {
+    modal.classList.add('hidden');
+    document.body.style.overflow = '';
+  };
+
   modal.querySelectorAll('.close-detail-btn').forEach(btn => {
-    btn.addEventListener('click', () => modal.classList.add('hidden'));
+    btn.addEventListener('click', closeModal);
   });
 
   modal.addEventListener('click', (e) => {
-    if (e.target === modal) modal.classList.add('hidden');
+    if (e.target === modal || !e.target.closest('.bento-card')) closeModal();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal();
   });
 
   const msgBtn = document.getElementById('modalDetailMessageBtn');
   msgBtn?.addEventListener('click', () => {
-    modal.classList.add('hidden');
+    closeModal();
     if (selectedItem) {
       openMessageSeller(selectedItem.id);
     }
@@ -483,12 +501,21 @@ function bindMessageModal() {
   const modal = document.getElementById('messageSellerModal');
   if (!modal) return;
 
+  const closeModal = () => {
+    modal.classList.add('hidden');
+    document.body.style.overflow = '';
+  };
+
   modal.querySelectorAll('.close-msg-btn').forEach(btn => {
-    btn.addEventListener('click', () => modal.classList.add('hidden'));
+    btn.addEventListener('click', closeModal);
   });
 
   modal.addEventListener('click', (e) => {
-    if (e.target === modal) modal.classList.add('hidden');
+    if (e.target === modal || !e.target.closest('.bento-card')) closeModal();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal();
   });
 
   // Quick Chips

@@ -231,8 +231,10 @@
     dismissBtn?.addEventListener('click', closeModal);
 
     modal?.addEventListener('click', (e) => {
-      if (e.target === modal) closeModal();
+      if (e.target === modal || !e.target.closest('#deptModalCard')) closeModal();
     });
+
+    window.closeDeptModal = closeModal;
 
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && !modal?.classList.contains('hidden')) {

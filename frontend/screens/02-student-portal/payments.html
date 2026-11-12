@@ -69,12 +69,12 @@
             <tbody>
               <tr>
                 <td><code>REC-2026-0921</code></td>
-                <td>Semester III Tuition & Lab Fee</td>
+                <td>Semester III Tuition &amp; Lab Fee</td>
                 <td>2026-2027</td>
                 <td>₹28,500</td>
                 <td>UPI / Net Banking</td>
                 <td><span class="neu-badge neu-badge-success">PAID</span></td>
-                <td><button class="neu-btn" style="font-size: 0.8rem; padding: 4px 12px;">Download PDF</button></td>
+                <td><button type="button" class="neu-btn btn-receipt" data-rec="REC-2026-0921" data-fee="Semester III Tuition &amp; Lab Fee" data-amt="₹28,500" style="font-size: 0.8rem; padding: 4px 12px; cursor: pointer;">Download PDF</button></td>
               </tr>
               <tr>
                 <td><code>REC-2026-0412</code></td>
@@ -83,7 +83,7 @@
                 <td>₹28,500</td>
                 <td>Challan / Bank</td>
                 <td><span class="neu-badge neu-badge-success">PAID</span></td>
-                <td><button class="neu-btn" style="font-size: 0.8rem; padding: 4px 12px;">Download PDF</button></td>
+                <td><button type="button" class="neu-btn btn-receipt" data-rec="REC-2026-0412" data-fee="Semester II Tuition Fee" data-amt="₹28,500" style="font-size: 0.8rem; padding: 4px 12px; cursor: pointer;">Download PDF</button></td>
               </tr>
               <tr>
                 <td><code>DUE-2026-EXAM</code></td>
@@ -91,8 +91,8 @@
                 <td>2026-2027</td>
                 <td>₹650</td>
                 <td>Online Gateway</td>
-                <td><span class="neu-badge neu-badge-warning">DUE</span></td>
-                <td><button class="neu-btn neu-btn-primary" style="font-size: 0.8rem; padding: 4px 12px;" onclick="alert('Redirecting to Payment Gateway...')">Pay Now</button></td>
+                <td><span class="neu-badge neu-badge-warning" id="examFeeStatusBadge">DUE</span></td>
+                <td><button type="button" class="neu-btn neu-btn-primary" id="btnPayExamFee" style="font-size: 0.8rem; padding: 4px 12px; cursor: pointer;">Pay Now</button></td>
               </tr>
             </tbody>
           </table>
@@ -102,11 +102,146 @@
     </main>
   </div>
 
-  <script type="module">
-    import { requireAuth } from '../../js/auth-guard.js';
-    import { renderDock } from '../../js/dock.js';
-    requireAuth(['STUDENT']);
-    renderDock('payments.html', 'STUDENT');
+  <!-- Fee Payment Modal -->
+  <div id="feePaymentModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60 backdrop-blur-sm p-4" style="position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.6); display:none; align-items:center; justify-content:center; z-index:9999;">
+    <div class="bento-card" style="background:#fff; border-radius:20px; max-width:440px; width:100%; padding:24px; box-shadow:0 25px 50px -12px rgba(0,0,0,0.25); display:flex; flex-direction:column; gap:16px;">
+      <div style="display:flex; align-items:center; justify-content:between;">
+        <div>
+          <h3 style="font-size:1.1rem; font-weight:700; color:#1A1A1A; margin:0;">Pay SBTET Examination Fee</h3>
+          <span style="font-size:0.75rem; color:#6B7280;">Samskruti College Accounts Clearance</span>
+        </div>
+        <button type="button" id="closePaymentModal" class="close-modal-btn" style="border:none; background:#F3F4F6; width:32px; height:32px; border-radius:50%; cursor:pointer; font-size:16px; display:flex; align-items:center; justify-content:center;">✕</button>
+      </div>
+
+      <div style="background:#F9FAFB; padding:14px; border-radius:12px; font-size:0.85rem; display:flex; flex-direction:column; gap:8px;">
+        <div style="display:flex; justify-content:space-between;">
+          <span style="color:#6B7280;">Challan Item:</span>
+          <strong>SBTET C-24 Regular Exam Fee</strong>
+        </div>
+        <div style="display:flex; justify-content:space-between;">
+          <span style="color:#6B7280;">Challan ID:</span>
+          <code style="font-weight:700;">DUE-2026-EXAM</code>
+        </div>
+        <div style="display:flex; justify-content:space-between; border-top:1px solid #E5E7EB; padding-top:6px;">
+          <span style="color:#1A1A1A; font-weight:600;">Total Payable:</span>
+          <span style="font-size:1.1rem; font-weight:800; color:#16a34a;">₹650.00</span>
+        </div>
+      </div>
+
+      <div style="display:flex; align-items:center; justify-content:flex-end; gap:8px; border-top:1px solid #E5E7EB; padding-top:12px;">
+        <button type="button" id="cancelPaymentModal" class="close-modal-btn" style="padding:8px 16px; border-radius:9999px; border:1px solid #D1D5DB; background:transparent; font-size:0.8rem; cursor:pointer;">Cancel</button>
+        <button type="button" id="btnConfirmPay" style="padding:8px 20px; border-radius:9999px; border:none; background:#22c55e; color:#fff; font-weight:600; font-size:0.8rem; cursor:pointer;">Confirm &amp; Pay ₹650</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. Download Receipt PDF Handlers
+      document.querySelectorAll('.btn-receipt').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const rec = btn.getAttribute('data-rec');
+          const fee = btn.getAttribute('data-fee');
+          const amt = btn.getAttribute('data-amt');
+          const studentPin = localStorage.getItem('student_pin') || '24259-CS-025';
+          const studentName = localStorage.getItem('user_name') || 'Student';
+
+          const receiptHtml = `
+            <!DOCTYPE html>
+            <html>
+            <head>
+              <title>Receipt ${rec} - Samskruti College</title>
+              <style>
+                body { font-family: system-ui, sans-serif; padding: 40px; color: #1f2937; line-height: 1.5; }
+                .box { border: 2px solid #e5e7eb; border-radius: 12px; padding: 24px; max-width: 600px; margin: 0 auto; }
+                .hdr { text-align: center; border-bottom: 2px solid #111827; padding-bottom: 12px; margin-bottom: 20px; }
+                .row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 14px; }
+                .badge { background: #dcfce7; color: #15803d; font-weight: bold; padding: 2px 8px; border-radius: 4px; }
+              </style>
+            </head>
+            <body>
+              <div class="box">
+                <div class="hdr">
+                  <h2 style="margin:0;">SAMSKRUTI COLLEGE OF ENGINEERING & TECHNOLOGY</h2>
+                  <p style="margin:4px 0 0; font-size:12px; color:#6b7280;">Institution Code: 259 · Department Accounts Division</p>
+                  <h3 style="margin:12px 0 0; color:#111827;">OFFICIAL TUITION & LAB FEE RECEIPT</h3>
+                </div>
+                <div class="row"><span>Receipt Number:</span><strong>${rec}</strong></div>
+                <div class="row"><span>Student PIN:</span><strong>${studentPin}</strong></div>
+                <div class="row"><span>Student Name:</span><strong>${studentName}</strong></div>
+                <div class="row"><span>Fee Description:</span><span>${fee}</span></div>
+                <div class="row"><span>Amount Paid:</span><strong style="font-size:16px;">${amt}</strong></div>
+                <div class="row"><span>Status:</span><span class="badge">CLEARED &amp; VERIFIED</span></div>
+                <div class="row" style="margin-top:24px; border-top:1px dashed #ccc; padding-top:12px; font-size:11px; color:#6b7280;">
+                  <span>Payment Gateway Authorization: AUTH-${Math.floor(100000 + Math.random()*900000)}</span>
+                  <span>Accounts Comptroller Seal</span>
+                </div>
+              </div>
+              <script>window.onload = function() { window.print(); }<\/script>
+            </body>
+            </html>
+          `;
+          const win = window.open('', '_blank', 'width=700,height=600');
+          if (win) {
+            win.document.open();
+            win.document.write(receiptHtml);
+            win.document.close();
+          } else {
+            alert('Popup blocked. Please allow popups to view receipt.');
+          }
+        });
+      });
+
+      // 2. Pay Exam Fee Modal Handlers
+      const payModal = document.getElementById('feePaymentModal');
+      const openPayBtn = document.getElementById('btnPayExamFee');
+      const closePayBtn = document.getElementById('closePaymentModal');
+      const cancelPayBtn = document.getElementById('cancelPaymentModal');
+      const confirmPayBtn = document.getElementById('btnConfirmPay');
+
+      const openModal = () => {
+        if (payModal) {
+          payModal.style.display = 'flex';
+          payModal.classList.remove('hidden');
+        }
+      };
+      const closeModal = () => {
+        if (payModal) {
+          payModal.style.display = 'none';
+          payModal.classList.add('hidden');
+        }
+      };
+
+      openPayBtn?.addEventListener('click', openModal);
+      closePayBtn?.addEventListener('click', closeModal);
+      cancelPayBtn?.addEventListener('click', closeModal);
+      payModal?.addEventListener('click', (e) => {
+        if (e.target === payModal) closeModal();
+      });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeModal();
+      });
+
+      confirmPayBtn?.addEventListener('click', () => {
+        confirmPayBtn.disabled = true;
+        confirmPayBtn.textContent = 'Processing Payment...';
+        setTimeout(() => {
+          closeModal();
+          confirmPayBtn.disabled = false;
+          confirmPayBtn.textContent = 'Confirm & Pay ₹650';
+          const badge = document.getElementById('examFeeStatusBadge');
+          if (badge) {
+            badge.className = 'neu-badge neu-badge-success';
+            badge.textContent = 'PAID';
+          }
+          if (openPayBtn) {
+            openPayBtn.textContent = 'Paid (Receipt)';
+            openPayBtn.className = 'neu-btn btn-receipt';
+          }
+          alert('Payment Successful! SBTET C-24 Exam Fee cleared. Receipt #REC-2026-EXAM generated.');
+        }, 800);
+      });
+    });
   </script>
 </body>
 </html>

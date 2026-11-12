@@ -301,6 +301,11 @@ function bindEditSkillsModal() {
   const form = document.getElementById('editSkillsForm');
   if (!modal) return;
 
+  const closeModal = () => {
+    modal.classList.add('hidden');
+    document.body.style.overflow = '';
+  };
+
   openBtn?.addEventListener('click', () => {
     const currentBio = document.getElementById('hubStudentBio')?.textContent.trim() || '';
     const bioInput = document.getElementById('modalBioInput');
@@ -316,11 +321,15 @@ function bindEditSkillsModal() {
   });
 
   modal.querySelectorAll('.close-skills-btn').forEach(btn => {
-    btn.addEventListener('click', () => modal.classList.add('hidden'));
+    btn.addEventListener('click', closeModal);
   });
 
   modal.addEventListener('click', (e) => {
-    if (e.target === modal) modal.classList.add('hidden');
+    if (e.target === modal || !e.target.closest('.bento-card')) closeModal();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal();
   });
 
   form?.addEventListener('submit', (e) => {
@@ -384,12 +393,21 @@ function bindInviteProjectModal() {
   const modal = document.getElementById('inviteProjectModal');
   if (!modal) return;
 
+  const closeModal = () => {
+    modal.classList.add('hidden');
+    document.body.style.overflow = '';
+  };
+
   modal.querySelectorAll('.close-invite-btn').forEach(btn => {
-    btn.addEventListener('click', () => modal.classList.add('hidden'));
+    btn.addEventListener('click', closeModal);
   });
 
   modal.addEventListener('click', (e) => {
-    if (e.target === modal) modal.classList.add('hidden');
+    if (e.target === modal || !e.target.closest('.bento-card')) closeModal();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal();
   });
 
   const sendBtn = document.getElementById('btnSendInvite');
@@ -401,7 +419,7 @@ function bindInviteProjectModal() {
       return;
     }
 
-    modal.classList.add('hidden');
+    closeModal();
     document.getElementById('inviteRoleInput').value = '';
     const noteEl = document.getElementById('inviteNoteInput');
     if (noteEl) noteEl.value = '';
@@ -451,16 +469,25 @@ function bindInvitesModal() {
   const modal = document.getElementById('collaborationInvitesModal');
   if (!modal) return;
 
+  const closeModal = () => {
+    modal.classList.add('hidden');
+    document.body.style.overflow = '';
+  };
+
   openBtn?.addEventListener('click', () => {
     modal.classList.remove('hidden');
   });
 
   modal.querySelectorAll('.close-invites-modal-btn').forEach(btn => {
-    btn.addEventListener('click', () => modal.classList.add('hidden'));
+    btn.addEventListener('click', closeModal);
   });
 
   modal.addEventListener('click', (e) => {
-    if (e.target === modal) modal.classList.add('hidden');
+    if (e.target === modal || !e.target.closest('.bento-card')) closeModal();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal();
   });
 
   // Accept & Decline Handlers

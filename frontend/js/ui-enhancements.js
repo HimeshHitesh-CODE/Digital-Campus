@@ -134,7 +134,150 @@
     });
   }
 
-  // 6. Global Helper for Real-Time Arrival Pulses
+  // 6. Universal Modal & Drawer Dismiss Engine
+  function dismissModalElement(modal) {
+    if (!modal || modal.tagName === 'BUTTON' || modal.tagName === 'A') return;
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+    if (modal.style.display === 'flex' || modal.style.display === 'block') {
+      modal.style.display = '';
+    }
+    document.body.style.overflow = '';
+
+    // Invoke screen callbacks if defined
+    if (modal.id === 'studentDetailDrawerBackdrop' && typeof window.closeStudentDrawer === 'function') {
+      try { window.closeStudentDrawer(); } catch (_) {}
+    } else if (modal.id === 'reviewModal' && typeof window.closeReviewModal === 'function') {
+      try { window.closeReviewModal(); } catch (_) {}
+    } else if (modal.id === 'auditModal' && typeof window.hideAuditModal === 'function') {
+      try { window.hideAuditModal(); } catch (_) {}
+    } else if (modal.id === 'circularModal' && typeof window.closeNoticeModal === 'function') {
+      try { window.closeNoticeModal(); } catch (_) {}
+    }
+  }
+
+  function closeAllModalsAndDrawers() {
+    const selector = 'div.fixed.inset-0:not(.hidden), div[role="dialog"]:not(.hidden), #studentDetailDrawerBackdrop:not(.hidden), div[id$="Modal"]:not(.hidden), div[id$="Drawer"]:not(.hidden)';
+    const openModals = document.querySelectorAll(selector);
+    openModals.forEach(modal => {
+      // Ignore non-modal overlays like toasts or dynamic islands
+      if (modal.classList.contains('pointer-events-none') || 
+          modal.id === 'toastNotification' || 
+          modal.id === 'toast' || 
+          modal.id === 'ccAppHeader') {
+        return;
+      }
+      dismissModalElement(modal);
+    });
+
+    // Close profile dropdown menu if open
+    const profileDropdown = document.getElementById('ccProfileDropdown');
+    if (profileDropdown && profileDropdown.classList.contains('is-open')) {
+      profileDropdown.classList.remove('is-open');
+      document.getElementById('ccProfileBtn')?.setAttribute('aria-expanded', 'false');
+    }
+  }
+
+  // Expose global dismiss helper
+  window.closeAllModalsAndDrawers = closeAllModalsAndDrawers;
+  window.dismissModalElement = dismissModalElement;
+
+  function initUniversalCloseButtons() {
+    // 1. Delegated click on document for any close/cancel/dismiss button
+    document.addEventListener('click', (e) => {
+      // Fast check: target or ancestor matches close button selectors
+      const closeTrigger = e.target.closest(`
+        [data-close],
+        [data-close-modal],
+        [data-dismiss],
+        [aria-label="Close"],
+        [aria-label="close"],
+        .close-btn,
+        .close-modal-btn,
+        .modal-close,
+        .btn-close,
+        .close-skills-btn,
+        .close-invite-btn,
+        .close-invites-modal-btn,
+        .close-detail-btn,
+        .close-msg-btn,
+        .btn-close-modal,
+        #closeDrawerBtn,
+        #closeBacklogModal,
+        #modalCloseActionBtn,
+        #closeAzureSyncModal,
+        #closeReviewModal,
+        #closeReviewModalBtn,
+        #closeDeptModal,
+        #dismissDeptModalBtn,
+        #closeCircularModal,
+        #closeModal,
+        #cancelModal,
+        #closeContactModal,
+        #cancelContactModal,
+        #closePassModal,
+        #cancelPassModal,
+        #btnCancelSell,
+        #btnDismissDetailModal,
+        #btnCancelAction
+      `);
+
+      let targetBtn = closeTrigger;
+
+      // Also detect button with 'close' icon or cancel text inside an open modal
+      if (!targetBtn) {
+        const btn = e.target.closest('button, [role="button"], a.btn-close');
+        if (btn) {
+          const txt = btn.textContent.trim().toLowerCase();
+          const iconText = btn.querySelector('.material-symbols-outlined, i')?.textContent.trim().toLowerCase();
+          const isCloseAction = txt === 'close' || txt === 'cancel' || txt === 'dismiss' || iconText === 'close' || iconText === 'cancel';
+          if (isCloseAction) {
+            const inModal = btn.parentElement?.closest('.fixed.inset-0, [role="dialog"], #studentDetailDrawerBackdrop, #backlogPopupModal, #azureSyncProgressModal, #reviewModal, #auditModal, #circularModal, #deptDetailModal, #editSkillsModal, #inviteProjectModal, #collaborationInvitesModal, #sellItemModal, #itemDetailModal, #messageSellerModal, #editContactModal, #changePassModal, #modalRecounting, #feePaymentModal, #reviewApprovalModal');
+            if (inModal && inModal.id !== 'toastNotification' && inModal.id !== 'toast') {
+              targetBtn = btn;
+            }
+          }
+        }
+      }
+
+      if (targetBtn) {
+        // Find nearest modal or drawer container (ancestor container, never the button itself)
+        const modal = targetBtn.parentElement?.closest('.fixed.inset-0, [role="dialog"], #studentDetailDrawerBackdrop, #backlogPopupModal, #azureSyncProgressModal, #reviewModal, #auditModal, #circularModal, #deptDetailModal, #editSkillsModal, #inviteProjectModal, #collaborationInvitesModal, #sellItemModal, #itemDetailModal, #messageSellerModal, #editContactModal, #changePassModal, #modalRecounting, #feePaymentModal, #reviewApprovalModal');
+        if (modal && modal !== targetBtn && modal.id !== 'toastNotification' && modal.id !== 'toast') {
+          e.preventDefault();
+          e.stopPropagation();
+          dismissModalElement(modal);
+          return;
+        }
+      }
+
+      // 2. Backdrop click: click outside the modal dialog card
+      const openModals = document.querySelectorAll('div.fixed.inset-0:not(.hidden), div[role="dialog"]:not(.hidden), #studentDetailDrawerBackdrop:not(.hidden)');
+      openModals.forEach(modal => {
+        if (modal.classList.contains('pointer-events-none') || modal.id === 'toastNotification' || modal.id === 'toast') return;
+        
+        // Find inner card / content box
+        const card = modal.querySelector('.bento-card, .bg-surface-container, .bg-surface-container-low, .rounded-3xl, .rounded-2xl, [role="document"], #circularModalCard, #deptModalCard, #studentDetailDrawer, #reviewModalCard, #auditModalCard');
+        if (card) {
+          // If clicked directly on the modal backdrop outside the card
+          if (modal.contains(e.target) && !card.contains(e.target)) {
+            dismissModalElement(modal);
+          }
+        } else if (e.target === modal) {
+          dismissModalElement(modal);
+        }
+      });
+    });
+
+    // 3. Global Escape key handling
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' || e.key === 'Esc' || e.keyCode === 27) {
+        closeAllModalsAndDrawers();
+      }
+    });
+  }
+
+  // 7. Global Helper for Real-Time Arrival Pulses
   window.triggerArrivalPulse = function (element) {
     if (!element) return;
     element.classList.remove('pulse-arrival');
@@ -142,13 +285,14 @@
     element.classList.add('pulse-arrival');
   };
 
-  // 7. Initialize on DOMContentLoaded and dynamic content ready
+  // 8. Initialize on DOMContentLoaded and dynamic content ready
   function initAll() {
     initCardSpotlights();
     initAnimatedCounters();
     initBubbleAnimations();
     initCtaArrows();
     initSlidingTabs();
+    initUniversalCloseButtons();
   }
 
   if (document.readyState === 'loading') {

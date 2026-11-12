@@ -419,12 +419,15 @@ function bindRevealAllModal() {
   const showModal = () => {
     modal?.classList.remove('hidden');
     modal?.classList.add('flex');
+    document.body.style.overflow = 'hidden';
   };
 
   const hideModal = () => {
     modal?.classList.add('hidden');
     modal?.classList.remove('flex');
+    document.body.style.overflow = '';
   };
+  window.hideAuditModal = hideModal;
 
   revealAllBtn?.addEventListener('click', () => {
     if (allRevealed) {
@@ -440,6 +443,18 @@ function bindRevealAllModal() {
 
   closeModal?.addEventListener('click', hideModal);
   cancelModal?.addEventListener('click', hideModal);
+
+  modal?.addEventListener('click', (e) => {
+    if (e.target === modal || !e.target.closest('#auditModalCard, .bg-surface-container')) {
+      hideModal();
+    }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !modal?.classList.contains('hidden')) {
+      hideModal();
+    }
+  });
 
   confirmRevealAll?.addEventListener('click', () => {
     hideModal();

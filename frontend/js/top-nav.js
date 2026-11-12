@@ -296,6 +296,13 @@
           profileBtn.setAttribute('aria-expanded', 'false');
         }
       });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && dropdown.classList.contains('is-open')) {
+          dropdown.classList.remove('is-open');
+          profileBtn.setAttribute('aria-expanded', 'false');
+        }
+      });
     }
 
     // Logout

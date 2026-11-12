@@ -457,7 +457,13 @@ function initModalActions() {
   closeBtn?.addEventListener('click', closeReviewModal);
 
   modal?.addEventListener('click', (e) => {
-    if (e.target === modal) closeReviewModal();
+    if (e.target === modal || !e.target.closest('.bg-surface-container')) closeReviewModal();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !modal?.classList.contains('hidden')) {
+      closeReviewModal();
+    }
   });
 
   btnApprove?.addEventListener('click', async () => {
@@ -560,8 +566,10 @@ function openReviewModal(req) {
 function closeReviewModal() {
   const modal = document.getElementById('reviewApprovalModal');
   modal?.classList.add('hidden');
+  document.body.style.overflow = '';
   currentSelectedRequest = null;
 }
+window.closeReviewModal = closeReviewModal;
 
 // Utilities
 function getInitials(name) {

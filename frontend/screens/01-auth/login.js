@@ -319,6 +319,11 @@ function openForgotPassword() {
   if (drawer) drawer.classList.remove('hidden');
 }
 
+// Global window exposure for inline triggers
+window.toggleOnboardingDrawer = toggleOnboardingDrawer;
+window.handleActivateAccount = handleActivateAccount;
+window.openForgotPassword = openForgotPassword;
+
 function showToast(message, type = 'success') {
   const toast = document.getElementById('toastNotification');
   const msgEl = document.getElementById('toastMsg');

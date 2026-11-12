@@ -492,21 +492,32 @@ function closeReviewModal() {
   const modal = document.getElementById('reviewModal');
   modal?.classList.add('hidden');
   modal?.classList.remove('flex');
+  document.body.style.overflow = '';
   activeSelectedRequest = null;
 }
+window.closeReviewModal = closeReviewModal;
 
 function bindModalActions() {
   const modal = document.getElementById('reviewModal');
   const closeBtn = document.getElementById('closeReviewModal');
+  const cancelBtn = document.getElementById('btnCancelReviewModal');
   const approveBtn = document.getElementById('btnActionApprove');
   const holdBtn = document.getElementById('btnActionHold');
   const rejectBtn = document.getElementById('btnActionReject');
 
   closeBtn?.addEventListener('click', closeReviewModal);
+  cancelBtn?.addEventListener('click', closeReviewModal);
 
-  // Close when clicking modal backdrop
+  // Close when clicking modal backdrop outside the card
   modal?.addEventListener('click', (e) => {
-    if (e.target === modal) {
+    if (e.target === modal || !e.target.closest('#reviewModalCard')) {
+      closeReviewModal();
+    }
+  });
+
+  // Global Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !modal?.classList.contains('hidden')) {
       closeReviewModal();
     }
   });

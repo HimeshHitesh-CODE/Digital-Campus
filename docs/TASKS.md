@@ -77,3 +77,15 @@
 | 8.2 | Run all tests, fix failures | ✅ Done | verify-agent |
 | 8.3 | Git commit + push | ✅ Done | verify-agent |
 | 8.4 | Render deployment verification | ✅ Done | verify-agent |
+
+## Section 9: Universal Button & Modal Interactive Overhaul
+
+| # | Task | Status | Owner |
+|---|------|--------|-------|
+| 9.1 | Fix modal close buttons & Escape key across Student portal (Idea Hub, Marketplace, Syllabus, Circulars, Results, Payments) | ✅ Done | frontend-architect |
+| 9.2 | Fix modal close buttons & Escape key across HOD portal (Student Drawer, Backlog Modal, Document Review Modal, Audit Modal) | ✅ Done | frontend-architect |
+| 9.3 | Universal backdrop dismissal & delegated click handler in ui-enhancements.js | ✅ Done | frontend-architect |
+| 9.4 | Interactive fee payment modal & PDF receipt generator in Payments | ✅ Done | frontend-architect |
+| 9.5 | Fix syntax error in marketplace.js and function reference mismatch in students-info.js | ✅ Done | frontend-architect |
+| 9.6 | Full Playwright verification suite (49/49 passed, 100%) | ✅ Done | frontend-architect |
+

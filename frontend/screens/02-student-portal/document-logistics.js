@@ -66,9 +66,15 @@
 
   function bindRefreshButton() {
     const refreshBtn = document.getElementById('refreshBtn');
+    const refreshIcon = document.getElementById('refreshIcon');
     if (refreshBtn) {
       refreshBtn.addEventListener('click', () => {
-        loadRequests();
+        if (refreshIcon) refreshIcon.classList.add('animate-spin');
+        loadRequests().finally(() => {
+          setTimeout(() => {
+            if (refreshIcon) refreshIcon.classList.remove('animate-spin');
+          }, 600);
+        });
       });
     }
   }

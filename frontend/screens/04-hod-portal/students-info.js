@@ -34,9 +34,15 @@ function getActiveDepartment() {
 
 function initStudentsInfo() {
 
-  document.getElementById('closeDrawerBtn')?.addEventListener('click', closeStudentDrawer);
+  document.getElementById('closeDrawerBtn')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    closeStudentDrawer();
+  });
   document.getElementById('studentDetailDrawerBackdrop')?.addEventListener('click', (e) => {
-    if (e.target.id === 'studentDetailDrawerBackdrop') closeStudentDrawer();
+    if (e.target.id === 'studentDetailDrawerBackdrop' || !e.target.closest('#studentDetailDrawer')) {
+      closeStudentDrawer();
+    }
   });
 
   activeDepartment = getActiveDepartment();
@@ -625,23 +631,44 @@ function openBacklogModal(student) {
   modal?.classList.remove('hidden');
 }
 
-function initModalActions() {
+function bindModalActions() {
   const bModal = document.getElementById('backlogPopupModal');
   const closeBtn = document.getElementById('closeBacklogModal');
   const closeActionBtn = document.getElementById('modalCloseActionBtn');
 
-  closeBtn?.addEventListener('click', () => bModal?.classList.add('hidden'));
-  closeActionBtn?.addEventListener('click', () => bModal?.classList.add('hidden'));
+  const closeBacklog = () => {
+    bModal?.classList.add('hidden');
+    document.body.style.overflow = '';
+  };
+
+  closeBtn?.addEventListener('click', closeBacklog);
+  closeActionBtn?.addEventListener('click', closeBacklog);
   bModal?.addEventListener('click', (e) => {
-    if (e.target === bModal) bModal.classList.add('hidden');
+    if (e.target === bModal || !e.target.closest('#backlogPopupModal > div')) closeBacklog();
   });
 
   const syncModal = document.getElementById('azureSyncProgressModal');
   const closeSync = document.getElementById('closeAzureSyncModal');
-  closeSync?.addEventListener('click', () => syncModal?.classList.add('hidden'));
+  const closeSyncModal = () => {
+    syncModal?.classList.add('hidden');
+    document.body.style.overflow = '';
+  };
+  closeSync?.addEventListener('click', closeSyncModal);
   syncModal?.addEventListener('click', (e) => {
-    if (e.target === syncModal) syncModal.classList.add('hidden');
+    if (e.target === syncModal || !e.target.closest('#azureSyncProgressModal > div')) closeSyncModal();
   });
+
+  // Global escape handling for students roster modals
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeStudentDrawer();
+      closeBacklog();
+      closeSyncModal();
+    }
+  });
+}
+function initModalActions() {
+  bindModalActions();
 }
 
 /**
@@ -1001,5 +1028,9 @@ function openStudentDrawer(student) {
 
 function closeStudentDrawer() {
   const backdrop = document.getElementById('studentDetailDrawerBackdrop');
-  if (backdrop) backdrop.classList.add('hidden');
+  if (backdrop) {
+    backdrop.classList.add('hidden');
+    document.body.style.overflow = '';
+  }
 }
+window.closeStudentDrawer = closeStudentDrawer;

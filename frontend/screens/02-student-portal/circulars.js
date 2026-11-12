@@ -256,13 +256,15 @@
   function initModal() {
     const modal = document.getElementById('circularModal');
     const closeBtn = document.getElementById('closeCircularModal');
+    const dismissBtn = document.getElementById('btnDismissCircular');
     const downloadBtn = document.getElementById('downloadNoticePdfBtn');
     const printBtn = document.getElementById('printNoticeBtn');
 
     closeBtn?.addEventListener('click', closeNoticeModal);
+    dismissBtn?.addEventListener('click', closeNoticeModal);
 
     modal?.addEventListener('click', (e) => {
-      if (e.target === modal) closeNoticeModal();
+      if (e.target === modal || !e.target.closest('#circularModalCard')) closeNoticeModal();
     });
 
     document.addEventListener('keydown', (e) => {
@@ -320,6 +322,7 @@
     modal?.classList.remove('flex');
     document.body.style.overflow = '';
   }
+  window.closeNoticeModal = closeNoticeModal;
 
   function downloadNoticePdf(notice) {
     showToast(`Generating official PDF for ${notice.ref}...`);

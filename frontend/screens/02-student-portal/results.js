@@ -359,26 +359,33 @@ function bindRecountingModal() {
   const modal = document.getElementById('modalRecounting');
   if (!trigger || !modal) return;
 
+  const closeModal = () => {
+    modal.classList.add('hidden');
+    document.body.style.overflow = '';
+  };
+
   trigger.addEventListener('click', (e) => {
     e.preventDefault();
     modal.classList.remove('hidden');
   });
 
   modal.querySelectorAll('.close-modal-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      modal.classList.add('hidden');
-    });
+    btn.addEventListener('click', closeModal);
   });
 
   modal.addEventListener('click', (e) => {
-    if (e.target === modal) modal.classList.add('hidden');
+    if (e.target === modal || !e.target.closest('#modalRecounting > div')) closeModal();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal();
   });
 
   const form = document.getElementById('formRecounting');
   if (form) {
     form.addEventListener('submit', (e) => {
       e.preventDefault();
-      modal.classList.add('hidden');
+      closeModal();
       showToast('SBTET Recounting challenge recorded (#RC-24259-88). Fee challan verified.');
       form.reset();
     });
@@ -407,10 +414,8 @@ function showToast(message) {
  * 9. Download Official Marks Memo PDF
  */
 function bindDownloadMemoPdf() {
-  const btn = document.getElementById('btnDownloadMemoPdf');
-  if (!btn) return;
-
-  btn.addEventListener('click', () => {
+  const triggerMemoPrint = (e) => {
+    if (e) e.preventDefault();
     const user = (typeof StitchState !== 'undefined' && StitchState.getUser) ? StitchState.getUser() : {};
     const pin = user.pin || localStorage.getItem('student_pin') || 'Student';
     const name = user.name || localStorage.getItem('user_name') || 'Student';
@@ -499,5 +504,8 @@ function bindDownloadMemoPdf() {
     } else {
       window.print();
     }
-  });
+  };
+
+  document.getElementById('btnDownloadMemoPdf')?.addEventListener('click', triggerMemoPrint);
+  document.getElementById('btnPrintMemo')?.addEventListener('click', triggerMemoPrint);
 }

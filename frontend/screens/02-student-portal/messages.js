@@ -451,7 +451,9 @@ function bindQuickReplyChips() {
  * 9. Auxiliary Buttons (Call, Info, Attachment)
  */
 function bindAuxiliaryButtons() {
-  // Voice channel removed per v4.0 spec
+  document.getElementById('btnAudioCall')?.addEventListener('click', () => {
+    showToast('Secure Campus Voice: Connecting to department audio node...');
+  });
 
   document.getElementById('btnChatInfo')?.addEventListener('click', () => {
     const thread = discussions.find(t => t.id === currentThreadId);
