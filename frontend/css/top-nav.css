@@ -77,6 +77,7 @@
 }
 
 /* Center Always-Open Floating Pill Navigation */
+/* Center "CC" Dynamic Island Navigation Anchor */
 .cc-header-nav-anchor {
   position: absolute;
   left: 50%;
@@ -88,48 +89,189 @@
   justify-content: center;
 }
 
-.cc-nav-pill-container {
+/* Radar Pulse Animation for CC Pill Lime Dot */
+@keyframes ccRadarPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(214, 242, 94, 0.7);
+    transform: scale(1);
+  }
+  70% {
+    box-shadow: 0 0 0 8px rgba(214, 242, 94, 0);
+    transform: scale(1.15);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(214, 242, 94, 0);
+    transform: scale(1);
+  }
+}
+
+/* ================================================================
+   1. IDLE / COLLAPSED STATE (THE "CC" PILL)
+   ================================================================ */
+.cc-dynamic-island {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 44px;
+  background-color: rgba(24, 24, 26, 0.90);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: 9999px;
+  box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.65);
+  user-select: none;
+  cursor: pointer;
+  overflow: hidden;
+  max-width: 152px;
+  min-width: 92px;
+  padding: 0 16px;
+  transition: max-width 420ms cubic-bezier(0.16, 1, 0.3, 1),
+              min-width 420ms cubic-bezier(0.16, 1, 0.3, 1),
+              padding 420ms cubic-bezier(0.16, 1, 0.3, 1),
+              background-color 250ms ease,
+              border-color 250ms ease,
+              box-shadow 420ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Light Theme Surface Parity */
+[data-theme="light"] .cc-dynamic-island {
+  background-color: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+/* Collapsed Inner Pill Content */
+.cc-pill-collapsed {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 100%;
+  white-space: nowrap;
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 180ms ease, transform 240ms cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: auto;
+}
+
+.cc-dynamic-island.is-expanded .cc-pill-collapsed,
+.cc-dynamic-island:hover .cc-pill-collapsed,
+.cc-dynamic-island:focus-within .cc-pill-collapsed {
+  opacity: 0;
+  transform: scale(0.85);
+  pointer-events: none;
+  position: absolute;
+}
+
+.cc-radar-pulse {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #D6F25E;
+  flex-shrink: 0;
+  animation: ccRadarPulse 2s cubic-bezier(0.24, 0, 0.38, 1) infinite;
+}
+
+.cc-monogram {
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  color: #F2F2F2;
+  line-height: 1;
+}
+
+[data-theme="light"] .cc-monogram {
+  color: #1A1A1A;
+}
+
+.cc-pill-sep {
+  width: 1px;
+  height: 16px;
+  background-color: rgba(255, 255, 255, 0.15);
+  flex-shrink: 0;
+}
+
+[data-theme="light"] .cc-pill-sep {
+  background-color: rgba(0, 0, 0, 0.12);
+}
+
+.cc-pill-active-icon {
+  font-size: 17px !important;
+  color: #D6F25E;
+}
+
+[data-theme="light"] .cc-pill-active-icon {
+  color: #1A1A1A;
+}
+
+.cc-pill-active-label {
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: #F2F2F2;
+}
+
+[data-theme="light"] .cc-pill-active-label {
+  color: #1A1A1A;
+}
+
+/* ================================================================
+   2. ULTRA-SMOOTH HOVER EXPANSION (DYNAMIC ISLAND MORPH)
+   ================================================================ */
+.cc-dynamic-island.is-expanded,
+.cc-dynamic-island:hover,
+.cc-dynamic-island:focus-within {
+  max-width: 760px;
+  min-width: 500px;
+  padding: 4px 6px;
+  box-shadow: 0 20px 48px -8px rgba(0, 0, 0, 0.75);
+  cursor: default;
+}
+
+[data-theme="light"] .cc-dynamic-island.is-expanded,
+[data-theme="light"] .cc-dynamic-island:hover,
+[data-theme="light"] .cc-dynamic-island:focus-within {
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.12);
+}
+
+/* Expanded Dock Inner */
+.cc-dock-expanded {
   display: flex;
   align-items: center;
   position: relative;
   gap: 0;
-  background-color: rgba(24, 24, 26, 0.88);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 9999px;
-  padding: 5px 6px;
-  box-shadow: 0 16px 36px -12px rgba(0, 0, 0, 0.65);
-  user-select: none;
-  transition: width 380ms cubic-bezier(0.22, 1, 0.36, 1),
-              background-color 250ms ease,
-              border-color 250ms ease,
-              box-shadow 380ms cubic-bezier(0.22, 1, 0.36, 1);
+  height: 100%;
+  opacity: 0;
+  transform: scale(0.95);
+  pointer-events: none;
+  position: absolute;
+  transition: opacity 240ms ease, transform 380ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Light Theme Surface Parity for Nav Pill */
-[data-theme="light"] .cc-nav-pill-container {
-  background-color: rgba(255, 255, 255, 0.88);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.08);
+.cc-dynamic-island.is-expanded .cc-dock-expanded,
+.cc-dynamic-island:hover .cc-dock-expanded,
+.cc-dynamic-island:focus-within .cc-dock-expanded {
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: auto;
+  position: relative;
 }
 
 /* Magnetic Sliding Hover Pill behind active cursor */
 .cc-nav-sliding-pill {
   position: absolute;
-  top: 5px;
-  bottom: 5px;
+  top: 4px;
+  bottom: 4px;
   left: 0;
   width: 0;
   border-radius: 9999px;
   pointer-events: none;
   z-index: 1;
   opacity: 0;
-  transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1),
-              width 260ms cubic-bezier(0.22, 1, 0.36, 1),
-              opacity 200ms ease;
+  transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
+              width 220ms cubic-bezier(0.22, 1, 0.36, 1),
+              opacity 180ms ease;
   background-color: rgba(255, 255, 255, 0.08);
 }
 
@@ -165,8 +307,36 @@
   text-decoration: none;
   cursor: pointer;
   background: transparent;
-  transition: all 260ms cubic-bezier(0.22, 1, 0.36, 1);
+  opacity: 0;
+  transform: translateY(4px) scale(0.95);
+  transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1),
+              opacity 260ms ease,
+              background-color 220ms ease,
+              color 180ms ease;
 }
+
+.cc-dynamic-island.is-expanded .cc-dock-expanded .cc-nav-slot,
+.cc-dynamic-island:hover .cc-dock-expanded .cc-nav-slot,
+.cc-dynamic-island:focus-within .cc-dock-expanded .cc-nav-slot {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* Nav Slot Entrance Stagger (25ms per slot) */
+.cc-dynamic-island.is-expanded .cc-dock-expanded .cc-nav-slot:nth-of-type(1),
+.cc-dynamic-island:hover .cc-dock-expanded .cc-nav-slot:nth-of-type(1) { transition-delay: 25ms; }
+.cc-dynamic-island.is-expanded .cc-dock-expanded .cc-nav-slot:nth-of-type(2),
+.cc-dynamic-island:hover .cc-dock-expanded .cc-nav-slot:nth-of-type(2) { transition-delay: 50ms; }
+.cc-dynamic-island.is-expanded .cc-dock-expanded .cc-nav-slot:nth-of-type(3),
+.cc-dynamic-island:hover .cc-dock-expanded .cc-nav-slot:nth-of-type(3) { transition-delay: 75ms; }
+.cc-dynamic-island.is-expanded .cc-dock-expanded .cc-nav-slot:nth-of-type(4),
+.cc-dynamic-island:hover .cc-dock-expanded .cc-nav-slot:nth-of-type(4) { transition-delay: 100ms; }
+.cc-dynamic-island.is-expanded .cc-dock-expanded .cc-nav-slot:nth-of-type(5),
+.cc-dynamic-island:hover .cc-dock-expanded .cc-nav-slot:nth-of-type(5) { transition-delay: 125ms; }
+.cc-dynamic-island.is-expanded .cc-dock-expanded .cc-nav-slot:nth-of-type(6),
+.cc-dynamic-island:hover .cc-dock-expanded .cc-nav-slot:nth-of-type(6) { transition-delay: 150ms; }
+.cc-dynamic-island.is-expanded .cc-dock-expanded .cc-nav-slot:nth-of-type(7),
+.cc-dynamic-island:hover .cc-dock-expanded .cc-nav-slot:nth-of-type(7) { transition-delay: 175ms; }
 
 .cc-nav-slot .nav-slot-icon {
   font-size: 19px !important;
@@ -180,7 +350,7 @@
 
 /* Icon Micro-Bounce on hover */
 .cc-nav-slot:hover .nav-slot-icon {
-  transform: translateY(-2px) scale(1.12);
+  transform: translateY(-2px) scale(1.1);
   color: #D6F25E;
 }
 
@@ -195,42 +365,8 @@
   letter-spacing: 0.01em;
   color: #9A9A9A;
   white-space: nowrap;
-  transition: color 180ms ease, opacity 260ms ease, max-width 360ms cubic-bezier(0.22, 1, 0.36, 1), transform 360ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition: color 180ms ease;
 }
-
-/* Smooth Hover-Expand: in idle state, non-active labels are compact */
-.cc-nav-slot:not(.is-active) .nav-slot-label {
-  max-width: 0;
-  opacity: 0;
-  transform: translateX(-4px);
-  margin-top: 0;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.cc-nav-slot.is-active .nav-slot-label {
-  max-width: 90px;
-  opacity: 1;
-  transform: translateX(0);
-}
-
-/* On nav hover / focus-within: smoothly expand all labels with spring physics */
-.cc-nav-pill-container:hover .cc-nav-slot:not(.is-active) .nav-slot-label,
-.cc-nav-pill-container:focus-within .cc-nav-slot:not(.is-active) .nav-slot-label {
-  max-width: 90px;
-  opacity: 1;
-  transform: translateX(0);
-  margin-top: 2px;
-}
-
-/* Staggered label fade-in */
-.cc-nav-pill-container:hover .cc-nav-slot:nth-of-type(1) .nav-slot-label { transition-delay: 15ms; }
-.cc-nav-pill-container:hover .cc-nav-slot:nth-of-type(2) .nav-slot-label { transition-delay: 35ms; }
-.cc-nav-pill-container:hover .cc-nav-slot:nth-of-type(3) .nav-slot-label { transition-delay: 55ms; }
-.cc-nav-pill-container:hover .cc-nav-slot:nth-of-type(4) .nav-slot-label { transition-delay: 75ms; }
-.cc-nav-pill-container:hover .cc-nav-slot:nth-of-type(5) .nav-slot-label { transition-delay: 95ms; }
-.cc-nav-pill-container:hover .cc-nav-slot:nth-of-type(6) .nav-slot-label { transition-delay: 115ms; }
-.cc-nav-pill-container:hover .cc-nav-slot:nth-of-type(7) .nav-slot-label { transition-delay: 135ms; }
 
 [data-theme="light"] .cc-nav-slot .nav-slot-label {
   color: #6E6E6E;
@@ -258,6 +394,7 @@
 .cc-nav-slot.is-active .nav-slot-label {
   color: #1A1A1A !important;
   font-weight: 700;
+}
 }
 
 /* Slot Badge */

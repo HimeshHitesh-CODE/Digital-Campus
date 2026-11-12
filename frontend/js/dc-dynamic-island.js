@@ -189,6 +189,7 @@
   }
 
   function renderAppHeader() {
+    if (document.getElementById('ccAppHeader')) return;
     const isAuth = window.location.pathname.includes('/01-auth/') || window.location.pathname.endsWith('login.html');
     if (isAuth) return;
 

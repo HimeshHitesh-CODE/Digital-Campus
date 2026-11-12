@@ -112,6 +112,7 @@
     if (legacy) legacy.remove();
 
     const activeId = getActiveSlotId(navItems);
+    const activeItem = navItems.find(item => item.id === activeId) || navItems[0];
     const theme = getTheme();
     const name = user ? user.name : (role === 'HOD' ? 'HOD' : 'Student');
     const initials = getInitials(name);
@@ -148,11 +149,26 @@
           <span class="cc-brand-sub">Code 259 · ${role === 'HOD' ? 'HOD Executive' : 'SBTET C-24'}</span>
         </a>
 
-        <!-- Center: Always-Open Floating Pill -->
+        <!-- Center: Iconic "CC" Dynamic Island Pill (Hover-Expand Morph) -->
         <div class="cc-header-nav-anchor">
-          <nav class="cc-nav-pill-container" role="navigation" aria-label="Main Navigation">
-            ${navSlotsHtml}
-          </nav>
+          <div class="cc-dynamic-island is-collapsed" id="ccDynamicIsland" role="navigation" aria-label="Campus Connect Dynamic Island">
+            
+            <!-- Collapsed State: Iconic "CC" Pill -->
+            <div class="cc-pill-collapsed" id="ccPillCollapsed" aria-label="Expand Navigation Dock">
+              <span class="cc-radar-pulse" aria-hidden="true"></span>
+              <span class="cc-monogram">CC</span>
+              <span class="cc-pill-sep" aria-hidden="true"></span>
+              <span class="material-symbols-outlined cc-pill-active-icon">${activeItem.icon}</span>
+              <span class="cc-pill-active-label">${activeItem.label}</span>
+            </div>
+
+            <!-- Expanded State: Full Navigation Dock -->
+            <nav class="cc-dock-expanded cc-nav-pill-container" id="ccDockExpanded" aria-label="Main Navigation">
+              <div class="cc-nav-sliding-pill"></div>
+              ${navSlotsHtml}
+            </nav>
+
+          </div>
         </div>
 
         <!-- Right: Theme Toggle & Profile Pill -->
@@ -310,8 +326,49 @@
       }
     }, { passive: true });
 
+    // Dynamic Island Hover Expansion with Grace Delay (180ms)
+    const island = document.getElementById('ccDynamicIsland');
+    const dockExpanded = document.getElementById('ccDockExpanded');
+    let collapseTimer = null;
+
+    if (island) {
+      function expandIsland() {
+        if (collapseTimer) {
+          clearTimeout(collapseTimer);
+          collapseTimer = null;
+        }
+        island.classList.remove('is-collapsed');
+        island.classList.add('is-expanded');
+        if (dockExpanded) dockExpanded.setAttribute('aria-hidden', 'false');
+      }
+
+      function collapseIsland() {
+        if (collapseTimer) clearTimeout(collapseTimer);
+        collapseTimer = setTimeout(() => {
+          island.classList.remove('is-expanded');
+          island.classList.add('is-collapsed');
+          if (dockExpanded) dockExpanded.setAttribute('aria-hidden', 'true');
+          const slidingPill = island.querySelector('.cc-nav-sliding-pill');
+          if (slidingPill) slidingPill.style.opacity = '0';
+        }, 180); // 180ms grace delay
+      }
+
+      island.addEventListener('mouseenter', expandIsland);
+      island.addEventListener('mouseleave', collapseIsland);
+      island.addEventListener('focusin', expandIsland);
+      island.addEventListener('focusout', collapseIsland);
+
+      const collapsedPill = document.getElementById('ccPillCollapsed');
+      if (collapsedPill) {
+        collapsedPill.addEventListener('click', (e) => {
+          e.stopPropagation();
+          expandIsland();
+        });
+      }
+    }
+
     // Magnetic Sliding Hover Pill (Physics-based gliding highlight)
-    const navContainer = document.querySelector('.cc-nav-pill-container');
+    const navContainer = document.querySelector('.cc-dock-expanded, .cc-nav-pill-container');
     if (navContainer) {
       let slidingPill = navContainer.querySelector('.cc-nav-sliding-pill');
       if (!slidingPill) {
