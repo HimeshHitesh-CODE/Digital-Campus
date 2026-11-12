@@ -1,7 +1,8 @@
 /**
  * Samskruti College HOD Document Approvals Controller
  * Dual-Theme, Full-Width Fluid, Live Backend Integration (/api/v1/hod/requests)
- * 3 Review Actions (Approve + 6-digit OTP, Hold for Interview, Reject)
+ * 3 Review Actions (Approve Clearance, Hold for Interview, Reject)
+ * Strictly No OTP per v4.0 Specification
  * Desktop Table & Mobile 390px Card List
  */
 
@@ -365,10 +366,9 @@ function renderMobileCards(list) {
 
     let statusPill = '';
     if (req.status === 'ACCEPTED' || req.status === 'APPROVED') {
-      const otp = req.pickup_otp || 'VERIFIED';
       statusPill = `
-        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-primary-container/20 text-primary-fixed font-code-mono-sm text-[10px] font-bold border border-primary-container/30">
-          <span class="material-symbols-outlined text-[13px]">check_circle</span> OTP: ${otp}
+        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[var(--color-lime)] text-[var(--color-lime-ink)] text-[10px] font-bold">
+          <span class="material-symbols-outlined text-[13px]">check_circle</span> Approved
         </span>
       `;
     } else if (req.status === 'REJECTED') {
@@ -570,11 +570,11 @@ async function submitRequestStatusUpdate(requestId, status, notes) {
       applyFiltersAndRender();
 
       if (status === 'ACCEPTED') {
-        showToast(`Approved Request #${requestId} · Pickup OTP Dispatched`);
+        showToast(`Approved Request #${requestId} · Clearance Signed`);
       } else if (status === 'HOLD') {
         showToast(`Request #${requestId} placed on Hold for Interview`);
       } else {
-        showToast(`Request #${requestId} Declined`);
+        showToast(`Request #${requestId} Denied`);
       }
     } else {
       showToast('Failed to update request status on server');
@@ -599,7 +599,7 @@ function bindToolbarActions() {
       return;
     }
 
-    const headers = ['Request ID', 'PIN', 'Student Name', 'Document Type', 'Stated Purpose', 'Live Attendance %', 'Status', 'Pickup OTP', 'HOD Notes', 'Submitted Time'];
+    const headers = ['Request ID', 'PIN', 'Student Name', 'Department', 'Document Type', 'Stated Purpose', 'Guardian Phone', 'Live Attendance %', 'Status', 'HOD Notes', 'Submitted Time'];
     const rows = currentRequests.map(r => [
       `"#REQ-24259-${r.id}"`,
       `"${r.student_pin}"`,

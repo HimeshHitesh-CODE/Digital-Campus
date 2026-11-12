@@ -119,7 +119,7 @@ function getDefaultItems() {
 /**
  * 2. Load Items from API and Local Storage
  */
-async function loadMarketplaceItems() {
+async async function loadMarketplaceItems() {
   let items = [];
 
   try {
@@ -285,15 +285,15 @@ function renderMarketplace() {
         <!-- Top Row: Seller Info + Category -->
         <div class="flex items-center justify-between pb-2 border-b border-[var(--color-hairline)]">
           <div class="flex items-center gap-2">
-            <div class="w-7 h-7 rounded-full bg-[var(--color-feature-card)] text-white flex items-center justify-center font-mono text-[10px] font-bold">
+            <div class="w-7 h-7 rounded-full bg-[var(--color-feature-card)] text-white flex items-center justify-center tabular text-[10px] font-bold">
               ${initials}
             </div>
             <div class="flex flex-col">
               <span class="text-xs font-semibold text-[var(--color-ink)] truncate max-w-[130px]">${escapeHtml(item.seller_name || 'Student')}</span>
-              <span class="font-mono text-[10px] text-[var(--color-muted)]">${item.seller_dept || 'SCET Code 259'}</span>
+              <span class="tabular text-[10px] text-[var(--color-muted)]">${item.seller_dept || 'SCET Code 259'}</span>
             </div>
           </div>
-          <span class="font-mono text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[var(--color-lavender)] text-[#22174C]">
+          <span class="tabular text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[var(--color-lavender)] text-[#22174C]">
             ${escapeHtml(item.categoryLabel || item.category || 'Other')}
           </span>
         </div>
@@ -303,17 +303,17 @@ function renderMarketplace() {
           <h3 class="text-sm font-bold text-[var(--color-ink)] line-clamp-2 leading-snug">${escapeHtml(item.title)}</h3>
           <p class="text-xs text-[var(--color-muted)] line-clamp-2 leading-relaxed">${escapeHtml(item.description || '')}</p>
           <div class="flex items-center gap-2 pt-1">
-            <span class="font-mono text-[10px] font-medium px-2 py-0.5 rounded-full bg-[var(--color-card-subtle)] text-[var(--color-muted)] border border-[var(--color-hairline)]">
+            <span class="tabular text-[10px] font-medium px-2 py-0.5 rounded-full bg-[var(--color-card-subtle)] text-[var(--color-muted)] border border-[var(--color-hairline)]">
               ${item.condition || 'Good'}
             </span>
-            <span class="font-mono text-[10px] text-[var(--color-muted)]">Verified Seller</span>
+            <span class="tabular text-[10px] text-[var(--color-muted)]">Verified Seller</span>
           </div>
         </div>
 
         <!-- Bottom: Price & Action Buttons -->
         <div class="pt-3 border-t border-[var(--color-hairline)] flex items-center justify-between gap-2">
           <div class="flex items-baseline">
-            <span class="text-xl font-bold font-mono text-[var(--color-ink)]">₹${item.price}</span>
+            <span class="text-xl font-bold tabular text-[var(--color-ink)]">₹${item.price}</span>
           </div>
           <div class="flex items-center gap-1.5">
             <button type="button" onclick="openItemDetail(${item.id})" class="btn-view-details px-3 py-1.5 rounded-full bg-[var(--color-card-subtle)] hover:bg-[var(--color-hairline)] text-[var(--color-ink)] text-xs font-medium cursor-pointer transition-colors">

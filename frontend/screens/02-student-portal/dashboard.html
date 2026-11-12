@@ -22,7 +22,11 @@
   <!-- Shared State & Formulas -->
   <script src="/js/academic-formulas.js"></script>
   <script src="/js/stitch-state.js"></script>
-  <script src="/js/dc-dynamic-island.js" defer></script>
+  
+
+  <link rel="stylesheet" href="/css/animations.css" />
+  <script src="/js/date-utils.js"></script>
+  <script src="/js/top-nav.js" defer></script>
 </head>
 
 <body class="bg-[var(--color-canvas)] text-[var(--color-ink)] min-h-screen flex flex-col antialiased">
@@ -38,8 +42,8 @@
       <section class="w-full flex flex-col lg:flex-row items-start lg:items-end justify-between gap-6 pb-2" data-testid="tile-hero-header">
         <div class="flex flex-col gap-3 max-w-3xl">
           <div class="flex items-center gap-3">
-            <span class="font-mono text-xs bg-[var(--color-feature-card)] text-[var(--color-lime)] px-3 py-1 rounded-full uppercase tracking-wider font-semibold" id="homePinBadge">
-              PIN: 24259-CS-025 · SBTET C-24
+            <span class="tabular text-xs bg-[var(--color-feature-card)] text-[var(--color-lime)] px-3 py-1 rounded-full uppercase tracking-wider font-semibold" id="homePinBadge">
+              PIN: — · SBTET C-24
             </span>
             <span class="font-script text-2xl text-[var(--color-muted)] font-semibold -rotate-2">
               Learn · Grow · Achieve
@@ -47,7 +51,7 @@
           </div>
 
           <h1 class="text-4xl lg:text-5xl font-medium tracking-tight text-[var(--color-ink)]" id="homeGreeting">
-            Welcome back, <span id="homeFirstName">Himesh</span>
+            Welcome back, <span id="homeFirstName">Student</span>
           </h1>
 
           <!-- Data-driven Alert Chip: shown only when below 75% cutoff -->
@@ -87,7 +91,7 @@
         </div>
 
         <!-- Sync Pill status indicator -->
-        <div class="flex items-center gap-2 self-start lg:self-auto font-mono text-xs text-[var(--color-muted)] bg-[var(--color-card)] px-4 py-2 rounded-full border border-[var(--color-hairline)]">
+        <div class="flex items-center gap-2 self-start lg:self-auto tabular text-xs text-[var(--color-muted)] bg-[var(--color-card)] px-4 py-2 rounded-full border border-[var(--color-hairline)]">
           <span class="w-2 h-2 rounded-full bg-[var(--color-lime)] animate-pulse"></span>
           <span id="homeSyncTime">SBTET Gateway: Synced</span>
         </div>
@@ -112,10 +116,10 @@
                 </div>
                 <div>
                   <h2 class="text-lg font-medium text-[var(--color-ink)]">Attendance &amp; Academic Eligibility</h2>
-                  <span class="font-mono text-xs text-[var(--color-muted)]">Curriculum Regulation: Minimum 75% for Board Exam Hall Ticket</span>
+                  <span class="tabular text-xs text-[var(--color-muted)]">Curriculum Regulation: Minimum 75% for Board Exam Hall Ticket</span>
                 </div>
               </div>
-              <span class="font-mono text-xs px-3 py-1 rounded-full uppercase font-semibold self-start sm:self-auto" id="homeEligibilityBadge">
+              <span class="tabular text-xs px-3 py-1 rounded-full uppercase font-semibold self-start sm:self-auto" id="homeEligibilityBadge">
                 Calculating...
               </span>
             </div>
@@ -132,15 +136,15 @@
                   <!-- Remaining Bubble (Lime) -->
                   <circle cx="230" cy="118" fill="var(--color-lime)" r="32"></circle>
                   <!-- Overlay Labels -->
-                  <text class="font-mono font-bold text-[20px]" fill="#FFFFFF" text-anchor="middle" x="96" y="86" id="vennAbsentVal">130</text>
+                  <text class="tabular font-bold text-[20px]" fill="#FFFFFF" text-anchor="middle" x="96" y="86" id="vennAbsentVal">130</text>
                   <text class="text-[10px] font-sans" fill="#E4E4E1" text-anchor="middle" x="96" y="104">ABSENT</text>
-                  <text class="font-mono font-bold text-[18px]" fill="#1A1A1A" text-anchor="middle" x="190" y="78" id="vennPresentVal">50</text>
+                  <text class="tabular font-bold text-[18px]" fill="#1A1A1A" text-anchor="middle" x="190" y="78" id="vennPresentVal">50</text>
                   <text class="text-[10px] font-sans" fill="#1A1A1A" text-anchor="middle" x="190" y="94">PRESENT</text>
-                  <text class="font-mono font-bold text-[15px]" fill="#1A1A1A" text-anchor="middle" x="230" y="118" id="vennRemainingVal">0</text>
+                  <text class="tabular font-bold text-[15px]" fill="#1A1A1A" text-anchor="middle" x="230" y="118" id="vennRemainingVal">0</text>
                   <text class="text-[9px] font-sans" fill="#1A1A1A" text-anchor="middle" x="230" y="132">REMAINING</text>
                 </svg>
 
-                <div class="flex items-center gap-4 mt-2 font-mono text-xs text-[var(--color-muted)]">
+                <div class="flex items-center gap-4 mt-2 tabular text-xs text-[var(--color-muted)]">
                   <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[var(--color-lavender)]"></span>Present: <strong class="text-[var(--color-ink)]" id="legendPresent">50</strong></span>
                   <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[var(--color-feature-card)]"></span>Absent: <strong class="text-[var(--color-ink)]" id="legendAbsent">130</strong></span>
                   <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[var(--color-lime)]"></span>Remaining: <strong class="text-[var(--color-ink)]" id="legendRemaining">0</strong></span>
@@ -153,7 +157,7 @@
                 <div class="flex flex-col gap-1.5">
                   <div class="flex justify-between items-baseline">
                     <span class="text-xs font-medium text-[var(--color-ink)]">Current Attendance Rate</span>
-                    <span class="text-2xl font-mono font-bold leading-none" id="homeRateVal">
+                    <span class="text-2xl tabular font-bold leading-none" id="homeRateVal">
                       27.8<span class="text-xs font-sans text-[var(--color-muted)] ml-0.5">%</span>
                     </span>
                   </div>
@@ -166,7 +170,7 @@
                 <div class="flex flex-col gap-1.5">
                   <div class="flex justify-between items-baseline">
                     <span class="text-xs font-medium text-[var(--color-muted)]">SBTET Statutory Hall Ticket Cutoff</span>
-                    <span class="text-sm font-mono font-semibold text-[var(--color-muted)]">75.0%</span>
+                    <span class="text-sm tabular font-semibold text-[var(--color-muted)]">75.0%</span>
                   </div>
                   <div class="w-full h-2.5 bg-[var(--color-card-subtle)] rounded-full overflow-hidden relative">
                     <div class="h-full bg-[var(--color-lime)] rounded-full" style="width: 75%;"></div>
@@ -178,7 +182,7 @@
                 <div class="flex flex-col gap-1.5">
                   <div class="flex justify-between items-baseline">
                     <span class="text-xs font-medium text-[var(--color-muted)]">Semester Instruction Progression</span>
-                    <span class="text-xs font-mono font-medium text-[var(--color-muted)]" id="homeProgressionText">180 / 180 Days</span>
+                    <span class="text-xs tabular font-medium text-[var(--color-muted)]" id="homeProgressionText">180 / 180 Days</span>
                   </div>
                   <div class="w-full h-2 bg-[var(--color-card-subtle)] rounded-full overflow-hidden">
                     <div class="h-full bg-[var(--color-ink)] rounded-full transition-all duration-500" id="homeProgressionBar" style="width: 100%;"></div>
@@ -197,12 +201,12 @@
                 </div>
                 <div>
                   <h3 class="text-base font-medium text-white">Monthly Attendance Trajectory</h3>
-                  <span class="font-mono text-xs text-[#9A9A9A]">Biometric Punch Aggregates &amp; 75% Cutoff Threshold</span>
+                  <span class="tabular text-xs text-[#9A9A9A]">Biometric Punch Aggregates &amp; 75% Cutoff Threshold</span>
                 </div>
               </div>
 
               <!-- Legend -->
-              <div class="flex items-center gap-3 font-mono text-xs text-[#9A9A9A] self-start sm:self-auto">
+              <div class="flex items-center gap-3 tabular text-xs text-[#9A9A9A] self-start sm:self-auto">
                 <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[var(--color-lime)]"></span>&gt;=75%</span>
                 <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[var(--color-lavender)]"></span>65-74%</span>
                 <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[#FFE1DE]"></span>&lt;65%</span>
@@ -214,7 +218,7 @@
               <canvas id="monthlyTrendChart"></canvas>
             </div>
 
-            <div class="pt-3 border-t border-white/10 flex items-center justify-between text-xs text-[#9A9A9A] font-mono">
+            <div class="pt-3 border-t border-white/10 flex items-center justify-between text-xs text-[#9A9A9A] tabular">
               <span id="chartCutoffNote">--- 75% Statutory Cutoff Line</span>
               <span>Scheme C-24 Biometric Telemetry</span>
             </div>
@@ -234,7 +238,7 @@
                 <div class="w-10 h-10 rounded-full bg-[#1A1A1A] text-[var(--color-lime)] flex items-center justify-center">
                   <span class="material-symbols-outlined text-[20px]">verified_user</span>
                 </div>
-                <span class="font-mono text-[11px] font-bold uppercase tracking-wider bg-[#1A1A1A]/10 px-2.5 py-1 rounded-full">
+                <span class="tabular text-[11px] font-bold uppercase tracking-wider bg-[#1A1A1A]/10 px-2.5 py-1 rounded-full">
                   Fast-Track
                 </span>
               </div>
@@ -263,20 +267,20 @@
                 </div>
                 <div>
                   <h4 class="text-sm font-medium text-[var(--color-ink)]">Cumulative GPA</h4>
-                  <span class="font-mono text-[11px] text-[var(--color-muted)]">Across Completed Semesters</span>
+                  <span class="tabular text-[11px] text-[var(--color-muted)]">Across Completed Semesters</span>
                 </div>
               </div>
-              <span class="font-mono text-xs px-2.5 py-1 rounded-full bg-[var(--color-card-subtle)] text-[var(--color-ink)] font-semibold" id="homePromotionChip">
+              <span class="tabular text-xs px-2.5 py-1 rounded-full bg-[var(--color-card-subtle)] text-[var(--color-ink)] font-semibold" id="homePromotionChip">
                 Promoted
               </span>
             </div>
 
             <div class="py-3 flex items-baseline gap-2">
-              <span class="text-4xl font-mono font-bold text-[var(--color-ink)]" id="homeCgpaVal">9.11</span>
+              <span class="text-4xl tabular font-bold text-[var(--color-ink)]" id="homeCgpaVal">9.11</span>
               <span class="text-xs text-[var(--color-muted)]">Out of 10.0 Scale</span>
             </div>
 
-            <div class="pt-2 border-t border-[var(--color-hairline)] flex items-center justify-between text-xs text-[var(--color-muted)] font-mono">
+            <div class="pt-2 border-t border-[var(--color-hairline)] flex items-center justify-between text-xs text-[var(--color-muted)] tabular">
               <span>Credits: <strong class="text-[var(--color-ink)]" id="homeCreditsVal">80.0 / 80.0</strong></span>
               <a href="/screens/02-student-portal/results.html" class="text-[var(--color-ink)] hover:underline inline-flex items-center gap-1 font-sans">
                 <span>View Marks</span>
@@ -293,10 +297,10 @@
                 <span class="text-xs font-medium text-[var(--color-muted)]">Backlogs</span>
                 <span class="material-symbols-outlined text-[18px] text-[var(--color-muted)]">assignment_late</span>
               </div>
-              <div class="text-3xl font-mono font-bold text-[var(--color-ink)] leading-none my-1" id="homeBacklogsVal">
+              <div class="text-3xl tabular font-bold text-[var(--color-ink)] leading-none my-1" id="homeBacklogsVal">
                 0
               </div>
-              <span class="font-mono text-[11px] text-[var(--color-muted)]" id="homeBacklogsSub">Active Subjects</span>
+              <span class="tabular text-[11px] text-[var(--color-muted)]" id="homeBacklogsSub">Active Subjects</span>
             </section>
 
             <!-- Card 6: Instruction Days Conducted -->
@@ -305,10 +309,10 @@
                 <span class="text-xs font-medium text-[var(--color-muted)]">Attendance</span>
                 <span class="material-symbols-outlined text-[18px] text-[var(--color-muted)]">event_available</span>
               </div>
-              <div class="text-xl font-mono font-bold text-[var(--color-ink)] leading-none my-1" id="homeDaysVal">
+              <div class="text-xl tabular font-bold text-[var(--color-ink)] leading-none my-1" id="homeDaysVal">
                 50 / 180
               </div>
-              <span class="font-mono text-[11px] text-[var(--color-muted)]" id="homeDaysSub">Days Attended</span>
+              <span class="tabular text-[11px] text-[var(--color-muted)]" id="homeDaysSub">Days Attended</span>
             </section>
           </div>
 
@@ -331,7 +335,7 @@
             <div class="flex flex-col gap-2.5 py-3" id="homeCircularsList">
               <div class="p-2.5 rounded-2xl bg-[var(--color-card-subtle)] border border-[var(--color-hairline)] flex flex-col gap-1">
                 <div class="flex items-center justify-between">
-                  <span class="font-mono text-[10px] text-[var(--color-muted)]">TODAY · SBTET ACADEMIC</span>
+                  <span class="tabular text-[10px] text-[var(--color-muted)]">TODAY · SBTET ACADEMIC</span>
                   <span class="w-1.5 h-1.5 rounded-full bg-[var(--color-lime)]"></span>
                 </div>
                 <p class="text-xs font-medium text-[var(--color-ink)] line-clamp-1">Mid-Semester II Schedule &amp; Lab Examination Slots Released</p>
@@ -339,14 +343,14 @@
 
               <div class="p-2.5 rounded-2xl bg-[var(--color-card-subtle)] border border-[var(--color-hairline)] flex flex-col gap-1">
                 <div class="flex items-center justify-between">
-                  <span class="font-mono text-[10px] text-[var(--color-muted)]">YESTERDAY · ADMINISTRATION</span>
+                  <span class="tabular text-[10px] text-[var(--color-muted)]">YESTERDAY · ADMINISTRATION</span>
                 </div>
                 <p class="text-xs font-medium text-[var(--color-ink)] line-clamp-1">Biometric Attendance Condonation Fee Portal Closes Nov 15</p>
               </div>
             </div>
 
             <div class="pt-2 border-t border-[var(--color-hairline)] text-center">
-              <span class="font-mono text-[10px] text-[var(--color-muted)]">Institution Code 259 Official Board</span>
+              <span class="tabular text-[10px] text-[var(--color-muted)]">Institution Code 259 Official Board</span>
             </div>
           </section>
 
@@ -359,7 +363,7 @@
       <section class="w-full flex flex-col gap-3 pt-2" data-testid="tile-quick-access">
         <div class="flex items-center justify-between">
           <h3 class="text-base font-medium text-[var(--color-ink)]">Quick Campus Access</h3>
-          <span class="font-mono text-xs text-[var(--color-muted)]">6 Key Modules</span>
+          <span class="tabular text-xs text-[var(--color-muted)]">6 Key Modules</span>
         </div>
 
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
@@ -370,7 +374,7 @@
             </div>
             <div>
               <h4 class="text-xs font-bold text-[var(--color-ink)]">Biometric Attendance</h4>
-              <p class="font-mono text-[10px] text-[var(--color-muted)] mt-0.5">Punch logs &amp; condonation</p>
+              <p class="tabular text-[10px] text-[var(--color-muted)] mt-0.5">Punch logs &amp; condonation</p>
             </div>
           </a>
 
@@ -381,7 +385,7 @@
             </div>
             <div>
               <h4 class="text-xs font-bold text-[var(--color-ink)]">Bonafide &amp; Bus Pass</h4>
-              <p class="font-mono text-[10px] text-[var(--color-muted)] mt-0.5">Digital certificates</p>
+              <p class="tabular text-[10px] text-[var(--color-muted)] mt-0.5">Digital certificates</p>
             </div>
           </a>
 
@@ -392,7 +396,7 @@
             </div>
             <div>
               <h4 class="text-xs font-bold text-[var(--color-ink)]">Resale Hub</h4>
-              <p class="font-mono text-[10px] text-[var(--color-muted)] mt-0.5">Campus textbook trade</p>
+              <p class="tabular text-[10px] text-[var(--color-muted)] mt-0.5">Campus textbook trade</p>
             </div>
           </a>
 
@@ -403,7 +407,7 @@
             </div>
             <div>
               <h4 class="text-xs font-bold text-[var(--color-ink)]">Results &amp; Marks</h4>
-              <p class="font-mono text-[10px] text-[var(--color-muted)] mt-0.5">SBTET official memos</p>
+              <p class="tabular text-[10px] text-[var(--color-muted)] mt-0.5">SBTET official memos</p>
             </div>
           </a>
 
@@ -414,7 +418,7 @@
             </div>
             <div>
               <h4 class="text-xs font-bold text-[var(--color-ink)]">Departments</h4>
-              <p class="font-mono text-[10px] text-[var(--color-muted)] mt-0.5">Faculty directory &amp; labs</p>
+              <p class="tabular text-[10px] text-[var(--color-muted)] mt-0.5">Faculty directory &amp; labs</p>
             </div>
           </a>
 
@@ -425,7 +429,7 @@
             </div>
             <div>
               <h4 class="text-xs font-bold text-[var(--color-ink)]">Circulars</h4>
-              <p class="font-mono text-[10px] text-[var(--color-muted)] mt-0.5">Institution announcements</p>
+              <p class="tabular text-[10px] text-[var(--color-muted)] mt-0.5">Institution announcements</p>
             </div>
           </a>
         </div>

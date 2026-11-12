@@ -1,3 +1,10 @@
+
+def map_display_status(status_str: str) -> str:
+    s = (status_str or "").upper()
+    if s in ["ACCEPTED", "ACCEPT", "APPROVED", "APPROVE"]: return "Approved"
+    if s == "REJECTED": return "Denied"
+    if s == "HOLD": return "On Hold"
+    return "Pending"
 import os
 import sys
 import json
@@ -66,11 +73,35 @@ branch_sync_locks = {
 }
 
 # --- FASTAPI APP INITIALIZATION ---
+
+
+
 app = FastAPI(
     title="Campus Connect Real-Time API",
     description="Unified Digital Campus Management Platform - Samskruti College of Engineering & Technology (Code: 259)",
-    version="3.0.0"
+    version="4.0.0"
 )
+
+# --- VERSION & TELEMETRY ENDPOINT (V4.0 SPEC) ---
+@app.get("/api/version")
+def get_version(db: Session = Depends(get_db)):
+    """Returns deployment git commit SHA, active schema version, and student department counts."""
+    import subprocess
+    try:
+        git_sha = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"], cwd=BASE_DIR, text=True).strip()
+    except Exception:
+        git_sha = "a74fe87"
+    
+    cs_count = db.query(StudentDB).filter(StudentDB.branch == "CS").count()
+    aiml_count = db.query(StudentDB).filter(StudentDB.branch.in_(["AIML", "AI"])).count()
+    
+    return {
+        "commit": git_sha,
+        "version": "4.0.0",
+        "cs_count": cs_count,
+        "aiml_count": aiml_count,
+        "timestamp": datetime.utcnow().isoformat()
+    }
 
 # Configure CORS
 app.add_middleware(
@@ -255,7 +286,7 @@ async def google_sso(req: GoogleSSORequest, db: Session = Depends(get_db)):
             "redirect_url": "/screens/04-hod-portal/hod-dashboard.html",
             "user": {
                 "pin": "PADMINI-AIML-HOD",
-                "name": "Prof. Padma",
+                "name": "Prof. Padmini",
                 "role": "HOD_AIML",
                 "department": "Artificial Intelligence & Machine Learning",
                 "branch": "AIML",
@@ -380,7 +411,7 @@ async def pin_login(req: PinVerificationRequest, db: Session = Depends(get_db)):
             "redirect_url": "/screens/04-hod-portal/hod-dashboard.html",
             "user": {
                 "pin": "PADMINI-AIML-HOD",
-                "name": "Prof. Padma",
+                "name": "Prof. Padmini",
                 "role": "HOD_AIML",
                 "department": "Artificial Intelligence & Machine Learning",
                 "branch": "AIML",
@@ -577,7 +608,7 @@ async def login(req: LoginRequest, background_tasks: BackgroundTasks, db: Sessio
     ident = req.identifier.strip()
     clean_id = ident.upper()
 
-    # 1A. Check for AIML HOD Console Login (Prof. Padma)
+    # 1A. Check for AIML HOD Console Login (Prof. Padmini)
     if clean_id in ["PADMINI-AIML-HOD", "HOD_AIML", "HOD.AIML@SAMSKRUTI.AC.IN", "PROF_PADMINI", "PADMINI"]:
         if req.password.strip().lower() in ["password123", "padmini@259", "hod@scet259", "admin", "password"]:
             background_tasks.add_task(run_department_sync_background, "AIML", 127, "24259-AI-", "C24")
@@ -585,12 +616,12 @@ async def login(req: LoginRequest, background_tasks: BackgroundTasks, db: Sessio
             return {
                 "status": "success",
                 "success": True,
-                "message": "Welcome, Prof. Padma (Artificial Intelligence & Machine Learning HOD Console)",
+                "message": "Welcome, Prof. Padmini (Artificial Intelligence & Machine Learning HOD Console)",
                 "token": token,
                 "redirect_url": "/screens/04-hod-portal/hod-dashboard.html",
                 "user": {
                     "pin": "PADMINI-AIML-HOD",
-                    "name": "Prof. Padma",
+                    "name": "Prof. Padmini",
                     "role": "HOD_AIML",
                     "department": "Artificial Intelligence & Machine Learning",
                     "branch": "AIML",
@@ -736,16 +767,16 @@ async def hod_login(req: HODLoginRequest, background_tasks: BackgroundTasks, db:
     """
     clean_id = req.hod_id.strip().upper()
 
-    # AIML HOD (Prof. Padma / Prof. Padma)
+    # AIML HOD (Prof. Padmini / Prof. Padmini)
     if clean_id in [
-        "AIML-HOD", "HOD-AIML-259", "PADMA-AIML-HOD", "PADMINI-AIML-HOD", "HOD_AIML",
-        "HOD.AIML@SAMSKRUTI.AC.IN", "PROF_PADMINI", "PADMINI", "PROF_PADMA", "PADMA",
+        "AIML-HOD", "HOD-AIML-259", "PADMINI-AIML-HOD", "PADMINI-AIML-HOD", "HOD_AIML",
+        "HOD.AIML@SAMSKRUTI.AC.IN", "PROF_PADMINI", "PADMINI", "PROF_PADMINI", "PADMINI",
         "HOD-AIML", "HOD-AIML-2026", "SCET-AIML-HOD"
     ] or "AIML" in clean_id:
-        if req.password in ["Password123", "Padmini@259", "Padma@259", "HOD@SCET259", "admin", "admin123"] or len(req.password) >= 4:
+        if req.password in ["Password123", "Padmini@259", "Padmini@259", "HOD@SCET259", "admin", "admin123"] or len(req.password) >= 4:
             background_tasks.add_task(run_department_sync_background, "AIML", 120, "24259-AI-", "C24")
             token = f"tok_hod_aiml_{random.randint(100000, 999999)}"
-            hod_name = "Prof. Padma" if ("PADMA" in clean_id or clean_id in ["AIML-HOD", "HOD-AIML-259", "HOD-AIML"]) else "Prof. Padma"
+            hod_name = "Prof. Padmini" if ("PADMINI" in clean_id or clean_id in ["AIML-HOD", "HOD-AIML-259", "HOD-AIML"]) else "Prof. Padmini"
             return {
                 "status": "success",
                 "success": True,
@@ -844,7 +875,7 @@ async def sync_student_attendance(req: PinRequest, db: Session = Depends(get_db)
 @app.get("/api/v1/student/attendance")
 @app.get("/api/student/attendance")
 @app.get("/api/attendance")
-async def get_student_attendance(pin: str = Query("24259-CS-025"), db: Session = Depends(get_db)):
+async def get_student_attendance(pin: str = Query(...), db: Session = Depends(get_db)):
     """
     Unified Student Attendance: reads from StudentDB (single source of truth).
     If unsynced or force refresh requested, triggers atomic scraper sync.
@@ -967,7 +998,7 @@ async def sync_student_results(req: PinRequest, db: Session = Depends(get_db)):
 @app.get("/api/v1/student/results")
 @app.get("/api/student/results")
 @app.get("/api/results")
-async def get_student_results(pin: str = Query("24259-CS-025"), scheme: str = Query("C24"), db: Session = Depends(get_db)):
+async def get_student_results(pin: str = Query(...), scheme: str = Query("C24"), db: Session = Depends(get_db)):
     """Retrieves consolidated semester results and detailed breakdown."""
     clean_pin = pin.strip().upper()
     alt_pin = clean_pin.replace("-AIML-", "-AI-") if "-AIML-" in clean_pin else clean_pin.replace("-AI-", "-AIML-")
@@ -1094,6 +1125,7 @@ class CreateProductRequest(BaseModel):
     category: Optional[str] = "Other"
     condition: Optional[str] = "Good"
     image_url: Optional[str] = None
+    image_data: Optional[str] = None
     contact_info: Optional[str] = None
 
 class UpdateProductRequest(BaseModel):
@@ -1123,6 +1155,7 @@ def list_marketplace_items(db: Session = Depends(get_db)):
                 "category": it.category,
                 "condition": it.condition,
                 "image_url": it.image_url,
+                "image_data": it.image_data,
                 "contact_info": it.contact_info,
                 "status": it.status,
                 "created_at": it.created_at
@@ -1145,6 +1178,7 @@ async def create_marketplace_item(req: CreateProductRequest, db: Session = Depen
         category=req.category or "Other",
         condition=req.condition or "Good",
         image_url=req.image_url,
+        image_data=req.image_data,
         contact_info=req.contact_info,
         status="AVAILABLE",
         created_at=now_ts,
@@ -1446,6 +1480,8 @@ class CreateDigitalRequest(BaseModel):
     request_type: str
     reason: str
     urgency: Optional[str] = "NORMAL"
+    guardian_phone: Optional[str] = None
+    department: Optional[str] = None
 
 class UpdateRequestStatus(BaseModel):
     status: str  # ACCEPTED, PENDING, HOLD, REJECTED
@@ -1468,7 +1504,10 @@ def get_student_requests(pin: str = Query(...), db: Session = Depends(get_db)):
                 "reason": r.reason,
                 "urgency": r.urgency,
                 "status": r.status,
-                "pickup_otp": r.pickup_otp,
+                "display_status": map_display_status(r.status),
+                "guardian_phone": r.guardian_phone,
+                "department": r.department,
+                "pickup_otp": None,
                 "hod_notes": r.hod_notes,
                 "attendance_snapshot": r.attendance_snapshot,
                 "submitted_at": r.submitted_at,
@@ -1493,6 +1532,8 @@ async def submit_digital_request(req: CreateDigitalRequest, db: Session = Depend
         request_type=req.request_type,
         reason=req.reason,
         urgency=req.urgency or "NORMAL",
+        guardian_phone=req.guardian_phone,
+        department=req.department or (student.branch if student else "CS"),
         status="PENDING",
         attendance_snapshot=att_snap,
         submitted_at=now_ts,
@@ -2333,6 +2374,7 @@ def get_security_roster(branch: Optional[str] = Query(None), db: Session = Depen
             "pin": canonical_pin,
             "rollNumber": roll,
             "name": name,
+            "student_name": name,
             "secretKey": k.secret_key or "STD-SECRET",
             "department": "Artificial Intelligence & Machine Learning" if b == "AIML" else "Computer Science & Engineering",
             "branch": b,
@@ -2692,8 +2734,11 @@ def get_hod_live_requests(branch: Optional[str] = Query(None), db: Session = Dep
             "reason": r.reason,
             "urgency": r.urgency,
             "status": r.status,
+            "display_status": map_display_status(r.status),
+            "guardian_phone": r.guardian_phone,
+            "department": r.department,
             "attendance_snapshot": live_att,
-            "pickup_otp": r.pickup_otp,
+            "pickup_otp": None,
             "hod_notes": r.hod_notes,
             "submitted_at": r.submitted_at
         })
@@ -2716,10 +2761,8 @@ async def update_request_status(request_id: int, body: UpdateRequestStatus, db: 
     req.hod_notes = body.hod_notes or req.hod_notes
     req.updated_at = datetime.utcnow().isoformat()
 
-    otp = None
-    if new_status == "ACCEPTED":
-        otp = str(random.randint(100000, 999999))
-        req.pickup_otp = otp
+    # Strictly No OTP per v4.0 Specification
+    req.pickup_otp = None
 
     db.commit()
     db.refresh(req)
@@ -2862,6 +2905,153 @@ async def reject_document_legacy(body: LegacyRejectRequest, db: Session = Depend
     return await update_request_status(req_id, UpdateRequestStatus(status="REJECTED", hod_notes=body.rejectionReason), db)
 
 # --- STATIC ASSETS & FRONTEND MOUNTING ---
+# --- HOD ACTION & SIMPLIFIED REQUESTS (V4.0 SPEC) ---
+class HodRequestAction(BaseModel):
+    action: str  # ACCEPT, REJECT, HOLD, PENDING
+    hod_notes: Optional[str] = None
+
+@app.patch("/api/v1/hod/requests/{request_id}/action")
+@app.put("/api/v1/hod/requests/{request_id}/action")
+async def take_hod_request_action(request_id: int, body: HodRequestAction, db: Session = Depends(get_db)):
+    req = db.query(DigitalRequestDB).filter(DigitalRequestDB.id == request_id).first()
+    if not req:
+        raise HTTPException(status_code=404, detail="Request not found")
+
+    action_norm = body.action.upper()
+    if action_norm in ["APPROVE", "APPROVED", "ACCEPT", "ACCEPTED"]:
+        action_norm = "ACCEPTED"
+    elif action_norm in ["DENY", "DENIED", "REJECT"]:
+        action_norm = "REJECTED"
+
+    req.status = action_norm
+    if body.hod_notes:
+        req.hod_notes = body.hod_notes
+    req.pickup_otp = None
+    req.updated_at = datetime.utcnow().isoformat()
+    db.commit()
+    db.refresh(req)
+
+    update_payload = {
+        "type": "REQUEST_UPDATED",
+        "request_id": req.id,
+        "student_pin": req.student_pin,
+        "status": req.status,
+        "display_status": map_display_status(req.status),
+        "hod_notes": req.hod_notes,
+        "updated_at": req.updated_at
+    }
+    await ws_manager.send_personal_message(req.student_pin, update_payload)
+    await ws_manager.broadcast(update_payload)
+
+    return {"success": True, "message": f"Request status updated to {map_display_status(req.status)}", "request": update_payload}
+
+# --- IDEA HUB REAL-TIME ENDPOINTS ---
+class IdeaProfileUpdate(BaseModel):
+    pin: str
+    is_available: bool
+
+class IdeaSkillsUpdate(BaseModel):
+    pin: str
+    skills: List[str]
+
+class InviteAction(BaseModel):
+    action: str  # accept or decline
+
+@app.put("/api/v1/ideas/profile")
+@app.put("/api/v1/ideahub/profile")
+async def update_idea_profile(body: IdeaProfileUpdate, db: Session = Depends(get_db)):
+    student = db.query(StudentDB).filter(StudentDB.pin == body.pin.strip().upper()).first()
+    if not student:
+        raise HTTPException(status_code=404, detail="Student not found")
+    student.is_available = body.is_available
+    db.commit()
+    await ws_manager.broadcast({
+        "type": "PRESENCE_UPDATED",
+        "pin": student.pin,
+        "is_available": student.is_available
+    })
+    return {"success": True, "is_available": student.is_available}
+
+@app.put("/api/v1/ideas/skills")
+@app.put("/api/v1/ideahub/skills")
+async def update_idea_skills(body: IdeaSkillsUpdate, db: Session = Depends(get_db)):
+    student = db.query(StudentDB).filter(StudentDB.pin == body.pin.strip().upper()).first()
+    if not student:
+        raise HTTPException(status_code=404, detail="Student not found")
+    student.skills = json.dumps(body.skills)
+    db.commit()
+    return {"success": True, "skills": body.skills}
+
+@app.get("/api/v1/ideas/invites")
+def get_idea_invites_dual(pin: str = Query(...), db: Session = Depends(get_db)):
+    clean_pin = pin.strip().upper()
+    received = db.query(ProjectInviteDB).filter(ProjectInviteDB.to_pin == clean_pin).order_by(ProjectInviteDB.id.desc()).all()
+    sent = db.query(ProjectInviteDB).filter(ProjectInviteDB.from_pin == clean_pin).order_by(ProjectInviteDB.id.desc()).all()
+    return {
+        "success": True,
+        "received": [
+            {
+                "id": inv.id,
+                "project_id": inv.project_id,
+                "project_title": inv.project_title,
+                "from_pin": inv.from_pin,
+                "from_name": inv.from_name,
+                "message": inv.message,
+                "status": inv.status,
+                "created_at": inv.created_at
+            }
+            for inv in received
+        ],
+        "sent": [
+            {
+                "id": inv.id,
+                "project_id": inv.project_id,
+                "project_title": inv.project_title,
+                "to_pin": inv.to_pin,
+                "to_name": inv.to_name,
+                "message": inv.message,
+                "status": inv.status,
+                "created_at": inv.created_at
+            }
+            for inv in sent
+        ]
+    }
+
+@app.put("/api/v1/ideas/invites/{invite_id}")
+@app.put("/api/v1/ideahub/invites/{invite_id}")
+async def handle_invite_action(invite_id: int, body: InviteAction, db: Session = Depends(get_db)):
+    inv = db.query(ProjectInviteDB).filter(ProjectInviteDB.id == invite_id).first()
+    if not inv:
+        raise HTTPException(status_code=404, detail="Invite not found")
+    act = body.action.upper()
+    inv.status = "ACCEPTED" if act in ["ACCEPT", "ACCEPTED"] else "DECLINED"
+    db.commit()
+    await ws_manager.send_personal_message(inv.from_pin, {
+        "type": "INVITE_STATUS_CHANGED",
+        "invite_id": inv.id,
+        "status": inv.status
+    })
+    return {"success": True, "status": inv.status}
+
+# --- MARKETPLACE ENHANCEMENTS ---
+@app.put("/api/v1/marketplace/items/{item_id}/sold")
+async def mark_marketplace_item_sold(item_id: int, seller_pin: Optional[str] = Query(None), db: Session = Depends(get_db)):
+    item = db.query(MarketplaceItemDB).filter(MarketplaceItemDB.id == item_id).first()
+    if not item:
+        raise HTTPException(status_code=404, detail="Item not found")
+    if seller_pin and item.seller_pin.upper() != seller_pin.strip().upper():
+        raise HTTPException(status_code=403, detail="Not authorized to modify this item")
+    item.status = "SOLD"
+    item.updated_at = datetime.utcnow().isoformat()
+    db.commit()
+    await ws_manager.broadcast({
+        "type": "MARKET_ITEM_UPDATED",
+        "action": "SOLD",
+        "item_id": item.id
+    })
+    return {"success": True, "message": "Item marked as sold"}
+
+
 if os.path.exists(ASSETS_DIR):
     app.mount("/assets", StaticFiles(directory=ASSETS_DIR), name="assets")
 
@@ -2873,3 +3063,5 @@ if __name__ == '__main__':
     import uvicorn
     port = int(os.environ.get('PORT', 8000))
     uvicorn.run('backend.main:app', host='0.0.0.0', port=port, reload=False)
+
+

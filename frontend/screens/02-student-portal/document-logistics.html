@@ -10,54 +10,53 @@
   <link rel="stylesheet" href="/css/theme-tokens.css" />
   <link rel="stylesheet" href="/css/stitch-design-system.css" />
   <link rel="stylesheet" href="/css/top-nav.css" />
+  <link rel="stylesheet" href="/css/animations.css" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
   
   <!-- Tailwind CSS & Master Config -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="/js/stitch-tailwind-config.js"></script>
 
-  <!-- Shared State & Dynamic Island -->
-  <script src="/js/stitch-state.js"></script>
-  <script src="/js/dc-dynamic-island.js" defer></script>
+  <!-- Date Utils & Shared Nav System -->
+  <script src="/js/date-utils.js"></script>
+  <script src="/js/top-nav.js" defer></script>
   <script src="/screens/02-student-portal/document-logistics.js" defer></script>
 </head>
 
 <body class="bg-[var(--color-canvas)] text-[var(--color-ink)] min-h-screen flex flex-col antialiased">
-  <!-- Dynamic Island Header Mounts Automatically via dc-dynamic-island.js -->
 
   <!-- Main Viewport Layout -->
-  <main class="w-full pt-[80px] pb-12 flex-1">
+  <main class="w-full pt-[88px] pb-12 flex-1">
     <div class="campus-container flex flex-col gap-6 pt-4">
 
       <!-- ============================================================== -->
       <!-- TOP TITLE & REFRESH ACTION ROW                                 -->
       <!-- ============================================================== -->
-      <section class="w-full flex flex-col md:flex-row md:items-end justify-between gap-4 pb-2" data-testid="tile-requests-header">
+      <section class="w-full flex flex-col md:flex-row md:items-end justify-between gap-4 pb-2 animate-entry stagger-1" data-testid="tile-requests-header">
         <div class="flex flex-col gap-1">
           <div class="flex items-center gap-2 mb-1">
-            <span class="font-mono text-xs bg-[var(--color-feature-card)] text-[var(--color-lime)] px-3 py-1 rounded-full uppercase tracking-wider font-semibold" id="reqBadge">
-              Semester V · Terminal Attestation
+            <span class="text-xs bg-[var(--color-feature-card)] text-[var(--color-lime)] px-3 py-1 rounded-full uppercase tracking-wider font-semibold tabular" id="reqBadge">
+              Semester V · Institutional Attestation
             </span>
             <span class="w-1.5 h-1.5 rounded-full bg-[var(--color-lime)]"></span>
-            <span class="font-mono text-xs text-[var(--color-muted)]">
+            <span class="text-xs text-[var(--color-muted)] tabular">
               SBTET Registry Code 259
             </span>
           </div>
-          <h1 class="text-4xl lg:text-5xl font-medium tracking-tight text-[var(--color-ink)]">
+          <h1 class="text-3xl lg:text-4xl font-bold tracking-tight text-[var(--color-ink)]">
             Certificate requests
           </h1>
           <p class="text-xs text-[var(--color-muted)] font-normal max-w-2xl">
-            Sent directly to your HOD for verifiable institutional clearance and physical registrar counter pickup dispatch.
+            Submit requests directly to your Department HOD for digital clearance and counter collection.
           </p>
         </div>
 
         <!-- Action Controls: Refresh Queue Button -->
         <div class="flex items-center gap-3 self-start md:self-auto">
           <button type="button" 
-                  class="inline-flex items-center gap-2 bg-[var(--color-card)] hover:bg-[var(--color-card-subtle)] text-[var(--color-ink)] border border-[var(--color-hairline)] px-4 py-2.5 rounded-full text-xs font-medium transition-all active:scale-95 cursor-pointer shadow-2xs" 
-                  id="refreshBtn"
-                  data-testid="btn-refresh-requests">
-            <span class="material-symbols-outlined text-[18px] text-[var(--color-ink)] transition-transform duration-500" id="refreshIcon">sync</span>
+                  class="inline-flex items-center gap-2 bg-[var(--color-card)] hover:bg-[var(--color-card-subtle)] text-[var(--color-ink)] border border-[var(--color-hairline)] px-4 py-2.5 rounded-full text-xs font-medium transition-all active:scale-95 cursor-pointer" 
+                  id="refreshBtn">
+            <span class="material-symbols-outlined text-[18px] text-[var(--color-ink)]" id="refreshIcon">sync</span>
             <span>Refresh</span>
           </button>
         </div>
@@ -68,9 +67,9 @@
       <!-- ============================================================== -->
       <section class="grid grid-cols-1 lg:grid-cols-12 gap-6 w-full items-start" data-testid="tile-requests-grid">
         
-        <!-- LEFT COLUMN: NEW CERTIFICATE REQUEST FORM (5 COLS) -->
-        <div class="lg:col-span-5 flex flex-col gap-4">
-          <div class="bento-card p-6 flex flex-col gap-5" data-testid="tile-new-request">
+        <!-- LEFT COLUMN: SIMPLIFIED 3-FIELD REQUEST FORM (5 COLS) -->
+        <div class="lg:col-span-5 flex flex-col gap-4 animate-entry stagger-2">
+          <div class="bento-card p-6 flex flex-col gap-5">
             
             <!-- Card Header -->
             <div class="flex items-center justify-between pb-3 border-b border-[var(--color-hairline)]">
@@ -79,158 +78,85 @@
                   <span class="material-symbols-outlined text-[20px]">assignment_add</span>
                 </span>
                 <div>
-                  <h2 class="text-sm font-semibold text-[var(--color-ink)]">New certificate request</h2>
-                  <p class="font-mono text-[11px] text-[var(--color-muted)]" id="reqStudentMeta">PIN: 24259-CS-025 · CSE DEPT</p>
+                  <h3 class="text-sm font-bold text-[var(--color-ink)]">New Request</h3>
+                  <p class="text-[11px] text-[var(--color-muted)]">Submitted directly to Department HOD</p>
                 </div>
               </div>
-              <span class="px-2.5 py-1 rounded-full bg-[var(--color-lavender)] text-[#22174C] font-mono text-[11px] font-semibold">REG-S5</span>
             </div>
 
             <!-- Form -->
-            <form class="flex flex-col gap-4" id="certForm" onsubmit="event.preventDefault();">
+            <form id="docRequestForm" class="flex flex-col gap-4">
               
-              <!-- Certificate Type Dropdown -->
+              <!-- 1. Certificate Type Dropdown -->
               <div class="flex flex-col gap-1.5">
-                <label class="text-xs text-[var(--color-ink)] font-medium">Select Certificate Type</label>
+                <label class="text-xs text-[var(--color-ink)] font-medium">Certificate Type <span class="text-rose-500">*</span></label>
                 <div class="relative w-full">
-                  <select id="docTypeSelect" class="w-full bg-[var(--color-card-subtle)] hover:border-[var(--color-ink)] border border-[var(--color-hairline)] text-[var(--color-ink)] text-xs rounded-xl px-3.5 py-2.5 appearance-none focus:outline-none focus:ring-1 focus:ring-[var(--color-lime)] cursor-pointer transition-colors">
-                    <option value="Bonafide Certificate">Bonafide Certificate (Scholarship / Bank / Passport)</option>
-                    <option value="Study & Custodian Certificate">Study &amp; Custodian Certificate</option>
-                    <option value="Transfer & Conduct Attestation">Transfer &amp; Conduct Attestation</option>
-                    <option value="Industrial Training NOC">Industrial Training NOC (Semester VI)</option>
-                    <option value="custom">Other / Custom Attestation</option>
+                  <select id="reqDocType" required class="w-full bg-[var(--color-card-subtle)] border border-[var(--color-hairline)] text-[var(--color-ink)] text-xs rounded-xl px-3.5 py-2.5 appearance-none focus:outline-none focus:ring-1 focus:ring-[var(--color-lime)] transition-colors cursor-pointer">
+                    <option value="Bonafide Certificate">Bonafide Certificate</option>
+                    <option value="No Objection Certificate (NOC)">No Objection Certificate (NOC)</option>
+                    <option value="Character Certificate">Character Certificate</option>
+                    <option value="Study Certificate">Study Certificate</option>
+                    <option value="Transfer Certificate">Transfer Certificate</option>
                   </select>
                   <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-[var(--color-muted)] text-[18px]">unfold_more</span>
                 </div>
               </div>
 
-              <!-- Custom Title Field (shown when Other is selected) -->
-              <div class="flex flex-col gap-1.5 hidden" id="customTitleContainer">
-                <label class="text-xs text-[var(--color-ink)] font-medium">Specify Certificate Title</label>
-                <input type="text" id="customTitleInput" placeholder="Enter custom document title..." class="w-full bg-[var(--color-card-subtle)] border border-[var(--color-hairline)] text-[var(--color-ink)] text-xs rounded-xl px-3.5 py-2 focus:outline-none focus:ring-1 focus:ring-[var(--color-lime)]" />
-              </div>
-
-              <!-- Permanent / Dispatch Address -->
-              <div class="flex flex-col gap-1.5">
-                <label class="text-xs text-[var(--color-ink)] font-medium">Permanent / Dispatch Address</label>
-                <textarea id="reqAddress" rows="2" class="w-full bg-[var(--color-card-subtle)] border border-[var(--color-hairline)] text-[var(--color-ink)] placeholder-[var(--color-muted)] text-xs rounded-xl px-3.5 py-2 focus:outline-none focus:ring-1 focus:ring-[var(--color-lime)] resize-none transition-colors">Flat 402, Sai Balaji Enclave, Bandlaguda Jagir, Hyderabad 500086</textarea>
-              </div>
-
-              <!-- Parent / Guardian Contact -->
-              <div class="flex flex-col gap-1.5">
-                <label class="text-xs text-[var(--color-ink)] font-medium">Parent / Guardian Contact</label>
-                <div class="relative w-full">
-                  <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-muted)] text-[16px]">contact_phone</span>
-                  <input type="tel" id="reqParentContact" value="+91 9876543210" class="w-full bg-[var(--color-card-subtle)] border border-[var(--color-hairline)] text-[var(--color-ink)] font-mono text-xs rounded-xl pl-9 pr-3.5 py-2 focus:outline-none focus:ring-1 focus:ring-[var(--color-lime)] transition-colors" />
-                </div>
-              </div>
-
-              <!-- Purpose of Request -->
+              <!-- 2. Parent / Guardian Phone Number (10 digits) -->
               <div class="flex flex-col gap-1.5">
                 <div class="flex items-center justify-between">
-                  <label class="text-xs text-[var(--color-ink)] font-medium">Purpose of Request</label>
-                  <span class="font-mono text-[11px] text-[var(--color-muted)]" id="charCount">0/220</span>
+                  <label class="text-xs text-[var(--color-ink)] font-medium">Parent / Guardian Contact <span class="text-rose-500">*</span></label>
+                  <span class="text-[10px] text-[var(--color-muted)]" id="phoneHint">10-digit mobile number</span>
                 </div>
-                <textarea id="purposeArea" rows="3" maxlength="220" required placeholder="Provide accurate justification for HOD endorsement (e.g. e-PASS State Scholarship renewal document verification)..." class="w-full bg-[var(--color-card-subtle)] border border-[var(--color-hairline)] text-[var(--color-ink)] placeholder-[var(--color-muted)] text-xs rounded-xl px-3.5 py-2 focus:outline-none focus:ring-1 focus:ring-[var(--color-lime)] resize-none transition-colors"></textarea>
-              </div>
-
-              <!-- Physical Copies Stepper -->
-              <div class="flex items-center justify-between bg-[var(--color-card-subtle)] border border-[var(--color-hairline)] p-3 rounded-xl">
-                <div class="flex flex-col">
-                  <span class="text-xs text-[var(--color-ink)] font-medium">Physical Copies</span>
-                  <span class="font-mono text-[11px] text-[var(--color-muted)]">Max 3 copies allowed per cycle</span>
-                </div>
-                <div class="flex items-center bg-[var(--color-card)] border border-[var(--color-hairline)] rounded-full p-1 gap-1.5 shadow-2xs">
-                  <button type="button" id="copyMinus" class="w-6 h-6 rounded-full bg-[var(--color-card-subtle)] hover:bg-[var(--color-hairline)] flex items-center justify-center text-[var(--color-ink)] cursor-pointer transition-colors">
-                    <span class="material-symbols-outlined text-[14px]">remove</span>
-                  </button>
-                  <span class="font-mono text-xs font-bold text-[var(--color-ink)] w-6 text-center" id="copyVal">1</span>
-                  <button type="button" id="copyPlus" class="w-6 h-6 rounded-full bg-[var(--color-card-subtle)] hover:bg-[var(--color-hairline)] flex items-center justify-center text-[var(--color-ink)] cursor-pointer transition-colors">
-                    <span class="material-symbols-outlined text-[14px]">add</span>
-                  </button>
+                <div class="relative w-full">
+                  <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-muted)] text-[16px]">call</span>
+                  <input type="tel" id="reqGuardianPhone" required maxlength="10" placeholder="e.g. 9876543210" pattern="[6-9][0-9]{9}" class="w-full bg-[var(--color-card-subtle)] border border-[var(--color-hairline)] text-[var(--color-ink)] tabular text-xs rounded-xl pl-9 pr-3.5 py-2.5 focus:outline-none focus:ring-1 focus:ring-[var(--color-lime)] transition-colors" />
                 </div>
               </div>
 
-              <!-- Biometric Verification Badge -->
-              <div class="flex items-center justify-between bg-[var(--color-card-subtle)] border border-[var(--color-hairline)] py-2 px-3.5 rounded-full">
-                <div class="flex items-center gap-1.5 text-[var(--color-muted)]">
-                  <span class="material-symbols-outlined text-[16px] text-[var(--color-ink)]">fingerprint</span>
-                  <span class="font-mono text-[11px] font-semibold text-[var(--color-ink)]">Biometric sync verified</span>
+              <!-- 3. Purpose of Request (Textarea with char counter) -->
+              <div class="flex flex-col gap-1.5">
+                <div class="flex items-center justify-between">
+                  <label class="text-xs text-[var(--color-ink)] font-medium">Purpose of Request <span class="text-rose-500">*</span></label>
+                  <span class="tabular text-[11px] text-[var(--color-muted)]" id="charCount">0/200</span>
                 </div>
-                <span class="font-mono text-[11px] font-bold text-[var(--color-ink)]">TODAY 09:12 AM</span>
+                <textarea id="reqReason" rows="3" maxlength="200" required placeholder="Provide clear justification for HOD endorsement (e.g. ePASS State Scholarship renewal)..." class="w-full bg-[var(--color-card-subtle)] border border-[var(--color-hairline)] text-[var(--color-ink)] placeholder-[var(--color-muted)] text-xs rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-1 focus:ring-[var(--color-lime)] resize-none transition-colors"></textarea>
               </div>
 
               <!-- Submit Button -->
-              <button type="submit" id="btnSubmitRequest" data-testid="btn-submit-request" class="w-full bg-[var(--color-lime)] hover:opacity-90 active:scale-[0.99] text-[var(--color-lime-ink)] font-medium text-xs py-3 px-5 rounded-full flex items-center justify-center gap-2 cursor-pointer shadow-sm transition-all">
-                <span>Submit to department HOD</span>
-                <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
-              </button>
-            </form>
-          </div>
+              <div class="pt-2">
+                <button type="submit" id="btnSubmitDoc" class="w-full py-3 rounded-full bg-[var(--color-lime)] text-[var(--color-lime-ink)] font-semibold text-xs transition-transform active:scale-98 flex items-center justify-center gap-2 cursor-pointer shadow-md">
+                  <span class="material-symbols-outlined text-[16px]">send</span>
+                  <span>Submit to HOD</span>
+                </button>
+              </div>
 
-          <!-- Administrative Notice Card -->
-          <div class="bento-card p-4 flex items-center gap-3.5 bg-[var(--color-card-subtle)] border border-[var(--color-hairline)]">
-            <div class="w-10 h-10 rounded-xl bg-[var(--color-card)] border border-[var(--color-hairline)] flex items-center justify-center text-[var(--color-ink)] shrink-0">
-              <span class="material-symbols-outlined text-[20px]">verified_user</span>
-            </div>
-            <div class="flex flex-col min-w-0">
-              <span class="font-mono text-[11px] font-bold text-[#22174C] dark:text-[var(--color-lavender)]">ADMINISTRATIVE NOTICE</span>
-              <p class="text-xs text-[var(--color-muted)] leading-snug">Physical attestations require ink endorsement from Department HOD prior to registrar seal issuance.</p>
-            </div>
+            </form>
           </div>
         </div>
 
-        <!-- RIGHT COLUMN: YOUR REQUESTS LIST & ACCORDION (7 COLS) -->
-        <div class="lg:col-span-7 flex flex-col gap-4">
-          
-          <!-- Section Header -->
-          <div class="flex items-center justify-between px-1">
-            <div class="flex items-center gap-2">
-              <span class="material-symbols-outlined text-[18px] text-[var(--color-ink)]">folder_special</span>
-              <h2 class="text-sm font-semibold text-[var(--color-ink)]">Your requests</h2>
+        <!-- RIGHT COLUMN: REQUESTS HISTORY & STATUS (7 COLS) -->
+        <div class="lg:col-span-7 flex flex-col gap-4 animate-entry stagger-3">
+          <div class="bento-card p-6 flex flex-col gap-4">
+            
+            <div class="flex items-center justify-between pb-3 border-b border-[var(--color-hairline)]">
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-[20px] text-[var(--color-ink)]">history</span>
+                <h3 class="text-sm font-bold text-[var(--color-ink)]">Request History</h3>
+              </div>
+              <span class="text-xs bg-[var(--color-card-subtle)] px-2.5 py-1 rounded-full tabular text-[var(--color-muted)] font-medium" id="historyCount">
+                0 requests
+              </span>
             </div>
-            <span class="font-mono text-xs font-medium text-[var(--color-muted)]" id="requestsCountBadge">2 Active Records</span>
-          </div>
 
-          <!-- Dynamic Active Requests Container -->
-          <div class="flex flex-col gap-4" id="activeRequestsContainer" data-testid="tile-active-requests">
-            <!-- Dynamically populated by document-logistics.js -->
-          </div>
-
-          <!-- Historical / Archived Accordion -->
-          <div class="bento-card p-4 flex flex-col gap-3 border border-[var(--color-hairline)]">
-            <button type="button" class="w-full flex items-center justify-between text-left cursor-pointer select-none" id="toggleArchiveBtn">
-              <div class="flex items-center gap-3">
-                <span class="w-8 h-8 rounded-full bg-[var(--color-card-subtle)] flex items-center justify-center text-[var(--color-ink)]">
-                  <span class="material-symbols-outlined text-[18px]">inventory_2</span>
-                </span>
-                <div class="flex flex-col">
-                  <span class="text-xs font-medium text-[var(--color-ink)]">Archived certificate logs</span>
-                  <span class="font-mono text-[11px] text-[var(--color-muted)]">3 historic attestations from Semesters I to IV</span>
-                </div>
-              </div>
-              <span class="material-symbols-outlined text-[20px] text-[var(--color-muted)] transition-transform duration-300" id="accordionArrow">expand_more</span>
-            </button>
-
-            <!-- Accordion Content -->
-            <div class="hidden pt-3 border-t border-[var(--color-hairline)] flex flex-col gap-2.5 text-xs" id="archiveContent">
-              <div class="p-3 rounded-xl bg-[var(--color-card-subtle)] flex items-center justify-between">
-                <div class="flex flex-col">
-                  <span class="font-mono text-[11px] text-[var(--color-muted)]">#REQ-24259-ARCH-01 · 12-FEB-2025</span>
-                  <span class="font-medium text-[var(--color-ink)]">Study &amp; Conduct Certificate (Sem III)</span>
-                </div>
-                <span class="font-mono text-[11px] px-2.5 py-0.5 rounded-full bg-[var(--color-lime)] text-[var(--color-lime-ink)] font-semibold">COLLECTED</span>
-              </div>
-              <div class="p-3 rounded-xl bg-[var(--color-card-subtle)] flex items-center justify-between">
-                <div class="flex flex-col">
-                  <span class="font-mono text-[11px] text-[var(--color-muted)]">#REQ-24259-ARCH-02 · 18-AUG-2024</span>
-                  <span class="font-medium text-[var(--color-ink)]">Bus Pass Concession Endorsement (Sem II)</span>
-                </div>
-                <span class="font-mono text-[11px] px-2.5 py-0.5 rounded-full bg-[var(--color-lime)] text-[var(--color-lime-ink)] font-semibold">COLLECTED</span>
+            <!-- List of Request Cards -->
+            <div class="flex flex-col gap-3 min-h-[200px]" id="requestsContainer">
+              <div class="p-8 text-center text-xs text-[var(--color-muted)]">
+                Loading request records...
               </div>
             </div>
-          </div>
 
+          </div>
         </div>
 
       </section>
@@ -238,26 +164,5 @@
     </div>
   </main>
 
-  <!-- Toast Notification -->
-  <div id="toastNotification" class="fixed bottom-6 right-6 z-50 transform transition-all duration-300 hidden">
-    <div class="bento-card py-3 px-5 flex items-center gap-3 shadow-xl border border-[var(--color-hairline)] bg-[var(--color-card)] text-[var(--color-ink)]">
-      <span class="material-symbols-outlined text-[20px] text-[var(--color-lime-ink)] bg-[var(--color-lime)] rounded-full p-1">check</span>
-      <span id="toastMsg" class="text-xs font-medium">Operation completed successfully</span>
-    </div>
-  </div>
-
-  <!-- Shared Institutional Footer -->
-  <footer class="w-full py-8 border-t border-[var(--color-hairline)] mt-auto bg-[var(--color-canvas)]">
-    <div class="campus-container flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-[var(--color-muted)]">
-      <div class="flex items-center gap-2">
-        <span class="font-medium text-[var(--color-ink)]">Samskruti College of Engineering &amp; Technology</span>
-        <span>•</span>
-        <span>Institution Code 259</span>
-      </div>
-      <div>
-        <span>Affiliated to SBTET &amp; JNTUH • Autonomous Academic Council</span>
-      </div>
-    </div>
-  </footer>
 </body>
 </html>

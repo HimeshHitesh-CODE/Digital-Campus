@@ -8,7 +8,7 @@
   <!-- Fonts & Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
   <script src="https://unpkg.com/lucide@latest"></script>
 
@@ -24,23 +24,13 @@
 
   <!-- Client State Engine & Dynamic Island Dock -->
   <script src="/js/stitch-state.js"></script>
-  <script src="/js/dc-dynamic-island.js"></script>
+  
 
-  <style>
-    @media print {
-      header, nav, #dynamic-island-container, .no-print, button {
-        display: none !important;
-      }
-      body, main {
-        padding: 0 !important;
-        background: white !important;
-        color: black !important;
-      }
-      .print-visible {
-        display: block !important;
-      }
-    }
-  </style>
+  
+
+  <link rel="stylesheet" href="/css/animations.css" />
+  <script src="/js/date-utils.js"></script>
+  <script src="/js/top-nav.js" defer></script>
 </head>
 
 <body class="bg-[var(--color-canvas)] text-[var(--color-ink)] font-sans antialiased min-h-screen flex flex-col justify-between relative selection:bg-[var(--color-lime)] selection:text-[#1A1A1A]">

@@ -1,216 +1,133 @@
-/* ==========================================================================
-   UNIVERSAL 120HZ FLUID MOTION & MICRO-ANIMATION ENGINE
-   Campus Connect - Smooth Spring Transitions & View Transitions
-   ========================================================================== */
+/* ================================================================
+   SAMSKRUTI DIGITAL CAMPUS (INSTITUTION CODE: 259)
+   MOTION SYSTEM SPECIFICATION — V4.0
+   Tasteful micro-interactions, staggered bento cards, and real-time alerts.
+   ================================================================ */
 
-/* Universal Hardware Acceleration */
-* {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-:root {
-  --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-fast: 0.18s var(--ease-spring);
-  --transition-normal: 0.28s var(--ease-spring);
-  --transition-page: 0.32s var(--ease-spring);
-}
-
-/* 1. Universal Interactive Elements (Buttons, Chips, Badges, Dock Items) */
-button, 
-.btn-primary-action,
-.btn-secondary-action,
-.neu-btn, 
-.neu-btn-primary,
-.dock-item, 
-.skill-chip, 
-.skill-pill, 
-.selectable-pill, 
-.filter-chip,
-.user-profile-badge {
-  will-change: transform, box-shadow;
-  transition: transform var(--transition-fast), 
-              box-shadow var(--transition-fast), 
-              background-color 0.2s ease, 
-              color 0.2s ease !important;
-}
-
-button:hover, 
-.btn-primary-action:hover,
-.btn-secondary-action:hover,
-.neu-btn:hover, 
-.neu-btn-primary:hover,
-.skill-chip:hover, 
-.skill-pill:hover, 
-.selectable-pill:hover {
-  transform: translate3d(0, -2px, 0);
-}
-
-button:active, 
-.btn-primary-action:active,
-.btn-secondary-action:active,
-.neu-btn:active, 
-.neu-btn-primary:active,
-.skill-chip:active, 
-.skill-pill:active, 
-.selectable-pill:active {
-  transform: translate3d(0, 1px, 0) scale(0.98);
-}
-
-/* 2. Seamless View Transitions & Page Fade-In */
-.main-content,
-.dashboard-canvas,
-.portal-content-view {
-  will-change: opacity, transform;
-  animation: pageFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-@keyframes pageFadeIn {
+/* 1. Page and Bento Card Staggered Entry */
+@keyframes bentoFadeUp {
   from {
     opacity: 0;
-    transform: translate3d(0, 10px, 0);
+    transform: translateY(12px);
   }
   to {
     opacity: 1;
-    transform: translate3d(0, 0, 0);
+    transform: translateY(0);
   }
 }
 
-.view-exit {
-  opacity: 0 !important;
-  transform: translate3d(0, -8px, 0) !important;
-  transition: opacity 0.14s ease, transform 0.14s ease !important;
-}
-
-/* 3. Staggered Card Entrances */
-.card,
-.neu-card, 
-.neumorphic-card, 
-.chart-section-card,
-.hero-card,
-.kpi-card,
-.calendar-section-card,
-.identity-card-neumorphic,
-.peer-card, 
-.product-card, 
-.item-card, 
-.empty-state-tile,
-.doc-status-card {
-  will-change: opacity, transform;
-  animation: cardEntrance 0.36s cubic-bezier(0.16, 1, 0.3, 1) backwards;
-}
-
-@keyframes cardEntrance {
+@keyframes modalFadeIn {
   from {
     opacity: 0;
-    transform: translate3d(0, 14px, 0) scale(0.985);
   }
   to {
     opacity: 1;
-    transform: translate3d(0, 0, 0) scale(1);
   }
 }
 
-/* Empty State Tile Styling */
-.empty-state-tile {
-  grid-column: 1 / -1;
-  text-align: center;
-  padding: 48px 24px;
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: var(--radius-card, 24px);
-  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.03);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  margin: 12px 0;
-  width: 100%;
-  box-sizing: border-box;
+@keyframes drawerSlideOver {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
 }
 
-[data-theme="dark"] .empty-state-tile {
-  background: #131d33;
-  border-color: rgba(255, 255, 255, 0.08);
-}
-
-.empty-state-icon {
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  background: rgba(37, 99, 235, 0.08);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #2563eb;
-  margin-bottom: 12px;
-}
-
-.empty-state-tile h4 {
-  font-family: 'Urbanist', sans-serif;
-  font-size: 1.15rem;
-  font-weight: 800;
-  color: #0f172a;
-  margin: 4px 0 6px 0;
-}
-
-[data-theme="dark"] .empty-state-tile h4 {
-  color: #f8fafc;
-}
-
-.empty-state-tile p {
-  font-size: 0.86rem;
-  color: #64748b;
-  max-width: 400px;
-  line-height: 1.45;
-  margin: 0;
-}
-
-/* 4. Modal Overlays & Scale Reveals */
-.neu-modal-overlay, 
-.modal-overlay {
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  background: rgba(15, 23, 42, 0.4);
-  transition: opacity var(--transition-normal);
-}
-
-.neu-modal-card, 
-.modal-content {
-  will-change: transform, opacity;
-  animation: modalPop var(--transition-normal) forwards;
-  border-radius: var(--radius-card, 24px);
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 20px 40px -10px rgba(15, 23, 42, 0.15);
-}
-
-@keyframes modalPop {
+@keyframes dropdownSlide {
   from {
     opacity: 0;
-    transform: translate3d(0, 16px, 0) scale(0.96);
+    transform: translateY(-8px) scale(0.96);
   }
   to {
     opacity: 1;
-    transform: translate3d(0, 0, 0) scale(1);
+    transform: translateY(0) scale(1);
   }
 }
 
-/* 5. Smooth Focus Ring on Form Inputs */
-input, 
-select, 
-textarea, 
-.neu-input {
-  transition: border-color var(--transition-fast), 
-              box-shadow var(--transition-fast), 
-              transform var(--transition-fast);
+/* Real-Time WebSocket Row Pulse (Lime glow) */
+@keyframes realTimePulse {
+  0%, 100% {
+    background-color: transparent;
+  }
+  50% {
+    background-color: rgba(214, 242, 94, 0.16);
+  }
 }
 
-input:focus, 
-select:focus, 
-textarea:focus, 
-.neu-input:focus {
-  transform: translate3d(0, -1px, 0);
-  border-color: #2563eb !important;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15) !important;
+/* 2. Utility Classes */
+.animate-entry {
+  animation: bentoFadeUp 280ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Bento Grid Stagger Delays (40ms per slot) */
+.stagger-1  { animation-delay:  40ms; }
+.stagger-2  { animation-delay:  80ms; }
+.stagger-3  { animation-delay: 120ms; }
+.stagger-4  { animation-delay: 160ms; }
+.stagger-5  { animation-delay: 200ms; }
+.stagger-6  { animation-delay: 240ms; }
+.stagger-7  { animation-delay: 280ms; }
+.stagger-8  { animation-delay: 320ms; }
+.stagger-9  { animation-delay: 360ms; }
+.stagger-10 { animation-delay: 400ms; }
+.stagger-11 { animation-delay: 440ms; }
+.stagger-12 { animation-delay: 480ms; }
+
+/* Drawers & Overlays */
+.drawer-enter {
+  animation: drawerSlideOver 280ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.backdrop-enter {
+  animation: modalFadeIn 200ms ease both;
+}
+
+.dropdown-enter {
+  animation: dropdownSlide 160ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Real-Time highlight */
+.highlight-pulse {
+  animation: realTimePulse 1.2s ease 2;
+}
+
+/* 3. Tactile Card Hover Lift (Disabled on Touch) */
+@media (hover: hover) {
+  .bento-card,
+  .bento-archetype-01,
+  .bento-archetype-1,
+  .bento-archetype-02,
+  .bento-archetype-2,
+  .bento-archetype-03,
+  .bento-archetype-3 {
+    transition: transform 200ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 200ms ease, border-color 200ms ease;
+  }
+
+  .bento-card:hover,
+  .bento-archetype-01:hover,
+  .bento-archetype-1:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.10);
+  }
+}
+
+/* 4. Tactile Button Press */
+.btn-pill-primary:active,
+.btn-pill-secondary:active,
+.btn-pill-ghost:active,
+button:active {
+  transform: scale(0.98);
+}
+
+/* 5. Reduced Motion Override */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

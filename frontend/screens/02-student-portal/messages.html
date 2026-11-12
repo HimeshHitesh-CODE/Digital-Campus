@@ -18,8 +18,12 @@
 
   <!-- Shared State & Dynamic Island -->
   <script src="/js/stitch-state.js"></script>
-  <script src="/js/dc-dynamic-island.js" defer></script>
+  
   <script src="/screens/02-student-portal/messages.js" defer></script>
+
+  <link rel="stylesheet" href="/css/animations.css" />
+  <script src="/js/date-utils.js"></script>
+  <script src="/js/top-nav.js" defer></script>
 </head>
 
 <body class="bg-[var(--color-canvas)] text-[var(--color-ink)] min-h-screen flex flex-col antialiased">
@@ -35,11 +39,11 @@
       <section class="w-full flex flex-col md:flex-row md:items-end justify-between gap-4 pb-2" data-testid="tile-messages-header">
         <div class="flex flex-col gap-1">
           <div class="flex items-center gap-2 mb-1">
-            <span class="font-mono text-xs bg-[var(--color-feature-card)] text-[var(--color-lime)] px-3 py-1 rounded-full uppercase tracking-wider font-semibold" id="msgBadge">
+            <span class="tabular text-xs bg-[var(--color-feature-card)] text-[var(--color-lime)] px-3 py-1 rounded-full uppercase tracking-wider font-semibold" id="msgBadge">
               SBTET Intranet · Node 259-CSE
             </span>
             <span class="w-1.5 h-1.5 rounded-full bg-[var(--color-lime)]"></span>
-            <span class="font-mono text-xs text-[var(--color-muted)] flex items-center gap-1">
+            <span class="tabular text-xs text-[var(--color-muted)] flex items-center gap-1">
               <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
               Live Gateway Active
             </span>
@@ -48,7 +52,7 @@
             <h1 class="text-4xl lg:text-5xl font-medium tracking-tight text-[var(--color-ink)]">
               Messages
             </h1>
-            <span class="font-mono text-xs text-[var(--color-muted)]">v4.8.1</span>
+            <span class="tabular text-xs text-[var(--color-muted)]">v4.8.1</span>
           </div>
           <p class="text-xs text-[var(--color-muted)] font-normal max-w-2xl">
             Real-time peer, faculty, and institutional capstone communications.
@@ -56,7 +60,7 @@
         </div>
 
         <!-- Telemetry Status Strip -->
-        <div class="flex items-center gap-2 bg-[var(--color-card)] border border-[var(--color-hairline)] px-3.5 py-1.5 rounded-full text-xs font-mono shadow-2xs self-start md:self-auto">
+        <div class="flex items-center gap-2 bg-[var(--color-card)] border border-[var(--color-hairline)] px-3.5 py-1.5 rounded-full text-xs tabular shadow-2xs self-start md:self-auto">
           <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
           <span class="font-medium text-[var(--color-ink)]">WI-FI MESH: ONLINE</span>
           <span class="text-[var(--color-muted)]">·</span>
@@ -76,7 +80,7 @@
           <div class="flex flex-col gap-2.5">
             <div class="flex items-center justify-between">
               <h2 class="text-sm font-semibold text-[var(--color-ink)]">Discussions</h2>
-              <span class="font-mono text-xs text-[var(--color-muted)]" id="unreadThreadsBadge">2 Unread</span>
+              <span class="tabular text-xs text-[var(--color-muted)]" id="unreadThreadsBadge">2 Unread</span>
             </div>
 
             <div class="relative w-full">
@@ -106,16 +110,16 @@
           <!-- Chat Header -->
           <div class="flex items-center justify-between pb-3.5 border-b border-[var(--color-hairline)]" id="chatHeaderBar">
             <div class="flex items-center gap-3">
-              <div class="relative w-10 h-10 rounded-full bg-[var(--color-feature-card)] text-white flex items-center justify-center font-mono font-bold text-xs" id="chatHeaderAvatar">
+              <div class="relative w-10 h-10 rounded-full bg-[var(--color-feature-card)] text-white flex items-center justify-center tabular font-bold text-xs" id="chatHeaderAvatar">
                 HD
                 <span class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 ring-2 ring-[var(--color-card)]"></span>
               </div>
               <div class="flex flex-col">
                 <div class="flex items-center gap-2">
                   <h3 class="text-sm font-bold text-[var(--color-ink)]" id="chatHeaderName">HOD Academic Dispatch</h3>
-                  <span class="font-mono text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[var(--color-lavender)] text-[#22174C]" id="chatHeaderBadge">HOD OFFICIAL</span>
+                  <span class="tabular text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[var(--color-lavender)] text-[#22174C]" id="chatHeaderBadge">HOD OFFICIAL</span>
                 </div>
-                <span class="font-mono text-[11px] text-[var(--color-muted)]" id="chatHeaderSubtitle">Node 259-CSE · Dr. Vamshi Krishna</span>
+                <span class="tabular text-[11px] text-[var(--color-muted)]" id="chatHeaderSubtitle">Node 259-CSE · Dr. Vamshi Krishna</span>
               </div>
             </div>
 

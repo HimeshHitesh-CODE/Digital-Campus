@@ -43,7 +43,7 @@
     } catch (e) {}
 
     const name = localStorage.getItem('user_name');
-    const pin = localStorage.getItem('student_pin') || localStorage.getItem('user_pin') || '24259-CS-025';
+    const pin = localStorage.getItem('student_pin') || localStorage.getItem('user_pin');
     const role = localStorage.getItem('user_role') || 'STUDENT';
     return { name: name || 'Student', pin, role, collegeCode: '259' };
   }
@@ -56,7 +56,7 @@
   }
 
   async function loadAttendanceData(pin) {
-    const cleanPin = (pin || '24259-CS-025').trim().toUpperCase();
+    const cleanPin = (pin || '').trim().toUpperCase();
 
     try {
       const res = await fetch(`/api/student/attendance?pin=${encodeURIComponent(cleanPin)}`);
@@ -66,9 +66,17 @@
       // Fallback state if offline
       const fallback = (typeof StitchState !== 'undefined' && StitchState.getAttendance) ? StitchState.getAttendance() : {};
 
-      const present = parseFloat(data.presentDays ?? data.metrics?.days_present ?? fallback.recordedPresent ?? 50);
-      const working = parseFloat(data.workingDays ?? data.metrics?.working_days ?? fallback.workingDays ?? 180);
-      const absent = parseFloat(data.absentDays ?? data.metrics?.days_absent ?? fallback.absentSessions ?? (working - present));
+      const rawPresent = data.presentDays ?? data.metrics?.days_present ?? data.present_days;
+      const rawWorking = data.workingDays ?? data.metrics?.working_days ?? data.working_days;
+
+      if (rawWorking === null || rawWorking === undefined || rawPresent === null || rawPresent === undefined) {
+        renderUnsyncedUI(cleanPin);
+        return;
+      }
+
+      const present = parseFloat(rawPresent);
+      const working = parseFloat(rawWorking);
+      const absent = Math.max(0, working - present);
       const totalSem = parseFloat(data.totalSemesterDays ?? 180);
 
       // Unified Academic Formulas
@@ -127,17 +135,72 @@
     }
   }
 
+  
+  function renderUnsyncedUI(pin) {
+    const tag = document.getElementById('attEligibilityTag');
+    if (tag) {
+      tag.textContent = 'Record Not Synced';
+      tag.className = 'text-xs uppercase tracking-wider px-3 py-1 rounded-full font-semibold bg-stone-500/20 text-stone-300 border border-stone-500/30';
+    }
+
+    const pctEl = document.getElementById('attMetricPct');
+    if (pctEl) pctEl.textContent = '—';
+
+    const reqAtt = document.getElementById('attRequiredText');
+    if (reqAtt) reqAtt.innerHTML = `<span class="text-xs text-[var(--color-muted)]">Data has not been synchronized from SBTET portal yet.</span>`;
+
+    const sub = document.getElementById('attDeficitSubtitle');
+    if (sub) {
+      sub.innerHTML = `
+        <button id="btnSyncNow" class="mt-2 px-4 py-2 rounded-full bg-[var(--color-lime)] text-[var(--color-lime-ink)] text-xs font-bold transition active:scale-95 cursor-pointer">
+          Sync Attendance from SBTET
+        </button>
+      `;
+      document.getElementById('btnSyncNow')?.addEventListener('click', async () => {
+        const btn = document.getElementById('btnSyncNow');
+        btn.textContent = 'Syncing...';
+        btn.disabled = true;
+        try {
+          await fetch('/api/v1/attendance/sync', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ pin: pin, scheme: 'C24' })
+          });
+          await loadAttendanceData(pin);
+        } catch(e) {
+          alert('Sync failed. Please retry.');
+          btn.textContent = 'Retry Sync';
+          btn.disabled = false;
+        }
+      });
+    }
+
+    const cAbs = document.getElementById('attCircleAbsent');
+    const cPres = document.getElementById('attCirclePresent');
+    const cRem = document.getElementById('attCircleRemaining');
+    if (cAbs) cAbs.textContent = '—';
+    if (cPres) cPres.textContent = '—';
+    if (cRem) cRem.textContent = '—';
+
+    const lPres = document.getElementById('attLegPres');
+    const lAbs = document.getElementById('attLegAbs');
+    const lRem = document.getElementById('attLegRem');
+    if (lPres) lPres.textContent = '—';
+    if (lAbs) lAbs.textContent = '—';
+    if (lRem) lRem.textContent = '—';
+  }
+
   function renderUI(data) {
     // 1. Tag in Header of Card 1
     const tag = document.getElementById('attEligibilityTag');
     if (tag) {
       tag.textContent = data.eligibility.status;
       if (data.eligibility.code === 'REGULAR') {
-        tag.className = 'font-mono text-xs uppercase tracking-wider px-3 py-1 rounded-full font-semibold bg-[#D6F25E] text-[#1A1A1A]';
+        tag.className = 'tabular text-xs uppercase tracking-wider px-3 py-1 rounded-full font-semibold bg-[#D6F25E] text-[#1A1A1A]';
       } else if (data.eligibility.code === 'CONDONABLE') {
-        tag.className = 'font-mono text-xs uppercase tracking-wider px-3 py-1 rounded-full font-semibold bg-[#FFF0C7] text-[#8A5A00]';
+        tag.className = 'tabular text-xs uppercase tracking-wider px-3 py-1 rounded-full font-semibold bg-[#FFF0C7] text-[#8A5A00]';
       } else {
-        tag.className = 'font-mono text-xs uppercase tracking-wider px-3 py-1 rounded-full font-semibold bg-[#FFE1DE] text-[#B42318]';
+        tag.className = 'tabular text-xs uppercase tracking-wider px-3 py-1 rounded-full font-semibold bg-[#FFE1DE] text-[#B42318]';
       }
     }
 
@@ -177,13 +240,13 @@
     const curAgg = document.getElementById('attCurrentAggregateText');
     if (curAgg) {
       curAgg.textContent = `${data.percentage.toFixed(1)}%`;
-      curAgg.className = `font-mono text-xs font-bold ${data.percentage >= 75 ? 'text-[#1A1A1A] dark:text-[#F2F2F2]' : (data.percentage >= 65 ? 'text-[#8A5A00]' : 'text-[#B42318]')}`;
+      curAgg.className = `tabular text-xs font-bold ${data.percentage >= 75 ? 'text-[#1A1A1A] dark:text-[#F2F2F2]' : (data.percentage >= 65 ? 'text-[#8A5A00]' : 'text-[#B42318]')}`;
     }
 
     const defText = document.getElementById('attDeficitText');
     if (defText) {
       defText.textContent = `${data.deficit > 0 ? '+' : ''}${data.deficit.toFixed(1)}%`;
-      defText.className = `font-mono text-xs font-bold ${data.deficit >= 0 ? 'text-[#1A1A1A] dark:text-[#F2F2F2]' : 'text-[#B42318]'}`;
+      defText.className = `tabular text-xs font-bold ${data.deficit >= 0 ? 'text-[#1A1A1A] dark:text-[#F2F2F2]' : 'text-[#B42318]'}`;
     }
 
     // 4. Days Needed Card
@@ -321,7 +384,7 @@
     // Render 31 days with realistic academic pattern
     for (let day = 1; day <= 31; day++) {
       const cell = document.createElement('div');
-      cell.className = 'w-8 h-8 rounded-full flex items-center justify-center font-mono text-xs transition-transform hover:scale-105';
+      cell.className = 'w-8 h-8 rounded-full flex items-center justify-center tabular text-xs transition-transform hover:scale-105';
       cell.textContent = String(day);
 
       // Sundays / Week off (day % 7 === 0 or day % 7 === 6)

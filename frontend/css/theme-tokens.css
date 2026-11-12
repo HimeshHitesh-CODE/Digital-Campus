@@ -113,30 +113,30 @@
   color-scheme: dark;
 
   /* ── Stitch S15 Material / Kinetic Bento Surfaces ──────────── */
-  --surface:                    #131313;
-  --surface-dim:                #131313;
+  --surface:                    #121212;
+  --surface-dim:                #121212;
   --surface-bright:             #393939;
   --surface-container-lowest:   #0e0e0e;
-  --surface-container-low:      #1c1b1b; /* Standard L1 Bento Card */
+  --surface-container-low:      #1C1C1C; /* Standard L1 Bento Card */
   --surface-container:          #201f1f; /* Inset input/row fill */
-  --surface-container-high:     #2a2a2a; /* L2 Dark Feature Card */
+  --surface-container-high:     #262626; /* L2 Dark Feature Card */
   --surface-container-highest:  #353534; /* Dock & Elevated Chips */
   --surface-variant:            #353534;
 
   /* ── Typography & Ink Tokens ───────────────────────────────── */
-  --on-surface:                 #e5e2e1;
-  --on-surface-variant:         #c6c8b1;
-  --outline:                    #90937d;
-  --outline-variant:            #454836;
+  --on-surface:                 #F2F2F2;
+  --on-surface-variant:         #9A9A9A;
+  --outline:                    rgba(255, 255, 255, 0.15);
+  --outline-variant:            rgba(255, 255, 255, 0.08);
   --hairline:                   rgba(255, 255, 255, 0.08);
 
   /* ── Accent Signal Layers ──────────────────────────────────── */
-  --primary:                    #ffffff;
-  --on-primary:                 #2b3400;
-  --primary-container:          #d3ef5b; /* Signal Lime */
-  --on-primary-container:       #5a6b00;
+  --primary:                    #FFFFFF;
+  --on-primary:                 #1A1A1A;
+  --primary-container:          #D6F25E; /* Signal Lime */
+  --on-primary-container:       #1A1A1A;
 
-  --secondary:                  #c9beff; /* Signal Lavender */
+  --secondary:                  #A99CF0; /* Signal Lavender */
   --on-secondary:               #312762;
   --secondary-container:        #483e7a;
   --on-secondary-container:     #b8adf0;
@@ -392,4 +392,20 @@ html, body {
 .btn-pill-ghost:hover {
   color: var(--on-surface);
   background-color: var(--surface-container);
+}
+
+/* Tabular Numbers Utility */
+.tabular,
+[data-tabular] {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Consistent Card Body Padding */
+.bento-card-body {
+  padding: 24px;
+}
+@media (min-width: 1024px) {
+  .bento-card-body {
+    padding: 28px;
+  }
 }

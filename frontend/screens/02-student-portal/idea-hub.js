@@ -137,7 +137,7 @@ function bindStudentMetadata() {
     const container = document.getElementById('hubMySkillsContainer');
     if (container && Array.isArray(list)) {
       container.innerHTML = list.map(s => `
-        <span class="font-mono text-[10px] px-2.5 py-0.5 rounded-full bg-white/10 text-stone-200">${escapeHtml(s)}</span>
+        <span class="tabular text-[10px] px-2.5 py-0.5 rounded-full bg-white/10 text-stone-200">${escapeHtml(s)}</span>
       `).join('');
     }
   }
@@ -244,16 +244,16 @@ function renderPeers() {
         <!-- Top: Avatar, Name & Specialty -->
         <div class="flex items-start justify-between gap-2 pb-3 border-b border-[var(--color-hairline)] min-w-0">
           <div class="flex items-center gap-2.5 min-w-0 flex-1">
-            <div class="relative w-10 h-10 rounded-full bg-[var(--color-feature-card)] text-white flex items-center justify-center font-mono font-bold text-xs shrink-0">
+            <div class="relative w-10 h-10 rounded-full bg-[var(--color-feature-card)] text-white flex items-center justify-center tabular font-bold text-xs shrink-0">
               ${initials}
               <span class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full ${peer.available ? 'bg-emerald-500' : 'bg-stone-400'} ring-2 ring-[var(--color-card)]"></span>
             </div>
             <div class="flex flex-col min-w-0 flex-1">
               <h3 class="text-sm font-bold text-[var(--color-ink)] truncate">${escapeHtml(peer.name)}</h3>
-              <span class="font-mono text-[11px] text-[var(--color-muted)] truncate">${peer.pin} · ${peer.dept}</span>
+              <span class="tabular text-[11px] text-[var(--color-muted)] truncate">${peer.pin} · ${peer.dept}</span>
             </div>
           </div>
-          <span class="font-mono text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[var(--color-lavender)] text-[#22174C] shrink-0 max-w-[120px] truncate" title="${escapeHtml(peer.specialty)}">
+          <span class="tabular text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[var(--color-lavender)] text-[#22174C] shrink-0 max-w-[120px] truncate" title="${escapeHtml(peer.specialty)}">
             ${escapeHtml(peer.specialty)}
           </span>
         </div>
@@ -263,14 +263,14 @@ function renderPeers() {
           <p class="text-xs text-[var(--color-muted)] line-clamp-2 leading-relaxed">${escapeHtml(peer.bio)}</p>
           <div class="flex flex-wrap gap-1 pt-1">
             ${peer.skills.map(s => `
-              <span class="font-mono text-[10px] px-2 py-0.5 rounded-full bg-[var(--color-card-subtle)] text-[var(--color-ink)] border border-[var(--color-hairline)]">${escapeHtml(s)}</span>
+              <span class="tabular text-[10px] px-2 py-0.5 rounded-full bg-[var(--color-card-subtle)] text-[var(--color-ink)] border border-[var(--color-hairline)]">${escapeHtml(s)}</span>
             `).join('')}
           </div>
         </div>
 
         <!-- Bottom: Actions -->
         <div class="pt-3 border-t border-[var(--color-hairline)] flex items-center justify-between gap-2">
-          <span class="font-mono text-[11px] ${peer.available ? 'text-emerald-700 dark:text-emerald-400 font-semibold' : 'text-[var(--color-muted)]'} flex items-center gap-1">
+          <span class="tabular text-[11px] ${peer.available ? 'text-emerald-700 dark:text-emerald-400 font-semibold' : 'text-[var(--color-muted)]'} flex items-center gap-1">
             <span class="w-1.5 h-1.5 rounded-full ${peer.available ? 'bg-emerald-500' : 'bg-stone-400'}"></span>
             <span>${peer.available ? 'Open to Collab' : 'Busy'}</span>
           </span>
@@ -336,14 +336,31 @@ function bindEditSkillsModal() {
       if (bioEl) bioEl.textContent = newBio;
     }
 
+    const myUser = (typeof StitchState !== 'undefined' && StitchState.getUser) ? StitchState.getUser() : {};
+    const myPin = myUser.pin || localStorage.getItem('student_pin') || '';
+
     if (skillsText) {
       const skills = skillsText.split(',').map(s => s.trim()).filter(Boolean);
       localStorage.setItem('dc_my_skills', JSON.stringify(skills));
       const container = document.getElementById('hubMySkillsContainer');
       if (container) {
         container.innerHTML = skills.map(s => `
-          <span class="font-mono text-[10px] px-2.5 py-0.5 rounded-full bg-white/10 text-stone-200">${escapeHtml(s)}</span>
+          <span class="tabular text-[10px] px-2.5 py-0.5 rounded-full bg-white/10 text-stone-200">${escapeHtml(s)}</span>
         `).join('');
+      }
+
+      if (myPin) {
+        fetch('/api/v1/ideas/skills', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ pin: myPin, skills: skills })
+        }).catch(err => console.warn('Sync skills API notice:', err));
+
+        fetch('/api/v1/ideas/profile', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ pin: myPin, is_available: Boolean(isCollab) })
+        }).catch(err => console.warn('Sync availability API notice:', err));
       }
     }
 
@@ -351,8 +368,8 @@ function bindEditSkillsModal() {
     if (badge) {
       badge.textContent = isCollab ? 'Open to Collaborate' : 'Currently Busy';
       badge.className = isCollab 
-        ? 'font-mono text-[11px] px-2.5 py-0.5 rounded-full bg-[var(--color-lime)] text-[var(--color-lime-ink)] font-semibold'
-        : 'font-mono text-[11px] px-2.5 py-0.5 rounded-full bg-stone-500 text-white font-medium';
+        ? 'tabular text-[11px] px-2.5 py-0.5 rounded-full bg-[var(--color-lime)] text-[var(--color-lime-ink)] font-semibold'
+        : 'tabular text-[11px] px-2.5 py-0.5 rounded-full bg-stone-500 text-white font-medium';
     }
 
     modal.classList.add('hidden');
@@ -389,6 +406,24 @@ function bindInviteProjectModal() {
     const noteEl = document.getElementById('inviteNoteInput');
     if (noteEl) noteEl.value = '';
 
+    const myUser = (typeof StitchState !== 'undefined' && StitchState.getUser) ? StitchState.getUser() : {};
+    const myPin = myUser.pin || localStorage.getItem('student_pin') || '';
+    const myName = myUser.name || localStorage.getItem('user_name') || 'Student';
+
+    if (myPin && selectedPeer) {
+      fetch('/api/v1/ideas/invites', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          from_pin: myPin,
+          from_name: myName,
+          to_pin: selectedPeer.pin,
+          to_name: selectedPeer.name,
+          project_title: role,
+          message: document.getElementById('inviteNoteInput')?.value.trim() || ''
+        })
+      }).catch(err => console.warn('Send invite API notice:', err));
+    }
     showToast(`Project invitation sent to ${selectedPeer?.name || 'student'}.`);
   });
 }

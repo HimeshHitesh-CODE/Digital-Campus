@@ -33,6 +33,12 @@ function getActiveDepartment() {
 }
 
 function initStudentsInfo() {
+
+  document.getElementById('closeDrawerBtn')?.addEventListener('click', closeStudentDrawer);
+  document.getElementById('studentDetailDrawerBackdrop')?.addEventListener('click', (e) => {
+    if (e.target.id === 'studentDetailDrawerBackdrop') closeStudentDrawer();
+  });
+
   activeDepartment = getActiveDepartment();
 
   // 1. Initial Data Loading from Backend
@@ -74,12 +80,12 @@ function switchDepartment(dept) {
   const deptLabel = document.getElementById('studentsDeptLabel');
 
   if (dept === 'AIML') {
-    if (btnAiml) btnAiml.className = 'px-4 py-1.5 rounded-full text-xs font-bold font-code-mono uppercase tracking-wide transition-all bg-primary text-on-primary shadow-xs';
-    if (btnCs) btnCs.className = 'px-4 py-1.5 rounded-full text-xs font-bold font-code-mono uppercase tracking-wide transition-all text-on-surface-variant hover:text-on-surface';
+    if (btnAiml) btnAiml.className = 'px-4 py-1.5 rounded-full text-xs font-bold tabular uppercase tracking-wide transition-all bg-primary text-on-primary shadow-xs';
+    if (btnCs) btnCs.className = 'px-4 py-1.5 rounded-full text-xs font-bold tabular uppercase tracking-wide transition-all text-on-surface-variant hover:text-on-surface';
     if (deptLabel) deptLabel.textContent = 'Artificial Intelligence & Machine Learning';
   } else {
-    if (btnCs) btnCs.className = 'px-4 py-1.5 rounded-full text-xs font-bold font-code-mono uppercase tracking-wide transition-all bg-primary text-on-primary shadow-xs';
-    if (btnAiml) btnAiml.className = 'px-4 py-1.5 rounded-full text-xs font-bold font-code-mono uppercase tracking-wide transition-all text-on-surface-variant hover:text-on-surface';
+    if (btnCs) btnCs.className = 'px-4 py-1.5 rounded-full text-xs font-bold tabular uppercase tracking-wide transition-all bg-primary text-on-primary shadow-xs';
+    if (btnAiml) btnAiml.className = 'px-4 py-1.5 rounded-full text-xs font-bold tabular uppercase tracking-wide transition-all text-on-surface-variant hover:text-on-surface';
     if (deptLabel) deptLabel.textContent = 'Computer Science & Engineering';
   }
 
@@ -322,9 +328,9 @@ function renderContinuousStudents(students) {
     const branchSec = `${activeDepartment === 'AIML' ? 'AIML' : 'CSE'} · A`;
 
     // Attendance & Days Present / Elapsed
-    let daysHtml = `<span class="text-on-surface-variant font-code-mono">—</span>`;
-    let attBadgeHtml = `<span class="px-2 py-0.5 rounded-full text-xs font-code-mono font-medium bg-surface-container-highest text-on-surface-variant">Unsynced</span>`;
-    let statusBadgeHtml = `<span class="px-2 py-0.5 rounded-full text-xs font-code-mono-sm font-medium bg-surface-container-highest text-on-surface-variant">${s.sync_status === 'failed' ? 'Failed' : 'No Biometric'}</span>`;
+    let daysHtml = `<span class="text-on-surface-variant tabular">—</span>`;
+    let attBadgeHtml = `<span class="px-2 py-0.5 rounded-full text-xs tabular font-medium bg-surface-container-highest text-on-surface-variant">Unsynced</span>`;
+    let statusBadgeHtml = `<span class="px-2 py-0.5 rounded-full text-xs tabular-sm font-medium bg-surface-container-highest text-on-surface-variant">${s.sync_status === 'failed' ? 'Failed' : 'No Biometric'}</span>`;
 
     if (s.attendance && s.attendance.percentage !== null) {
       const p = s.attendance.percentage;
@@ -351,28 +357,28 @@ function renderContinuousStudents(students) {
 
       daysHtml = `
         <div class="flex flex-col gap-1 w-28">
-          <span class="font-code-mono-sm text-[11px] text-on-surface">${pres} / ${work} days</span>
+          <span class="tabular-sm text-[11px] text-on-surface">${pres} / ${work} days</span>
           <div class="w-full h-1 bg-surface-container-highest rounded-full overflow-hidden">
             <div class="${barColorClass} h-full rounded-full" style="width: ${barPct}%;"></div>
           </div>
         </div>
       `;
 
-      attBadgeHtml = `<span class="font-code-mono font-bold ${attColorClass}">${p.toFixed(1)}%</span>`;
-      statusBadgeHtml = `<span class="inline-flex items-center px-2 py-0.5 rounded-full font-code-mono-sm text-[11px] font-semibold ${statusColorClass}">${statusText}</span>`;
+      attBadgeHtml = `<span class="tabular font-bold ${attColorClass}">${p.toFixed(1)}%</span>`;
+      statusBadgeHtml = `<span class="inline-flex items-center px-2 py-0.5 rounded-full tabular-sm text-[11px] font-semibold ${statusColorClass}">${statusText}</span>`;
     }
 
     // CGPA
     const cgpaText = (s.cgpa !== null && s.cgpa !== undefined && s.cgpa !== '') ? 
                      Number(s.cgpa).toFixed(2) : 
-                     `<span class="text-on-surface-variant font-code-mono">—</span>`;
+                     `<span class="text-on-surface-variant tabular">—</span>`;
 
     // Backlogs
     const bCount = s.backlogs_count || s.backlogs || 0;
-    let backlogHtml = `<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-code-mono-sm text-[11px]">0 backlogs</span>`;
+    let backlogHtml = `<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-surface-container-high text-on-surface-variant tabular-sm text-[11px]">0 backlogs</span>`;
     if (bCount > 0) {
       backlogHtml = `
-        <button class="backlog-modal-trigger inline-flex items-center px-2 py-0.5 rounded-full bg-error-container text-on-error-container font-code-mono-sm text-[11px] font-bold hover:opacity-85 transition-opacity cursor-pointer" data-pin="${s.pin}">
+        <button class="backlog-modal-trigger inline-flex items-center px-2 py-0.5 rounded-full bg-error-container text-on-error-container tabular-sm text-[11px] font-bold hover:opacity-85 transition-opacity cursor-pointer" data-pin="${s.pin}">
           ${bCount} backlogs
         </button>
       `;
@@ -382,31 +388,31 @@ function renderContinuousStudents(students) {
     const syncedText = s.lastSynced ? formatRelativeTime(s.lastSynced) : 'Never';
 
     return `
-      <tr class="hover:bg-surface-container/60 transition-colors group">
+      <tr class="hover:bg-surface-container/60 transition-colors group cursor-pointer" data-pin="${s.pin}">
         <td class="py-3 px-4">
-          <span class="inline-flex px-2 py-1 rounded bg-surface-container-high font-code-mono text-code-mono text-on-surface">${s.pin}</span>
+          <span class="inline-flex px-2 py-1 rounded bg-surface-container-high tabular text-code-mono text-on-surface">${s.pin}</span>
         </td>
         <td class="py-3 px-4">
           <div class="flex items-center gap-2.5">
-            <div class="w-7 h-7 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center font-code-mono-sm font-bold text-[11px] shrink-0">
+            <div class="w-7 h-7 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center tabular-sm font-bold text-[11px] shrink-0">
               ${initials}
             </div>
             <div class="flex flex-col min-w-0">
               <span class="font-medium text-on-surface truncate text-xs">${escapeHtml(s.name)}</span>
-              <span class="font-code-mono-sm text-[10px] text-on-surface-variant leading-tight">#${rollStr} · C-24</span>
+              <span class="tabular-sm text-[10px] text-on-surface-variant leading-tight">#${rollStr} · C-24</span>
             </div>
           </div>
         </td>
-        <td class="py-3 px-4 font-code-mono-sm text-on-surface-variant text-[11px]">${branchSec}</td>
+        <td class="py-3 px-4 tabular-sm text-on-surface-variant text-[11px]">${branchSec}</td>
         <td class="py-3 px-4">${daysHtml}</td>
         <td class="py-3 px-4">${attBadgeHtml}</td>
         <td class="py-3 px-4">${statusBadgeHtml}</td>
-        <td class="py-3 px-4 text-right font-code-mono font-medium">${cgpaText}</td>
+        <td class="py-3 px-4 text-right tabular font-medium">${cgpaText}</td>
         <td class="py-3 px-4 text-center">${backlogHtml}</td>
-        <td class="py-3 px-4 text-on-surface-variant font-code-mono-sm text-[11px]">${syncedText}</td>
+        <td class="py-3 px-4 text-on-surface-variant tabular-sm text-[11px]">${syncedText}</td>
         <td class="py-3 px-4 text-right pr-6">
           <div class="inline-flex items-center gap-1.5">
-            <button class="row-sync-btn px-2.5 py-1 rounded-full bg-surface-container hover:bg-surface-container-highest text-on-surface font-code-mono-sm text-[11px] font-semibold transition-colors flex items-center gap-1 cursor-pointer" data-pin="${s.pin}" title="Sync this student now">
+            <button class="row-sync-btn px-2.5 py-1 rounded-full bg-surface-container hover:bg-surface-container-highest text-on-surface tabular-sm text-[11px] font-semibold transition-colors flex items-center gap-1 cursor-pointer" data-pin="${s.pin}" title="Sync this student now">
               <span class="material-symbols-outlined text-[13px]">sync</span>
               <span>Sync</span>
             </button>
@@ -449,15 +455,15 @@ function renderMobileCards(students) {
             </div>
             <div>
               <h4 class="font-semibold text-on-surface text-xs leading-tight">${escapeHtml(s.name)}</h4>
-              <span class="font-code-mono text-[11px] text-on-surface-variant">${s.pin}</span>
+              <span class="tabular text-[11px] text-on-surface-variant">${s.pin}</span>
             </div>
           </div>
-          <span class="font-code-mono font-bold text-xs ${hasAtt && s.attendance.percentage >= 75 ? 'text-primary-fixed' : (hasAtt && s.attendance.percentage >= 65 ? 'text-secondary' : 'text-error')}">
+          <span class="tabular font-bold text-xs ${hasAtt && s.attendance.percentage >= 75 ? 'text-primary-fixed' : (hasAtt && s.attendance.percentage >= 65 ? 'text-secondary' : 'text-error')}">
             ${attVal}
           </span>
         </div>
 
-        <div class="grid grid-cols-3 gap-2 text-[11px] font-code-mono-sm p-2 rounded-xl bg-surface-container-low border border-hairline text-center">
+        <div class="grid grid-cols-3 gap-2 text-[11px] tabular-sm p-2 rounded-xl bg-surface-container-low border border-hairline text-center">
           <div>
             <span class="text-on-surface-variant block text-[10px]">Days</span>
             <span class="font-bold text-on-surface">${s.attendance ? `${s.attendance.daysPresent}/${s.attendance.workingDays}` : '—'}</span>
@@ -554,6 +560,16 @@ function bindRowActions() {
       if (student) openBacklogModal(student);
     });
   });
+
+  // Master Table Row Click -> Student Detail Drawer
+  document.querySelectorAll('#masterStudentsTbody tr[data-pin]').forEach(tr => {
+    tr.addEventListener('click', (e) => {
+      if (e.target.closest('button') || e.target.closest('a')) return;
+      const pin = tr.getAttribute('data-pin');
+      const student = currentStudentsList.find(s => s.pin === pin);
+      if (student) openStudentDrawer(student);
+    });
+  });
 }
 
 /**
@@ -589,14 +605,14 @@ function openBacklogModal(student) {
         <tr class="hover:bg-surface-container-high transition-colors">
           <td class="py-2.5 px-3">
             <span class="font-medium text-on-surface block text-xs">${escapeHtml(b.title || b.name)}</span>
-            <span class="font-code-mono text-[10px] text-on-surface-variant">${escapeHtml(b.code)}</span>
+            <span class="tabular text-[10px] text-on-surface-variant">${escapeHtml(b.code)}</span>
           </td>
-          <td class="py-2.5 px-3 font-code-mono-sm text-on-surface-variant text-xs">${escapeHtml(b.sem || '5th Sem')}</td>
-          <td class="py-2.5 px-3 font-code-mono text-xs">${b.internal || '—'}</td>
-          <td class="py-2.5 px-3 font-code-mono text-xs">${b.external || '—'}</td>
-          <td class="py-2.5 px-3 font-code-mono text-xs font-bold">${b.total || '—'}</td>
+          <td class="py-2.5 px-3 tabular-sm text-on-surface-variant text-xs">${escapeHtml(b.sem || '5th Sem')}</td>
+          <td class="py-2.5 px-3 tabular text-xs">${b.internal || '—'}</td>
+          <td class="py-2.5 px-3 tabular text-xs">${b.external || '—'}</td>
+          <td class="py-2.5 px-3 tabular text-xs font-bold">${b.total || '—'}</td>
           <td class="py-2.5 px-3">
-            <span class="px-2 py-0.5 rounded-full bg-error-container text-on-error-container font-code-mono text-xs font-bold">
+            <span class="px-2 py-0.5 rounded-full bg-error-container text-on-error-container tabular text-xs font-bold">
               ${escapeHtml(b.grade || 'F')}
             </span>
           </td>
@@ -644,7 +660,7 @@ function bindMassSyncModal() {
     modal?.classList.remove('hidden');
     if (badge) {
       badge.textContent = 'Syncing...';
-      badge.className = 'px-2.5 py-0.5 rounded-full text-xs font-code-mono font-bold bg-primary-container text-on-primary-container animate-pulse';
+      badge.className = 'px-2.5 py-0.5 rounded-full text-xs tabular font-bold bg-primary-container text-on-primary-container animate-pulse';
     }
 
     try {
@@ -667,7 +683,7 @@ function bindMassSyncModal() {
           clearInterval(interval);
           if (badge) {
             badge.textContent = 'Completed ✓';
-            badge.className = 'px-2.5 py-0.5 rounded-full text-xs font-code-mono font-bold bg-primary text-on-primary';
+            badge.className = 'px-2.5 py-0.5 rounded-full text-xs tabular font-bold bg-primary text-on-primary';
           }
           if (progressBar) progressBar.style.width = '100%';
           if (pctDisplay) pctDisplay.textContent = '100%';
@@ -678,7 +694,7 @@ function bindMassSyncModal() {
           clearInterval(interval);
           if (badge) {
             badge.textContent = 'Failed';
-            badge.className = 'px-2.5 py-0.5 rounded-full text-xs font-code-mono font-bold bg-error-container text-on-error-container';
+            badge.className = 'px-2.5 py-0.5 rounded-full text-xs tabular font-bold bg-error-container text-on-error-container';
           }
           showToast('Mass sync failed. Please check connection and retry.');
         }
@@ -838,4 +854,85 @@ function showToast(msg) {
     toast.classList.add('hidden');
     toast.classList.remove('flex');
   }, 3500);
+}
+
+
+// --- STUDENT DETAIL SLIDE-OVER DRAWER (V4.0 SPEC) ---
+function openStudentDrawer(student) {
+  const backdrop = document.getElementById('studentDetailDrawerBackdrop');
+  if (!backdrop) return;
+
+  const avatar = document.getElementById('drawerAvatar');
+  const nameEl = document.getElementById('drawerName');
+  const pinEl = document.getElementById('drawerPin');
+  const attPctEl = document.getElementById('drawerAttendancePct');
+  const attDaysEl = document.getElementById('drawerAttendanceDays');
+  const cgpaEl = document.getElementById('drawerCgpa');
+  const backlogBadge = document.getElementById('drawerBacklogBadge');
+  const backlogsList = document.getElementById('drawerBacklogsList');
+  const msgBtn = document.getElementById('drawerMessageBtn');
+
+  const initials = getInitials(student.name);
+  if (avatar) avatar.textContent = initials;
+  if (nameEl) nameEl.textContent = student.name;
+  if (pinEl) pinEl.textContent = `PIN: ${student.pin} · ${student.branch || activeDepartment}`;
+
+  const hasSync = student.working_days !== null && student.working_days !== undefined;
+  if (attPctEl) attPctEl.textContent = hasSync ? `${student.attendance_pct || '0.0%'}` : 'Not synced';
+  if (attDaysEl) attDaysEl.textContent = hasSync ? `${student.present_days || 0} / ${student.working_days} days present` : 'SBTET sync pending';
+
+  if (cgpaEl) cgpaEl.textContent = (student.cgpa !== null && student.cgpa !== undefined && student.cgpa > 0) ? Number(student.cgpa).toFixed(2) : '—';
+
+  const backlogs = student.backlogs_count || student.backlogs || 0;
+  if (backlogBadge) {
+    backlogBadge.textContent = backlogs === 0 ? '0 Clear' : `${backlogs} Arrears`;
+    backlogBadge.className = backlogs === 0 
+      ? 'px-2.5 py-0.5 rounded-full text-xs font-bold bg-[var(--color-lime)] text-[var(--color-lime-ink)]'
+      : 'px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-500/20 text-rose-400 border border-rose-500/30';
+  }
+
+  if (backlogsList) {
+    backlogsList.textContent = backlogs === 0 
+      ? 'All prescribed semester coursework validated with passing grade.' 
+      : `${backlogs} active backlog papers requiring remedial clearance.`;
+  }
+
+  if (msgBtn) {
+    msgBtn.href = `./messages.html?partner=${student.pin}`;
+  }
+
+  // Load recent requests for student
+  const reqList = document.getElementById('drawerRequestsList');
+  if (reqList) {
+    reqList.innerHTML = '<span class="text-xs text-[var(--on-surface-variant)]">Loading requests...</span>';
+    fetch(`/api/v1/requests/my?pin=${encodeURIComponent(student.pin)}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.requests && data.requests.length > 0) {
+          reqList.innerHTML = data.requests.slice(0, 3).map(r => `
+            <div class="p-2.5 rounded-lg bg-[var(--surface-container)] border border-[var(--hairline)] flex items-center justify-between text-xs">
+              <div>
+                <span class="font-semibold text-[var(--on-surface)]">${escapeHtml(r.request_type)}</span>
+                <span class="text-[10px] text-[var(--on-surface-variant)] block">${escapeHtml(r.reason)}</span>
+              </div>
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${r.status === 'ACCEPTED' ? 'bg-[var(--color-lime)] text-[var(--color-lime-ink)]' : 'bg-stone-500/20 text-stone-300'}">
+                ${r.status}
+              </span>
+            </div>
+          `).join('');
+        } else {
+          reqList.innerHTML = '<span class="text-xs text-[var(--on-surface-variant)]">No certificate requests submitted.</span>';
+        }
+      })
+      .catch(() => {
+        reqList.innerHTML = '<span class="text-xs text-[var(--on-surface-variant)]">No requests records.</span>';
+      });
+  }
+
+  backdrop.classList.remove('hidden');
+}
+
+function closeStudentDrawer() {
+  const backdrop = document.getElementById('studentDetailDrawerBackdrop');
+  if (backdrop) backdrop.classList.add('hidden');
 }

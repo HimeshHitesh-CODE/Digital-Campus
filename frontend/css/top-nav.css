@@ -1,40 +1,43 @@
 /* ================================================================
    SAMSKRUTI DIGITAL CAMPUS (INSTITUTION CODE: 259)
-   MASTER KINETIC BENTO APP SHELL: S13 DYNAMIC ISLAND CC DOCK & HEADER
-   Specification: S13 Dock States Sheet & S15 Style Spec
+   UNIFIED TOP NAVIGATION & FLOATING PILL SYSTEM (V4.0)
+   No hover-collapse, no "CC" pill. Always-open floating pill on desktop.
+   Fixed mobile bottom bar below 1100px.
+   Full dual-theme surface parity (Light #FFFFFF vs Dark #262626).
    ================================================================ */
 
-@import url('/css/theme-tokens.css');
-
-/* ================================================================
-   1. FIXED GLOBAL HEADER (h-20 / 80px)
-   ================================================================ */
-.app-global-header {
+/* Fixed Top Header (80px) */
+.cc-app-header {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   height: 80px;
   z-index: 1000;
-  background: var(--header-bg-transparent, transparent);
-  border-bottom: 1px solid transparent;
-  transition: background 0.25s ease, border-color 0.25s ease, backdrop-filter 0.25s ease;
-  pointer-events: none; /* Let clicks pass through outside interactive elements */
+  background: transparent;
+  transition: background 250ms ease, backdrop-filter 250ms ease, border-color 250ms ease;
+  pointer-events: none;
 }
 
-.app-global-header.is-scrolled {
-  background: var(--header-bg-scrolled, rgba(19, 19, 19, 0.92));
-  border-bottom: 1px solid var(--hairline, rgba(255, 255, 255, 0.08));
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+.cc-app-header.scrolled {
+  background: rgba(18, 18, 18, 0.88);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.app-global-header-inner {
-  max-width: 100%;
+[data-theme="light"] .cc-app-header.scrolled {
+  background: rgba(228, 228, 225, 0.92);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.cc-header-inner {
   width: 100%;
+  max-width: none;
   height: 100%;
   margin: 0 auto;
-  padding: 0 var(--container-gutter, clamp(16px, 2.2vw, 40px)); box-sizing: border-box;
+  padding: 0 clamp(16px, 2.2vw, 40px);
+  box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -42,573 +45,447 @@
 }
 
 /* Enable pointer events on interactive children */
-.header-brand-meta,
-.dynamic-island-anchor,
-.header-right-actions {
+.cc-header-left,
+.cc-header-nav-anchor,
+.cc-header-right {
   pointer-events: auto;
 }
 
-/* ================================================================
-   2. HEADER LEFT: INSTITUTION & REAL STUDENT PIN
-   ================================================================ */
-.header-brand-meta {
+/* Left Brand & Registry Telemetry */
+.cc-header-left {
   display: flex;
   flex-direction: column;
-  text-decoration: none;
-  color: var(--on-surface, #e5e2e1);
+  gap: 2px;
   user-select: none;
-  z-index: 20;
+  min-width: 140px;
 }
 
-.header-brand-title {
-  font-family: var(--font-sans);
+.cc-brand-title {
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
   font-weight: 700;
-  font-size: 1.05rem;
+  font-size: 15px;
   letter-spacing: -0.02em;
+  color: var(--on-surface, #F2F2F2);
   line-height: 1.2;
-  color: var(--on-surface, #e5e2e1);
 }
 
-.header-brand-sub {
-  font-family: var(--font-mono);
+.cc-brand-sub {
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
   font-size: 11px;
-  color: var(--on-surface-variant, #c6c8b1);
-  letter-spacing: 0.02em;
+  color: var(--on-surface-variant, #9A9A9A);
+  font-variant-numeric: tabular-nums;
 }
 
-/* ================================================================
-   3. S13 DYNAMIC ISLAND "CC" DOCK (CENTERED)
-   ================================================================ */
-.dynamic-island-anchor {
+/* Center Always-Open Floating Pill Navigation */
+.cc-header-nav-anchor {
   position: absolute;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  z-index: 50;
+  z-index: 1010;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* Expanded/Collapsed Dock Container */
-.cc-island-dock {
-  position: relative;
-  background-color: var(--surface-container-highest, #353534);
-  border: 1px solid var(--hairline, rgba(255, 255, 255, 0.08));
-  box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.35);
-  border-radius: 9999px;
+.cc-nav-pill-container {
   display: flex;
   align-items: center;
-  justify-content: center;
-  transition: width 380ms cubic-bezier(0.22, 1, 0.36, 1),
-              height 380ms cubic-bezier(0.22, 1, 0.36, 1),
-              padding 380ms cubic-bezier(0.22, 1, 0.36, 1),
-              box-shadow 250ms ease,
-              background-color 200ms ease;
+  gap: 0;
+  background-color: #262626;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 9999px;
+  padding: 5px 6px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
   user-select: none;
+  transition: background-color 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
 }
 
-/* Hitbox padding pseudo-element to prevent hover edge-flicker (84x64px hitbox) */
-.cc-island-dock::before {
-  content: '';
-  position: absolute;
-  top: -6px;
-  bottom: -6px;
-  left: -6px;
-  right: -6px;
-  z-index: -1;
-  pointer-events: auto;
+/* Light Theme Surface Parity for Nav Pill */
+[data-theme="light"] .cc-nav-pill-container {
+  background-color: #FFFFFF;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
 }
 
-/* --- STATE A: COLLAPSED DEFAULT PILL (72px × 52px) --- */
-.cc-island-dock.is-collapsed {
-  width: 72px;
-  height: 52px;
-  padding: 0;
-  cursor: pointer;
-}
-
-.cc-island-dock.is-collapsed:hover {
-  transform: scale(1.04);
-}
-
-.cc-island-dock.is-collapsed .dock-collapsed-view {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-  background: transparent;
-  border: none;
-  outline: none;
-  cursor: pointer;
-  padding: 0;
-}
-
-.cc-island-dock.is-collapsed .dock-expanded-view {
-  display: none !important;
-}
-
-/* Monogram "CC" text */
-.dock-monogram-text {
-  font-family: var(--font-mono);
-  font-size: 16px;
-  font-weight: 700;
-  letter-spacing: 0.15em;
-  color: var(--primary-container, #d3ef5b);
-}
-
-/* Micro radar ping dot */
-.dock-radar-dot {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  width: 8px;
-  height: 8px;
-  border-radius: 9999px;
-  background-color: var(--primary-container, #d3ef5b);
-  box-shadow: 0 0 0 3px var(--surface-container-highest, #353534);
-}
-
-/* --- STATE B: EXPANDED DESKTOP (Student: 690×60px / HOD: 720×64px) --- */
-.cc-island-dock.is-expanded {
-  width: 690px;
-  height: 60px;
-  padding: 0 8px;
-  justify-content: space-between;
-  cursor: default;
-}
-
-.cc-island-dock.is-expanded.is-hod {
-  width: 720px;
-  height: 64px;
-}
-
-.cc-island-dock.is-expanded .dock-collapsed-view {
-  display: none !important;
-}
-
-.cc-island-dock.is-expanded .dock-expanded-view {
-  display: flex !important;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  height: 100%;
-  position: relative;
-  z-index: 10;
-}
-
-/* Staggered Entrance Animation for 7 Slots */
-.cc-island-dock.is-expanded .dock-slot-item {
-  animation: dockItemFadeIn 280ms cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-.cc-island-dock.is-expanded .dock-slot-item:nth-child(1) { animation-delay: 30ms; }
-.cc-island-dock.is-expanded .dock-slot-item:nth-child(3) { animation-delay: 60ms; }
-.cc-island-dock.is-expanded .dock-slot-item:nth-child(5) { animation-delay: 90ms; }
-.cc-island-dock.is-expanded .dock-slot-item:nth-child(7) { animation-delay: 120ms; }
-.cc-island-dock.is-expanded .dock-slot-item:nth-child(9) { animation-delay: 150ms; }
-.cc-island-dock.is-expanded .dock-slot-item:nth-child(11) { animation-delay: 180ms; }
-.cc-island-dock.is-expanded .dock-slot-item:nth-child(13) { animation-delay: 210ms; }
-
-@keyframes dockItemFadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(4px) scale(0.96);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-/* 1px Vertical Dividers */
-.dock-slot-divider {
+.cc-nav-divider {
   width: 1px;
   height: 24px;
-  background-color: var(--surface-container-high, #2a2a2a);
+  background-color: rgba(255, 255, 255, 0.08);
   flex-shrink: 0;
 }
 
-/* Inactive Slot Styling */
-.dock-slot-item {
-  height: 48px;
-  padding: 0 14px;
-  border-radius: 9999px;
+[data-theme="light"] .cc-nav-divider {
+  background-color: rgba(0, 0, 0, 0.08);
+}
+
+/* Individual Slot (Icon stacked above label) */
+.cc-nav-slot {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: var(--on-surface-variant, #c6c8b1);
+  gap: 2px;
+  padding: 6px 14px;
+  min-width: 62px;
+  border-radius: 9999px;
   text-decoration: none;
-  position: relative;
-  transition: all 150ms cubic-bezier(0.22, 1, 0.36, 1);
   cursor: pointer;
-  white-space: nowrap;
-}
-
-.dock-slot-icon {
-  font-size: 18px !important;
-  line-height: 1;
-  margin-bottom: 2px;
-  transition: color 150ms ease, transform 150ms ease;
-}
-
-.dock-slot-label {
-  font-family: var(--font-sans);
-  font-size: 11px;
-  line-height: 1;
-  font-weight: 500;
-  transition: color 150ms ease;
-}
-
-/* --- STATE C: HOVER FEEDBACK ON NON-ACTIVE SLOT --- */
-.dock-slot-item:not(.is-active):hover {
-  background-color: var(--surface-bright, #393939);
-  color: var(--on-surface, #e5e2e1);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-}
-
-.dock-slot-item:not(.is-active):hover .dock-slot-icon {
-  color: var(--primary-container, #d3ef5b);
-}
-
-.dock-slot-item:not(.is-active):hover .dock-slot-label {
-  color: var(--primary, #ffffff);
-  font-weight: 600;
-}
-
-/* --- ACTIVE SLOT STYLING (Solid High-Contrast Pill) --- */
-.dock-slot-item.is-active {
-  background-color: var(--primary, #ffffff);
-  color: var(--on-secondary, #312762) !important;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
-  padding: 0 16px;
-  cursor: default;
-}
-
-.dock-slot-item.is-active .dock-slot-icon {
-  color: var(--on-secondary, #312762) !important;
-  font-variation-settings: 'FILL' 1;
-}
-
-.dock-slot-item.is-active .dock-slot-label {
-  color: var(--on-secondary, #312762) !important;
-  font-weight: 700;
-}
-
-/* Lime Status Pip beneath active slot */
-.dock-active-pip {
-  position: absolute;
-  bottom: -4px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 6px;
-  height: 6px;
-  border-radius: 9999px;
-  background-color: var(--primary-container, #d3ef5b);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
-}
-
-.dock-slot-icon-wrap {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* --- UNREAD MICRO-BADGES --- */
-.dock-slot-badge {
-  position: absolute;
-  top: -3px;
-  right: -12px;
-  min-width: 16px;
-  height: 16px;
-  padding: 0 4px;
-  border-radius: 9999px;
-  background-color: var(--primary-container, #d3ef5b);
-  color: #1A1A1A !important;
-  font-family: var(--font-mono);
-  font-size: 10px;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  line-height: 1;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-}
-
-/* ================================================================
-   4. HEADER RIGHT: 44×44px THEME TOGGLE & PROFILE PILL
-   ================================================================ */
-.header-right-actions {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  z-index: 20;
-}
-
-.theme-toggle-btn {
-  width: 44px;
-  height: 44px;
-  border-radius: 9999px;
-  background-color: var(--surface-container, #201f1f);
-  border: 1px solid var(--hairline, rgba(255, 255, 255, 0.08));
-  color: var(--on-surface, #e5e2e1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
+  background: transparent;
   transition: all 180ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.theme-toggle-btn:hover {
-  background-color: var(--surface-bright, #393939);
-  color: var(--primary-container, #d3ef5b);
+.cc-nav-slot .nav-slot-icon {
+  font-size: 19px !important;
+  color: #9A9A9A;
+  transition: color 180ms ease, transform 180ms ease;
+}
+
+[data-theme="light"] .cc-nav-slot .nav-slot-icon {
+  color: #6E6E6E;
+}
+
+.cc-nav-slot .nav-slot-label {
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: #9A9A9A;
+  white-space: nowrap;
+  transition: color 180ms ease;
+}
+
+[data-theme="light"] .cc-nav-slot .nav-slot-label {
+  color: #6E6E6E;
+}
+
+/* Hover State on Inactive Slot */
+.cc-nav-slot:not(.is-active):hover {
+  background-color: #393939;
   transform: translateY(-1px);
 }
 
-.avatar-pill-btn {
-  height: 44px;
-  padding: 0 14px 0 6px;
+.cc-nav-slot:not(.is-active):hover .nav-slot-icon {
+  color: #D6F25E;
+}
+
+.cc-nav-slot:not(.is-active):hover .nav-slot-label {
+  color: #FFFFFF;
+}
+
+[data-theme="light"] .cc-nav-slot:not(.is-active):hover {
+  background-color: #F5F5F3;
+}
+
+[data-theme="light"] .cc-nav-slot:not(.is-active):hover .nav-slot-icon {
+  color: #1A1A1A;
+}
+
+[data-theme="light"] .cc-nav-slot:not(.is-active):hover .nav-slot-label {
+  color: #1A1A1A;
+}
+
+/* Active Slot: Lime Pill with Ink text (#D6F25E + #1A1A1A) */
+.cc-nav-slot.is-active {
+  background-color: #D6F25E !important;
+  box-shadow: 0 2px 10px rgba(214, 242, 94, 0.28);
+}
+
+.cc-nav-slot.is-active .nav-slot-icon {
+  color: #1A1A1A !important;
+  transform: scale(1.05);
+}
+
+.cc-nav-slot.is-active .nav-slot-label {
+  color: #1A1A1A !important;
+  font-weight: 700;
+}
+
+/* Slot Badge */
+.cc-nav-badge {
+  position: absolute;
+  top: 3px;
+  right: 8px;
+  background-color: #D6F25E;
+  color: #1A1A1A;
+  font-size: 9px;
+  font-weight: 800;
+  padding: 1px 5px;
   border-radius: 9999px;
-  background-color: var(--surface-container, #201f1f);
-  border: 1px solid var(--hairline, rgba(255, 255, 255, 0.08));
-  color: var(--on-surface, #e5e2e1);
+  font-variant-numeric: tabular-nums;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.cc-nav-slot.is-active .cc-nav-badge {
+  background-color: #1A1A1A;
+  color: #D6F25E;
+}
+
+/* Right Cluster: Theme Toggle + Profile Pill */
+.cc-header-right {
   display: flex;
   align-items: center;
-  gap: 8px;
-  cursor: pointer;
-  transition: all 180ms cubic-bezier(0.22, 1, 0.36, 1);
+  gap: 10px;
+  min-width: 140px;
+  justify-content: flex-end;
 }
 
-.avatar-pill-btn:hover {
-  background-color: var(--surface-bright, #393939);
-}
-
-.avatar-initials-chip {
-  width: 32px;
-  height: 32px;
+.cc-theme-toggle-btn {
+  width: 44px;
+  height: 44px;
   border-radius: 9999px;
-  background-color: var(--primary-container, #d3ef5b);
-  color: var(--on-primary-container, #1A1A1A);
-  font-family: var(--font-mono);
-  font-size: 12px;
-  font-weight: 700;
+  background-color: var(--surface-container-low, #1C1C1C);
+  border: 1px solid var(--hairline, rgba(255, 255, 255, 0.08));
+  color: var(--on-surface, #F2F2F2);
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
+  transition: all 180ms ease;
 }
 
-.avatar-first-name {
-  font-family: var(--font-sans);
+.cc-theme-toggle-btn:hover {
+  background-color: var(--surface-container-high, #262626);
+  transform: translateY(-1px);
+}
+
+.cc-theme-toggle-btn:active {
+  transform: scale(0.95);
+}
+
+/* Profile Pill */
+.cc-profile-pill {
+  position: relative;
+}
+
+.cc-profile-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 12px 5px 6px;
+  border-radius: 9999px;
+  background-color: var(--surface-container-low, #1C1C1C);
+  border: 1px solid var(--hairline, rgba(255, 255, 255, 0.08));
+  cursor: pointer;
+  transition: all 180ms ease;
+}
+
+.cc-profile-btn:hover {
+  background-color: var(--surface-container-high, #262626);
+  transform: translateY(-1px);
+}
+
+.cc-profile-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 9999px;
+  background-color: #D6F25E;
+  color: #1A1A1A;
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-weight: 700;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.cc-profile-name {
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
   font-size: 13px;
   font-weight: 600;
-  letter-spacing: -0.01em;
+  color: var(--on-surface, #F2F2F2);
+  max-width: 90px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.avatar-chevron {
-  font-size: 18px !important;
-  color: var(--on-surface-variant, #c6c8b1);
-  transition: transform 200ms ease;
-}
-
-.avatar-pill-btn[aria-expanded="true"] .avatar-chevron {
-  transform: rotate(180deg);
-}
-
-/* User Profile Dropdown Menu */
-.profile-dropdown-card {
+/* Profile Dropdown Menu */
+.cc-profile-dropdown {
   position: absolute;
-  top: calc(100% + 12px);
-  right: var(--container-gutter, clamp(16px, 2.2vw, 40px));
-  width: 280px;
-  background-color: var(--surface-container-low, #1c1b1b);
+  top: calc(100% + 8px);
+  right: 0;
+  width: 250px;
+  background-color: var(--surface-container-low, #1C1C1C);
   border: 1px solid var(--hairline, rgba(255, 255, 255, 0.08));
   border-radius: 20px;
-  padding: 16px;
-  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.4);
+  padding: 14px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
   display: none;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
   z-index: 1050;
-  animation: dropdownFadeIn 180ms ease both;
+  animation: dropdownSlide 160ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-.profile-dropdown-card.is-open {
+.cc-profile-dropdown.is-open {
   display: flex;
 }
 
-@keyframes dropdownFadeIn {
-  from { opacity: 0; transform: translateY(-6px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.dropdown-user-header {
+.cc-dropdown-header {
   display: flex;
   align-items: center;
   gap: 12px;
   padding-bottom: 12px;
-  border-bottom: 1px solid var(--hairline);
+  border-bottom: 1px solid var(--hairline, rgba(255, 255, 255, 0.08));
 }
 
-.dropdown-user-meta {
+.cc-dropdown-user-info {
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
-.dropdown-user-name {
+.cc-dropdown-full-name {
   font-weight: 700;
-  font-size: 14px;
-  color: var(--on-surface);
+  font-size: 13px;
+  color: var(--on-surface, #F2F2F2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.dropdown-user-sub {
-  font-family: var(--font-mono);
+.cc-dropdown-role {
   font-size: 11px;
-  color: var(--on-surface-variant);
+  font-weight: 600;
+  color: #D6F25E;
 }
 
-.dropdown-menu-item {
+[data-theme="light"] .cc-dropdown-role {
+  color: #2E255B;
+}
+
+.cc-dropdown-pin {
+  font-size: 11px;
+  color: var(--on-surface-variant, #9A9A9A);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.cc-dropdown-item {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 8px 12px;
+  padding: 9px 12px;
   border-radius: 12px;
-  color: var(--on-surface);
+  color: var(--on-surface, #F2F2F2);
   text-decoration: none;
   font-size: 13px;
   font-weight: 500;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
   transition: background 150ms ease;
 }
 
-.dropdown-menu-item:hover {
-  background-color: var(--surface-container-high);
+.cc-dropdown-item:hover {
+  background-color: var(--surface-container-high, #262626);
 }
 
-.dropdown-logout-item {
-  color: var(--error, #ffb4ab);
+.cc-dropdown-logout {
+  color: #B42318 !important;
+}
+
+.cc-dropdown-logout:hover {
+  background-color: #FFE1DE !important;
 }
 
 /* ================================================================
-   5. STATE D: MOBILE VIEWPORT (< 1024px / 390px Canvas)
+   MOBILE BOTTOM BAR (Below 1100px)
    ================================================================ */
-@media (max-width: 1023px) {
-  /* On mobile/tablet, position dock at bottom of viewport */
-  .dynamic-island-anchor {
-    position: fixed;
-    top: auto;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: auto;
-    max-width: calc(100vw - 32px);
-  }
+.cc-mobile-bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 64px;
+  background-color: #262626;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  display: none;
+  align-items: center;
+  justify-content: space-around;
+  padding: 0 8px;
+  z-index: 1000;
+  box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.35);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
 
-  .cc-island-dock.is-collapsed {
-    width: 72px;
-    height: 52px;
-  }
+[data-theme="light"] .cc-mobile-bottom-nav {
+  background-color: #FFFFFF;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+}
 
-  /* Expanded Mobile Dock (Adaptive Density) */
-  .cc-island-dock.is-expanded,
-  .cc-island-dock.is-expanded.is-hod {
-    width: 390px;
-    max-width: calc(100vw - 32px);
-    height: 58px;
-    padding: 6px;
-  }
+.cc-mobile-slot {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 6px 4px;
+  text-decoration: none;
+  border-radius: 12px;
+  color: #9A9A9A;
+  transition: all 150ms ease;
+  position: relative;
+}
 
-  .cc-island-dock.is-expanded .dock-slot-divider {
-    display: none;
-  }
+[data-theme="light"] .cc-mobile-slot {
+  color: #6E6E6E;
+}
 
-  /* Active item has pill with label */
-  .cc-island-dock.is-expanded .dock-slot-item.is-active {
-    height: 44px;
-    padding: 0 14px;
-    flex-direction: row;
-    gap: 6px;
-  }
+.cc-mobile-slot.is-active {
+  color: #D6F25E;
+}
 
-  .cc-island-dock.is-expanded .dock-slot-item.is-active .dock-active-pip {
-    display: none;
-  }
+[data-theme="light"] .cc-mobile-slot.is-active {
+  color: #1A1A1A;
+}
 
-  /* Inactive items condense to 44x44px icon-only targets */
-  .cc-island-dock.is-expanded .dock-slot-item:not(.is-active) {
-    width: 44px;
-    height: 44px;
-    padding: 0;
-    flex-direction: row;
-    justify-content: center;
-  }
+.cc-mobile-slot.is-active .nav-slot-icon {
+  color: #D6F25E;
+}
 
-  .cc-island-dock.is-expanded .dock-slot-item:not(.is-active) .dock-slot-label {
-    display: none;
-  }
+[data-theme="light"] .cc-mobile-slot.is-active .nav-slot-icon {
+  color: #1A1A1A;
+}
 
-  /* Hide items beyond 5 on mobile, reveal via ellipsis trigger */
-  .cc-island-dock.is-expanded .dock-slot-item:nth-child(n+10) {
-    display: none;
-  }
+.cc-mobile-slot .cc-nav-badge {
+  top: 2px;
+  right: 14px;
+}
 
-  .dock-mobile-overflow-btn {
-    width: 44px;
-    height: 44px;
-    border-radius: 9999px;
-    background-color: var(--surface-container, #201f1f);
-    color: var(--on-surface, #e5e2e1);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    flex-shrink: 0;
+@media (max-width: 1099px) {
+  .cc-header-nav-anchor {
+    display: none !important;
   }
-
-  .dock-mobile-overflow-menu {
-    position: absolute;
-    bottom: calc(100% + 12px);
-    right: 0;
-    min-width: 180px;
-    background-color: var(--surface-container-high, #2a2a2a);
-    border: 1px solid var(--hairline, rgba(255, 255, 255, 0.08));
-    border-radius: 20px;
-    padding: 8px;
-    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4);
-    display: none;
-    flex-direction: column;
-    gap: 4px;
-    z-index: 100;
+  .cc-mobile-bottom-nav {
+    display: flex !important;
   }
-
-  .dock-mobile-overflow-menu.is-open {
-    display: flex;
-  }
-
-  .dock-mobile-overflow-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 14px;
-    border-radius: 12px;
-    color: var(--on-surface, #e5e2e1);
-    text-decoration: none;
-    font-size: 13px;
-    font-weight: 500;
-    transition: background-color 150ms ease;
-  }
-
-  .dock-mobile-overflow-item:hover {
-    background-color: var(--surface-bright, #393939);
-    color: var(--primary, #ffffff);
+  body {
+    padding-bottom: 74px !important;
   }
 }
 
-@media (min-width: 1024px) {
-  .dock-mobile-overflow-btn,
-  .dock-mobile-overflow-menu {
+@media (min-width: 1100px) {
+  .cc-mobile-bottom-nav {
     display: none !important;
   }
 }
+
+/* Ensure all modals, slide-over drawers, and alerts float above the header and dropdowns (z-index: 1000) */
+.fixed.inset-0,
+[id*="Modal"],
+[id*="modal"],
+[id*="Drawer"],
+[id*="drawer"],
+[id*="Toast"],
+[id*="toast"] {
+  z-index: 2000;
+}
+

@@ -33,7 +33,7 @@
     } catch (e) {}
 
     const name = localStorage.getItem('user_name');
-    const pin = localStorage.getItem('student_pin') || localStorage.getItem('user_pin') || '24259-CS-025';
+    const pin = localStorage.getItem('student_pin') || localStorage.getItem('user_pin') || '';
     const role = localStorage.getItem('user_role') || 'STUDENT';
     return { name: name || 'Student', pin, role, collegeCode: '259' };
   }
@@ -52,12 +52,12 @@
 
     const pinBadge = document.getElementById('homePinBadge');
     if (pinBadge) {
-      pinBadge.textContent = `PIN: ${user.pin || '24259-CS-025'} · SBTET C-24`;
+      pinBadge.textContent = `PIN: ${user.pin || ''} · SBTET C-24`;
     }
   }
 
   async function loadStudentTelemetry(pin) {
-    const cleanPin = (pin || '24259-CS-025').trim().toUpperCase();
+    const cleanPin = (pin || '').trim().toUpperCase();
 
     try {
       // 1. Fetch Attendance Telemetry
@@ -164,11 +164,11 @@
     if (eligBadge) {
       eligBadge.textContent = data.eligibility.status;
       if (data.eligibility.code === 'REGULAR') {
-        eligBadge.className = 'font-mono text-xs px-3 py-1 rounded-full uppercase font-semibold bg-[#D6F25E] text-[#1A1A1A]';
+        eligBadge.className = 'tabular text-xs px-3 py-1 rounded-full uppercase font-semibold bg-[#D6F25E] text-[#1A1A1A]';
       } else if (data.eligibility.code === 'CONDONABLE') {
-        eligBadge.className = 'font-mono text-xs px-3 py-1 rounded-full uppercase font-semibold bg-[#FFF0C7] text-[#8A5A00]';
+        eligBadge.className = 'tabular text-xs px-3 py-1 rounded-full uppercase font-semibold bg-[#FFF0C7] text-[#8A5A00]';
       } else {
-        eligBadge.className = 'font-mono text-xs px-3 py-1 rounded-full uppercase font-semibold bg-[#FFE1DE] text-[#B42318]';
+        eligBadge.className = 'tabular text-xs px-3 py-1 rounded-full uppercase font-semibold bg-[#FFE1DE] text-[#B42318]';
       }
     }
 
@@ -219,7 +219,7 @@
     const backlogsEl = document.getElementById('homeBacklogsVal');
     if (backlogsEl) {
       backlogsEl.textContent = String(data.backlogs);
-      backlogsEl.className = `text-3xl font-mono font-bold leading-none my-1 ${data.backlogs > 0 ? 'text-[#B42318]' : 'text-[var(--color-ink)]'}`;
+      backlogsEl.className = `text-3xl tabular font-bold leading-none my-1 ${data.backlogs > 0 ? 'text-[#B42318]' : 'text-[var(--color-ink)]'}`;
     }
 
     const daysEl = document.getElementById('homeDaysVal');

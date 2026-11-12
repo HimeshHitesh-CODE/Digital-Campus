@@ -29,6 +29,18 @@ function getActiveDepartment() {
 }
 
 function initDashboardContext() {
+
+  // Make KPI cards clickable per v4.0 spec
+  document.getElementById('kpiTotalStudents')?.closest('.bg-surface-container')?.addEventListener('click', () => {
+    window.location.href = './students-info.html';
+  });
+  document.getElementById('kpiPendingApprovals')?.closest('.bg-surface-container')?.addEventListener('click', () => {
+    window.location.href = './document-approvals.html';
+  });
+  document.getElementById('kpiCriticalAttendance')?.closest('.bg-surface-container')?.addEventListener('click', () => {
+    window.location.href = './students-info.html?filter=critical';
+  });
+
   activeDepartment = getActiveDepartment();
   updateDepartmentHeaderUI();
   bindDepartmentSwitcher();
@@ -52,8 +64,8 @@ function updateDepartmentHeaderUI() {
   if (activeDepartment === 'AIML') {
     if (heroSubtitle) heroSubtitle.textContent = 'Department of Artificial Intelligence & Machine Learning • Scheme: C-24';
     if (heroAvatar) heroAvatar.textContent = 'PR';
-    if (heroGreeting) heroGreeting.textContent = 'Welcome back, Prof. Padma';
-    if (heroHodName) heroHodName.textContent = 'Prof. Padma';
+    if (heroGreeting) heroGreeting.textContent = 'Welcome back, Prof. Padmini';
+    if (heroHodName) heroHodName.textContent = 'Prof. Padmini';
     if (heroHodRole) heroHodRole.textContent = 'HOD (AI & ML)';
     if (btnAiml) btnAiml.className = 'px-4 py-1.5 rounded-full text-xs font-bold font-code-mono uppercase tracking-wide transition-all bg-primary text-on-primary shadow-xs';
     if (btnCs) btnCs.className = 'px-4 py-1.5 rounded-full text-xs font-bold font-code-mono uppercase tracking-wide transition-all text-on-surface-variant hover:text-on-surface';

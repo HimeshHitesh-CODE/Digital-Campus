@@ -1,6 +1,7 @@
 /**
  * Master Tailwind Configuration for Samskruti Digital Campus (Code 259)
  * Kinetic Bento Tactile Design System Engine (S13, S14, S15 Spec)
+ * Strictly Plus Jakarta Sans across all typography with tabular-nums for numeric cells.
  */
 window.tailwindConfig = {
   darkMode: "class",
@@ -9,15 +10,15 @@ window.tailwindConfig = {
       fontFamily: {
         sans: ['"Plus Jakarta Sans"', 'system-ui', '-apple-system', 'sans-serif'],
         jakarta: ['"Plus Jakarta Sans"', 'sans-serif'],
-        mono: ['"IBM Plex Mono"', 'monospace'],
-        code: ['"IBM Plex Mono"', 'monospace'],
+        mono: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+        code: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
         script: ['"Caveat"', 'cursive'],
         "display-hero": ['"Plus Jakarta Sans"', 'sans-serif'],
         "title-card": ['"Plus Jakarta Sans"', 'sans-serif'],
         "body-default": ['"Plus Jakarta Sans"', 'sans-serif'],
         "body-small": ['"Plus Jakarta Sans"', 'sans-serif'],
-        "code-mono": ['"IBM Plex Mono"', 'monospace'],
-        "code-mono-sm": ['"IBM Plex Mono"', 'monospace']
+        "code-mono": ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+        "code-mono-sm": ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif']
       },
       fontSize: {
         "display-hero": ['52px', { lineHeight: '56px', letterSpacing: '-0.03em', fontWeight: '500' }],

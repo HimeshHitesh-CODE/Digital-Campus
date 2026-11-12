@@ -28,11 +28,11 @@ function initResults() {
 function bindStudentMetadata() {
   const user = (typeof StitchState !== 'undefined' && StitchState.getUser) 
     ? StitchState.getUser() 
-    : { name: 'Karnati Himesh', pin: '24259-CS-025', branch: 'CSE' };
+    : { name: localStorage.getItem('user_name') || 'Student', pin: localStorage.getItem('student_pin') || '', branch: 'CSE' };
 
   const pinBadgeEl = document.getElementById('marksPinBadge');
   if (pinBadgeEl) {
-    pinBadgeEl.textContent = `PIN: ${user.pin || '24259-CS-025'} · C-24 REGULATION`;
+    pinBadgeEl.textContent = `PIN: ${user.pin || '—'} · C-24 REGULATION`;
   }
 
   const branchEl = document.getElementById('marksStudentBranch');
@@ -67,11 +67,11 @@ function bindMarksSummary() {
   }
   if (standingBadgeEl) {
     if (marks.activeBacklogs > 0) {
-      standingBadgeEl.className = 'inline-flex items-center gap-1.5 bg-[#FFE1DE] text-[#B42318] px-2.5 py-0.5 rounded-full font-mono text-[11px] font-semibold tracking-wide uppercase';
+      standingBadgeEl.className = 'inline-flex items-center gap-1.5 bg-[#FFE1DE] text-[#B42318] px-2.5 py-0.5 rounded-full tabular text-[11px] font-semibold tracking-wide uppercase';
       const dot = standingBadgeEl.querySelector('span');
       if (dot) dot.className = 'w-1.5 h-1.5 rounded-full bg-[#B42318]';
     } else {
-      standingBadgeEl.className = 'inline-flex items-center gap-1.5 bg-[var(--color-lime)] text-[var(--color-lime-ink)] px-2.5 py-0.5 rounded-full font-mono text-[11px] font-semibold tracking-wide uppercase';
+      standingBadgeEl.className = 'inline-flex items-center gap-1.5 bg-[var(--color-lime)] text-[var(--color-lime-ink)] px-2.5 py-0.5 rounded-full tabular text-[11px] font-semibold tracking-wide uppercase';
       const dot = standingBadgeEl.querySelector('span');
       if (dot) dot.className = 'w-1.5 h-1.5 rounded-full bg-[var(--color-lime-ink)]';
     }
@@ -92,11 +92,11 @@ function bindMarksSummary() {
   }
   if (backlogChipEl) {
     if (marks.activeBacklogs > 0) {
-      backlogChipEl.className = 'inline-flex items-center gap-1.5 bg-[#FFE1DE] text-[#B42318] px-2.5 py-0.5 rounded-full font-mono text-[11px] font-semibold tracking-wide uppercase';
+      backlogChipEl.className = 'inline-flex items-center gap-1.5 bg-[#FFE1DE] text-[#B42318] px-2.5 py-0.5 rounded-full tabular text-[11px] font-semibold tracking-wide uppercase';
       const dot = backlogChipEl.querySelector('span');
       if (dot) dot.className = 'w-1.5 h-1.5 rounded-full bg-[#B42318]';
     } else {
-      backlogChipEl.className = 'inline-flex items-center gap-1.5 bg-[var(--color-lime)] text-[var(--color-lime-ink)] px-2.5 py-0.5 rounded-full font-mono text-[11px] font-semibold tracking-wide uppercase';
+      backlogChipEl.className = 'inline-flex items-center gap-1.5 bg-[var(--color-lime)] text-[var(--color-lime-ink)] px-2.5 py-0.5 rounded-full tabular text-[11px] font-semibold tracking-wide uppercase';
       const dot = backlogChipEl.querySelector('span');
       if (dot) dot.className = 'w-1.5 h-1.5 rounded-full bg-[var(--color-lime-ink)]';
     }
@@ -120,7 +120,7 @@ function bindSyncButton() {
     try {
       const user = (typeof StitchState !== 'undefined' && StitchState.getUser) ? StitchState.getUser() : { pin: '24259-CS-025' };
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 2000);
+      const timeoutId = setTimeout(() => controller.abort(), 15000);
 
       const resp = await fetch('/api/results/sync', {
         method: 'POST',
@@ -254,19 +254,19 @@ function renderSemesterMarks(sem) {
 
     return `
       <tr class="hover:bg-[var(--color-card-subtle)] transition-colors">
-        <td class="py-3 px-3 font-mono font-medium text-[var(--color-ink)]">${sub.code}</td>
+        <td class="py-3 px-3 tabular font-medium text-[var(--color-ink)]">${sub.code}</td>
         <td class="py-3 px-3 font-medium text-[var(--color-ink)]">${sub.desc || sub.title}</td>
         <td class="py-3 px-3 text-[var(--color-muted)]">${sub.cat || 'Theory'}</td>
-        <td class="py-3 px-3 text-right font-mono text-[var(--color-muted)]">${sub.internal}</td>
-        <td class="py-3 px-3 text-right font-mono text-[var(--color-muted)]">${sub.endSem}</td>
-        <td class="py-3 px-3 text-right font-mono font-bold text-[var(--color-ink)]">${strictTotal}</td>
+        <td class="py-3 px-3 text-right tabular text-[var(--color-muted)]">${sub.internal}</td>
+        <td class="py-3 px-3 text-right tabular text-[var(--color-muted)]">${sub.endSem}</td>
+        <td class="py-3 px-3 text-right tabular font-bold text-[var(--color-ink)]">${strictTotal}</td>
         <td class="py-3 px-3 text-center">
-          <span class="inline-block ${gradeBadgeClass} font-mono text-[11px] font-semibold px-2 py-0.5 rounded-full min-w-[32px]">
+          <span class="inline-block ${gradeBadgeClass} tabular text-[11px] font-semibold px-2 py-0.5 rounded-full min-w-[32px]">
             ${sub.letter || (strictTotal >= 80 ? 'A+' : (strictTotal >= 70 ? 'A' : 'B+'))}
           </span>
         </td>
         <td class="py-3 px-3 text-right">
-          <span class="inline-block ${isPassed ? 'bg-[var(--color-lime)] text-[var(--color-lime-ink)]' : 'bg-[#FFE1DE] text-[#B42318]'} font-mono text-[11px] font-semibold px-2.5 py-0.5 rounded-full">
+          <span class="inline-block ${isPassed ? 'bg-[var(--color-lime)] text-[var(--color-lime-ink)]' : 'bg-[#FFE1DE] text-[#B42318]'} tabular text-[11px] font-semibold px-2.5 py-0.5 rounded-full">
             ${sub.status || 'PASS'}
           </span>
         </td>

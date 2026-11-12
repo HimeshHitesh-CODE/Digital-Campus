@@ -35,7 +35,7 @@ const defaultThreads = [
       {
         id: 2,
         sender: 'me',
-        name: 'Karnati Himesh',
+        name: localStorage.getItem('user_name') || 'Student',
         time: 'Yesterday 17:15',
         text: 'Understood sir. I have submitted my Bonafide and NOC application through the student requests portal.'
       },
@@ -70,7 +70,7 @@ const defaultThreads = [
       {
         id: 2,
         sender: 'me',
-        name: 'Karnati Himesh',
+        name: localStorage.getItem('user_name') || 'Student',
         time: 'Yesterday 11:45',
         text: 'Yes! The ESP32 pinout matches our sensor shield. Let us test the packet broadcast during tomorrow afternoon lab.'
       },
@@ -105,7 +105,7 @@ const defaultThreads = [
       {
         id: 2,
         sender: 'me',
-        name: 'Karnati Himesh',
+        name: localStorage.getItem('user_name') || 'Student',
         time: 'Nov 03, 14:30',
         text: 'Noted Tarun, thanks for the update.'
       }
@@ -256,7 +256,7 @@ function renderThreadsList() {
     return `
       <div class="thread-item p-3 rounded-2xl flex items-center justify-between gap-3 cursor-pointer transition-all border ${isActive ? 'bg-[var(--color-card-subtle)] border-[var(--color-ink)] shadow-2xs' : 'bg-transparent border-transparent hover:bg-[var(--color-card-subtle)]'}" onclick="selectThread('${t.id}')">
         <div class="flex items-center gap-3 min-w-0">
-          <div class="relative w-9 h-9 rounded-full bg-[var(--color-feature-card)] text-white flex items-center justify-center font-mono font-bold text-xs shrink-0">
+          <div class="relative w-9 h-9 rounded-full bg-[var(--color-feature-card)] text-white flex items-center justify-center tabular font-bold text-xs shrink-0">
             ${t.avatar}
             ${t.online ? '<span class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 ring-2 ring-[var(--color-card)]"></span>' : ''}
           </div>
@@ -267,9 +267,9 @@ function renderThreadsList() {
         </div>
 
         <div class="flex flex-col items-end gap-1 shrink-0">
-          <span class="font-mono text-[10px] text-[var(--color-muted)]">${time}</span>
+          <span class="tabular text-[10px] text-[var(--color-muted)]">${time}</span>
           ${t.unread > 0 ? `
-            <span class="w-4 h-4 rounded-full bg-[var(--color-lime)] text-[var(--color-lime-ink)] font-mono text-[10px] font-bold flex items-center justify-center">${t.unread}</span>
+            <span class="w-4 h-4 rounded-full bg-[var(--color-lime)] text-[var(--color-lime-ink)] tabular text-[10px] font-bold flex items-center justify-center">${t.unread}</span>
           ` : ''}
         </div>
       </div>
@@ -309,7 +309,7 @@ function renderActiveChat() {
   const badgeEl = document.getElementById('chatHeaderBadge');
   if (badgeEl) {
     badgeEl.textContent = thread.badge || 'CHANNEL';
-    badgeEl.className = `font-mono text-[10px] font-semibold px-2 py-0.5 rounded-full ${thread.badgeClass || 'bg-[var(--color-lavender)] text-[#22174C]'}`;
+    badgeEl.className = `tabular text-[10px] font-semibold px-2 py-0.5 rounded-full ${thread.badgeClass || 'bg-[var(--color-lavender)] text-[#22174C]'}`;
   }
 
   const avatarEl = document.getElementById('chatHeaderAvatar');
@@ -333,19 +333,19 @@ function renderActiveChat() {
           <div class="bg-[var(--color-feature-card)] text-white p-3.5 rounded-2xl rounded-tr-xs shadow-xs text-xs leading-relaxed">
             ${escapeHtml(msg.text)}
           </div>
-          <span class="font-mono text-[10px] text-[var(--color-muted)] pr-1">${msg.time}</span>
+          <span class="tabular text-[10px] text-[var(--color-muted)] pr-1">${msg.time}</span>
         </div>
       `;
     } else {
       return `
         <div class="flex items-start gap-2.5 self-start max-w-[85%] sm:max-w-[70%]">
-          <div class="w-7 h-7 rounded-full bg-[var(--color-card-subtle)] border border-[var(--color-hairline)] flex items-center justify-center font-mono font-bold text-[10px] text-[var(--color-ink)] shrink-0 mt-0.5">
+          <div class="w-7 h-7 rounded-full bg-[var(--color-card-subtle)] border border-[var(--color-hairline)] flex items-center justify-center tabular font-bold text-[10px] text-[var(--color-ink)] shrink-0 mt-0.5">
             ${thread.avatar}
           </div>
           <div class="flex flex-col gap-1">
             <div class="flex items-baseline gap-2">
               <span class="font-semibold text-xs text-[var(--color-ink)]">${escapeHtml(msg.name || thread.name)}</span>
-              <span class="font-mono text-[10px] text-[var(--color-muted)]">${msg.time}</span>
+              <span class="tabular text-[10px] text-[var(--color-muted)]">${msg.time}</span>
             </div>
             <div class="bg-[var(--color-card-subtle)] text-[var(--color-ink)] border border-[var(--color-hairline)] p-3.5 rounded-2xl rounded-tl-xs shadow-2xs text-xs leading-relaxed">
               ${escapeHtml(msg.text)}
@@ -377,12 +377,12 @@ function bindChatComposer() {
 
     const user = (typeof StitchState !== 'undefined' && StitchState.getUser) 
       ? StitchState.getUser() 
-      : { name: 'Karnati Himesh' };
+      : { name: localStorage.getItem('user_name') || 'Student' };
 
     const newMsg = {
       id: Date.now(),
       sender: 'me',
-      name: user.name || 'Karnati Himesh',
+      name: user.name || localStorage.getItem('user_name') || 'Student',
       time: 'Just now',
       text: text
     };
@@ -417,7 +417,8 @@ function bindQuickReplyChips() {
  * 9. Auxiliary Buttons (Call, Info, Attachment)
  */
 function bindAuxiliaryButtons() {
-  document.getElementById('btnAudioCall')?.addEventListener('click', () => {
+  // Audio call removed per v4.0 spec
+  // document.getElementById('btnAudioCall')?.addEventListener('click', () => {
     showToast('Voice channel connection initiated on Node 259 Intranet.');
   });
 

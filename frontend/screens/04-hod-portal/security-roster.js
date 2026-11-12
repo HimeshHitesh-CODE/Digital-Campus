@@ -44,10 +44,10 @@ function bindDepartmentSwitcher() {
   const allBtn = document.getElementById('deptAllBtn');
 
   const updateSwitcherUI = () => {
-    const activeClass = 'px-4 py-1.5 rounded-full text-xs font-bold font-code-mono uppercase tracking-wide transition-all bg-primary text-on-primary shadow-xs cursor-pointer';
-    const inactiveClass = 'px-4 py-1.5 rounded-full text-xs font-bold font-code-mono uppercase tracking-wide transition-all text-on-surface-variant hover:text-on-surface cursor-pointer';
-    const allActiveClass = 'px-3.5 py-1.5 rounded-full text-xs font-bold font-code-mono uppercase tracking-wide transition-all bg-primary text-on-primary shadow-xs cursor-pointer';
-    const allInactiveClass = 'px-3.5 py-1.5 rounded-full text-xs font-bold font-code-mono uppercase tracking-wide transition-all text-on-surface-variant hover:text-on-surface cursor-pointer';
+    const activeClass = 'px-4 py-1.5 rounded-full text-xs font-bold tabular uppercase tracking-wide transition-all bg-primary text-on-primary shadow-xs cursor-pointer';
+    const inactiveClass = 'px-4 py-1.5 rounded-full text-xs font-bold tabular uppercase tracking-wide transition-all text-on-surface-variant hover:text-on-surface cursor-pointer';
+    const allActiveClass = 'px-3.5 py-1.5 rounded-full text-xs font-bold tabular uppercase tracking-wide transition-all bg-primary text-on-primary shadow-xs cursor-pointer';
+    const allInactiveClass = 'px-3.5 py-1.5 rounded-full text-xs font-bold tabular uppercase tracking-wide transition-all text-on-surface-variant hover:text-on-surface cursor-pointer';
 
     if (csBtn) csBtn.className = activeDepartment === 'CS' ? activeClass : inactiveClass;
     if (aimlBtn) aimlBtn.className = activeDepartment === 'AIML' ? activeClass : inactiveClass;
@@ -256,15 +256,15 @@ function renderDesktopTable(list) {
 
     return `
       <tr class="h-14 hover:bg-surface-container-high/60 transition-colors" data-pin="${s.pin}">
-        <td class="py-3 px-4 font-code-mono text-on-surface-variant font-medium">${rollFormatted}</td>
-        <td class="py-3 px-4 font-code-mono font-bold text-on-surface">${s.pin}</td>
+        <td class="py-3 px-4 tabular text-on-surface-variant font-medium">${rollFormatted}</td>
+        <td class="py-3 px-4 tabular font-bold text-on-surface">${s.pin}</td>
         <td class="py-3 px-4">
           <div class="font-medium text-on-surface font-sans text-xs sm:text-sm leading-tight">${escapeHtml(s.name)}</div>
         </td>
-        <td class="py-3 px-4 text-on-surface-variant font-code-mono-sm text-[11px]">${branchLabel}</td>
+        <td class="py-3 px-4 text-on-surface-variant tabular-sm text-[11px]">${branchLabel}</td>
         <td class="py-3 px-4">
           <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container-highest border border-hairline">
-            <span class="font-code-mono text-on-surface text-xs key-text">${displayedKey}</span>
+            <span class="tabular text-on-surface text-xs key-text">${displayedKey}</span>
             <button class="btn-toggle-key text-on-surface-variant hover:text-primary-fixed p-0.5 transition-colors cursor-pointer"
                     title="${isRevealed ? 'Mask key' : 'Reveal key'}"
                     data-pin="${s.pin}"
@@ -281,11 +281,11 @@ function renderDesktopTable(list) {
         </td>
         <td class="py-3 px-4">
           ${isAct ? `
-            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary-container/20 text-primary-fixed font-code-mono-sm text-[11px] font-semibold border border-primary-container/30">
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary-container/20 text-primary-fixed tabular-sm text-[11px] font-semibold border border-primary-container/30">
               <span class="w-1.5 h-1.5 rounded-full bg-primary-fixed"></span> Active
             </span>
           ` : `
-            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container-high text-on-surface-variant font-code-mono-sm text-[11px] font-medium border border-hairline">
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container-high text-on-surface-variant tabular-sm text-[11px] font-medium border border-hairline">
               <span class="w-1.5 h-1.5 rounded-full bg-outline-variant"></span> Not activated
             </span>
           `}
@@ -332,17 +332,17 @@ function renderMobileCards(list) {
         <div class="flex items-start justify-between gap-2">
           <div class="flex flex-col min-w-0">
             <div class="flex items-center gap-1.5 flex-wrap">
-              <span class="font-code-mono text-xs text-primary-fixed font-bold">${rollFormatted}</span>
+              <span class="tabular text-xs text-primary-fixed font-bold">${rollFormatted}</span>
               <span class="font-bold text-on-surface text-sm truncate">${escapeHtml(s.name)}</span>
             </div>
-            <span class="text-[11px] text-on-surface-variant font-code-mono mt-0.5">${branchLabel} · Permanent PIN: ${s.pin}</span>
+            <span class="text-[11px] text-on-surface-variant tabular mt-0.5">${branchLabel} · Permanent PIN: ${s.pin}</span>
           </div>
           ${isAct ? `
-            <span class="shrink-0 px-2 py-0.5 rounded-full bg-primary-container/20 text-primary-fixed font-code-mono-sm text-[10px] font-semibold flex items-center gap-1 border border-primary-container/30">
+            <span class="shrink-0 px-2 py-0.5 rounded-full bg-primary-container/20 text-primary-fixed tabular-sm text-[10px] font-semibold flex items-center gap-1 border border-primary-container/30">
               <span class="w-1.5 h-1.5 rounded-full bg-primary-fixed"></span> Active
             </span>
           ` : `
-            <span class="shrink-0 px-2 py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-code-mono-sm text-[10px] font-medium flex items-center gap-1 border border-hairline">
+            <span class="shrink-0 px-2 py-0.5 rounded-full bg-surface-container-high text-on-surface-variant tabular-sm text-[10px] font-medium flex items-center gap-1 border border-hairline">
               <span class="w-1.5 h-1.5 rounded-full bg-outline-variant"></span> Pending
             </span>
           `}
@@ -351,7 +351,7 @@ function renderMobileCards(list) {
         <div class="bg-surface-container-low rounded-xl p-2.5 flex items-center justify-between gap-2 border border-hairline">
           <div class="flex items-center gap-1.5 min-w-0">
             <span class="material-symbols-outlined text-secondary text-[16px]">vpn_key</span>
-            <span class="font-code-mono text-xs font-semibold text-on-surface truncate key-text">${displayedKey}</span>
+            <span class="tabular text-xs font-semibold text-on-surface truncate key-text">${displayedKey}</span>
           </div>
           <div class="flex items-center gap-1">
             <button class="btn-toggle-key w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant hover:text-on-surface active:bg-surface-bright transition-colors cursor-pointer"

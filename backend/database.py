@@ -62,7 +62,7 @@ class StudentDB(Base):
     # Scraped Academic & Biometric Metrics
     attendance_pct = Column(String(20), default="0.0%")
     attendance_val = Column(Float, default=0.0)
-    working_days = Column(Integer, default=88)
+    working_days = Column(Integer, nullable=True, default=None)
     present_days = Column(Integer, default=0)
     cgpa = Column(Float, default=0.0)
     credits_earned = Column(Float, default=0.0)
@@ -79,6 +79,8 @@ class StudentDB(Base):
     fields_updated = Column(String(100), nullable=True)
     exams_attendance_pct = Column(Float, nullable=True)
     total_semester_days = Column(Integer, default=180)
+    skills = Column(Text, default='[]')
+    is_available = Column(Boolean, default=True)
 
     # Online Presence
     is_online = Column(Boolean, default=False)
@@ -131,6 +133,7 @@ class MarketplaceItemDB(Base):
     category = Column(String(50), default="Other")  # Drafter, Lab Coat, Book, Calculator, Electronics, Other
     condition = Column(String(50), default="Good")   # Brand New, Like New, Good, Fair
     image_url = Column(String(300), nullable=True)
+    image_data = Column(Text, nullable=True)
     contact_info = Column(String(100), nullable=True)
     status = Column(String(20), default="AVAILABLE")  # AVAILABLE, SOLD, RESERVED
     created_at = Column(String(40), default=lambda: datetime.utcnow().isoformat())
@@ -168,6 +171,8 @@ class DigitalRequestDB(Base):
     pickup_otp = Column(String(10), nullable=True)      # 6-digit OTP generated upon approval
     hod_notes = Column(Text, nullable=True)
     attendance_snapshot = Column(String(20), default="0.0%")
+    guardian_phone = Column(String(20), nullable=True)
+    department = Column(String(20), nullable=True)
     submitted_at = Column(String(40), default=lambda: datetime.utcnow().isoformat())
     updated_at = Column(String(40), default=lambda: datetime.utcnow().isoformat())
 
@@ -282,6 +287,39 @@ def get_db():
     db = SessionLocal()
     try:
         yield db
+
+        # 1Z. Authoritative Roster Seeding for CS (180) & AIML (120) from JSON
+        try:
+            cs_names_path = os.path.join(BASE_DIR, "all_180_student_names.json")
+            if os.path.exists(cs_names_path):
+                with open(cs_names_path, "r", encoding="utf-8") as f_cs:
+                    cs_data = json.load(f_cs)
+                    for pin, auth_name in cs_data.items():
+                        if auth_name and auth_name.strip():
+                            st = db.query(StudentDB).filter(StudentDB.pin == pin).first()
+                            if st:
+                                st.name = auth_name.strip()
+                            rk = db.query(RosterKeyDB).filter(RosterKeyDB.pin == pin).first()
+                            if rk and hasattr(rk, 'student_name'):
+                                rk.student_name = auth_name.strip()
+                    db.commit()
+
+            aiml_names_path = os.path.join(BASE_DIR, "all_120_aiml_student_names.json")
+            if os.path.exists(aiml_names_path):
+                with open(aiml_names_path, "r", encoding="utf-8") as f_ai:
+                    ai_data = json.load(f_ai)
+                    for pin, auth_name in ai_data.items():
+                        if auth_name and auth_name.strip():
+                            st = db.query(StudentDB).filter(StudentDB.pin == pin).first()
+                            if st:
+                                st.name = auth_name.strip()
+                            rk = db.query(RosterKeyDB).filter(RosterKeyDB.pin == pin).first()
+                            if rk and hasattr(rk, 'student_name'):
+                                rk.student_name = auth_name.strip()
+                    db.commit()
+        except Exception as e_auth:
+            print(f"Authoritative roster name sync notice: {e_auth}")
+
     finally:
         db.close()
 
@@ -307,13 +345,28 @@ def seed_database():
     """Initializes tables, populates CS & AIML roster keys, staff accounts, and verified students."""
     Base.metadata.create_all(bind=engine)
 
-    # Safe SQLite schema migration for branch in sync_progress
-    try:
-        with engine.connect() as conn:
-            conn.execute(text("ALTER TABLE sync_progress ADD COLUMN branch VARCHAR(20) DEFAULT 'CS'"))
+    # Safe SQLite schema migrations
+    with engine.connect() as conn:
+        for stmt in [
+            "ALTER TABLE sync_progress ADD COLUMN branch VARCHAR(20) DEFAULT 'CS'",
+            "ALTER TABLE students ADD COLUMN skills TEXT DEFAULT '[]'",
+            "ALTER TABLE students ADD COLUMN is_available BOOLEAN DEFAULT 1",
+            "ALTER TABLE digital_requests ADD COLUMN guardian_phone VARCHAR(20)",
+            "ALTER TABLE digital_requests ADD COLUMN department VARCHAR(20)",
+            "ALTER TABLE marketplace_items ADD COLUMN image_data TEXT"
+        ]:
+            try:
+                conn.execute(text(stmt))
+                conn.commit()
+            except Exception:
+                pass
+
+        # Fix unsynced students showing 88 working days default
+        try:
+            conn.execute(text("UPDATE students SET working_days = NULL WHERE working_days = 88 AND (last_synced IS NULL OR last_synced = '')"))
             conn.commit()
-    except Exception:
-        pass
+        except Exception:
+            pass
 
     db = SessionLocal()
     try:
@@ -866,6 +919,39 @@ def seed_database():
             for sa in sample_announcements:
                 db.add(sa)
             db.commit()
+
+
+        # 1Z. Authoritative Roster Seeding for CS (180) & AIML (120) from JSON
+        try:
+            cs_names_path = os.path.join(BASE_DIR, "all_180_student_names.json")
+            if os.path.exists(cs_names_path):
+                with open(cs_names_path, "r", encoding="utf-8") as f_cs:
+                    cs_data = json.load(f_cs)
+                    for pin, auth_name in cs_data.items():
+                        if auth_name and auth_name.strip():
+                            st = db.query(StudentDB).filter(StudentDB.pin == pin).first()
+                            if st:
+                                st.name = auth_name.strip()
+                            rk = db.query(RosterKeyDB).filter(RosterKeyDB.pin == pin).first()
+                            if rk and hasattr(rk, 'student_name'):
+                                rk.student_name = auth_name.strip()
+                    db.commit()
+
+            aiml_names_path = os.path.join(BASE_DIR, "all_120_aiml_student_names.json")
+            if os.path.exists(aiml_names_path):
+                with open(aiml_names_path, "r", encoding="utf-8") as f_ai:
+                    ai_data = json.load(f_ai)
+                    for pin, auth_name in ai_data.items():
+                        if auth_name and auth_name.strip():
+                            st = db.query(StudentDB).filter(StudentDB.pin == pin).first()
+                            if st:
+                                st.name = auth_name.strip()
+                            rk = db.query(RosterKeyDB).filter(RosterKeyDB.pin == pin).first()
+                            if rk and hasattr(rk, 'student_name'):
+                                rk.student_name = auth_name.strip()
+                    db.commit()
+        except Exception as e_auth:
+            print(f"Authoritative roster name sync notice: {e_auth}")
 
     finally:
         db.close()
