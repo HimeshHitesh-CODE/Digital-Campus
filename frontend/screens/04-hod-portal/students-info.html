@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"/>
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-  <title>CS Master Students Info &amp; Dossier &bull; HOD Console (Code: 259)</title>
+  <title>Students Roster &amp; Biometric Ledger • Samskruti College (Code: 259)</title>
 
   <!-- Google Fonts: Plus Jakarta Sans, Darker Grotesque, Newsreader, IBM Plex Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -19,518 +19,343 @@
   <script src="/js/stitch-tailwind-config.js"></script>
 
   <!-- Master Design System Stylesheets -->
-    <!-- Self-Hosted Fonts & Master Tokens -->
   <link rel="stylesheet" href="/css/fonts.css" />
   <link rel="stylesheet" href="/css/theme-tokens.css" />
   <link rel="stylesheet" href="/css/stitch-design-system.css"/>
   <link rel="stylesheet" href="/css/top-nav.css"/>
 
   <!-- Client State Engine & Dynamic Island Dock -->
-  <script src="/js/campus-aiml-120-roster.js"></script>
-  <script src="/js/campus-180-roster.js"></script>
   <script src="/js/stitch-state.js"></script>
   <script src="/js/dc-dynamic-island.js"></script>
-
-  <style>
-    .glass-card {
-      background: rgba(255, 255, 255, 0.9);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(220, 215, 205, 0.8);
-      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.04);
-    }
-    .tactile-tile {
-      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .tactile-tile:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 12px 30px -6px rgba(4, 120, 87, 0.15);
-    }
-  
-    .glass-card {
-      background: var(--color-card) !important;
-      border: 1px solid var(--color-hairline) !important;
-      color: var(--color-ink) !important;
-    }
-    .tactile-sheet {
-      background: var(--color-card) !important;
-      border: 1px solid var(--color-hairline) !important;
-      color: var(--color-ink) !important;
-    }
-    .tactile-tile {
-      background: var(--color-card-subtle) !important;
-      border: 1px solid var(--color-hairline) !important;
-      color: var(--color-ink) !important;
-    }
-    .dark .bg-white {
-      background-color: var(--color-card) !important;
-    }
-    .dark .bg-slate-50, .dark .bg-stone-50, .dark .bg-[#f7f9f7], .dark .bg-[#f8faf8] {
-      background-color: var(--color-card-subtle) !important;
-    }
-    .dark .border-slate-200, .dark .border-stone-200, .dark .border-stone-200\/80, .dark .border-slate-200\/80 {
-      border-color: var(--color-hairline) !important;
-    }
-    .dark .text-slate-900, .dark .text-slate-800, .dark .text-stone-900, .dark .text-stone-800 {
-      color: var(--color-ink) !important;
-    }
-    .dark .text-slate-700, .dark .text-slate-600, .dark .text-stone-600, .dark .text-stone-500 {
-      color: var(--color-muted) !important;
-    }
-
-  </style>
 </head>
 
 <body class="bg-[var(--color-canvas)] text-[var(--color-ink)] font-sans antialiased min-h-screen flex flex-col justify-between relative selection:bg-[var(--color-lime)] selection:text-[#1A1A1A]">
-  <!-- Dynamic Island Dock mounts via dc-dynamic-island.js -->
+  <!-- Fixed Global Navigation & Floating Dynamic Island Dock mount via dc-dynamic-island.js -->
 
   <main class="w-full flex-grow pt-[84px] md:pt-[92px]">
     <div class="w-full max-w-none mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 py-6 space-y-6">
-      <section class="tactile-sheet rounded-[36px] p-5 sm:p-8 space-y-6">
-<!-- Control / Subheader Strip inside sheet -->
-<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 p-4 sm:p-5 rounded-[26px] bg-[#f7f9f7] border border-[#003519]/5">
-<div class="flex items-center gap-3.5">
-<div class="w-11 h-11 rounded-2xl bg-[#003519] text-emerald-200 flex items-center justify-center font-bold shadow-sm">
-<span class="material-symbols-outlined text-2xl">account_balance</span>
-</div>
-<div>
-<h2 class="font-dg text-2xl font-black text-slate-900 leading-tight">Centralized Biometric Attendance Ledger</h2>
-<p class="font-dg text-sm text-stone-600 font-medium">Risk analytics &amp; real-time backlog adjudication console for Batch 2024–25</p>
-</div>
-</div>
-<div class="flex flex-wrap items-center gap-2">
-<!-- Department filter pills -->
-<div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-emerald-900/15 shadow-2xs">
-          <span class="w-2.5 h-2.5 rounded-full bg-emerald-600 animate-pulse"></span>
-          <span class="font-dg text-xs font-black uppercase tracking-wider text-emerald-950" id="currentDeptDisplayTitle">DEPARTMENT LEDGER</span>
+
+      <!-- Header & Department Switcher -->
+      <section class="bg-surface-container rounded-2xl p-6 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 border border-hairline transition-all duration-200">
+        <div>
+          <div class="flex items-center gap-2 mb-1">
+            <span class="w-2.5 h-2.5 rounded-full bg-primary-fixed animate-pulse"></span>
+            <span class="font-code-mono-sm text-xs font-bold uppercase tracking-wider text-on-surface-variant" id="studentsDeptLabel">Computer Science &amp; Engineering</span>
+          </div>
+          <h1 class="text-2xl sm:text-3xl font-extrabold text-on-surface font-display tracking-tight">
+            Centralized Student Biometric Ledger
+          </h1>
+          <p class="text-xs sm:text-sm text-on-surface-variant">
+            Verified SBTET C-24 attendance snapshots, CGPA telemetry, and exam eligibility roster
+          </p>
         </div>
-<button class="px-4 py-1.5 rounded-full bg-[#00875a] text-white font-dg text-xs font-bold uppercase tracking-wide hover:bg-[#00704a] shadow-xs flex items-center gap-1.5 transition" type="button">
-<span class="material-symbols-outlined text-[15px]">bolt</span> Live Sync
-          </button>
-<button class="px-3.5 py-1.5 rounded-full bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 font-dg text-xs font-bold uppercase tracking-wide flex items-center gap-1.5 transition" type="button">
-<span class="material-symbols-outlined text-[15px]">file_download</span> CSV
-          </button>
-<button class="px-3.5 py-1.5 rounded-full bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 font-dg text-xs font-bold uppercase tracking-wide flex items-center gap-1.5 transition" type="button">
-<span class="material-symbols-outlined text-[15px]">description</span> PDF
-          </button>
-</div>
-</div>
-<!-- 6-Card KPI Bento Grid of tactile tiles (rounded-[24px]) -->
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-<!-- Card 1: Total Intake -->
-<div class="tactile-tile rounded-[24px] p-5 flex flex-col justify-between">
-<div class="flex items-start justify-between">
-<span class="font-dg text-[13px] font-bold uppercase tracking-wider text-slate-500" id="kpiIntakeLabel">Total Allocated AIML Intake</span>
-<span class="w-8 h-8 rounded-full bg-[#e3efe8] text-[#003519] flex items-center justify-center">
-<span class="material-symbols-outlined text-[18px]">group</span>
-</span>
-</div>
-<div class="my-3">
-<span class="font-dg text-5xl font-black text-[#003519] leading-none" id="kpiIntakeVal">120</span>
-</div>
-<div class="flex items-center justify-between font-dg text-xs text-slate-500 pt-3 border-t border-slate-100">
-<span>Diploma C-24 Computer Science</span>
-<span class="px-2.5 py-0.5 rounded-full bg-[#dff0e6] text-[#003519] font-mono text-[11px] font-bold">100% Filled</span>
-</div>
-</div>
-<!-- Card 2: Avg Attendance -->
-<div class="tactile-tile rounded-[24px] p-5 flex flex-col justify-between">
-<div class="flex items-start justify-between">
-<span class="font-dg text-[13px] font-bold uppercase tracking-wider text-slate-500">Dept Avg Attendance</span>
-<span class="w-8 h-8 rounded-full bg-rose-50 text-rose-700 flex items-center justify-center">
-<span class="material-symbols-outlined text-[18px]">bar_chart</span>
-</span>
-</div>
-<div class="my-3 flex items-baseline gap-2">
-<span class="font-dg text-5xl font-black text-rose-700 leading-none" id="kpiAvgAttVal">42.2%</span>
-<span class="font-mono text-xs text-rose-600 font-semibold">Alert &lt;65%</span>
-</div>
-<div class="flex items-center justify-between font-dg text-xs text-slate-500 pt-3 border-t border-slate-100">
-<span>Dynamic Biometric Feed</span>
-<span class="px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-800 font-mono text-[11px] font-bold">Critical Dip</span>
-</div>
-</div>
-<!-- Card 3: Eligible -->
-<div class="tactile-tile rounded-[24px] p-5 flex flex-col justify-between">
-<div class="flex items-start justify-between">
-<span class="font-dg text-[13px] font-bold uppercase tracking-wider text-slate-500">Eligible (≥75%)</span>
-<span class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center">
-<span class="material-symbols-outlined text-[18px]">verified_user</span>
-</span>
-</div>
-<div class="my-3 flex items-baseline gap-2">
-<span class="font-dg text-5xl font-black text-[#003519] leading-none" id="kpiEligibleVal">0</span>
-<span class="font-dg text-lg font-bold text-slate-500">Students</span>
-</div>
-<div class="flex items-center justify-between font-dg text-xs text-slate-500 pt-3 border-t border-slate-100">
-<span>Direct Hall Ticket Clearance</span>
-<span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-mono text-[11px] font-bold">3.3% Cohort</span>
-</div>
-</div>
-<!-- Card 4: Condonation Warning -->
-<div class="tactile-tile rounded-[24px] p-5 flex flex-col justify-between">
-<div class="flex items-start justify-between">
-<span class="font-dg text-[13px] font-bold uppercase tracking-wider text-slate-500">Condonation Warning (65–74.9%)</span>
-<span class="w-8 h-8 rounded-full bg-amber-50 text-amber-700 flex items-center justify-center">
-<span class="material-symbols-outlined text-[18px]">warning</span>
-</span>
-</div>
-<div class="my-3 flex items-baseline gap-2">
-<span class="font-dg text-5xl font-black text-slate-900 leading-none" id="kpiWarningVal">1</span>
-<span class="font-dg text-lg font-bold text-slate-500">Students</span>
-</div>
-<div class="flex items-center justify-between font-dg text-xs text-slate-500 pt-3 border-t border-slate-100">
-<span>Requires Formal SBTET Fine</span>
-<span class="px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 font-mono text-[11px] font-bold">13.3% Cohort</span>
-</div>
-</div>
-<!-- Card 5: Critical Detention -->
-<div class="tactile-tile rounded-[24px] p-5 flex flex-col justify-between">
-<div class="flex items-start justify-between">
-<span class="font-dg text-[13px] font-bold uppercase tracking-wider text-slate-500">Critical Detention (&lt;65%)</span>
-<span class="w-8 h-8 rounded-full bg-rose-100 text-rose-700 flex items-center justify-center">
-<span class="material-symbols-outlined text-[18px]">dangerous</span>
-</span>
-</div>
-<div class="my-3 flex items-baseline gap-2">
-<span class="font-dg text-5xl font-black text-rose-700 leading-none" id="kpiDetentionVal">119</span>
-<span class="font-dg text-lg font-bold text-rose-600">In Danger</span>
-</div>
-<div class="flex items-center justify-between font-dg text-xs text-slate-500 pt-3 border-t border-slate-100">
-<span>Detention Threshold Alert</span>
-<span class="px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-800 font-mono text-[11px] font-bold">83.3% Cohort</span>
-</div>
-</div>
-<!-- Card 6: Backlogs -->
-<div class="tactile-tile rounded-[24px] p-5 flex flex-col justify-between">
-<div class="flex items-start justify-between">
-<span class="font-dg text-[13px] font-bold uppercase tracking-wider text-slate-500">Students With Backlogs</span>
-<span class="w-8 h-8 rounded-full bg-slate-100 text-slate-800 flex items-center justify-center">
-<span class="material-symbols-outlined text-[18px]">history_edu</span>
-</span>
-</div>
-<div class="my-3 flex items-baseline gap-2">
-<span class="font-dg text-5xl font-black text-slate-900 leading-none" id="kpiBacklogsVal">58</span>
-<span class="font-dg text-lg font-bold text-slate-500" id="kpiBacklogsSub">Of 120 Students</span>
-</div>
-<div class="flex items-center justify-between font-dg text-xs text-slate-500 pt-3 border-t border-slate-100">
-<span id="kpiBacklogsTotal">Total Active: 309 Papers</span>
-<span class="px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 font-mono text-[11px] font-bold">Avg 6.1 / Std</span>
-</div>
-</div>
-</div>
-<!-- Filter bar and search strip -->
-<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 pt-2">
-<div class="flex items-center gap-1.5 overflow-x-auto pb-1 text-slate-700">
-<button class="px-4 py-1.5 rounded-full bg-[#003519] text-white font-dg text-xs font-bold uppercase tracking-wider shrink-0 shadow-xs" type="button">All (180)</button>
-<button class="px-3.5 py-1.5 rounded-full bg-[#f3f5f3] hover:bg-slate-200 text-slate-700 font-dg text-xs font-bold shrink-0 transition" type="button">Critical (&lt;65%)</button>
-<button class="px-3.5 py-1.5 rounded-full bg-[#f3f5f3] hover:bg-slate-200 text-slate-700 font-dg text-xs font-bold shrink-0 transition" type="button">Warning (65–74.9%)</button>
-<button class="px-3.5 py-1.5 rounded-full bg-[#f3f5f3] hover:bg-slate-200 text-slate-700 font-dg text-xs font-bold shrink-0 transition" type="button">Eligible (≥75%)</button>
-<button class="px-3.5 py-1.5 rounded-full bg-[#f3f5f3] hover:bg-slate-200 text-slate-700 font-dg text-xs font-bold shrink-0 transition" type="button">With Backlogs</button>
-</div>
-<div class="relative w-full lg:w-80">
-<span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-[18px]">search</span>
-<input class="w-full bg-[#f9faf8] text-slate-800 placeholder:text-slate-400 font-dg text-base font-semibold rounded-full pl-10 pr-4 py-2 border border-slate-200 focus:border-[#00875a] focus:bg-white focus:outline-none shadow-xs transition" placeholder="Search student PIN or name..." type="text"/>
-</div>
-</div>
-<!-- Master Students Info Table with rounded-2xl headers -->
-<!-- Toolbar with Live Azure Mass Sync & Sorting -->
-    <div class="flex flex-wrap items-center justify-between gap-3 pt-2">
-      <div class="flex flex-wrap items-center gap-2">
-        <button id="azureMassSyncBtn" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-[#003519] via-[#047857] to-[#10b981] hover:opacity-95 text-white text-xs font-bold tracking-wide shadow-md shadow-emerald-700/20 active:scale-95 transition-all cursor-pointer" type="button" title="Synchronize all 180 department nodes directly from Azure SBTET Cloud Gateway">
-          <span class="material-symbols-outlined text-[18px]" id="azureMassSyncIcon">cloud_sync</span>
-          <span id="azureMassSyncText">⚡ Live Mass Sync (Azure &amp; SBTET)</span>
-        </button>
 
-        <div class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-white border border-slate-200 shadow-xs text-xs">
-          <span class="material-symbols-outlined text-slate-500 text-[16px]">swap_vert</span>
-          <label for="quickSortSelect" class="sr-only">Sort Table</label>
-          <select id="quickSortSelect" class="bg-transparent font-semibold text-slate-700 focus:outline-none cursor-pointer">
-            <option value="pin-asc">Sort: PIN (001 → 180)</option>
-            <option value="pin-desc">Sort: PIN (180 → 001)</option>
-            <option value="name-asc">Sort: Name (A → Z)</option>
-            <option value="name-desc">Sort: Name (Z → A)</option>
-            <option value="cgpa-desc">Sort: CGPA (Highest First)</option>
-            <option value="cgpa-asc">Sort: CGPA (Lowest First)</option>
-            <option value="att-desc">Sort: Attendance (High → Low)</option>
-            <option value="att-asc">Sort: Attendance (Low → High)</option>
-            <option value="days-desc">Sort: Present Days (High → Low)</option>
-            <option value="backlogs-asc">Sort: Backlogs (0 Clear First)</option>
-            <option value="backlogs-desc">Sort: Backlogs (Deficits First)</option>
-          </select>
+        <!-- Controls: Department Switcher & Actions -->
+        <div class="flex flex-wrap items-center gap-3">
+          <div class="inline-flex p-1 bg-surface-container-high rounded-full border border-hairline">
+            <button id="deptCsBtn" class="px-4 py-1.5 rounded-full text-xs font-bold font-code-mono uppercase tracking-wide transition-all bg-primary text-on-primary shadow-xs" type="button">
+              CS (180)
+            </button>
+            <button id="deptAimlBtn" class="px-4 py-1.5 rounded-full text-xs font-bold font-code-mono uppercase tracking-wide transition-all text-on-surface-variant hover:text-on-surface" type="button">
+              AIML (120)
+            </button>
+          </div>
+
+          <button id="azureMassSyncBtn" class="px-4 py-2 rounded-full bg-primary hover:opacity-95 text-on-primary text-xs font-bold font-code-mono flex items-center gap-1.5 transition shadow-xs cursor-pointer" type="button">
+            <span class="material-symbols-outlined text-[16px]" id="azureMassSyncIcon">bolt</span>
+            <span id="azureMassSyncText">Sync Gateway</span>
+          </button>
+
+          <button id="exportCsvBtn" class="px-3.5 py-2 rounded-full bg-surface-container-high hover:bg-surface-container-highest text-on-surface border border-hairline text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer" type="button">
+            <span class="material-symbols-outlined text-[16px]">file_download</span>
+            <span>CSV</span>
+          </button>
         </div>
-      </div>
+      </section>
 
-      <div class="flex items-center gap-2">
-        <span class="text-xs font-mono text-slate-500 hidden sm:inline" id="azureSyncStatusPill">
-          ☁️ Azure Gateway: <strong class="text-emerald-700">Online</strong>
-        </span>
-      </div>
-    </div>
+      <!-- Data Quality Bar -->
+      <section class="bg-surface-container-low rounded-2xl p-4 border border-hairline flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 font-body-small text-xs">
+        <div class="flex items-center gap-2.5 flex-wrap">
+          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+          <span class="text-on-surface" id="dqStatsText">
+            <strong id="dqUpToDate" class="text-on-surface font-bold">161</strong> of <span id="dqTotal">180</span> up to date · 
+            <span id="dqAttention" class="text-amber-500 font-bold">19</span> need attention · 
+            Last synced <span id="dqLastSync" class="font-code-mono">Recently</span>
+          </span>
+        </div>
+        <div class="flex items-center gap-2">
+          <a id="btnSyncFailuresCsv" href="/api/v1/hod/sync-failures?branch=CS&format=csv" class="px-3 py-1 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface text-[11px] font-semibold border border-hairline transition-colors">
+            Download Failures CSV
+          </a>
+        </div>
+      </section>
 
-<div class="overflow-x-auto max-h-[660px] overflow-y-auto rounded-[22px] border border-slate-200/80 bg-white shadow-inner custom-scrollbar" id="studentsScrollContainer">
-<table class="w-full text-left border-collapse min-w-[1180px]">
-<thead class="sticky top-0 z-20 bg-[#e8f5ee] backdrop-blur-md border-b border-slate-200/80 shadow-xs">
-  <tr class="text-slate-700 font-dg text-xs font-bold uppercase tracking-wider select-none">
-    <th class="py-3 px-3 w-[115px] cursor-pointer hover:text-emerald-900 transition-colors sortable-header group" data-sort="pin" title="Click to sort by PIN">
-      <div class="flex items-center gap-1">
-        <span># PIN</span>
-        <span class="material-symbols-outlined text-[15px] text-slate-400 group-hover:text-emerald-700 transition-transform sort-icon" id="sort-icon-pin">unfold_more</span>
-      </div>
-    </th>
-    <th class="py-3 px-3 min-w-[190px] cursor-pointer hover:text-emerald-900 transition-colors sortable-header group" data-sort="name" title="Click to sort by Name">
-      <div class="flex items-center gap-1">
-        <span>STUDENT NAME</span>
-        <span class="material-symbols-outlined text-[15px] text-slate-400 group-hover:text-emerald-700 transition-transform sort-icon" id="sort-icon-name">unfold_more</span>
-      </div>
-    </th>
-    <th class="py-3 px-2 w-[85px] cursor-pointer hover:text-emerald-900 transition-colors sortable-header group" data-sort="branch" title="Click to sort by Branch">
-      <div class="flex items-center gap-1">
-        <span>BRANCH</span>
-        <span class="material-symbols-outlined text-[15px] text-slate-400 group-hover:text-emerald-700 transition-transform sort-icon" id="sort-icon-branch">unfold_more</span>
-      </div>
-    </th>
-    <th class="py-3 px-2 w-[120px] cursor-pointer hover:text-emerald-900 transition-colors sortable-header group" data-sort="days" title="Click to sort by Present Days">
-      <div class="flex items-center gap-1">
-        <span>DAYS (PRES / ELAP)</span>
-        <span class="material-symbols-outlined text-[15px] text-slate-400 group-hover:text-emerald-700 transition-transform sort-icon" id="sort-icon-days">unfold_more</span>
-      </div>
-    </th>
-    <th class="py-3 px-2 w-[105px] cursor-pointer hover:text-emerald-900 transition-colors sortable-header group" data-sort="attendance" title="Click to sort by Attendance %">
-      <div class="flex items-center gap-1">
-        <span>ATTENDANCE %</span>
-        <span class="material-symbols-outlined text-[15px] text-slate-400 group-hover:text-emerald-700 transition-transform sort-icon" id="sort-icon-attendance">unfold_more</span>
-      </div>
-    </th>
-    <th class="py-3 px-2 w-[110px]">STATUS</th>
-    <th class="py-3 px-2 w-[85px] cursor-pointer hover:text-emerald-900 transition-colors sortable-header group" data-sort="cgpa" title="Click to sort by CGPA">
-      <div class="flex items-center gap-1">
-        <span>CGPA</span>
-        <span class="material-symbols-outlined text-[15px] text-slate-400 group-hover:text-emerald-700 transition-transform sort-icon" id="sort-icon-cgpa">unfold_more</span>
-      </div>
-    </th>
-    <th class="py-3 px-2 w-[115px] cursor-pointer hover:text-emerald-900 transition-colors sortable-header group" data-sort="backlogs" title="Click to sort by Backlogs">
-      <div class="flex items-center gap-1">
-        <span>BACKLOGS</span>
-        <span class="material-symbols-outlined text-[15px] text-slate-400 group-hover:text-emerald-700 transition-transform sort-icon" id="sort-icon-backlogs">unfold_more</span>
-      </div>
-    </th>
-    <th class="py-3 px-2 w-[95px]">LAST SYNCED</th>
-    <th class="py-3 pl-2 pr-4 w-[125px] text-right">ACTIONS</th>
-  </tr>
-</thead>
-<tbody id="masterStudentsTbody" class="divide-y divide-slate-100 font-sans text-sm">
-  <!-- Dynamic 180 Students automatically populated by students-info.js with 100% verified SBTET data -->
-  <tr>
-    <td colspan="9" class="px-6 py-12 text-center text-slate-500 font-mono text-sm">
-      <span class="material-symbols-outlined text-3xl text-emerald-700 animate-spin block mb-2">sync</span>
-      Synchronizing complete 180 department nodes from State Board of Technical Education (SBTET)...
-    </td>
-  </tr>
-</tbody>
-</table>
-</div>
+      <!-- 6 KPI Bento Tiles -->
+      <section class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
+        <!-- 1: Total Intake -->
+        <div class="bg-surface-container rounded-2xl p-4 border border-hairline flex flex-col justify-between min-h-[110px]">
+          <span class="text-[11px] font-semibold uppercase tracking-wider text-on-surface-variant" id="kpiIntakeLabel">Total Intake</span>
+          <div class="text-2xl sm:text-3xl font-extrabold text-on-surface font-display my-1" id="kpiIntakeVal">180</div>
+          <span class="text-[10px] text-on-surface-variant font-code-mono">Batch 2024–25</span>
+        </div>
 
-<!-- Continuous Scroll Status Bar (Zero Pagination - Continuous Scroll Table) -->
-<div class="flex flex-col sm:flex-row items-center justify-between gap-3 py-3 px-5 rounded-2xl bg-[#f8faf8] border border-slate-200/80 shadow-2xs">
-  <div class="flex items-center gap-2.5">
-    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-    <span class="font-mono text-xs text-slate-700">
-      Displaying all <strong class="text-emerald-950 font-bold" id="studentsVisibleCount">120</strong> of <strong class="text-emerald-950 font-bold" id="studentsTotalCount">120</strong> <span id="studentsDeptLabel">AIML</span> students registered in Batch 2024–25 (Scroll to view all)
-    </span>
-  </div>
-  <div class="flex items-center gap-3">
-    <span class="font-mono text-xs text-slate-500 hidden md:inline">Scroll table vertically to navigate all 180 records</span>
-    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 font-dg text-xs font-bold shadow-2xs">
-      <span class="material-symbols-outlined text-[15px] text-emerald-700">all_inclusive</span>
-      Continuous Scroll Active
-    </span>
-  </div>
-</div>
+        <!-- 2: Avg Attendance -->
+        <div class="bg-surface-container rounded-2xl p-4 border border-hairline flex flex-col justify-between min-h-[110px]">
+          <span class="text-[11px] font-semibold uppercase tracking-wider text-on-surface-variant">Dept Average</span>
+          <div class="text-2xl sm:text-3xl font-extrabold text-secondary font-display my-1" id="kpiAvgAttVal">46.6%</div>
+          <span class="text-[10px] text-on-surface-variant font-code-mono">Elapsed Term</span>
+        </div>
 
-</section>
+        <!-- 3: Eligible (≥75%) -->
+        <div class="bg-surface-container rounded-2xl p-4 border border-hairline flex flex-col justify-between min-h-[110px]">
+          <span class="text-[11px] font-semibold uppercase tracking-wider text-on-surface-variant">Eligible (≥75%)</span>
+          <div class="text-2xl sm:text-3xl font-extrabold text-primary-fixed font-display my-1" id="kpiEligibleVal">0</div>
+          <span class="text-[10px] text-primary-fixed font-code-mono font-bold" id="kpiEligiblePct">0.0% Cohort</span>
+        </div>
+
+        <!-- 4: Warning (65-75%) -->
+        <div class="bg-surface-container rounded-2xl p-4 border border-hairline flex flex-col justify-between min-h-[110px]">
+          <span class="text-[11px] font-semibold uppercase tracking-wider text-on-surface-variant">Warning (65–75%)</span>
+          <div class="text-2xl sm:text-3xl font-extrabold text-secondary font-display my-1" id="kpiWarningVal">1</div>
+          <span class="text-[10px] text-secondary font-code-mono font-bold" id="kpiWarningPct">0.6% Cohort</span>
+        </div>
+
+        <!-- 5: Critical (<65%) -->
+        <div class="bg-surface-container rounded-2xl p-4 border border-hairline flex flex-col justify-between min-h-[110px]">
+          <span class="text-[11px] font-semibold uppercase tracking-wider text-on-surface-variant">Critical (<65%)</span>
+          <div class="text-2xl sm:text-3xl font-extrabold text-error font-display my-1" id="kpiDetentionVal">160</div>
+          <span class="text-[10px] text-error font-code-mono font-bold" id="kpiDetentionPct">99.4% Cohort</span>
+        </div>
+
+        <!-- 6: With Backlogs -->
+        <div class="bg-surface-container rounded-2xl p-4 border border-hairline flex flex-col justify-between min-h-[110px]">
+          <span class="text-[11px] font-semibold uppercase tracking-wider text-on-surface-variant">With Backlogs</span>
+          <div class="text-2xl sm:text-3xl font-extrabold text-on-surface font-display my-1" id="kpiBacklogsVal">55</div>
+          <span class="text-[10px] text-on-surface-variant font-code-mono" id="kpiBacklogsTotal">Total Papers</span>
+        </div>
+      </section>
+
+      <!-- Filter Tabs, Search & Sort Control Strip -->
+      <section class="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+        <!-- Filter Pills with Live Counts -->
+        <div class="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0 scrollbar-none" id="cohortFilterPills">
+          <button class="cohort-filter-btn px-3.5 py-1.5 rounded-full text-xs font-semibold font-body-small transition-all bg-primary text-on-primary shadow-xs shrink-0" data-cohort="All" type="button">
+            All (<span id="filterAllCount">180</span>)
+          </button>
+          <button class="cohort-filter-btn px-3.5 py-1.5 rounded-full text-xs font-semibold font-body-small transition-all bg-surface-container hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface shrink-0" data-cohort="Critical" type="button">
+            Critical (<span id="filterCriticalCount">160</span>)
+          </button>
+          <button class="cohort-filter-btn px-3.5 py-1.5 rounded-full text-xs font-semibold font-body-small transition-all bg-surface-container hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface shrink-0" data-cohort="Warning" type="button">
+            Warning (<span id="filterWarningCount">1</span>)
+          </button>
+          <button class="cohort-filter-btn px-3.5 py-1.5 rounded-full text-xs font-semibold font-body-small transition-all bg-surface-container hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface shrink-0" data-cohort="Eligible" type="button">
+            Eligible (<span id="filterEligibleCount">0</span>)
+          </button>
+          <button class="cohort-filter-btn px-3.5 py-1.5 rounded-full text-xs font-semibold font-body-small transition-all bg-surface-container hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface shrink-0" data-cohort="Backlogs" type="button">
+            With Backlogs (<span id="filterBacklogsCount">55</span>)
+          </button>
+        </div>
+
+        <!-- Search & Sort Controls -->
+        <div class="flex items-center gap-3 flex-wrap sm:flex-nowrap">
+          <div class="relative w-full sm:w-64 md:w-72">
+            <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">search</span>
+            <input id="searchStudentInput" class="w-full bg-surface-container-low text-on-surface placeholder:text-on-surface-variant/60 font-body-small text-xs rounded-full pl-9 pr-4 py-2 border border-hairline outline-none focus:ring-1 focus:ring-primary-fixed transition-all" placeholder="Search student PIN or name..." type="text"/>
+          </div>
+
+          <div class="relative shrink-0">
+            <select id="quickSortSelect" class="bg-surface-container-low text-on-surface border border-hairline font-body-small text-xs rounded-full px-4 py-2 outline-none cursor-pointer">
+              <option value="pin-asc">Sort: PIN (Ascending ↑)</option>
+              <option value="pin-desc">Sort: PIN (Descending ↓)</option>
+              <option value="attendance-desc">Sort: Attendance (High → Low)</option>
+              <option value="attendance-asc">Sort: Attendance (Low → High)</option>
+              <option value="cgpa-desc">Sort: CGPA (High → Low)</option>
+              <option value="backlogs-desc">Sort: Backlogs (Most → Least)</option>
+              <option value="name-asc">Sort: Name (A → Z)</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <!-- Master Students Table Bento Container -->
+      <section class="bg-surface-container-low rounded-2xl border border-hairline overflow-hidden flex flex-col shadow-sm">
+        <!-- Desktop Table View (>= 768px) -->
+        <div class="hidden md:block overflow-x-auto w-full max-h-[680px] overflow-y-auto">
+          <table class="w-full text-left border-collapse min-w-[1050px]">
+            <thead>
+              <tr class="bg-surface-container-high text-on-surface-variant font-code-mono-sm text-xs uppercase tracking-wider select-none sticky top-0 z-10 border-b border-hairline">
+                <th class="py-3 px-4 font-medium sortable-header cursor-pointer hover:text-on-surface" data-sort="pin">
+                  <div class="flex items-center gap-1">
+                    <span>PIN</span>
+                    <span class="material-symbols-outlined text-[14px] sort-icon">unfold_more</span>
+                  </div>
+                </th>
+                <th class="py-3 px-4 font-medium sortable-header cursor-pointer hover:text-on-surface" data-sort="name">
+                  <div class="flex items-center gap-1">
+                    <span>Student</span>
+                    <span class="material-symbols-outlined text-[14px] sort-icon">unfold_more</span>
+                  </div>
+                </th>
+                <th class="py-3 px-4 font-medium">Branch · Sec</th>
+                <th class="py-3 px-4 font-medium sortable-header cursor-pointer hover:text-on-surface" data-sort="days">
+                  <div class="flex items-center gap-1">
+                    <span>Days Present / Elapsed</span>
+                    <span class="material-symbols-outlined text-[14px] sort-icon">unfold_more</span>
+                  </div>
+                </th>
+                <th class="py-3 px-4 font-medium sortable-header cursor-pointer hover:text-on-surface" data-sort="attendance">
+                  <div class="flex items-center gap-1">
+                    <span>Attendance %</span>
+                    <span class="material-symbols-outlined text-[14px] sort-icon">unfold_more</span>
+                  </div>
+                </th>
+                <th class="py-3 px-4 font-medium">Status</th>
+                <th class="py-3 px-4 font-medium text-right sortable-header cursor-pointer hover:text-on-surface" data-sort="cgpa">
+                  <div class="flex items-center justify-end gap-1">
+                    <span>CGPA</span>
+                    <span class="material-symbols-outlined text-[14px] sort-icon">unfold_more</span>
+                  </div>
+                </th>
+                <th class="py-3 px-4 font-medium text-center sortable-header cursor-pointer hover:text-on-surface" data-sort="backlogs">
+                  <div class="flex items-center justify-center gap-1">
+                    <span>Backlogs</span>
+                    <span class="material-symbols-outlined text-[14px] sort-icon">unfold_more</span>
+                  </div>
+                </th>
+                <th class="py-3 px-4 font-medium">Last Synced</th>
+                <th class="py-3 px-4 font-medium text-right pr-6">Actions</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-container-highest/20 font-body-small text-xs text-on-surface" id="masterStudentsTbody">
+              <!-- Dynamically populated via students-info.js -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Mobile Card List View (< 768px / 390px Canvas) -->
+        <div class="block md:hidden p-4 space-y-3" id="mobileStudentsContainer">
+          <!-- Dynamically populated card items for mobile -->
+        </div>
+
+        <!-- Table Footer / Count Indicator -->
+        <div class="px-5 py-3 border-t border-hairline bg-surface-container flex items-center justify-between text-xs text-on-surface-variant font-code-mono-sm">
+          <span>Showing <strong id="studentsVisibleCount" class="text-on-surface">180</strong> of <span id="studentsTotalCount">180</span> students</span>
+          <span class="text-primary-fixed">SBTET Verified Roster</span>
+        </div>
+      </section>
+
     </div>
   </main>
 
-  <!-- Shared Samskruti Institutional Footer -->
-  <footer class="w-full bg-[#f3efe6]/90 border-t border-emerald-900/10 mt-16 relative z-10">
-    <div class="w-full max-w-none mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 py-8">
-      <div class="flex flex-col md:flex-row items-center justify-between gap-4 pb-6 border-b border-emerald-900/10">
-        <div class="flex flex-col gap-1 text-center md:text-left">
-          <div class="flex items-center justify-center md:justify-start gap-2">
-            <span class="font-title-editorial text-2xl text-emerald-950 font-bold">Samskruti College of Engineering &amp; Technology</span>
-            <span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-dg text-sm font-bold">Code 259</span>
-          </div>
-          <p class="font-dg text-base text-stone-600 font-medium">Head of Department Executive Authority &bull; Department of Computer Science &amp; Engineering.</p>
-        </div>
-        <div class="flex flex-wrap items-center justify-center gap-2">
-          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/90 border border-emerald-900/10 shadow-sm">
-            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span class="font-dg text-sm text-on-surface font-bold">180 Student Nodes Synced</span>
-          </div>
-          <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/90 border border-emerald-900/10 shadow-sm">
-            <span class="material-symbols-outlined text-emerald-700 text-[16px]">verified</span>
-            <span class="font-dg text-sm text-on-surface font-bold">Scheme C-24 Ledger</span>
-          </div>
-        </div>
-      </div>
-      <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-4 text-stone-600">
-        <span class="font-dg text-base">&copy; 2025 Samskruti College. Institutional Administration. All rights reserved.</span>
-        <div class="flex items-center gap-4">
-          <a class="font-dg text-base font-semibold hover:text-emerald-800 transition-colors" href="./hod-dashboard.html">Console</a>
-          <a class="font-dg text-base font-semibold hover:text-emerald-800 transition-colors" href="./document-approvals.html">Approvals</a>
-          <a class="font-dg text-base font-semibold hover:text-emerald-800 transition-colors" href="./security-roster.html">Roster</a>
-          <a class="font-dg text-base font-semibold hover:text-emerald-800 transition-colors" href="./students-info.html">Students</a>
-        </div>
-      </div>
-    </div>
-  </footer>
-
-  
-  <!-- POP-UP MODAL: Interactive Comprehensive Backlog Dossier -->
-  <div id="backlogPopupModal" class="fixed inset-0 z-[60000] hidden flex items-center justify-center p-4 bg-black/60 backdrop-blur-md transition-opacity duration-300 opacity-0 pointer-events-none">
-    <div id="backlogModalCard" class="relative w-full max-w-3xl bg-white rounded-[32px] p-6 sm:p-8 shadow-2xl border border-stone-200 max-h-[90vh] overflow-y-auto transform scale-95 transition-transform duration-300 space-y-6">
-      
-      <!-- Modal Header -->
-      <div class="flex items-start justify-between gap-4 pb-4 border-b border-stone-200">
-        <div class="flex items-center gap-4">
-          <div class="w-14 h-14 rounded-2xl bg-rose-100 text-rose-700 flex items-center justify-center text-xl font-bold font-mono shadow-xs shrink-0" id="modalStudentAvatar">
-            KH
+  <!-- Interactive Backlog Breakdown Modal -->
+  <div id="backlogPopupModal" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-surface-container rounded-3xl p-6 sm:p-8 max-w-2xl w-full border border-hairline shadow-2xl space-y-5 animate-scale-in max-h-[90vh] flex flex-col">
+      <div class="flex items-start justify-between pb-3 border-b border-hairline shrink-0">
+        <div class="flex items-center gap-3">
+          <div id="modalStudentAvatar" class="w-10 h-10 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center font-bold text-sm">
+            AR
           </div>
           <div>
-            <div class="flex items-center gap-2">
-              <h3 class="text-2xl font-bold text-stone-900 font-display" id="modalStudentName">KARNATI HIMESH</h3>
-              <span class="px-2.5 py-0.5 rounded-full text-xs font-bold font-mono bg-stone-100 text-stone-700" id="modalStudentPin">24259-CS-025</span>
-            </div>
-            <p class="text-xs text-stone-500 font-medium mt-0.5" id="modalStudentSubtitle">
-              Department of Computer Science &amp; Engineering &bull; Scheme C-24 &bull; Semester IV
-            </p>
+            <h3 class="text-base font-bold text-on-surface font-display" id="modalStudentName">Aarav Reddy</h3>
+            <span class="font-code-mono-sm text-xs text-on-surface-variant" id="modalStudentPin">24259-CS-025</span>
           </div>
         </div>
-
-        <button id="closeBacklogModal" class="w-10 h-10 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-600 flex items-center justify-center transition cursor-pointer" type="button" aria-label="Close modal">
+        <button id="closeBacklogModal" class="text-on-surface-variant hover:text-on-surface p-1 rounded-full hover:bg-surface-container-high transition-colors" type="button">
           <span class="material-symbols-outlined text-[20px]">close</span>
         </button>
       </div>
 
-      <!-- KPI Summary Ribbon -->
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <div class="bg-rose-50/70 border border-rose-200/80 p-3.5 rounded-2xl">
-          <span class="text-[11px] font-bold text-rose-800 uppercase tracking-wider block">Backlog Deficit</span>
-          <span class="text-2xl font-extrabold text-rose-700 font-display" id="modalBacklogCount">2 Subjects</span>
+      <div class="flex items-center justify-between gap-4 p-3 rounded-xl bg-surface-container-low border border-hairline shrink-0 text-xs font-code-mono-sm">
+        <div>
+          <span class="text-on-surface-variant">Total Active Backlogs:</span>
+          <span class="font-bold text-error ml-1" id="modalBacklogCount">0</span>
         </div>
-        <div class="bg-amber-50/70 border border-amber-200/80 p-3.5 rounded-2xl">
-          <span class="text-[11px] font-bold text-amber-800 uppercase tracking-wider block">Semester Attendance</span>
-          <span class="text-2xl font-extrabold text-amber-700 font-display" id="modalAttendanceVal">27.8%</span>
-        </div>
-        <div class="bg-emerald-50/70 border border-emerald-200/80 p-3.5 rounded-2xl">
-          <span class="text-[11px] font-bold text-emerald-800 uppercase tracking-wider block">SBTET Supply Status</span>
-          <span class="text-sm font-extrabold text-emerald-800 mt-1 block" id="modalExamEligibility">Exam Eligible (Fee Pending)</span>
+        <div>
+          <span class="text-on-surface-variant">Biometric Attendance:</span>
+          <span class="font-bold text-on-surface ml-1" id="modalAttendanceVal">41.7%</span>
         </div>
       </div>
 
-      <!-- Backlogs Breakdown Table -->
-      <div class="space-y-3">
-        <h4 class="text-sm font-bold text-stone-900 uppercase tracking-wider flex items-center gap-2">
-          <span class="material-symbols-outlined text-rose-600 text-[18px]">warning</span>
-          <span>Deficit Curricular Units &amp; Marks Trajectory</span>
-        </h4>
-
-        <div class="overflow-x-auto rounded-2xl border border-stone-200 bg-stone-50/40">
-          <table class="w-full text-left text-xs">
-            <thead class="bg-stone-100 text-stone-700 font-bold uppercase tracking-wider border-b border-stone-200">
-              <tr>
-                <th class="px-4 py-3">Subject Code &amp; Title</th>
-                <th class="px-3 py-3">Internals (Deficit)</th>
-                <th class="px-3 py-3">End Exam</th>
-                <th class="px-3 py-3">Min Passing</th>
-                <th class="px-4 py-3">Remedial Allocation</th>
-              </tr>
-            </thead>
-            <tbody id="modalBacklogTbody" class="divide-y divide-stone-200 bg-white font-medium">
-              <!-- Rendered dynamically -->
-            </tbody>
-          </table>
-        </div>
+      <!-- Backlog Subjects Table -->
+      <div class="overflow-y-auto flex-grow rounded-xl border border-hairline">
+        <table class="w-full text-left border-collapse text-xs">
+          <thead>
+            <tr class="bg-surface-container-high text-on-surface-variant font-code-mono-sm uppercase tracking-wider sticky top-0">
+              <th class="py-2.5 px-3">Subject</th>
+              <th class="py-2.5 px-3">Sem</th>
+              <th class="py-2.5 px-3">Internal</th>
+              <th class="py-2.5 px-3">End Exam</th>
+              <th class="py-2.5 px-3">Total</th>
+              <th class="py-2.5 px-3">Grade</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-surface-container-highest/20 text-on-surface" id="modalBacklogTbody">
+            <!-- Dynamically populated -->
+          </tbody>
+        </table>
       </div>
 
-      <!-- Modal Footer Actions -->
-      <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-4 border-t border-stone-200">
-        <span class="text-xs text-stone-500 font-medium">
-          Official SBTET Scheme C-24 Academic Audit Ledger
-        </span>
-        <div class="flex items-center gap-3 w-full sm:w-auto">
-          <button id="modalResyncBtn" class="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-full bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-900 text-xs font-bold transition cursor-pointer" type="button">
-            <span class="material-symbols-outlined text-[16px]">sync</span>
-            <span>🔄 Re-Sync Student</span>
-          </button>
-          <button id="printModalDossierBtn" class="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-semibold transition cursor-pointer" type="button">
-            <span class="material-symbols-outlined text-[16px]">print</span>
-            <span>🖨️ Print Form</span>
-          </button>
-          <button id="modalCloseActionBtn" class="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-full bg-stone-200 hover:bg-stone-300 text-stone-800 text-xs font-bold transition cursor-pointer" type="button">
-            <span>Close ✕</span>
-          </button>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-  
-  <!-- POP-UP MODAL: Real-time Azure Portal Mass Sync Progression -->
-  <div id="azureSyncProgressModal" class="fixed inset-0 z-[65000] hidden flex items-center justify-center p-4 bg-black/60 backdrop-blur-md transition-opacity duration-300 opacity-0 pointer-events-none">
-    <div id="azureSyncModalCard" class="relative w-full max-w-lg bg-white rounded-[32px] p-6 sm:p-7 shadow-2xl border border-stone-200 transform scale-95 transition-transform duration-300 space-y-5">
-      
-      <!-- Modal Header -->
-      <div class="flex items-center justify-between pb-3 border-b border-stone-200">
-        <div class="flex items-center gap-3">
-          <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#003519] to-[#047857] text-white flex items-center justify-center shadow-md">
-            <span class="material-symbols-outlined text-2xl animate-spin" id="azureModalSpinIcon">cloud_sync</span>
-          </div>
-          <div>
-            <h3 class="text-lg font-bold text-stone-900 font-display">Azure &bull; SBTET Live Mass Sync</h3>
-            <p class="text-xs text-stone-500 font-medium">Gateway: azure.sbtet.telangana.gov.in / SCET-259-C24</p>
-          </div>
-        </div>
-        <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800" id="azureModalStatusBadge">Streaming</span>
-      </div>
-
-      <!-- Live Dual Counters -->
-      <div class="space-y-3 bg-stone-50 p-4 rounded-2xl border border-stone-200">
-        <div class="flex items-center justify-between text-xs font-semibold text-stone-700">
-          <span>Azure Biometric Punch Ledger</span>
-          <span class="font-mono text-emerald-700 font-bold" id="azureModalCounter">12 / 180 Nodes</span>
-        </div>
-        <div class="w-full bg-stone-200 rounded-full h-2.5 overflow-hidden">
-          <div id="azureModalProgressBar" class="bg-gradient-to-r from-[#003519] via-[#047857] to-[#10b981] h-2.5 rounded-full w-[6%] transition-all duration-150"></div>
-        </div>
-        <div class="flex items-center justify-between text-[11px] text-stone-500 font-mono">
-          <span>Current Stream Node: <strong class="text-slate-900" id="azureModalCurrentPin">24259-CS-012</strong></span>
-          <span class="text-emerald-700 font-bold" id="azureModalPercentage">6%</span>
-        </div>
-      </div>
-
-      <!-- Live Stream Console Output -->
-      <div class="p-3 bg-stone-900 text-emerald-300 font-mono text-[11px] rounded-xl h-24 overflow-y-auto space-y-1" id="azureStreamConsole">
-        <div>[AZURE-TLS1.3] Initializing cryptographic handshake with SBTET Node 259...</div>
-        <div>[SBTET-GATEWAY] Certificate verified: C-24 Scheme Ledger Active.</div>
-      </div>
-
-      <!-- Modal Footer -->
-      <div class="flex items-center justify-between pt-2">
-        <span class="text-xs text-stone-400 font-medium">180 Registered Students (CSE-A &amp; CSE-B)</span>
-        <button id="closeAzureSyncModal" class="px-4 py-2 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-bold transition cursor-pointer" type="button">
-          Cancel
+      <div class="pt-3 border-t border-hairline flex items-center justify-end gap-3 shrink-0">
+        <button id="modalCloseActionBtn" class="px-4 py-2 rounded-full bg-surface-container-high hover:bg-surface-container-highest text-on-surface text-xs font-semibold transition-colors cursor-pointer" type="button">
+          Close
         </button>
       </div>
-
     </div>
   </div>
 
+  <!-- Real Mass Sync Progress Modal -->
+  <div id="azureSyncProgressModal" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-surface-container rounded-3xl p-6 sm:p-8 max-w-md w-full border border-hairline shadow-2xl space-y-5 animate-scale-in">
+      <div class="flex items-center justify-between pb-3 border-b border-hairline">
+        <div class="flex items-center gap-2.5">
+          <span class="material-symbols-outlined text-primary-fixed text-2xl animate-spin" id="azureModalSpinIcon">sync</span>
+          <h3 class="text-base font-bold text-on-surface font-display">SBTET Gateway Synchronization</h3>
+        </div>
+        <span class="px-2.5 py-0.5 rounded-full text-xs font-code-mono font-bold bg-primary-container text-on-primary-container" id="azureModalStatusBadge">
+          Syncing...
+        </span>
+      </div>
+
+      <div class="space-y-3">
+        <div class="flex items-center justify-between text-xs font-code-mono-sm">
+          <span id="azureModalCurrentPin" class="text-on-surface-variant">Connecting to gateway...</span>
+          <span id="azureModalPercentage" class="font-bold text-on-surface">0%</span>
+        </div>
+        <div class="w-full bg-surface-container-highest rounded-full h-2.5 overflow-hidden">
+          <div id="azureModalProgressBar" class="bg-primary h-full rounded-full transition-all duration-300" style="width: 0%;"></div>
+        </div>
+        <div class="text-xs text-on-surface-variant text-center pt-1" id="azureModalCounter">
+          Processed 0 / 180 students
+        </div>
+      </div>
+
+      <div class="pt-3 border-t border-hairline flex items-center justify-end">
+        <button id="closeAzureSyncModal" class="px-4 py-2 rounded-full bg-surface-container-high hover:bg-surface-container-highest text-on-surface text-xs font-semibold transition-colors cursor-pointer" type="button">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Standardized App Footer -->
+  <footer class="w-full mt-12 py-6 border-t border-hairline bg-surface-container-lowest text-on-surface-variant font-body-small">
+    <div class="w-full max-w-none mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <span class="font-code-mono font-bold text-on-surface">CAMPUS CONNECT</span>
+        <span>·</span>
+        <span>Samskruti College of Engineering &amp; Technology (Code 259)</span>
+      </div>
+      <div class="flex items-center gap-4 text-xs font-code-mono-sm">
+        <span>Master Students Roster</span>
+        <span>·</span>
+        <span class="text-primary-fixed">SBTET C-24 Live Ledger</span>
+      </div>
+    </div>
+  </footer>
+
   <!-- Toast Notification -->
-  <div id="toastNotification" class="fixed bottom-6 right-6 z-[30000] hidden px-5 py-3 rounded-2xl bg-emerald-900 text-white font-dg text-lg font-bold shadow-2xl flex items-center gap-3 border border-emerald-400/40 transform transition-all duration-300">
-    <span class="material-symbols-outlined text-emerald-300 text-[22px]" id="toastIcon">check_circle</span>
+  <div id="toastNotification" class="fixed bottom-6 right-6 z-[30000] hidden px-5 py-3 rounded-2xl bg-surface-container-highest text-on-surface font-body-default text-sm font-semibold shadow-2xl flex items-center gap-3 border border-outline-variant transform transition-all duration-300">
+    <span class="material-symbols-outlined text-primary-fixed text-[20px]" id="toastIcon">check_circle</span>
     <span id="toastMsg">Action completed successfully</span>
   </div>
 

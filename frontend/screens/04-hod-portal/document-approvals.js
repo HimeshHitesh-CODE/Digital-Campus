@@ -1,382 +1,676 @@
 /**
  * Samskruti College HOD Document Approvals Controller
- * Interactive Filtering, Real-Time Search, Review Modal, and 6-Digit Counter OTP Issuance
+ * Dual-Theme, Full-Width Fluid, Live Backend Integration (/api/v1/hod/requests)
+ * 3 Review Actions (Approve + 6-digit OTP, Hold for Interview, Reject)
+ * Desktop Table & Mobile 390px Card List
  */
+
+let currentRequests = [];
+let activeDepartment = 'CS';
+let activeStatusFilter = 'pending';
+let activeTypeFilter = 'all';
+let activeSelectedRequest = null;
+let ws = null;
 
 document.addEventListener('DOMContentLoaded', () => {
   initApprovals();
-  checkUrlParams();
-  initHelpDeskLinks();
 });
-
-let activeFilter = 'All';
-let activeDepartment = 'AIML';
-let currentRequests = [];
-let activeRequest = null;
-let activeRow = null;
 
 function getActiveDepartment() {
   const stored = localStorage.getItem('hod_active_dept');
-  if (stored === 'CS' || stored === 'AIML') return stored;
+  if (stored === 'CS' || stored === 'AIML' || stored === 'All') return stored;
   try {
     const userStr = localStorage.getItem('dc_user');
     if (userStr) {
       const u = JSON.parse(userStr);
       if (u.branch === 'CS' || (u.pin && u.pin.includes('CS'))) return 'CS';
+      if (u.branch === 'AIML' || (u.pin && u.pin.includes('AIML'))) return 'AIML';
     }
   } catch (_) {}
-  return 'AIML';
+  return 'CS';
 }
 
 function initApprovals() {
   activeDepartment = getActiveDepartment();
-  loadLiveRequests();
-
-  bindFilterPills();
+  bindDepartmentSwitcher();
+  bindStatusTabs();
+  bindTypeChips();
   bindSearchInput();
   bindModalActions();
-  bindPolicyAndFilterButtons();
+  bindToolbarActions();
+  initWebSocket();
+  loadLiveRequests(activeDepartment);
 }
 
-async function loadLiveRequests() {
+function bindDepartmentSwitcher() {
+  const csBtn = document.getElementById('deptCsBtn');
+  const aimlBtn = document.getElementById('deptAimlBtn');
+  const allBtn = document.getElementById('deptAllBtn');
+
+  const updateSwitcherUI = () => {
+    const activeClass = 'px-4 py-1.5 rounded-full text-xs font-bold font-code-mono uppercase tracking-wide transition-all bg-primary text-on-primary shadow-xs cursor-pointer';
+    const inactiveClass = 'px-4 py-1.5 rounded-full text-xs font-bold font-code-mono uppercase tracking-wide transition-all text-on-surface-variant hover:text-on-surface cursor-pointer';
+    const allActiveClass = 'px-3.5 py-1.5 rounded-full text-xs font-bold font-code-mono uppercase tracking-wide transition-all bg-primary text-on-primary shadow-xs cursor-pointer';
+    const allInactiveClass = 'px-3.5 py-1.5 rounded-full text-xs font-bold font-code-mono uppercase tracking-wide transition-all text-on-surface-variant hover:text-on-surface cursor-pointer';
+
+    if (csBtn) csBtn.className = activeDepartment === 'CS' ? activeClass : inactiveClass;
+    if (aimlBtn) aimlBtn.className = activeDepartment === 'AIML' ? activeClass : inactiveClass;
+    if (allBtn) allBtn.className = activeDepartment === 'All' ? allActiveClass : allInactiveClass;
+  };
+
+  csBtn?.addEventListener('click', () => {
+    activeDepartment = 'CS';
+    localStorage.setItem('hod_active_dept', 'CS');
+    updateSwitcherUI();
+    loadLiveRequests('CS');
+    showToast('Viewing CS Department Approvals');
+  });
+
+  aimlBtn?.addEventListener('click', () => {
+    activeDepartment = 'AIML';
+    localStorage.setItem('hod_active_dept', 'AIML');
+    updateSwitcherUI();
+    loadLiveRequests('AIML');
+    showToast('Viewing AIML Department Approvals');
+  });
+
+  allBtn?.addEventListener('click', () => {
+    activeDepartment = 'All';
+    localStorage.setItem('hod_active_dept', 'All');
+    updateSwitcherUI();
+    loadLiveRequests('All');
+    showToast('Viewing All Department Approvals');
+  });
+
+  updateSwitcherUI();
+}
+
+async function loadLiveRequests(dept) {
   try {
-    const res = await fetch(`/api/v1/hod/requests?branch=${activeDepartment}`);
+    const res = await fetch(`/api/v1/hod/requests?branch=${encodeURIComponent(dept)}`);
     if (res.ok) {
       const data = await res.json();
-      if (data && data.success && Array.isArray(data.requests) && data.requests.length > 0) {
-        currentRequests = data.requests;
-        renderRequestsTable(currentRequests);
-        return;
+      if (data && Array.isArray(data.requests)) {
+        currentRequests = data.requests.map(r => ({
+          id: r.id,
+          student_pin: r.student_pin || r.pin,
+          student_name: r.student_name || r.name || 'Student',
+          request_type: r.request_type || r.type || 'Bonafide Certificate',
+          purpose: r.reason || r.purpose || 'Academic Verification',
+          urgency: r.urgency || 'NORMAL',
+          status: (r.status || 'PENDING').toUpperCase(),
+          attendance_snapshot: r.attendance_snapshot,
+          pickup_otp: r.pickup_otp,
+          hod_notes: r.hod_notes || '',
+          submitted_at: r.submitted_at || 'Recently'
+        }));
       }
     }
-  } catch (_) {}
-
-  // Fallback default department requests
-  if (activeDepartment === 'AIML') {
-    currentRequests = [
-      { id: 1, student_pin: '24259-AIML-119', student_name: 'KARNATI HITESH', request_type: 'Bonafide Certificate', purpose: 'Passport & Scholarship Verification', copies: 1, attendance_pct: 43.2, created_at: 'Today, 10:30 AM', status: 'PENDING' },
-      { id: 2, student_pin: '24259-AIML-001', student_name: 'AMANCHA RASAGNA', request_type: 'Internship NOC', purpose: 'Industrial Internship Off-Campus Requisition', copies: 1, attendance_pct: 43.2, created_at: 'Yesterday, 04:15 PM', status: 'PENDING' },
-      { id: 3, student_pin: '24259-AIML-010', student_name: 'ITTE NIKHIL TEJA', request_type: 'Bus Pass Endorsement', purpose: 'TSRTC Student Concession Pass', copies: 1, attendance_pct: 42.0, created_at: '2 days ago', status: 'PENDING' }
-    ];
-  } else {
-    currentRequests = [
-      { id: 1, student_pin: '24259-CS-025', student_name: 'KARNATI HIMESH', request_type: 'Bonafide Certificate', purpose: 'Passport & Scholarship Verification', copies: 1, attendance_pct: 38.64, created_at: 'Today, 10:15 AM', status: 'PENDING' },
-      { id: 2, student_pin: '24259-CS-037', student_name: 'EDAMANAPALLY SAMISAAC', request_type: 'Internship NOC', purpose: 'Infosys Springboard AI Cohort', copies: 1, attendance_pct: 27.27, created_at: 'Yesterday, 02:30 PM', status: 'PENDING' },
-      { id: 3, student_pin: '24259-CS-040', student_name: 'TALLAPALLI TULASI RAM GOUD', request_type: 'Bonafide Certificate', purpose: 'Higher Studies Verification', copies: 1, attendance_pct: 84.5, created_at: '2 days ago', status: 'PENDING' }
-    ];
+  } catch (err) {
+    console.error('Failed to load requests:', err);
   }
 
-  renderRequestsTable(currentRequests);
+  updateTelemetryKPIs();
+  applyFiltersAndRender();
 }
 
-function renderRequestsTable(requests) {
-  const tbody = document.getElementById('approvalsTbody');
+function updateTelemetryKPIs() {
+  const pendingCount = currentRequests.filter(r => r.status === 'PENDING').length;
+  const approvedCount = currentRequests.filter(r => r.status === 'ACCEPTED' || r.status === 'APPROVED').length;
+  const declinedCount = currentRequests.filter(r => r.status === 'REJECTED' || r.status === 'HOLD').length;
+  const totalCount = currentRequests.length;
+  const decidedCount = approvedCount + declinedCount;
+
+  const kpiPending = document.getElementById('kpiPendingCount');
+  const kpiApproved = document.getElementById('kpiApprovedCount');
+  const kpiDeclined = document.getElementById('kpiDeclinedCount');
+  const kpiDeclinedBadge = document.getElementById('kpiDeclinedBadge');
+
+  const badgePending = document.getElementById('badgePendingCount');
+  const badgeDecided = document.getElementById('badgeDecidedCount');
+  const badgeAll = document.getElementById('badgeAllCount');
+
+  if (kpiPending) kpiPending.textContent = pendingCount;
+  if (kpiApproved) kpiApproved.textContent = approvedCount;
+  if (kpiDeclined) kpiDeclined.textContent = declinedCount;
+
+  if (kpiDeclinedBadge) {
+    kpiDeclinedBadge.textContent = declinedCount === 0 ? 'All Cleared' : `${declinedCount} On Hold / Rejected`;
+  }
+
+  if (badgePending) badgePending.textContent = `(${pendingCount})`;
+  if (badgeDecided) badgeDecided.textContent = `(${decidedCount})`;
+  if (badgeAll) badgeAll.textContent = `(${totalCount})`;
+}
+
+function bindStatusTabs() {
+  const tabs = document.querySelectorAll('.status-tab');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => {
+        t.classList.remove('bg-surface-container-high', 'text-on-surface', 'font-bold');
+        t.classList.add('text-on-surface-variant', 'font-semibold');
+      });
+      tab.classList.add('bg-surface-container-high', 'text-on-surface', 'font-bold');
+      tab.classList.remove('text-on-surface-variant', 'font-semibold');
+      activeStatusFilter = tab.getAttribute('data-status') || 'pending';
+      applyFiltersAndRender();
+    });
+  });
+}
+
+function bindTypeChips() {
+  const chips = document.querySelectorAll('.type-chip');
+  chips.forEach(chip => {
+    chip.addEventListener('click', () => {
+      chips.forEach(c => {
+        c.className = 'type-chip px-3 py-1.5 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface font-code-mono-sm text-xs transition-colors cursor-pointer border border-hairline';
+      });
+      chip.className = 'type-chip px-3 py-1.5 rounded-full bg-primary-fixed text-on-primary-fixed font-code-mono-sm text-xs font-bold cursor-pointer';
+      activeTypeFilter = chip.getAttribute('data-type') || 'all';
+      applyFiltersAndRender();
+    });
+  });
+}
+
+function bindSearchInput() {
+  const searchInput = document.getElementById('approvalsSearch');
+  const clearBtn = document.getElementById('clearSearch');
+
+  searchInput?.addEventListener('input', () => {
+    if (clearBtn) {
+      if (searchInput.value.trim().length > 0) {
+        clearBtn.classList.remove('hidden');
+      } else {
+        clearBtn.classList.add('hidden');
+      }
+    }
+    applyFiltersAndRender();
+  });
+
+  clearBtn?.addEventListener('click', () => {
+    if (searchInput) searchInput.value = '';
+    clearBtn.classList.add('hidden');
+    applyFiltersAndRender();
+  });
+}
+
+function applyFiltersAndRender() {
+  const query = (document.getElementById('approvalsSearch')?.value || '').toLowerCase().trim();
+
+  const filtered = currentRequests.filter(item => {
+    // Status filter
+    if (activeStatusFilter === 'pending' && item.status !== 'PENDING') return false;
+    if (activeStatusFilter === 'decided' && item.status === 'PENDING') return false;
+
+    // Document type filter
+    if (activeTypeFilter !== 'all') {
+      const typeLower = (item.request_type || '').toLowerCase();
+      const filterLower = activeTypeFilter.toLowerCase();
+      if (!typeLower.includes(filterLower)) return false;
+    }
+
+    // Search query
+    if (query) {
+      const idStr = String(item.id);
+      const pinStr = (item.student_pin || '').toLowerCase();
+      const nameStr = (item.student_name || '').toLowerCase();
+      const typeStr = (item.request_type || '').toLowerCase();
+      const purpStr = (item.purpose || '').toLowerCase();
+
+      return pinStr.includes(query) ||
+             nameStr.includes(query) ||
+             typeStr.includes(query) ||
+             purpStr.includes(query) ||
+             idStr.includes(query);
+    }
+
+    return true;
+  });
+
+  renderDesktopTable(filtered);
+  renderMobileCards(filtered);
+
+  const visibleCountEl = document.getElementById('visibleRowCount');
+  if (visibleCountEl) visibleCountEl.textContent = filtered.length;
+}
+
+function getAttendanceBadgeMarkup(attVal) {
+  if (attVal === null || attVal === undefined || isNaN(Number(attVal))) {
+    return `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-code-mono text-xs border border-hairline">--% Unsynced</span>`;
+  }
+  const att = Number(attVal);
+  if (att >= 75) {
+    return `<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 font-code-mono text-xs font-semibold border border-emerald-500/30"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>${att.toFixed(1)}% (Eligible)</span>`;
+  } else if (att >= 65) {
+    return `<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-500/15 text-amber-400 font-code-mono text-xs font-semibold border border-amber-500/30"><span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>${att.toFixed(1)}% (Condonation)</span>`;
+  } else {
+    return `<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-rose-500/15 text-rose-400 font-code-mono text-xs font-semibold border border-rose-500/30"><span class="w-1.5 h-1.5 rounded-full bg-rose-400"></span>${att.toFixed(1)}% (Critical)</span>`;
+  }
+}
+
+function formatSubmittedTime(timeStr) {
+  if (!timeStr) return 'Recently';
+  if (timeStr.includes('T')) {
+    try {
+      const d = new Date(timeStr);
+      return d.toLocaleDateString('en-IN', { month: 'short', day: 'numeric' }) + ', ' +
+             d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+    } catch (_) {}
+  }
+  return timeStr;
+}
+
+function renderDesktopTable(list) {
+  const tbody = document.getElementById('approvalsTableBody');
   if (!tbody) return;
 
-  tbody.innerHTML = requests.map(req => {
-    const pin = req.student_pin || req.pin;
-    const name = req.student_name || req.name;
-    const type = req.request_type || req.type || 'Bonafide Certificate';
-    const purpose = req.purpose || req.notes || 'Academic Verification';
-    const att = Number(req.attendance_pct || req.attendance || 40);
-    const copies = req.copies || 1;
-    const date = req.created_at || 'Today';
-    const status = (req.status || 'PENDING').toUpperCase();
+  if (list.length === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="8" class="py-12 text-center text-on-surface-variant">
+          <span class="material-symbols-outlined text-4xl mb-2 text-outline">inbox</span>
+          <div class="text-sm font-semibold">No requests in this queue view.</div>
+          <div class="text-xs text-on-surface-variant/70 mt-1">Try switching to the "All" tab or clearing filters.</div>
+        </td>
+      </tr>
+    `;
+    return;
+  }
 
-    const initials = name.split(' ').map(n => n[0]).slice(0, 2).join('');
-    const attBadge = att >= 75 ? 'bg-emerald-50 text-[#003519] border-emerald-200' :
-                     (att >= 65 ? 'bg-amber-50 text-amber-800 border-amber-200' : 'bg-rose-50 text-rose-700 border-rose-200');
+  tbody.innerHTML = list.map(req => {
+    const initials = req.student_name ? req.student_name.split(' ').map(n => n[0]).slice(0, 2).join('') : 'ST';
+    const reqIdFormatted = `#REQ-24259-${req.id}`;
+    const timeFormatted = formatSubmittedTime(req.submitted_at);
+    const attMarkup = getAttendanceBadgeMarkup(req.attendance_snapshot);
 
-    let actionContent = '';
-    if (status === 'ACCEPTED' || status === 'APPROVED') {
-      const otp = req.pickup_otp || req.otp || '584386';
-      actionContent = `<span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 font-mono text-xs font-bold"><span class="material-symbols-outlined text-[14px]">check_circle</span>Approved (OTP: ${otp})</span>`;
-    } else if (status === 'REJECTED') {
-      actionContent = `<span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-rose-100 text-rose-800 font-mono text-xs font-bold"><span class="material-symbols-outlined text-[14px]">cancel</span>Rejected</span>`;
+    let actionMarkup = '';
+    if (req.status === 'ACCEPTED' || req.status === 'APPROVED') {
+      const otp = req.pickup_otp || 'VERIFIED';
+      actionMarkup = `
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary-container/20 text-primary-fixed font-code-mono-sm text-[11px] font-semibold border border-primary-container/30">
+          <span class="material-symbols-outlined text-[14px]">check_circle</span>
+          Approved · OTP: ${otp}
+        </span>
+      `;
+    } else if (req.status === 'REJECTED') {
+      actionMarkup = `
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-500/15 text-rose-400 font-code-mono-sm text-[11px] font-semibold border border-rose-500/30">
+          <span class="material-symbols-outlined text-[14px]">cancel</span>
+          Declined
+        </span>
+      `;
+    } else if (req.status === 'HOLD') {
+      actionMarkup = `
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/15 text-amber-400 font-code-mono-sm text-[11px] font-semibold border border-amber-500/30">
+          <span class="material-symbols-outlined text-[14px]">pause_circle</span>
+          Hold for Interview
+        </span>
+      `;
     } else {
-      actionContent = `
-        <button class="px-4 py-1.5 rounded-full bg-[#003519] hover:bg-[#022c22] text-white text-xs font-bold uppercase tracking-wider transition shadow-sm cursor-pointer review-sign-btn"
-                data-id="${req.id}" data-pin="${pin}" data-name="${escapeHtml(name)}" data-type="${escapeHtml(type)}" data-purpose="${escapeHtml(purpose)}" data-att="${att}" data-copies="${copies}">
-          Review &amp; Sign →
+      actionMarkup = `
+        <button class="btn-review inline-flex items-center gap-1 px-3.5 py-1 rounded-full bg-primary-fixed hover:bg-surface-tint text-on-primary-fixed font-body-small text-xs font-bold transition-all shadow-xs cursor-pointer"
+                data-id="${req.id}" type="button">
+          <span>Review</span>
+          <span class="material-symbols-outlined text-[15px]">arrow_forward</span>
         </button>
       `;
     }
 
     return `
-      <tr class="bg-white hover:bg-emerald-50/40 transition-colors" data-pin="${pin}">
-        <td class="py-4 px-4 font-mono text-xs font-bold text-[#003519]">#DOC-${req.id}</td>
-        <td class="py-4 px-4 font-mono text-xs text-stone-700 font-medium">${pin}</td>
-        <td class="py-4 px-4">
-          <div class="flex items-center gap-2.5">
-            <div class="w-8 h-8 rounded-full bg-[#003519] text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-sm font-mono">
+      <tr class="h-14 hover:bg-surface-container-high/60 transition-colors group">
+        <td class="py-2.5 px-4 font-code-mono text-primary-fixed font-bold">${reqIdFormatted}</td>
+        <td class="py-2.5 px-4 font-code-mono text-on-surface-variant font-medium">${req.student_pin}</td>
+        <td class="py-2.5 px-4">
+          <div class="flex items-center gap-2">
+            <span class="w-7 h-7 rounded-full bg-surface-container-high text-on-surface flex items-center justify-center font-code-mono-sm text-[11px] font-bold shrink-0">
               ${initials}
-            </div>
-            <span class="font-bold text-stone-900 text-sm">${escapeHtml(name)}</span>
+            </span>
+            <span class="font-medium text-on-surface font-sans text-xs truncate max-w-[140px]">${escapeHtml(req.student_name)}</span>
           </div>
         </td>
-        <td class="py-4 px-4">
-          <span class="inline-block px-2.5 py-1 rounded-full bg-emerald-50 text-[#003519] border border-emerald-200/80 text-xs font-bold tracking-wide">
-            ${escapeHtml(type)} (${copies} Copy)
-          </span>
+        <td class="py-2.5 px-4 font-medium text-on-surface text-xs">${escapeHtml(req.request_type)}</td>
+        <td class="py-2.5 px-4 text-on-surface-variant max-w-[220px] truncate" title="${escapeHtml(req.purpose)}">
+          ${escapeHtml(req.purpose)}
         </td>
-        <td class="py-4 px-4 text-sm text-stone-600 max-w-xs truncate" title="${escapeHtml(purpose)}">
-          ${escapeHtml(purpose)}
-        </td>
-        <td class="py-4 px-4">
-          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full ${attBadge} font-mono text-xs font-bold border">
-            ${att.toFixed(1)}%
-          </span>
-        </td>
-        <td class="py-4 px-4 font-mono text-xs text-stone-500">${date}</td>
-        <td class="py-4 px-4 text-right">
-          ${actionContent}
-        </td>
+        <td class="py-2.5 px-4">${attMarkup}</td>
+        <td class="py-2.5 px-4 font-code-mono-sm text-on-surface-variant text-[11px]">${timeFormatted}</td>
+        <td class="py-2.5 px-4 text-right">${actionMarkup}</td>
       </tr>
     `;
   }).join('');
 
-  bindReviewButtons();
+  bindReviewButtons(tbody);
 }
 
-function bindFilterPills() {
-  document.querySelectorAll('button').forEach(btn => {
-    const txt = btn.textContent || '';
-    if (txt.includes('All Requests') || txt.includes('Bonafide Certificates') || txt.includes('Internship NOC')) {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('button').forEach(b => {
-          if (b.textContent.includes('Requests') || b.textContent.includes('Bonafide') || b.textContent.includes('NOC')) {
-            b.classList.remove('bg-[#003519]', 'text-white', 'shadow-sm');
-            b.classList.add('bg-stone-100', 'text-stone-700');
-          }
-        });
-        btn.classList.add('bg-[#003519]', 'text-white', 'shadow-sm');
-        btn.classList.remove('bg-stone-100', 'text-stone-700');
+function renderMobileCards(list) {
+  const container = document.getElementById('mobileApprovalsContainer');
+  if (!container) return;
 
-        activeFilter = txt.includes('Bonafide') ? 'Bonafide' : (txt.includes('NOC') ? 'NOC' : 'All');
-        filterRows();
-      });
-    }
-  });
-}
+  if (list.length === 0) {
+    container.innerHTML = `
+      <div class="p-8 text-center bg-surface-container rounded-2xl border border-hairline text-on-surface-variant">
+        <span class="material-symbols-outlined text-4xl mb-2 text-outline">inbox</span>
+        <div class="text-sm font-semibold">No requests in this view</div>
+      </div>
+    `;
+    return;
+  }
 
-function bindSearchInput() {
-  const search = document.querySelector('input[placeholder*="Search by PIN"]') || document.querySelector('input[type="text"]');
-  if (!search) return;
+  container.innerHTML = list.map(req => {
+    const initials = req.student_name ? req.student_name.split(' ').map(n => n[0]).slice(0, 2).join('') : 'ST';
+    const reqIdFormatted = `#REQ-24259-${req.id}`;
+    const timeFormatted = formatSubmittedTime(req.submitted_at);
+    const attMarkup = getAttendanceBadgeMarkup(req.attendance_snapshot);
 
-  search.addEventListener('input', () => {
-    filterRows();
-  });
-}
-
-function filterRows() {
-  const search = document.querySelector('input[placeholder*="Search by PIN"]') || document.querySelector('input[type="text"]');
-  const query = search ? search.value.toLowerCase().trim() : '';
-
-  document.querySelectorAll('#approvalsTbody tr').forEach(row => {
-    const text = row.textContent.toLowerCase();
-    const matchesSearch = !query || text.includes(query);
-    let matchesFilter = true;
-
-    if (activeFilter === 'Bonafide') {
-      matchesFilter = text.includes('bonafide');
-    } else if (activeFilter === 'NOC') {
-      matchesFilter = text.includes('noc') || text.includes('internship');
-    }
-
-    if (matchesSearch && matchesFilter) {
-      row.style.display = '';
+    let statusPill = '';
+    if (req.status === 'ACCEPTED' || req.status === 'APPROVED') {
+      const otp = req.pickup_otp || 'VERIFIED';
+      statusPill = `
+        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-primary-container/20 text-primary-fixed font-code-mono-sm text-[10px] font-bold border border-primary-container/30">
+          <span class="material-symbols-outlined text-[13px]">check_circle</span> OTP: ${otp}
+        </span>
+      `;
+    } else if (req.status === 'REJECTED') {
+      statusPill = `
+        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-rose-500/15 text-rose-400 font-code-mono-sm text-[10px] font-bold border border-rose-500/30">
+          <span class="material-symbols-outlined text-[13px]">cancel</span> Declined
+        </span>
+      `;
+    } else if (req.status === 'HOLD') {
+      statusPill = `
+        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-500/15 text-amber-400 font-code-mono-sm text-[10px] font-bold border border-amber-500/30">
+          <span class="material-symbols-outlined text-[13px]">pause_circle</span> Hold
+        </span>
+      `;
     } else {
-      row.style.display = 'none';
+      statusPill = `
+        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-surface-container-high text-primary-fixed font-code-mono-sm text-[10px] font-bold border border-hairline">
+          Pending Review
+        </span>
+      `;
     }
-  });
+
+    return `
+      <article class="bg-surface-container rounded-2xl p-4 border border-hairline shadow-xs flex flex-col gap-3">
+        <div class="flex items-center justify-between">
+          <span class="font-code-mono text-xs font-bold text-primary-fixed">${reqIdFormatted}</span>
+          <div class="flex items-center gap-1 text-on-surface-variant font-code-mono-sm text-[11px]">
+            <span class="material-symbols-outlined text-[13px]">schedule</span>
+            <span>${timeFormatted}</span>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full bg-surface-container-high text-primary-fixed font-code-mono text-xs font-bold flex items-center justify-center shrink-0 border border-hairline">
+            ${initials}
+          </div>
+          <div class="flex flex-col min-w-0">
+            <span class="font-bold text-on-surface text-sm truncate">${escapeHtml(req.student_name)}</span>
+            <span class="font-code-mono text-xs text-on-surface-variant">PIN: ${req.student_pin}</span>
+          </div>
+        </div>
+
+        <div class="bg-surface-container-low p-3 rounded-xl flex flex-col gap-1.5 border border-hairline">
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-on-surface text-xs">${escapeHtml(req.request_type)}</span>
+            ${statusPill}
+          </div>
+          <p class="text-xs text-on-surface-variant leading-relaxed">
+            ${escapeHtml(req.purpose)}
+          </p>
+        </div>
+
+        <div class="flex items-center justify-between pt-1">
+          <div class="flex items-center gap-1">
+            <span class="text-[11px] text-on-surface-variant font-sans">Biometrics:</span>
+            ${attMarkup}
+          </div>
+          ${req.status === 'PENDING' ? `
+            <button class="btn-review px-4 py-1.5 rounded-full bg-primary-fixed text-on-primary-fixed font-title-card text-xs font-bold transition-all shadow-xs cursor-pointer flex items-center gap-1"
+                    data-id="${req.id}" type="button">
+              <span>Review</span>
+              <span class="material-symbols-outlined text-[15px]">arrow_forward</span>
+            </button>
+          ` : ''}
+        </div>
+      </article>
+    `;
+  }).join('');
+
+  bindReviewButtons(container);
 }
 
-function bindReviewButtons() {
-  document.querySelectorAll('.review-sign-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      e.preventDefault();
-      activeRow = btn.closest('tr');
-
-      const id = btn.getAttribute('data-id');
-      const pin = btn.getAttribute('data-pin');
-      const name = btn.getAttribute('data-name');
-      const type = btn.getAttribute('data-type');
-      const purpose = btn.getAttribute('data-purpose');
-      const att = btn.getAttribute('data-att');
-      const copies = btn.getAttribute('data-copies');
-
-      activeRequest = { id, pin, name, type, purpose, att, copies };
-
-      const titleEl = document.getElementById('modalStudentTitle');
-      const pinEl = document.getElementById('modalStudentPin');
-      const docEl = document.getElementById('modalDocType');
-
-      if (titleEl) titleEl.textContent = `Review: ${name}`;
-      if (pinEl) pinEl.textContent = pin;
-      if (docEl) docEl.textContent = `${type} (${copies} Copy)`;
-
-      openReviewModal();
+function bindReviewButtons(parentEl) {
+  parentEl.querySelectorAll('.btn-review').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = parseInt(btn.getAttribute('data-id'), 10);
+      const req = currentRequests.find(r => r.id === id);
+      if (req) {
+        openReviewModal(req);
+      }
     });
   });
 }
 
-function openReviewModal() {
-  const modal = document.getElementById('reviewSignModal');
-  const card = document.getElementById('reviewModalCard');
-  if (!modal) return;
+function openReviewModal(req) {
+  activeSelectedRequest = req;
 
-  modal.classList.remove('hidden', 'opacity-0', 'pointer-events-none');
-  setTimeout(() => {
-    card?.classList.remove('scale-95');
-    card?.classList.add('scale-100');
-  }, 20);
+  const modal = document.getElementById('reviewModal');
+  const title = document.getElementById('modalStudentTitle');
+  const pinEl = document.getElementById('modalStudentPin');
+  const docTypeEl = document.getElementById('modalDocType');
+  const attEl = document.getElementById('modalAttendanceBadge');
+  const purpEl = document.getElementById('modalPurpose');
+  const notesEl = document.getElementById('modalHodNotes');
+
+  if (title) title.textContent = `Review: ${req.student_name}`;
+  if (pinEl) pinEl.textContent = req.student_pin;
+  if (docTypeEl) docTypeEl.textContent = req.request_type;
+  if (purpEl) purpEl.textContent = req.purpose;
+  if (notesEl) notesEl.value = req.hod_notes || '';
+
+  if (attEl) {
+    const att = Number(req.attendance_snapshot || 0);
+    if (att >= 75) {
+      attEl.className = 'px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 font-code-mono text-xs font-bold border border-emerald-500/30';
+      attEl.textContent = `${att.toFixed(1)}% (Regular Eligible)`;
+    } else if (att >= 65) {
+      attEl.className = 'px-2.5 py-0.5 rounded-full bg-amber-500/15 text-amber-400 font-code-mono text-xs font-bold border border-amber-500/30';
+      attEl.textContent = `${att.toFixed(1)}% (Condonation Bracket)`;
+    } else {
+      attEl.className = 'px-2.5 py-0.5 rounded-full bg-rose-500/15 text-rose-400 font-code-mono text-xs font-bold border border-rose-500/30';
+      attEl.textContent = `${att.toFixed(1)}% (Critical Deficit)`;
+    }
+  }
+
+  modal?.classList.remove('hidden');
+  modal?.classList.add('flex');
 }
 
 function closeReviewModal() {
-  const modal = document.getElementById('reviewSignModal');
-  const card = document.getElementById('reviewModalCard');
-  if (!modal) return;
-
-  card?.classList.remove('scale-100');
-  card?.classList.add('scale-95');
-  modal.classList.add('opacity-0', 'pointer-events-none');
-  setTimeout(() => {
-    modal.classList.add('hidden');
-  }, 200);
+  const modal = document.getElementById('reviewModal');
+  modal?.classList.add('hidden');
+  modal?.classList.remove('flex');
+  activeSelectedRequest = null;
 }
 
 function bindModalActions() {
-  document.getElementById('closeReviewModal')?.addEventListener('click', closeReviewModal);
+  const modal = document.getElementById('reviewModal');
+  const closeBtn = document.getElementById('closeReviewModal');
+  const approveBtn = document.getElementById('btnActionApprove');
+  const holdBtn = document.getElementById('btnActionHold');
+  const rejectBtn = document.getElementById('btnActionReject');
 
-  // Approve
-  document.getElementById('approveBtn')?.addEventListener('click', async () => {
-    if (navigator.vibrate) navigator.vibrate(20);
-    const pin = activeRequest ? activeRequest.pin : (document.getElementById('modalStudentPin')?.textContent || '24259-AIML-119');
-    const reqId = activeRequest ? activeRequest.id : 1;
+  closeBtn?.addEventListener('click', closeReviewModal);
 
-    // Generate deterministic/random 6-digit OTP
-    const otp = String(Math.floor(100000 + Math.random() * 900000));
-
-    try {
-      await fetch(`/api/v1/hod/requests/${reqId}/status`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: 'ACCEPTED', hod_notes: `Approved by HOD. Counter pickup token: ${otp}` })
-      });
-    } catch (_) {}
-
-    if (activeRow) {
-      const actionCell = activeRow.querySelector('td:last-child');
-      if (actionCell) {
-        actionCell.innerHTML = `<span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 font-mono text-xs font-bold"><span class="material-symbols-outlined text-[14px]">check_circle</span>Approved (OTP: ${otp})</span>`;
-      }
+  // Close when clicking modal backdrop
+  modal?.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      closeReviewModal();
     }
-
-    // Save to StitchState & localStorage
-    if (typeof StitchState !== 'undefined') {
-      const requests = StitchState.getRequests();
-      if (requests.length > 0) {
-        requests[0].status = 'READY FOR PICKUP';
-        requests[0].otp = otp;
-        localStorage.setItem('stitch_requests', JSON.stringify(requests));
-      }
-    }
-    localStorage.setItem(`otp_${pin}`, otp);
-
-    closeReviewModal();
-    showToast(`Approved! 6-Digit Counter Token ${otp} issued for student PIN ${pin}. Ready for counter pickup.`);
   });
 
-  // Reject
-  document.getElementById('rejectBtn')?.addEventListener('click', async () => {
-    if (navigator.vibrate) navigator.vibrate(20);
-    const pin = activeRequest ? activeRequest.pin : (document.getElementById('modalStudentPin')?.textContent || '24259-AIML-119');
-    const reqId = activeRequest ? activeRequest.id : 1;
+  // Action 1: Approve & Generate Pickup OTP
+  approveBtn?.addEventListener('click', async () => {
+    if (!activeSelectedRequest) return;
+    const notes = document.getElementById('modalHodNotes')?.value || 'Approved for collection at department counter.';
+    await submitRequestStatusUpdate(activeSelectedRequest.id, 'ACCEPTED', notes);
+  });
 
-    try {
-      await fetch(`/api/v1/hod/requests/${reqId}/status`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: 'REJECTED', hod_notes: 'Rejected due to statutory attendance deficit.' })
-      });
-    } catch (_) {}
-
-    if (activeRow) {
-      const actionCell = activeRow.querySelector('td:last-child');
-      if (actionCell) {
-        actionCell.innerHTML = `<span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-rose-100 text-rose-800 font-mono text-xs font-bold"><span class="material-symbols-outlined text-[14px]">cancel</span>Rejected</span>`;
-      }
+  // Action 2: Hold for Interview
+  holdBtn?.addEventListener('click', async () => {
+    if (!activeSelectedRequest) return;
+    const notes = document.getElementById('modalHodNotes')?.value;
+    if (!notes || notes.trim().length === 0) {
+      showToast('Please enter an interview date or note in the remarks field');
+      document.getElementById('modalHodNotes')?.focus();
+      return;
     }
+    await submitRequestStatusUpdate(activeSelectedRequest.id, 'HOLD', notes);
+  });
 
-    closeReviewModal();
-    showToast(`Application for ${pin} marked as REJECTED due to attendance deficit.`);
+  // Action 3: Reject with Reason
+  rejectBtn?.addEventListener('click', async () => {
+    if (!activeSelectedRequest) return;
+    const notes = document.getElementById('modalHodNotes')?.value;
+    if (!notes || notes.trim().length === 0) {
+      showToast('Please provide a rejection reason in the remarks field');
+      document.getElementById('modalHodNotes')?.focus();
+      return;
+    }
+    await submitRequestStatusUpdate(activeSelectedRequest.id, 'REJECTED', notes);
   });
 }
 
-function bindPolicyAndFilterButtons() {
-  document.querySelectorAll('button').forEach(btn => {
-    const txt = btn.textContent || '';
-    if (txt.includes('Read Policy')) {
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        showToast('SBTET Scheme C-24 Policy: Minimum 75% attendance mandatory. 65-74.9% condonable with Medical Board approval. <65% detained.');
-      });
-    } else if (txt.includes('Filter') || txt.includes('tune')) {
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        showToast(`Active filters: C-24 Scheme, ${activeDepartment} Department, Current Semester.`);
-      });
+async function submitRequestStatusUpdate(requestId, status, notes) {
+  try {
+    const res = await fetch(`/api/v1/hod/requests/${requestId}/status`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status, hod_notes: notes })
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      closeReviewModal();
+
+      // Update local record
+      const req = currentRequests.find(r => r.id === requestId);
+      if (req) {
+        req.status = status;
+        req.hod_notes = notes;
+        const otp = (data && data.pickup_otp) || (data && data.request && data.request.pickup_otp);
+        if (otp) {
+          req.pickup_otp = otp;
+        }
+      }
+
+      updateTelemetryKPIs();
+      applyFiltersAndRender();
+
+      if (status === 'ACCEPTED') {
+        showToast(`Approved Request #${requestId} · Pickup OTP Dispatched`);
+      } else if (status === 'HOLD') {
+        showToast(`Request #${requestId} placed on Hold for Interview`);
+      } else {
+        showToast(`Request #${requestId} Declined`);
+      }
+    } else {
+      showToast('Failed to update request status on server');
     }
+  } catch (err) {
+    console.error('Error updating request status:', err);
+    showToast('Network error while updating request');
+  }
+}
+
+function bindToolbarActions() {
+  // Refresh button
+  document.getElementById('btnRefresh')?.addEventListener('click', () => {
+    loadLiveRequests(activeDepartment);
+    showToast('Refreshed approval queue');
+  });
+
+  // Download summary CSV
+  document.getElementById('btnDownloadSummary')?.addEventListener('click', () => {
+    if (!currentRequests || currentRequests.length === 0) {
+      showToast('No requests data to export');
+      return;
+    }
+
+    const headers = ['Request ID', 'PIN', 'Student Name', 'Document Type', 'Stated Purpose', 'Live Attendance %', 'Status', 'Pickup OTP', 'HOD Notes', 'Submitted Time'];
+    const rows = currentRequests.map(r => [
+      `"#REQ-24259-${r.id}"`,
+      `"${r.student_pin}"`,
+      `"${r.student_name.replace(/"/g, '""')}"`,
+      `"${r.request_type}"`,
+      `"${r.purpose.replace(/"/g, '""')}"`,
+      `"${r.attendance_snapshot !== null ? Number(r.attendance_snapshot).toFixed(1) + '%' : 'Unsynced'}"`,
+      `"${r.status}"`,
+      `"${r.pickup_otp || ''}"`,
+      `"${(r.hod_notes || '').replace(/"/g, '""')}"`,
+      `"${r.submitted_at}"`
+    ]);
+
+    const csvContent = 'data:text/csv;charset=utf-8,' +
+      [headers.join(','), ...rows.map(row => row.join(','))].join('\n');
+
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement('a');
+    link.setAttribute('href', encodedUri);
+    link.setAttribute('download', `Samskruti_Document_Approvals_${activeDepartment}_${new Date().toISOString().slice(0, 10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    showToast(`Exported ${currentRequests.length} requests summary to CSV`);
   });
 }
 
-function checkUrlParams() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const pin = urlParams.get('pin');
-  if (!pin) return;
+function initWebSocket() {
+  try {
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const wsUrl = `${protocol}//${window.location.host}/ws?pin=HOD&name=HOD`;
+    ws = new WebSocket(wsUrl);
+
+    ws.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        if (data.type === 'NEW_DIGITAL_REQUEST' || data.type === 'REQUEST_STATUS_UPDATED') {
+          loadLiveRequests(activeDepartment);
+        }
+      } catch (_) {}
+    };
+
+    ws.onerror = () => {};
+    ws.onclose = () => {
+      setTimeout(initWebSocket, 5000);
+    };
+  } catch (_) {}
+}
+
+function showToast(message) {
+  const toast = document.getElementById('toast');
+  const toastMsg = document.getElementById('toastMessage');
+  if (!toast || !toastMsg) return;
+
+  toastMsg.textContent = message;
+  toast.classList.remove('translate-y-20', 'opacity-0');
+  toast.classList.add('translate-y-0', 'opacity-100');
 
   setTimeout(() => {
-    const row = document.querySelector(`tr[data-pin="${pin}"]`) ||
-                Array.from(document.querySelectorAll('#approvalsTbody tr')).find(r => r.textContent.includes(pin));
-    if (row) {
-      row.classList.add('bg-emerald-100/60');
-      row.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      const revBtn = row.querySelector('.review-sign-btn');
-      if (revBtn) revBtn.click();
-    }
-  }, 300);
+    toast.classList.add('translate-y-20', 'opacity-0');
+    toast.classList.remove('translate-y-0', 'opacity-100');
+  }, 2600);
 }
 
 function escapeHtml(str) {
   if (!str) return '';
-  const p = document.createElement('p');
-  p.textContent = str;
-  return p.innerHTML;
-}
-
-function initHelpDeskLinks() {
-  document.querySelectorAll('a, button').forEach(el => {
-    const txt = (el.textContent || '').toLowerCase();
-    const href = el.getAttribute('href') || '';
-    if (txt.includes('help desk') || txt.includes('helpdesk') || txt.includes('need help') || href.includes('help')) {
-      el.addEventListener('click', (e) => {
-        e.preventDefault();
-        window.location.href = '/screens/02-student-portal/helpdesk.html';
-      });
-    }
-  });
-}
-
-function showToast(message) {
-  const toast = document.getElementById('toastNotification');
-  const msgEl = document.getElementById('toastMsg');
-  if (!toast) return;
-
-  msgEl.textContent = message;
-  toast.classList.remove('hidden');
-
-  clearTimeout(window._approvalsToastTimeout);
-  window._approvalsToastTimeout = setTimeout(() => {
-    toast.classList.add('hidden');
-  }, 3500);
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }

@@ -44,10 +44,26 @@ from database import (
     DigitalRequestDB,
     IdeaHubProjectDB,
     ProjectInviteDB,
-    SyncProgressDB
+    SyncProgressDB,
+    StudentSyncLogDB
 )
 from websocket_manager import ws_manager
 from sbtet_scraper import sbtet_scraper
+
+def mask_pin(pin: str) -> str:
+    """Masks PIN for privacy, e.g. 24259-CS-025 -> 24259-CS-0xx (#025)"""
+    if not pin:
+        return "UNKNOWN"
+    parts = pin.strip().split("-")
+    if len(parts) >= 3:
+        return f"{parts[0]}-{parts[1]}-0xx (#{parts[2]})"
+    return pin[:6] + "..."
+
+# Branch background sync concurrency locks to prevent double-dispatch
+branch_sync_locks = {
+    "CS": asyncio.Lock(),
+    "AIML": asyncio.Lock()
+}
 
 # --- FASTAPI APP INITIALIZATION ---
 app = FastAPI(
@@ -829,36 +845,94 @@ async def sync_student_attendance(req: PinRequest, db: Session = Depends(get_db)
 @app.get("/api/student/attendance")
 @app.get("/api/attendance")
 async def get_student_attendance(pin: str = Query("24259-CS-025"), db: Session = Depends(get_db)):
-    """Retrieves live attendance records with fallback to local SQLite cache."""
+    """
+    Unified Student Attendance: reads from StudentDB (single source of truth).
+    If unsynced or force refresh requested, triggers atomic scraper sync.
+    Strictly eliminates fake fallback numbers.
+    """
     clean_pin = pin.strip().upper()
-    att = await sbtet_scraper.scrape_attendance(clean_pin)
+    alt_pin = clean_pin.replace("-AIML-", "-AI-") if "-AIML-" in clean_pin else clean_pin.replace("-AI-", "-AIML-")
+    student = db.query(StudentDB).filter(or_(
+        StudentDB.pin == clean_pin,
+        StudentDB.pin == alt_pin,
+        StudentDB.roll_no == clean_pin,
+        StudentDB.roll_no == alt_pin
+    )).first()
 
-    if att.get("success"):
+    # If student exists and has valid attendance data in DB, return DB record
+    if student and student.sync_status in ["ok", "partial"] and student.working_days is not None and student.attendance_val is not None:
+        pct_val = float(student.attendance_val)
+        status_text = "Eligible" if pct_val >= 75.0 else ("Condonation (65-75%)" if pct_val >= 65.0 else "Shortage / Detention Risk")
+        return {
+            "success": True,
+            "has_data": True,
+            "pin": clean_pin,
+            "name": student.name,
+            "workingDays": student.working_days,
+            "presentDays": student.present_days,
+            "absentDays": max(0, student.working_days - student.present_days),
+            "remainingDays": max(0, (student.total_semester_days or 180) - student.working_days),
+            "totalSemesterDays": student.total_semester_days or 180,
+            "attendancePercentage": pct_val,
+            "examsAttendancePct": student.exams_attendance_pct,
+            "metrics": {
+                "working_days": student.working_days,
+                "total_semester_days": student.total_semester_days or 180,
+                "days_present": student.present_days,
+                "days_absent": max(0, student.working_days - student.present_days),
+                "percentage": f"{pct_val:.2f}%",
+                "percentage_value": pct_val,
+                "exams_percentage": f"{student.exams_attendance_pct:.2f}%" if student.exams_attendance_pct is not None else None,
+                "status": status_text,
+                "is_eligible": pct_val >= 75.0,
+                "days_needed_for_75": max(0, int(round((student.working_days * 0.75) - student.present_days)))
+            },
+            "monthlyLogs": {},
+            "chart_data": {
+                "labels": ["June", "July", "August", "September", "October"],
+                "data": [pct_val]
+            },
+            "source": "CAMPUS_CONNECT_UNIFIED_DB"
+        }
+
+    # Fetch live from scraper and update DB atomically
+    att = await sbtet_scraper.scrape_attendance(clean_pin)
+    if att.get("success") and att.get("has_data"):
+        now_ts = datetime.utcnow().isoformat()
+        if student:
+            if att.get("name"):
+                student.name = att["name"]
+            student.working_days = att.get("workingDays")
+            student.present_days = att.get("presentDays")
+            student.attendance_val = att.get("attendancePercentage")
+            student.attendance_pct = att.get("metrics", {}).get("percentage", f"{att.get('attendancePercentage', 0):.2f}%")
+            student.exams_attendance_pct = att.get("examsAttendancePct")
+            student.total_semester_days = att.get("totalSemesterDays", 180)
+            student.last_success_at = now_ts
+            student.last_synced = now_ts
+            if student.sync_status != "ok":
+                student.sync_status = "partial" if student.sync_status == "never" else student.sync_status
+            db.commit()
         return {"success": True, "data": att, **att}
 
-    # Fallback to local DB record
-    student = db.query(StudentDB).filter(StudentDB.pin == clean_pin).first()
-    pct_val = student.attendance_val if student else 38.64
-    fallback_data = {
-        "success": True,
-        "pin": clean_pin,
-        "name": student.name if student else "Student",
-        "workingDays": student.working_days if student else 88,
-        "presentDays": student.present_days if student else 34,
-        "absentDays": (student.working_days - student.present_days) if student else 54,
-        "attendancePercentage": pct_val,
-        "metrics": {
-            "percentage": f"{pct_val:.2f}%",
-            "status": "Eligible" if pct_val >= 75.0 else "Detention Risk",
-            "is_eligible": pct_val >= 75.0
-        },
-        "monthlyLogs": {},
-        "chart_data": {
-            "labels": ["June", "July", "August", "September", "October"],
-            "data": [45.0, 40.0, 38.0, 39.0, pct_val]
+    # If student has no biometric records on SBTET portal
+    if student:
+        return {
+            "success": False,
+            "has_data": False,
+            "pin": clean_pin,
+            "name": student.name,
+            "error_code": student.error_code or "NO_ATTENDANCE_RECORD",
+            "error": student.error_message or "No biometric attendance records found at SBTET gateway",
+            "sync_status": student.sync_status
         }
+    return {
+        "success": False,
+        "has_data": False,
+        "pin": clean_pin,
+        "error_code": "STUDENT_NOT_FOUND",
+        "error": f"Student with PIN '{clean_pin}' not found"
     }
-    return {"success": True, "data": fallback_data, **fallback_data}
 
 @app.post("/api/v1/results/sync")
 @app.post("/api/results/sync")
@@ -867,13 +941,18 @@ async def sync_student_results(req: PinRequest, db: Session = Depends(get_db)):
     clean_pin = req.pin.strip().upper()
     res = await sbtet_scraper.scrape_results(clean_pin, scheme=req.scheme or "C24")
 
-    if res.get("success"):
+    if res.get("success") and res.get("has_data"):
         student = db.query(StudentDB).filter(StudentDB.pin == clean_pin).first()
         if student:
-            student.cgpa = str(res.get("cgpa", "0.00"))
+            now_ts = datetime.utcnow().isoformat()
+            if res.get("studentName"):
+                student.name = res["studentName"]
+            student.cgpa = res.get("cgpa")
             student.credits_earned = float(res.get("credits_gained", 0.0))
             student.backlogs_count = res.get("backlogs_count", 0)
-            student.last_synced = datetime.utcnow().isoformat()
+            student.backlogs = res.get("backlogs_count", 0)
+            student.last_synced = now_ts
+            student.last_success_at = now_ts
             db.commit()
 
     return {
@@ -888,15 +967,82 @@ async def sync_student_results(req: PinRequest, db: Session = Depends(get_db)):
 @app.get("/api/v1/student/results")
 @app.get("/api/student/results")
 @app.get("/api/results")
-async def get_student_results(pin: str = Query("24259-CS-025"), scheme: str = Query("C24")):
+async def get_student_results(pin: str = Query("24259-CS-025"), scheme: str = Query("C24"), db: Session = Depends(get_db)):
     """Retrieves consolidated semester results and detailed breakdown."""
     clean_pin = pin.strip().upper()
+    alt_pin = clean_pin.replace("-AIML-", "-AI-") if "-AIML-" in clean_pin else clean_pin.replace("-AI-", "-AIML-")
+    student = db.query(StudentDB).filter(or_(
+        StudentDB.pin == clean_pin,
+        StudentDB.pin == alt_pin,
+        StudentDB.roll_no == clean_pin,
+        StudentDB.roll_no == alt_pin
+    )).first()
+
     res = await sbtet_scraper.scrape_results(clean_pin, scheme=scheme)
+    if res.get("success") and res.get("has_data"):
+        if student:
+            now_ts = datetime.utcnow().isoformat()
+            if res.get("studentName"):
+                student.name = res["studentName"]
+            student.cgpa = res.get("cgpa")
+            student.credits_earned = float(res.get("credits_gained", 0.0))
+            student.backlogs_count = res.get("backlogs_count", 0)
+            student.backlogs = res.get("backlogs_count", 0)
+            student.last_synced = now_ts
+            student.last_success_at = now_ts
+
+            # Update backlogs in DB
+            db.query(BacklogRecordDB).filter(or_(BacklogRecordDB.pin == clean_pin, BacklogRecordDB.pin == alt_pin)).delete()
+            for subj in res.get("backlog_subjects", []):
+                db.add(BacklogRecordDB(
+                    student_id=student.id,
+                    pin=clean_pin,
+                    semester=str(subj.get("semester", "") or "5th Sem"),
+                    subject_code=str(subj.get("code", "")),
+                    subject_title=str(subj.get("name", "")),
+                    internal_marks=str(subj.get("internal", "")),
+                    external_marks=str(subj.get("external", "")),
+                    total_marks=str(subj.get("total", "")),
+                    grade=str(subj.get("grade", "F"))
+                ))
+            db.commit()
+        return {"success": True, "data": res, "results": res, **res}
+
+    # Fallback to local DB record
+    if student and student.cgpa is not None:
+        db_backlogs = db.query(BacklogRecordDB).filter(or_(BacklogRecordDB.pin == clean_pin, BacklogRecordDB.pin == alt_pin)).all()
+        backlogs_list = [{
+            "code": b.subject_code,
+            "name": b.subject_title,
+            "internal": b.internal_marks,
+            "external": b.external_marks,
+            "total": b.total_marks,
+            "grade": b.grade,
+            "semester": b.semester
+        } for b in db_backlogs]
+        return {
+            "success": True,
+            "studentName": student.name,
+            "pin": clean_pin,
+            "cgpa": student.cgpa,
+            "backlogs": student.backlogs_count or 0,
+            "backlogs_count": student.backlogs_count or 0,
+            "backlog_subjects": backlogs_list,
+            "credits_gained": student.credits_earned or 0.0,
+            "summary": {
+                "cgpa": student.cgpa,
+                "activeBacklogs": student.backlogs_count or 0,
+                "creditsGained": student.credits_earned or 0.0
+            },
+            "source": "CAMPUS_CONNECT_UNIFIED_DB"
+        }
+
     return {
-        "success": res.get("success", False),
-        "data": res,
-        "results": res,
-        **res
+        "success": False,
+        "has_data": False,
+        "pin": clean_pin,
+        "error_code": "NO_RESULTS_RECORD",
+        "error": "No marksheet data available"
     }
 
 @app.get("/api/v1/student/profile")
@@ -1508,10 +1654,11 @@ async def run_department_sync_background(
     Background Task: Automatically scrapes & syncs attendance, backlogs,
     and pass data for students in the specified department (CS: 180, AIML: 120),
     broadcasting progress via WebSockets and updating SQLite records atomically.
+    Strictly eliminates error swallowing, concurrency collisions, and fake defaults.
     """
     b = "AIML" if branch.upper() in ["AIML", "AI"] else "CS"
     if b == "AIML":
-        total = 127
+        total = 120
         prefix = "24259-AI-"
         dept_name = "Artificial Intelligence & Machine Learning"
     else:
@@ -1519,193 +1666,239 @@ async def run_department_sync_background(
         prefix = "24259-CS-"
         dept_name = "Computer Science & Engineering"
 
-    db = SessionLocal()
-    try:
-        prog = db.query(SyncProgressDB).filter(SyncProgressDB.branch == b).first()
-        if not prog:
-            prog = SyncProgressDB(branch=b, status="RUNNING", total_students=total, synced_count=0)
-            db.add(prog)
-        else:
-            prog.status = "RUNNING"
-            prog.total_students = total
-            prog.synced_count = 0
-            prog.started_at = datetime.utcnow().isoformat()
-        db.commit()
+    lock = branch_sync_locks[b]
+    if lock.locked():
+        logger.warning(f"[HOD Sync] Sync for branch {b} is already in progress. Skipping duplicate dispatch.")
+        return
 
-        # Generate list of PINs (e.g. 24259-CS-001..180 or 24259-AI-001..127)
-        pins = [f"{prefix}{str(i).zfill(3)}" for i in range(1, total + 1)]
-
-        total_attendance_sum = 0.0
-        eligible_count = 0
-        synced_count = 0
-
-        # Sync in batches of 6 concurrent workers with 50ms stagger
-        batch_size = 6
-        for i in range(0, total, batch_size):
-            batch = pins[i:i + batch_size]
-            tasks = []
-            for pin in batch:
-                tasks.append(sbtet_scraper.scrape_student_complete(pin, scheme="C24"))
-                await asyncio.sleep(0.050)  # 50ms stagger to prevent AWS Gateway rate drops
-
-            results = await asyncio.gather(*tasks, return_exceptions=True)
-
-            for idx, res in enumerate(results):
-                current_pin = batch[idx]
-                synced_count += 1
-
-                alt_pin = current_pin.replace("-AI-", "-AIML-") if "-AI-" in current_pin else current_pin.replace("-AIML-", "-AI-")
-                student = db.query(StudentDB).filter(or_(
-                    StudentDB.pin == current_pin,
-                    StudentDB.pin == alt_pin,
-                    StudentDB.roll_no == current_pin,
-                    StudentDB.roll_no == alt_pin
-                )).first()
-
-                if isinstance(res, dict) and res.get("success"):
-                    now_ts = datetime.utcnow().isoformat()
-                    real_name = res.get("name")
-                    att_ok = res.get("attendance_success") is True and res.get("workingDays", 0) > 0
-                    res_ok = res.get("results_success") is True
-
-                    if student:
-                        if real_name and not real_name.startswith("CS Student") and not real_name.startswith("AIML Student") and not real_name.startswith("Student"):
-                            student.name = real_name
-
-                        # ATOMIC ATTENDANCE UPDATE: Only touch attendance if attendance fetch succeeded
-                        if att_ok:
-                            pct_val = float(res.get("attendancePercentage", 0.0) or 0.0)
-                            student.attendance_pct = f"{pct_val:.2f}%"
-                            student.attendance_val = pct_val
-                            student.working_days = int(res.get("workingDays") or 88)
-                            student.present_days = int(res.get("presentDays") or 0)
-
-                        # ATOMIC RESULTS UPDATE: Only touch CGPA and backlogs if results fetch succeeded
-                        if res_ok:
-                            student.cgpa = float(res.get("cgpa", 0.0) or 0.0)
-                            b_count = int(res.get("backlogs", 0) or 0)
-                            student.backlogs = b_count
-                            student.backlogs_count = b_count
-                            student.credits_earned = float(res.get("credits_earned", 0.0) or 0.0)
-
-                            # Persist individual backlog subject records
-                            backlog_subjects = res.get("backlog_subjects", [])
-                            db.query(BacklogRecordDB).filter(or_(BacklogRecordDB.pin == current_pin, BacklogRecordDB.pin == alt_pin)).delete()
-                            for subj in backlog_subjects:
-                                record = BacklogRecordDB(
-                                    student_id=student.id,
-                                    pin=current_pin,
-                                    semester=str(subj.get("semester", "") or "5th Sem"),
-                                    subject_code=str(subj.get("code", "")),
-                                    subject_title=str(subj.get("name", "")),
-                                    internal_marks=str(subj.get("internal", "")),
-                                    external_marks=str(subj.get("external", "")),
-                                    total_marks=str(subj.get("total", "")),
-                                    grade=str(subj.get("grade", "F"))
-                                )
-                                db.add(record)
-
-                        student.semester = "5th Sem"
-                        student.scheme = "C-24"
-                        student.last_synced = now_ts
-                    else:
-                        pct_val = float(res.get("attendancePercentage", 0.0) or 0.0) if att_ok else 0.0
-                        cgpa_val = float(res.get("cgpa", 0.0) or 0.0) if res_ok else 0.0
-                        b_count = int(res.get("backlogs", 0) or 0) if res_ok else 0
-                        student = StudentDB(
-                            pin=current_pin,
-                            roll_no=current_pin,
-                            name=real_name or f"{b} Student {current_pin.split('-')[-1]}",
-                            password="Password123",
-                            department=dept_name,
-                            branch=b,
-                            scheme="C-24",
-                            year="3rd Year",
-                            semester="5th Sem",
-                            role="STUDENT",
-                            attendance_pct=f"{pct_val:.2f}%" if att_ok else "0.0%",
-                            attendance_val=pct_val if att_ok else 0.0,
-                            working_days=int(res.get("workingDays", 88)) if att_ok else 88,
-                            present_days=int(res.get("presentDays", 0)) if att_ok else 0,
-                            cgpa=cgpa_val if res_ok else 0.0,
-                            backlogs=b_count if res_ok else 0,
-                            backlogs_count=b_count if res_ok else 0,
-                            credits_earned=float(res.get("credits_earned", 0.0)) if res_ok else 0.0,
-                            last_synced=now_ts
-                        )
-                        db.add(student)
-                        db.commit()
-                        if res_ok:
-                            backlog_subjects = res.get("backlog_subjects", [])
-                            for subj in backlog_subjects:
-                                record = BacklogRecordDB(
-                                    student_id=student.id,
-                                    pin=current_pin,
-                                    semester=str(subj.get("semester", "") or "5th Sem"),
-                                    subject_code=str(subj.get("code", "")),
-                                    subject_title=str(subj.get("name", "")),
-                                    internal_marks=str(subj.get("internal", "")),
-                                    external_marks=str(subj.get("external", "")),
-                                    total_marks=str(subj.get("total", "")),
-                                    grade=str(subj.get("grade", "F"))
-                                )
-                                db.add(record)
-                    db.commit()
-
-                # Calculate department stats from current persistent values
-                curr_att = float(student.attendance_val or 0.0) if student else 0.0
-                total_attendance_sum += curr_att
-                if curr_att >= 75.0:
-                    eligible_count += 1
-
-                # Update progress tracker
-                prog.synced_count = synced_count
-                prog.current_pin = current_pin
-                db.commit()
-
-                # Broadcast live progress over WebSockets
-                percent = int((synced_count / total) * 100)
-                await ws_manager.broadcast({
-                    "type": "HOD_SYNC_PROGRESS",
-                    "branch": b,
-                    "synced": synced_count,
-                    "total": total,
-                    "percent": percent,
-                    "current_pin": current_pin,
-                    "cgpa": float(res.get("cgpa", 0.0)) if (isinstance(res, dict) and res.get("success")) else 0.0,
-                    "backlogs": int(res.get("backlogs", 0)) if (isinstance(res, dict) and res.get("success")) else 0
-                })
-
-            await asyncio.sleep(0.05)
-
-        avg_att = round(total_attendance_sum / max(1, synced_count), 2)
-        clearance_rate = round((eligible_count / max(1, synced_count)) * 100, 2)
-
-        prog.status = "COMPLETED"
-        prog.department_avg_attendance = avg_att
-        prog.department_clearance_rate = clearance_rate
-        prog.completed_at = datetime.utcnow().isoformat()
-        db.commit()
-
-        await ws_manager.broadcast({
-            "type": "HOD_SYNC_COMPLETE",
-            "branch": b,
-            "total": total,
-            "department_avg_attendance": avg_att,
-            "department_clearance_rate": clearance_rate
-        })
-
-    except Exception as e:
-        logger.error(f"[{b} Background Sync Error]: {e}")
+    async with lock:
+        db = SessionLocal()
         try:
             prog = db.query(SyncProgressDB).filter(SyncProgressDB.branch == b).first()
-            if prog:
-                prog.status = "FAILED"
-                db.commit()
-        except:
-            pass
-    finally:
-        db.close()
+            if not prog:
+                prog = SyncProgressDB(
+                    branch=b,
+                    status="RUNNING",
+                    total_students=total,
+                    synced_count=0,
+                    ok_count=0,
+                    partial_count=0,
+                    failed_count=0,
+                    failed_pins_json="[]",
+                    started_at=datetime.utcnow().isoformat()
+                )
+                db.add(prog)
+            else:
+                prog.status = "RUNNING"
+                prog.total_students = total
+                prog.synced_count = 0
+                prog.ok_count = 0
+                prog.partial_count = 0
+                prog.failed_count = 0
+                prog.failed_pins_json = "[]"
+                prog.started_at = datetime.utcnow().isoformat()
+                prog.completed_at = None
+            db.commit()
+
+            pins = [f"{prefix}{str(i).zfill(3)}" for i in range(1, total + 1)]
+            ok_count = 0
+            partial_count = 0
+            failed_count = 0
+            failed_pins = []
+            attendance_values = []
+            eligible_count = 0
+
+            # Worker pool with concurrency limit of 4 to respect SBTET gateway
+            sem = asyncio.Semaphore(4)
+
+            async def sync_worker(current_pin: str):
+                nonlocal ok_count, partial_count, failed_count, eligible_count
+                async with sem:
+                    await asyncio.sleep(0.060)  # 60ms polite rate limit delay
+                    res = await sbtet_scraper.scrape_student_complete(current_pin, scheme="C24")
+
+                    # Dedicated DB session per worker for thread/concurrency safety
+                    w_db = SessionLocal()
+                    try:
+                        alt_pin = current_pin.replace("-AI-", "-AIML-") if "-AI-" in current_pin else current_pin.replace("-AIML-", "-AI-")
+                        student = w_db.query(StudentDB).filter(or_(
+                            StudentDB.pin == current_pin,
+                            StudentDB.pin == alt_pin,
+                            StudentDB.roll_no == current_pin,
+                            StudentDB.roll_no == alt_pin
+                        )).first()
+
+                        now_ts = datetime.utcnow().isoformat()
+                        sync_st = res.get("sync_status", "failed")
+
+                        if not student:
+                            student = StudentDB(
+                                pin=current_pin,
+                                roll_no=current_pin,
+                                name=res.get("name") or f"{b} Student {current_pin.split('-')[-1]}",
+                                password="Password123",
+                                department=dept_name,
+                                branch=b,
+                                scheme="C-24",
+                                year="3rd Year",
+                                semester="5th Sem",
+                                role="STUDENT"
+                            )
+                            w_db.add(student)
+                            w_db.flush()
+
+                        student.sync_status = sync_st
+                        student.last_attempt_at = now_ts
+                        student.error_code = res.get("error_code")
+                        student.error_message = res.get("error_message")
+                        student.fields_updated = res.get("fields_updated")
+
+                        if res.get("name"):
+                            student.name = res["name"]
+
+                        if res.get("attendance_success"):
+                            student.working_days = res.get("workingDays")
+                            student.present_days = res.get("presentDays")
+                            student.attendance_val = res.get("attendancePercentage")
+                            student.attendance_pct = res.get("attendance_pct")
+                            student.exams_attendance_pct = res.get("exams_attendance_pct")
+                            student.total_semester_days = res.get("totalSemesterDays", 180)
+                            if res.get("attendancePercentage") is not None:
+                                attendance_values.append(res["attendancePercentage"])
+                                if res["attendancePercentage"] >= 75.0:
+                                    eligible_count += 1
+
+                        if res.get("results_success"):
+                            student.cgpa = res.get("cgpa")
+                            student.backlogs = res.get("backlogs")
+                            student.backlogs_count = res.get("backlogs_count")
+                            student.credits_earned = res.get("credits_earned")
+
+                            w_db.query(BacklogRecordDB).filter(or_(BacklogRecordDB.pin == current_pin, BacklogRecordDB.pin == alt_pin)).delete()
+                            for subj in res.get("backlog_subjects", []):
+                                w_db.add(BacklogRecordDB(
+                                    student_id=student.id,
+                                    pin=current_pin,
+                                    semester=str(subj.get("semester", "") or "5th Sem"),
+                                    subject_code=str(subj.get("code", "")),
+                                    subject_title=str(subj.get("name", "")),
+                                    internal_marks=str(subj.get("internal", "")),
+                                    external_marks=str(subj.get("external", "")),
+                                    total_marks=str(subj.get("total", "")),
+                                    grade=str(subj.get("grade", "F"))
+                                ))
+
+                        if sync_st in ["ok", "partial"]:
+                            student.last_success_at = now_ts
+                            student.last_synced = now_ts
+
+                        if sync_st == "ok":
+                            ok_count += 1
+                        elif sync_st == "partial":
+                            partial_count += 1
+                        else:
+                            failed_count += 1
+                            failed_pins.append({
+                                "pin": current_pin,
+                                "masked_pin": mask_pin(current_pin),
+                                "error": res.get("error_message") or "Sync failed"
+                            })
+
+                        # Audit logging
+                        w_db.add(StudentSyncLogDB(
+                            pin=current_pin,
+                            masked_pin=mask_pin(current_pin),
+                            branch=b,
+                            status=sync_st,
+                            error_code=res.get("error_code"),
+                            error_message=res.get("error_message"),
+                            fields_updated=res.get("fields_updated"),
+                            attempted_at=now_ts
+                        ))
+
+                        w_db.commit()
+                    finally:
+                        w_db.close()
+
+                    # Update overall progress
+                    current_synced = ok_count + partial_count + failed_count
+                    p_db = SessionLocal()
+                    try:
+                        p_prog = p_db.query(SyncProgressDB).filter(SyncProgressDB.branch == b).first()
+                        if p_prog:
+                            p_prog.synced_count = current_synced
+                            p_prog.ok_count = ok_count
+                            p_prog.partial_count = partial_count
+                            p_prog.failed_count = failed_count
+                            p_prog.failed_pins_json = json.dumps(failed_pins)
+                            p_prog.current_pin = current_pin
+                            p_db.commit()
+                    finally:
+                        p_db.close()
+
+                    # Broadcast progress WebSocket
+                    percent = int((current_synced / total) * 100)
+                    await ws_manager.broadcast({
+                        "type": "HOD_SYNC_PROGRESS",
+                        "branch": b,
+                        "synced": current_synced,
+                        "total": total,
+                        "percent": percent,
+                        "ok_count": ok_count,
+                        "partial_count": partial_count,
+                        "failed_count": failed_count,
+                        "current_pin": current_pin,
+                        "status": sync_st
+                    })
+
+            # Run all student workers concurrently via semaphore pool
+            await asyncio.gather(*(sync_worker(pin) for pin in pins))
+
+            # Finalize sync statistics
+            final_db = SessionLocal()
+            try:
+                final_prog = final_db.query(SyncProgressDB).filter(SyncProgressDB.branch == b).first()
+                avg_att = round(sum(attendance_values) / len(attendance_values), 2) if attendance_values else 0.0
+                clearance_rate = round((eligible_count / len(attendance_values)) * 100, 2) if attendance_values else 0.0
+
+                if final_prog:
+                    final_prog.status = "COMPLETED"
+                    final_prog.synced_count = total
+                    final_prog.ok_count = ok_count
+                    final_prog.partial_count = partial_count
+                    final_prog.failed_count = failed_count
+                    final_prog.failed_pins_json = json.dumps(failed_pins)
+                    final_prog.department_avg_attendance = avg_att
+                    final_prog.department_clearance_rate = clearance_rate
+                    final_prog.completed_at = datetime.utcnow().isoformat()
+                    final_db.commit()
+
+                await ws_manager.broadcast({
+                    "type": "HOD_SYNC_COMPLETE",
+                    "branch": b,
+                    "total": total,
+                    "ok_count": ok_count,
+                    "partial_count": partial_count,
+                    "failed_count": failed_count,
+                    "department_avg_attendance": avg_att,
+                    "department_clearance_rate": clearance_rate
+                })
+            finally:
+                final_db.close()
+
+        except Exception as e:
+            logger.error(f"[{b} Background Sync Fatal Exception]: {e}")
+            try:
+                err_db = SessionLocal()
+                err_prog = err_db.query(SyncProgressDB).filter(SyncProgressDB.branch == b).first()
+                if err_prog:
+                    err_prog.status = "FAILED"
+                    err_db.commit()
+                err_db.close()
+            except:
+                pass
+        finally:
+            db.close()
 
 async def run_180_student_sync_background():
     """Legacy alias for CS 180 background sync."""
@@ -1714,22 +1907,208 @@ async def run_180_student_sync_background():
 @app.post("/api/v1/hod/trigger-sync")
 @app.post("/api/hod/trigger-sync")
 def trigger_hod_sync(background_tasks: BackgroundTasks, branch: str = Query("CS")):
-    """Manually triggers background sync for all students in the branch (CS: 180, AIML: 127)."""
+    """Manually triggers background sync for all students in the branch (CS: 180, AIML: 120)."""
     b = "AIML" if branch.upper() in ["AIML", "AI"] else "CS"
-    total = 127 if b == "AIML" else 180
+    total = 120 if b == "AIML" else 180
     prefix = "24259-AI-" if b == "AIML" else "24259-CS-"
     background_tasks.add_task(run_department_sync_background, b, total, prefix, "C24")
     return {"success": True, "branch": b, "total": total, "message": f"{total}-Student {b} Background Sync Dispatched!"}
+
+@app.post("/api/v1/hod/sync-student")
+async def sync_single_student(req: PinRequest, db: Session = Depends(get_db)):
+    """Atomically synchronizes attendance & marks for a single student against SBTET gateway."""
+    clean_pin = req.pin.strip().upper()
+    res = await sbtet_scraper.scrape_student_complete(clean_pin, scheme=req.scheme or "C24")
+
+    alt_pin = clean_pin.replace("-AI-", "-AIML-") if "-AI-" in clean_pin else clean_pin.replace("-AIML-", "-AI-")
+    student = db.query(StudentDB).filter(or_(
+        StudentDB.pin == clean_pin,
+        StudentDB.pin == alt_pin,
+        StudentDB.roll_no == clean_pin,
+        StudentDB.roll_no == alt_pin
+    )).first()
+
+    now_ts = datetime.utcnow().isoformat()
+    sync_status = res.get("sync_status", "failed")
+
+    pin_branch = "AIML" if ("-AIML-" in clean_pin or "-AI-" in clean_pin) else "CS"
+    dept_name = "Artificial Intelligence & Machine Learning" if pin_branch == "AIML" else "Computer Science & Engineering"
+
+    if not student:
+        student = StudentDB(
+            pin=clean_pin,
+            roll_no=clean_pin,
+            name=res.get("name") or f"{pin_branch} Student {clean_pin.split('-')[-1]}",
+            password="Password123",
+            department=dept_name,
+            branch=pin_branch,
+            scheme="C-24",
+            year="3rd Year",
+            semester="5th Sem",
+            role="STUDENT"
+        )
+        db.add(student)
+        db.flush()
+
+    student.sync_status = sync_status
+    student.last_attempt_at = now_ts
+    student.error_code = res.get("error_code")
+    student.error_message = res.get("error_message")
+    student.fields_updated = res.get("fields_updated")
+
+    if res.get("name"):
+        student.name = res["name"]
+
+    if res.get("attendance_success"):
+        student.working_days = res.get("workingDays")
+        student.present_days = res.get("presentDays")
+        student.attendance_val = res.get("attendancePercentage")
+        student.attendance_pct = res.get("attendance_pct")
+        student.exams_attendance_pct = res.get("examsAttendancePct")
+        student.total_semester_days = res.get("totalSemesterDays", 180)
+
+    if res.get("results_success"):
+        student.cgpa = res.get("cgpa")
+        student.backlogs = res.get("backlogs")
+        student.backlogs_count = res.get("backlogs_count")
+        student.credits_earned = res.get("credits_earned")
+
+        db.query(BacklogRecordDB).filter(or_(BacklogRecordDB.pin == clean_pin, BacklogRecordDB.pin == alt_pin)).delete()
+        for subj in res.get("backlog_subjects", []):
+            db.add(BacklogRecordDB(
+                student_id=student.id,
+                pin=clean_pin,
+                semester=str(subj.get("semester", "") or "5th Sem"),
+                subject_code=str(subj.get("code", "")),
+                subject_title=str(subj.get("name", "")),
+                internal_marks=str(subj.get("internal", "")),
+                external_marks=str(subj.get("external", "")),
+                total_marks=str(subj.get("total", "")),
+                grade=str(subj.get("grade", "F"))
+            ))
+
+    if sync_status in ["ok", "partial"]:
+        student.last_success_at = now_ts
+        student.last_synced = now_ts
+
+    db.add(StudentSyncLogDB(
+        pin=clean_pin,
+        masked_pin=mask_pin(clean_pin),
+        branch=student.branch,
+        status=sync_status,
+        error_code=res.get("error_code"),
+        error_message=res.get("error_message"),
+        fields_updated=res.get("fields_updated"),
+        attempted_at=now_ts
+    ))
+    db.commit()
+
+    return {
+        "success": sync_status in ["ok", "partial"],
+        "sync_status": sync_status,
+        "pin": clean_pin,
+        "name": student.name,
+        "error_code": student.error_code,
+        "error_message": student.error_message,
+        "workingDays": student.working_days,
+        "presentDays": student.present_days,
+        "attendancePercentage": student.attendance_val,
+        "attendance_pct": student.attendance_pct,
+        "examsAttendancePct": student.exams_attendance_pct,
+        "cgpa": student.cgpa,
+        "backlogs": student.backlogs_count,
+        "lastSynced": student.last_synced or student.last_success_at
+    }
+
+@app.get("/api/v1/hod/sync-quality")
+def get_sync_quality(branch: str = Query("CS"), db: Session = Depends(get_db)):
+    """Returns real-time data quality bar metrics for HOD ledger."""
+    b = "AIML" if branch.upper() in ["AIML", "AI"] else "CS"
+    total = 120 if b == "AIML" else 180
+    students = db.query(StudentDB).filter(StudentDB.role == "STUDENT", StudentDB.branch == b).all()
+
+    ok_count = sum(1 for s in students if s.sync_status == "ok")
+    partial_count = sum(1 for s in students if s.sync_status == "partial")
+    failed_count = sum(1 for s in students if s.sync_status in ["failed", "never"])
+
+    students_with_att = [s for s in students if s.attendance_val is not None]
+    avg_att = round(sum(s.attendance_val for s in students_with_att) / len(students_with_att), 1) if students_with_att else 0.0
+    eligible_count = sum(1 for s in students_with_att if s.attendance_val >= 75.0)
+    clearance_rate = round((eligible_count / len(students_with_att)) * 100, 1) if students_with_att else 0.0
+
+    last_sync = max((s.last_success_at or s.last_synced or "" for s in students), default=None)
+
+    return {
+        "branch": b,
+        "total_intake": total,
+        "total_registered": len(students),
+        "up_to_date": ok_count,
+        "partial": partial_count,
+        "needs_attention": partial_count + failed_count,
+        "failed": failed_count,
+        "avg_attendance": f"{avg_att}%",
+        "clearance_rate": f"{clearance_rate}%",
+        "last_synced_at": last_sync
+    }
+
+@app.get("/api/v1/hod/sync-failures")
+def get_sync_failures(branch: str = Query("CS"), format: Optional[str] = Query(None), db: Session = Depends(get_db)):
+    """Returns list of students with failed or partial sync, with optional CSV export."""
+    b = "AIML" if branch.upper() in ["AIML", "AI"] else "CS"
+    students = db.query(StudentDB).filter(
+        StudentDB.role == "STUDENT",
+        StudentDB.branch == b,
+        StudentDB.sync_status.in_(["partial", "failed", "never"])
+    ).all()
+
+    items = []
+    for s in students:
+        items.append({
+            "pin": s.pin,
+            "masked_pin": mask_pin(s.pin),
+            "name": s.name,
+            "sync_status": s.sync_status,
+            "error_code": s.error_code or "UNSYNCED",
+            "error_message": s.error_message or "Never synchronized with SBTET gateway",
+            "last_attempt_at": s.last_attempt_at or s.created_at
+        })
+
+    if format == "csv":
+        import io
+        import csv
+        output = io.StringIO()
+        writer = csv.writer(output)
+        writer.writerow(["PIN", "Masked PIN", "Name", "Sync Status", "Error Code", "Error Message", "Last Attempt"])
+        for row in items:
+            writer.writerow([row["pin"], row["masked_pin"], row["name"], row["sync_status"], row["error_code"], row["error_message"], row["last_attempt_at"]])
+        output.seek(0)
+        return StreamingResponse(
+            iter([output.getvalue()]),
+            media_type="text/csv",
+            headers={"Content-Disposition": f"attachment; filename=sync_failures_{b}.csv"}
+        )
+
+    return {"branch": b, "count": len(items), "failures": items}
 
 @app.get("/api/v1/hod/sync-status")
 @app.get("/api/hod/sync-status")
 def get_hod_sync_status(branch: str = Query("CS"), db: Session = Depends(get_db)):
     """Returns current state of background sync for specified branch."""
     b = "AIML" if branch.upper() in ["AIML", "AI"] else "CS"
-    total = 127 if b == "AIML" else 180
+    total = 120 if b == "AIML" else 180
     prog = db.query(SyncProgressDB).filter(SyncProgressDB.branch == b).first()
     if not prog:
-        return {"status": "IDLE", "branch": b, "synced_count": 0, "total_students": total, "percent": 0}
+        return {
+            "status": "IDLE",
+            "branch": b,
+            "synced_count": 0,
+            "total_students": total,
+            "percent": 0,
+            "ok_count": 0,
+            "partial_count": 0,
+            "failed_count": 0,
+            "current_pin": None
+        }
 
     pct = int((prog.synced_count / max(1, prog.total_students or total)) * 100)
     return {
@@ -1738,6 +2117,9 @@ def get_hod_sync_status(branch: str = Query("CS"), db: Session = Depends(get_db)
         "synced_count": prog.synced_count,
         "total_students": prog.total_students or total,
         "percent": pct,
+        "ok_count": prog.ok_count or 0,
+        "partial_count": prog.partial_count or 0,
+        "failed_count": prog.failed_count or 0,
         "current_pin": prog.current_pin,
         "department_avg_attendance": prog.department_avg_attendance,
         "department_clearance_rate": prog.department_clearance_rate
@@ -1770,11 +2152,11 @@ def get_hod_dashboard_stats(branch: str = Query("CS"), db: Session = Depends(get
             "pending_requests": pending_requests
         }
 
-    total_att = sum(s.attendance_val or 0.0 for s in students)
-    avg_att = round(total_att / len(students), 1)
-    eligible = sum(1 for s in students if (s.attendance_val or 0.0) >= 75.0)
-    critical = sum(1 for s in students if (s.attendance_val or 0.0) < 65.0)
-    clearance_rate = round((eligible / len(students)) * 100, 1)
+    students_with_att = [s for s in students if s.attendance_val is not None]
+    avg_att = round(sum(s.attendance_val for s in students_with_att) / len(students_with_att), 1) if students_with_att else 0.0
+    eligible = sum(1 for s in students_with_att if s.attendance_val >= 75.0)
+    critical = sum(1 for s in students_with_att if s.attendance_val < 65.0)
+    clearance_rate = round((eligible / len(students_with_att)) * 100, 1) if students_with_att else 0.0
 
     return {
         "total_intake": total_roster,
@@ -1792,8 +2174,9 @@ def get_hod_dashboard_stats(branch: str = Query("CS"), db: Session = Depends(get
 @app.get("/api/hod/students")
 def get_hod_roster(branch: Optional[str] = Query(None), db: Session = Depends(get_db)):
     """
-    Returns clean, searchable roster of department students with live data (CS: 180, AIML: 127),
+    Returns clean, searchable roster of department students with live data (CS: 180, AIML: 120),
     including nested backlog_details array for modal rendering.
+    Strictly distinguishes synced vs unsynced/failed records (no fake 0/88 days).
     """
     target_branch = branch.upper().strip() if branch else "CS"
     if target_branch in ["AIML", "AI"]:
@@ -1844,16 +2227,21 @@ def get_hod_roster(branch: Optional[str] = Query(None), db: Session = Depends(ge
         ai_alt_pin = pin.replace("-AIML-", "-AI-") if "-AIML-" in pin else pin.replace("-AI-", "-AIML-")
         user = student_map.get(pin) or student_map.get(ai_alt_pin)
 
-        att_pct = user.attendance_val if user and user.attendance_val > 0 else (
-            float(user.attendance_pct.replace('%', '')) if user and user.attendance_pct else None
-        )
+        sync_st = user.sync_status if user and user.sync_status else "never"
+        has_att = (user is not None) and (user.attendance_val is not None) and (user.working_days is not None)
+        att_pct = user.attendance_val if has_att else None
 
         status_badge = "UNSYNCED"
         if att_pct is not None:
             status_badge = "ELIGIBLE" if att_pct >= 75.0 else ("CONDONATION" if att_pct >= 65.0 else "CRITICAL")
+        elif sync_st == "failed":
+            status_badge = "FAILED"
+        elif sync_st == "partial":
+            status_badge = "NO_BIOMETRIC"
 
-        cgpa_val = float(user.cgpa) if user and user.cgpa is not None else 0.0
-        backlogs_val = int(user.backlogs) if user and hasattr(user, 'backlogs') and user.backlogs is not None else (int(user.backlogs_count) if user and user.backlogs_count is not None else 0)
+        has_cgpa = (user is not None) and (user.cgpa is not None)
+        cgpa_val = float(user.cgpa) if has_cgpa else None
+        backlogs_val = int(user.backlogs_count) if (user and user.backlogs_count is not None) else 0
         backlog_details = backlog_map.get(pin, []) or backlog_map.get(ai_alt_pin, [])
 
         roster.append({
@@ -1863,23 +2251,30 @@ def get_hod_roster(branch: Optional[str] = Query(None), db: Session = Depends(ge
             "branch": dept_name,
             "scheme": "C-24",
             "semester": "5th Sem",
-            "isSynced": (att_pct is not None),
+            "sync_status": sync_st,
+            "isSynced": (sync_st in ["ok", "partial"]),
+            "error_code": user.error_code if user else None,
+            "error_message": user.error_message if user else None,
             "cgpa": cgpa_val,
             "backlogs": backlogs_val,
             "backlogs_count": backlogs_val,
             "backlog_details": backlog_details,
             "attendance": {
-                "workingDays": user.working_days if user else 88,
-                "daysPresent": user.present_days if user else 0,
+                "workingDays": user.working_days,
+                "daysPresent": user.present_days,
                 "percentage": att_pct,
+                "examsAttendancePct": user.exams_attendance_pct,
+                "totalSemesterDays": user.total_semester_days or 180,
                 "status": status_badge
-            } if att_pct is not None else None,
+            } if has_att else None,
             "results": {
                 "cgpa": cgpa_val,
                 "backlogCount": backlogs_val,
-                "backlogs": backlogs_val
-            },
-            "lastSynced": user.last_synced if user else None,
+                "backlogs": backlogs_val,
+                "creditsEarned": user.credits_earned if user else None
+            } if has_cgpa else None,
+            "lastSynced": user.last_success_at or user.last_synced if user else None,
+            "lastAttemptAt": user.last_attempt_at if user else None,
             "isOnline": ws_manager.is_user_online(pin)
         })
 

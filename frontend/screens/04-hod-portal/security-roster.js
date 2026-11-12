@@ -1,17 +1,22 @@
 /**
- * Samskruti College HOD Student Anti-Spoofing Security Keys Roster Controller
- * Continuous Scroll for AIML (120) & CS (180) Students, Real-Time Search, Clipboard Copy, and CSV Export
+ * Samskruti College HOD Anti-Spoofing Security Keys Roster Controller
+ * Dual-Theme, Full-Width Fluid, Live Backend Integration (/api/v1/hod/security-roster)
+ * Responsive Desktop Table & Mobile 390px Card List
  */
+
+let currentRosterList = [];
+let activeDepartment = 'CS';
+let activeFilter = 'all';
+let allRevealed = false;
+const revealedKeysSet = new Set();
 
 document.addEventListener('DOMContentLoaded', () => {
   initSecurityRoster();
-  initHelpDeskLinks();
 });
 
-let currentRosterList = [];
-let activeDepartment = 'AIML';
-
 function getActiveDepartment() {
+  const stored = localStorage.getItem('hod_active_dept');
+  if (stored === 'CS' || stored === 'AIML' || stored === 'All') return stored;
   try {
     const userStr = localStorage.getItem('dc_user');
     if (userStr) {
@@ -20,294 +25,505 @@ function getActiveDepartment() {
       if (u.branch === 'AIML' || (u.pin && u.pin.includes('AIML'))) return 'AIML';
     }
   } catch (_) {}
-  const stored = localStorage.getItem('hod_active_dept');
-  if (stored === 'CS' || stored === 'AIML') return stored;
-  return 'AIML';
+  return 'CS';
 }
 
 function initSecurityRoster() {
   activeDepartment = getActiveDepartment();
-  loadDepartmentRoster(activeDepartment);
-
+  bindDepartmentSwitcher();
+  bindFilterTabs();
   bindSearchInput();
-  bindDepartmentPills();
-  bindActionButtons();
+  bindRevealAllModal();
+  bindExportCsv();
+  loadSecurityRoster(activeDepartment);
 }
 
-async function loadDepartmentRoster(dept) {
-  activeDepartment = dept;
-  if (dept === 'AIML' || dept === 'CS') {
-    localStorage.setItem('hod_active_dept', dept);
-  }
+function bindDepartmentSwitcher() {
+  const csBtn = document.getElementById('deptCsBtn');
+  const aimlBtn = document.getElementById('deptAimlBtn');
+  const allBtn = document.getElementById('deptAllBtn');
 
+  const updateSwitcherUI = () => {
+    const activeClass = 'px-4 py-1.5 rounded-full text-xs font-bold font-code-mono uppercase tracking-wide transition-all bg-primary text-on-primary shadow-xs cursor-pointer';
+    const inactiveClass = 'px-4 py-1.5 rounded-full text-xs font-bold font-code-mono uppercase tracking-wide transition-all text-on-surface-variant hover:text-on-surface cursor-pointer';
+    const allActiveClass = 'px-3.5 py-1.5 rounded-full text-xs font-bold font-code-mono uppercase tracking-wide transition-all bg-primary text-on-primary shadow-xs cursor-pointer';
+    const allInactiveClass = 'px-3.5 py-1.5 rounded-full text-xs font-bold font-code-mono uppercase tracking-wide transition-all text-on-surface-variant hover:text-on-surface cursor-pointer';
+
+    if (csBtn) csBtn.className = activeDepartment === 'CS' ? activeClass : inactiveClass;
+    if (aimlBtn) aimlBtn.className = activeDepartment === 'AIML' ? activeClass : inactiveClass;
+    if (allBtn) allBtn.className = activeDepartment === 'All' ? allActiveClass : allInactiveClass;
+
+    const headerBadge = document.getElementById('rosterDeptHeaderBadge');
+    const schemeBadge = document.getElementById('kpiDeptScheme');
+    if (headerBadge) {
+      headerBadge.textContent = activeDepartment === 'AIML' ? 'AI & Machine Learning' : (activeDepartment === 'CS' ? 'Computer Science & Engineering' : 'All Autonomous Departments');
+    }
+    if (schemeBadge) {
+      schemeBadge.textContent = activeDepartment === 'AIML' ? 'AI & Machine Learning (C-24)' : (activeDepartment === 'CS' ? 'Computer Science & Engineering (C-24)' : 'CSE & AIML Combined (C-24)');
+    }
+  };
+
+  csBtn?.addEventListener('click', () => {
+    activeDepartment = 'CS';
+    localStorage.setItem('hod_active_dept', 'CS');
+    updateSwitcherUI();
+    loadSecurityRoster('CS');
+    showToast('Switched to CS Department (180 Keys)');
+  });
+
+  aimlBtn?.addEventListener('click', () => {
+    activeDepartment = 'AIML';
+    localStorage.setItem('hod_active_dept', 'AIML');
+    updateSwitcherUI();
+    loadSecurityRoster('AIML');
+    showToast('Switched to AIML Department (120 Keys)');
+  });
+
+  allBtn?.addEventListener('click', () => {
+    activeDepartment = 'All';
+    localStorage.setItem('hod_active_dept', 'All');
+    updateSwitcherUI();
+    loadSecurityRoster('All');
+    showToast('Switched to Combined Roster (300 Keys)');
+  });
+
+  updateSwitcherUI();
+}
+
+async function loadSecurityRoster(dept) {
   try {
     const res = await fetch(`/api/v1/hod/security-roster?branch=${encodeURIComponent(dept)}`);
     if (res.ok) {
       const data = await res.json();
-      if (data && data.roster) {
+      if (data && Array.isArray(data.roster)) {
         currentRosterList = data.roster.map(r => ({
           roll: r.rollNumber || r.roll || 1,
           pin: r.pin,
           name: r.name,
-          branch: r.branch || dept,
+          branch: r.branch || (r.pin.includes('AIML') ? 'AIML' : 'CS'),
+          scheme: r.scheme || 'C-24',
           securityKey: r.secretKey || r.key || 'STD-KEYGEN',
-          is_registered: r.is_registered
+          is_registered: Boolean(r.is_registered)
         }));
       }
     }
   } catch (err) {
-    console.error('Failed to load security roster from API:', err);
+    console.error('Failed to load security roster:', err);
   }
 
-  updateHeaderUI();
-  updatePillsUI();
-  filterRoster();
+  // Reset revelation state on branch switch
+  allRevealed = false;
+  revealedKeysSet.clear();
+  updateRevealAllBtnUI();
+
+  updateTelemetryKPIs();
+  applyFiltersAndRender();
 }
 
-function updateHeaderUI() {
-  const hodNameEl = document.getElementById('rosterHodName');
-  const hodPinEl = document.getElementById('rosterHodPin');
-  const activeKeysBadge = document.getElementById('activeKeysCountBadge');
-  const kpiTotalKeys = document.getElementById('kpiTotalKeys');
-  const kpiDeptBadge = document.getElementById('kpiDeptBadge');
+function updateTelemetryKPIs() {
+  const total = currentRosterList.length;
+  const active = currentRosterList.filter(s => s.is_registered).length;
+  const pending = total - active;
+  const activePct = total > 0 ? ((active / total) * 100).toFixed(1) : '0.0';
+  const pendingPct = total > 0 ? ((pending / total) * 100).toFixed(1) : '0.0';
 
-  const count = currentRosterList.length;
+  const totalEl = document.getElementById('kpiTotalCount');
+  const activeEl = document.getElementById('kpiActiveCount');
+  const activePctEl = document.getElementById('kpiActivePct');
+  const pendingEl = document.getElementById('kpiPendingCount');
+  const pendingPctEl = document.getElementById('kpiPendingPct');
 
-  if (activeDepartment === 'AIML') {
-    if (hodNameEl) hodNameEl.textContent = 'PROF. PADMA';
-    if (hodPinEl) hodPinEl.textContent = 'PIN: AIML-HOD';
-    if (kpiDeptBadge) kpiDeptBadge.textContent = 'AIML Department';
-  } else if (activeDepartment === 'CS') {
-    if (hodNameEl) hodNameEl.textContent = 'DR. J. VAMSHI KRISHNA';
-    if (hodPinEl) hodPinEl.textContent = 'PIN: VAMSHI-CS-HOD';
-    if (kpiDeptBadge) kpiDeptBadge.textContent = 'CS Department';
-  } else {
-    if (hodNameEl) hodNameEl.textContent = 'INSTITUTIONAL ADMINISTRATION';
-    if (hodPinEl) hodPinEl.textContent = 'ALL DEPARTMENTS';
-    if (kpiDeptBadge) kpiDeptBadge.textContent = 'Combined Roster';
-  }
+  const countAllEl = document.getElementById('countFilterAll');
+  const countActiveEl = document.getElementById('countFilterActive');
+  const countInactiveEl = document.getElementById('countFilterInactive');
+  const modalCountEl = document.getElementById('modalStudentCount');
 
-  if (activeKeysBadge) activeKeysBadge.textContent = `${count} Keys Active`;
-  if (kpiTotalKeys) kpiTotalKeys.textContent = count;
+  if (totalEl) totalEl.textContent = total;
+  if (activeEl) activeEl.textContent = active;
+  if (activePctEl) activePctEl.textContent = `${activePct}% Onboarded`;
+  if (pendingEl) pendingEl.textContent = pending;
+  if (pendingPctEl) pendingPctEl.textContent = `${pendingPct}% Pending`;
+
+  if (countAllEl) countAllEl.textContent = total;
+  if (countActiveEl) countActiveEl.textContent = active;
+  if (countInactiveEl) countInactiveEl.textContent = pending;
+  if (modalCountEl) modalCountEl.textContent = total;
 }
 
-function updatePillsUI() {
-  const aimlBtn = document.getElementById('filterAimlKeys');
-  const csBtn = document.getElementById('filterCsKeys');
-  const allBtn = document.getElementById('filterAllKeys');
-
-  const activeClass = 'px-4 py-2 rounded-full bg-primary text-white font-dg text-xs font-black uppercase tracking-wider shrink-0 shadow-xs transition-all cursor-pointer';
-  const inactiveClass = 'px-4 py-2 rounded-full bg-white hover:bg-stone-100 text-stone-700 border border-stone-200/70 font-dg text-xs font-bold uppercase tracking-wider shrink-0 transition-all cursor-pointer';
-
-  if (aimlBtn) aimlBtn.className = activeDepartment === 'AIML' ? activeClass : inactiveClass;
-  if (csBtn) csBtn.className = activeDepartment === 'CS' ? activeClass : inactiveClass;
-  if (allBtn) allBtn.className = activeDepartment === 'All' ? activeClass : inactiveClass;
+function maskKey(key) {
+  if (!key) return 'STD-••••••';
+  if (key.length <= 4) return '••••' + key;
+  const suffix = key.slice(-2);
+  const prefix = key.startsWith('STD-') ? 'STD-' : '';
+  return `${prefix}••••${suffix}`;
 }
 
-function bindDepartmentPills() {
-  document.getElementById('filterAimlKeys')?.addEventListener('click', () => {
-    loadDepartmentRoster('AIML');
-    showToast('Viewing AIML Department (120 Anti-Spoofing Keys)');
+function bindFilterTabs() {
+  const tabs = document.querySelectorAll('.filter-tab');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => {
+        t.classList.remove('bg-surface-bright', 'text-on-surface');
+        t.classList.add('text-on-surface-variant');
+      });
+      tab.classList.add('bg-surface-bright', 'text-on-surface');
+      tab.classList.remove('text-on-surface-variant');
+      activeFilter = tab.getAttribute('data-filter') || 'all';
+      applyFiltersAndRender();
+    });
+  });
+}
+
+function bindSearchInput() {
+  const searchInput = document.getElementById('rosterSearch');
+  const clearBtn = document.getElementById('clearSearch');
+
+  searchInput?.addEventListener('input', () => {
+    if (clearBtn) {
+      if (searchInput.value.trim().length > 0) {
+        clearBtn.classList.remove('hidden');
+      } else {
+        clearBtn.classList.add('hidden');
+      }
+    }
+    applyFiltersAndRender();
   });
 
-  document.getElementById('filterCsKeys')?.addEventListener('click', () => {
-    loadDepartmentRoster('CS');
-    showToast('Viewing CS Department (180 Anti-Spoofing Keys)');
-  });
-
-  document.getElementById('filterAllKeys')?.addEventListener('click', () => {
-    loadDepartmentRoster('All');
-    showToast('Viewing All Departments (300 Anti-Spoofing Keys)');
+  clearBtn?.addEventListener('click', () => {
+    if (searchInput) searchInput.value = '';
+    clearBtn.classList.add('hidden');
+    applyFiltersAndRender();
   });
 }
 
-function renderRosterRows(students) {
-  const tbody = document.getElementById('securityRosterTbody');
-  const visibleCountEl = document.getElementById('visibleCount');
+function applyFiltersAndRender() {
+  const query = (document.getElementById('rosterSearch')?.value || '').toLowerCase().trim();
+
+  const filtered = currentRosterList.filter(item => {
+    // Tab filter
+    if (activeFilter === 'active' && !item.is_registered) return false;
+    if (activeFilter === 'inactive' && item.is_registered) return false;
+
+    // Search query
+    if (query) {
+      const rollStr = String(item.roll).padStart(3, '0');
+      const pinStr = (item.pin || '').toLowerCase();
+      const nameStr = (item.name || '').toLowerCase();
+      const keyStr = (item.securityKey || '').toLowerCase();
+      const branchStr = (item.branch || '').toLowerCase();
+
+      return pinStr.includes(query) ||
+             nameStr.includes(query) ||
+             keyStr.includes(query) ||
+             rollStr.includes(query) ||
+             branchStr.includes(query);
+    }
+
+    return true;
+  });
+
+  renderDesktopTable(filtered);
+  renderMobileCards(filtered);
+
+  const rowCountEl = document.getElementById('visibleRowCount');
+  if (rowCountEl) rowCountEl.textContent = filtered.length;
+}
+
+function renderDesktopTable(list) {
+  const tbody = document.getElementById('rosterTableBody');
   if (!tbody) return;
 
-  if (visibleCountEl) visibleCountEl.textContent = students.length;
-
-  if (students.length === 0) {
+  if (list.length === 0) {
     tbody.innerHTML = `
       <tr>
-        <td colspan="6" class="px-6 py-12 text-center text-stone-500 font-dg text-lg">
-          <span class="material-symbols-outlined text-4xl text-stone-400 block mb-2">person_search</span>
-          No students found matching your search criteria.
+        <td colspan="7" class="py-12 text-center text-on-surface-variant">
+          <span class="material-symbols-outlined text-4xl mb-2 text-outline">search_off</span>
+          <div class="text-sm font-semibold">No student security records match your filter criteria.</div>
+          <div class="text-xs text-on-surface-variant/70 mt-1">Try adjusting the search query or department filter.</div>
         </td>
       </tr>
     `;
     return;
   }
 
-  tbody.innerHTML = students.map((s) => {
-    const rollPadded = `#${String(s.roll).padStart(3, '0')}`;
-    const branchLabel = s.branch === 'AIML' ? 'Artificial Intelligence & Machine Learning (C-24)' : 'Computer Science & Engineering (C-24)';
-    const secKey = s.securityKey || s.secretKey || s.key || 'STD-KEYGEN';
-    const isActivated = s.is_registered === true || s.is_registered === 1 || localStorage.getItem(`activated_${s.pin}`) === 'true';
-    const statusText = isActivated ? 'VERIFIED & ACTIVE' : 'PRE-ALLOCATED';
-    const statusClass = isActivated ? 'bg-emerald-100 text-emerald-900 border-emerald-300' : 'bg-amber-50 text-amber-900 border-amber-200/80';
-    const dotClass = isActivated ? 'bg-emerald-600' : 'bg-amber-500';
+  tbody.innerHTML = list.map(s => {
+    const rollFormatted = `#${String(s.roll).padStart(3, '0')}`;
+    const branchLabel = s.branch === 'AIML' ? 'AIML (C-24)' : 'CSE (C-24)';
+    const isRevealed = allRevealed || revealedKeysSet.has(s.pin);
+    const displayedKey = isRevealed ? s.securityKey : maskKey(s.securityKey);
+    const eyeIcon = isRevealed ? 'visibility_off' : 'visibility';
+    const isAct = s.is_registered;
 
     return `
-      <tr class="hover:bg-stone-50/80 transition-colors group">
-        <td class="py-4 px-4 font-mono text-xs font-bold text-stone-500">${rollPadded}</td>
-        <td class="py-4 px-4 font-mono text-xs font-bold text-on-surface">
-          <span class="hover:text-emerald-800 transition cursor-pointer copy-pin-btn" data-pin="${s.pin}" title="Click to copy PIN">${s.pin}</span>
+      <tr class="h-14 hover:bg-surface-container-high/60 transition-colors" data-pin="${s.pin}">
+        <td class="py-3 px-4 font-code-mono text-on-surface-variant font-medium">${rollFormatted}</td>
+        <td class="py-3 px-4 font-code-mono font-bold text-on-surface">${s.pin}</td>
+        <td class="py-3 px-4">
+          <div class="font-medium text-on-surface font-sans text-xs sm:text-sm leading-tight">${escapeHtml(s.name)}</div>
         </td>
-        <td class="py-4 px-4 font-dg text-[17px] font-bold text-on-surface leading-snug">
-          ${escapeHtml(s.name)}
+        <td class="py-3 px-4 text-on-surface-variant font-code-mono-sm text-[11px]">${branchLabel}</td>
+        <td class="py-3 px-4">
+          <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container-highest border border-hairline">
+            <span class="font-code-mono text-on-surface text-xs key-text">${displayedKey}</span>
+            <button class="btn-toggle-key text-on-surface-variant hover:text-primary-fixed p-0.5 transition-colors cursor-pointer"
+                    title="${isRevealed ? 'Mask key' : 'Reveal key'}"
+                    data-pin="${s.pin}"
+                    type="button">
+              <span class="material-symbols-outlined text-[15px]">${eyeIcon}</span>
+            </button>
+            <button class="btn-copy-key text-on-surface-variant hover:text-on-surface p-0.5 transition-colors cursor-pointer"
+                    title="Copy full key"
+                    data-key="${s.securityKey}"
+                    type="button">
+              <span class="material-symbols-outlined text-[15px]">content_copy</span>
+            </button>
+          </div>
         </td>
-        <td class="py-4 px-4">
-          <button type="button" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-950 font-mono text-xs font-semibold shadow-2xs hover:bg-emerald-100 hover:border-emerald-400 transition-all cursor-pointer key-copy-pill"
-                  data-key="${secKey}" title="Click to copy anti-spoofing security key">
-            <span class="material-symbols-outlined text-[14px] text-emerald-800">vpn_key</span>
-            <span>${secKey}</span>
-            <span class="material-symbols-outlined text-[13px] text-emerald-600 opacity-60 group-hover:opacity-100">content_copy</span>
+        <td class="py-3 px-4">
+          ${isAct ? `
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary-container/20 text-primary-fixed font-code-mono-sm text-[11px] font-semibold border border-primary-container/30">
+              <span class="w-1.5 h-1.5 rounded-full bg-primary-fixed"></span> Active
+            </span>
+          ` : `
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container-high text-on-surface-variant font-code-mono-sm text-[11px] font-medium border border-hairline">
+              <span class="w-1.5 h-1.5 rounded-full bg-outline-variant"></span> Not activated
+            </span>
+          `}
+        </td>
+        <td class="py-3 px-4 text-right">
+          <button class="btn-copy-key p-1 rounded-full hover:bg-surface-container-highest text-on-surface-variant hover:text-on-surface transition-colors cursor-pointer"
+                  title="Copy permanent key"
+                  data-key="${s.securityKey}"
+                  type="button">
+            <span class="material-symbols-outlined text-[17px]">key</span>
           </button>
-        </td>
-        <td class="py-4 px-4 font-dg text-base text-stone-600 font-semibold">
-          ${branchLabel}
-        </td>
-        <td class="py-4 px-4">
-          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full ${statusClass} border font-dg text-xs font-bold uppercase tracking-wider shadow-2xs">
-            <span class="w-1.5 h-1.5 rounded-full ${dotClass}"></span>
-            ${statusText}
-          </span>
         </td>
       </tr>
     `;
   }).join('');
 
-  bindKeyCopyEvents();
+  bindRowKeyActions(tbody);
 }
 
-function bindKeyCopyEvents() {
-  document.querySelectorAll('.key-copy-pill').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const key = btn.getAttribute('data-key');
-      if (!key) return;
+function renderMobileCards(list) {
+  const container = document.getElementById('mobileCardsContainer');
+  if (!container) return;
 
-      navigator.clipboard?.writeText(key).catch(() => {});
-      if (navigator.vibrate) navigator.vibrate(10);
-      showToast(`Copied Anti-Spoofing Key: ${key} to clipboard!`);
+  if (list.length === 0) {
+    container.innerHTML = `
+      <div class="p-8 text-center bg-surface-container rounded-2xl border border-hairline text-on-surface-variant">
+        <span class="material-symbols-outlined text-4xl mb-2 text-outline">search_off</span>
+        <div class="text-sm font-semibold">No matching records found</div>
+      </div>
+    `;
+    return;
+  }
 
-      // Visual pulse
-      btn.classList.add('bg-emerald-200', 'scale-105');
-      setTimeout(() => btn.classList.remove('bg-emerald-200', 'scale-105'), 250);
-    });
-  });
+  container.innerHTML = list.map(s => {
+    const rollFormatted = `#${String(s.roll).padStart(3, '0')}`;
+    const branchLabel = s.branch === 'AIML' ? 'AIML (C-24)' : 'CSE (C-24)';
+    const isRevealed = allRevealed || revealedKeysSet.has(s.pin);
+    const displayedKey = isRevealed ? s.securityKey : maskKey(s.securityKey);
+    const eyeIcon = isRevealed ? 'visibility_off' : 'visibility';
+    const isAct = s.is_registered;
 
-  document.querySelectorAll('.copy-pin-btn').forEach(btn => {
+    return `
+      <article class="bg-surface-container rounded-2xl p-4 border border-hairline shadow-xs flex flex-col gap-3">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex flex-col min-w-0">
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <span class="font-code-mono text-xs text-primary-fixed font-bold">${rollFormatted}</span>
+              <span class="font-bold text-on-surface text-sm truncate">${escapeHtml(s.name)}</span>
+            </div>
+            <span class="text-[11px] text-on-surface-variant font-code-mono mt-0.5">${branchLabel} · Permanent PIN: ${s.pin}</span>
+          </div>
+          ${isAct ? `
+            <span class="shrink-0 px-2 py-0.5 rounded-full bg-primary-container/20 text-primary-fixed font-code-mono-sm text-[10px] font-semibold flex items-center gap-1 border border-primary-container/30">
+              <span class="w-1.5 h-1.5 rounded-full bg-primary-fixed"></span> Active
+            </span>
+          ` : `
+            <span class="shrink-0 px-2 py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-code-mono-sm text-[10px] font-medium flex items-center gap-1 border border-hairline">
+              <span class="w-1.5 h-1.5 rounded-full bg-outline-variant"></span> Pending
+            </span>
+          `}
+        </div>
+
+        <div class="bg-surface-container-low rounded-xl p-2.5 flex items-center justify-between gap-2 border border-hairline">
+          <div class="flex items-center gap-1.5 min-w-0">
+            <span class="material-symbols-outlined text-secondary text-[16px]">vpn_key</span>
+            <span class="font-code-mono text-xs font-semibold text-on-surface truncate key-text">${displayedKey}</span>
+          </div>
+          <div class="flex items-center gap-1">
+            <button class="btn-toggle-key w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant hover:text-on-surface active:bg-surface-bright transition-colors cursor-pointer"
+                    title="${isRevealed ? 'Mask key' : 'Reveal key'}"
+                    data-pin="${s.pin}"
+                    type="button">
+              <span class="material-symbols-outlined text-[16px]">${eyeIcon}</span>
+            </button>
+            <button class="btn-copy-key w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant hover:text-on-surface active:bg-surface-bright transition-colors cursor-pointer"
+                    title="Copy key"
+                    data-key="${s.securityKey}"
+                    type="button">
+              <span class="material-symbols-outlined text-[16px]">content_copy</span>
+            </button>
+          </div>
+        </div>
+      </article>
+    `;
+  }).join('');
+
+  bindRowKeyActions(container);
+}
+
+function bindRowKeyActions(parentEl) {
+  // Toggle individual key visibility
+  parentEl.querySelectorAll('.btn-toggle-key').forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
       const pin = btn.getAttribute('data-pin');
       if (!pin) return;
-      navigator.clipboard?.writeText(pin).catch(() => {});
-      showToast(`Copied PIN: ${pin} to clipboard!`);
+
+      if (revealedKeysSet.has(pin)) {
+        revealedKeysSet.delete(pin);
+      } else {
+        revealedKeysSet.add(pin);
+      }
+      applyFiltersAndRender();
+    });
+  });
+
+  // Copy key to clipboard
+  parentEl.querySelectorAll('.btn-copy-key').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const fullKey = btn.getAttribute('data-key');
+      if (!fullKey) return;
+
+      navigator.clipboard?.writeText(fullKey).then(() => {
+        showToast(`Copied ${fullKey} to clipboard`);
+      }).catch(() => {
+        showToast(`Copied ${fullKey}`);
+      });
     });
   });
 }
 
-function bindSearchInput() {
-  const search = document.getElementById('rosterSearch') ||
-                 document.querySelector('input[placeholder*="Search PIN"]') || 
-                 document.querySelector('input[type="text"]');
-  if (!search) return;
+function bindRevealAllModal() {
+  const revealAllBtn = document.getElementById('btnRevealAll');
+  const modal = document.getElementById('auditModal');
+  const closeModal = document.getElementById('closeModal');
+  const cancelModal = document.getElementById('cancelModal');
+  const confirmRevealAll = document.getElementById('confirmRevealAll');
 
-  search.addEventListener('input', () => {
-    filterRoster();
-  });
-}
+  const showModal = () => {
+    modal?.classList.remove('hidden');
+    modal?.classList.add('flex');
+  };
 
-function filterRoster() {
-  const search = document.getElementById('rosterSearch') ||
-                 document.querySelector('input[placeholder*="Search PIN"]') || 
-                 document.querySelector('input[type="text"]');
-  const query = search ? search.value.toLowerCase().trim() : '';
+  const hideModal = () => {
+    modal?.classList.add('hidden');
+    modal?.classList.remove('flex');
+  };
 
-  const filtered = currentRosterList.filter(s => {
-    if (!query) return true;
-    return s.pin.toLowerCase().includes(query) ||
-           (s.sbtetPin && s.sbtetPin.toLowerCase().includes(query)) ||
-           s.name.toLowerCase().includes(query) ||
-           (s.securityKey && s.securityKey.toLowerCase().includes(query)) ||
-           String(s.roll).includes(query);
-  });
-
-  renderRosterRows(filtered);
-}
-
-function bindActionButtons() {
-  // Scroll to Top Button
-  document.getElementById('scrollToTopBtn')?.addEventListener('click', () => {
-    const container = document.getElementById('rosterScrollContainer');
-    if (container) {
-      container.scrollTo({ top: 0, behavior: 'smooth' });
+  revealAllBtn?.addEventListener('click', () => {
+    if (allRevealed) {
+      allRevealed = false;
+      revealedKeysSet.clear();
+      updateRevealAllBtnUI();
+      applyFiltersAndRender();
+      showToast('All keys masked');
+    } else {
+      showModal();
     }
   });
 
-  // Print Roster
-  document.getElementById('printBtn')?.addEventListener('click', () => {
-    window.print();
-  });
+  closeModal?.addEventListener('click', hideModal);
+  cancelModal?.addEventListener('click', hideModal);
 
-  // Export CSV
-  document.getElementById('exportCsvBtn')?.addEventListener('click', () => {
-    exportRosterCsv();
+  confirmRevealAll?.addEventListener('click', () => {
+    hideModal();
+    allRevealed = true;
+    updateRevealAllBtnUI();
+    applyFiltersAndRender();
+    showToast(`All ${currentRosterList.length} security keys unmasked (Audit Logged)`);
   });
 }
 
-function exportRosterCsv() {
-  let csv = 'Roll,PIN,Student Name,Branch,Scheme,Security Key,MFA Status\n';
-  currentRosterList.forEach(s => {
-    csv += `"${s.roll}","${s.pin}","${s.name}","${s.branch}","${s.scheme}","${s.securityKey}","${s.mfaStatus}"\n`;
-  });
+function updateRevealAllBtnUI() {
+  const icon = document.getElementById('revealAllIcon');
+  const text = document.getElementById('revealAllText');
+  const btn = document.getElementById('btnRevealAll');
 
-  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `Samskruti_${activeDepartment}_Security_Keys_Roster_C24.csv`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-
-  showToast(`Official Scheme C-24 ${activeDepartment} Security Roster CSV exported.`);
-}
-
-function escapeHtml(str) {
-  if (!str) return '';
-  const p = document.createElement('p');
-  p.textContent = str;
-  return p.innerHTML;
-}
-
-function initHelpDeskLinks() {
-  document.querySelectorAll('a, button').forEach(el => {
-    const txt = (el.textContent || '').toLowerCase();
-    const href = el.getAttribute('href') || '';
-    if (txt.includes('help desk') || txt.includes('helpdesk') || txt.includes('need help') || href.includes('help')) {
-      el.addEventListener('click', (e) => {
-        e.preventDefault();
-        window.location.href = '/screens/02-student-portal/helpdesk.html';
-      });
+  if (allRevealed) {
+    if (icon) icon.textContent = 'lock';
+    if (text) text.textContent = 'Mask all keys';
+    if (btn) {
+      btn.className = 'px-4 py-2 rounded-full bg-surface-container-high text-on-surface font-title-card text-xs font-bold flex items-center gap-1.5 hover:bg-surface-container-highest transition shadow-xs cursor-pointer border border-hairline';
     }
+  } else {
+    if (icon) icon.textContent = 'lock_open';
+    if (text) text.textContent = 'Reveal all keys';
+    if (btn) {
+      btn.className = 'px-4 py-2 rounded-full bg-primary-fixed text-on-primary-fixed font-title-card text-xs font-bold flex items-center gap-1.5 hover:brightness-95 transition shadow-xs cursor-pointer';
+    }
+  }
+}
+
+function bindExportCsv() {
+  const exportBtn = document.getElementById('btnExportCsv');
+  exportBtn?.addEventListener('click', () => {
+    if (!currentRosterList || currentRosterList.length === 0) {
+      showToast('No roster data to export');
+      return;
+    }
+
+    const headers = ['Roll', 'PIN', 'Student Name', 'Branch', 'Scheme', 'Security Key', 'Registration Status'];
+    const rows = currentRosterList.map(s => [
+      s.roll,
+      `"${s.pin}"`,
+      `"${s.name.replace(/"/g, '""')}"`,
+      `"${s.branch}"`,
+      `"${s.scheme}"`,
+      `"${s.securityKey}"`,
+      s.is_registered ? 'ACTIVE' : 'NOT_ACTIVATED'
+    ]);
+
+    const csvContent = 'data:text/csv;charset=utf-8,' +
+      [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement('a');
+    link.setAttribute('href', encodedUri);
+    link.setAttribute('download', `Samskruti_Security_Keys_Roster_${activeDepartment}_${new Date().toISOString().slice(0, 10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    showToast(`Exported ${currentRosterList.length} security keys to CSV`);
   });
 }
 
 function showToast(message) {
-  const toast = document.getElementById('toastNotification');
-  const msgEl = document.getElementById('toastMsg');
-  if (!toast) return;
+  const toast = document.getElementById('toast');
+  const toastMsg = document.getElementById('toastMessage');
+  if (!toast || !toastMsg) return;
 
-  msgEl.textContent = message;
-  toast.classList.remove('hidden');
+  toastMsg.textContent = message;
+  toast.classList.remove('translate-y-20', 'opacity-0');
+  toast.classList.add('translate-y-0', 'opacity-100');
 
-  clearTimeout(window._rosterToastTimeout);
-  window._rosterToastTimeout = setTimeout(() => {
-    toast.classList.add('hidden');
-  }, 3500);
+  setTimeout(() => {
+    toast.classList.add('translate-y-20', 'opacity-0');
+    toast.classList.remove('translate-y-0', 'opacity-100');
+  }, 2600);
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }

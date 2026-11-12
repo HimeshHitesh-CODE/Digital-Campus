@@ -1,15 +1,100 @@
 /**
  * Samskruti College HOD Campus Messages Controller
- * Real-Time Two-Way Encrypted Chat: Instant Send, Interactive Receiving, and Thread Switching
+ * Real-time bidirectional WebSocket & REST API communication (/api/v1/messages)
+ * Department-scoped student conversations, responsive split-pane layout & mobile navigation
  */
 
-document.addEventListener('DOMContentLoaded', () => {
-  initHodMessages();
-  checkUrlParams();
-  initHelpDeskLinks();
-});
+let activeDepartment = 'CS';
+let activeStudent = null;
+let activeThreads = [];
+let ws = null;
 
-let activeDepartment = 'AIML';
+const DEPARTMENT_HOD_INFO = {
+  CS: {
+    pin: 'VAMSHI-CS-HOD',
+    name: 'Dr. J. Vamshi Krishna (HOD CS)',
+    branch: 'CS'
+  },
+  AIML: {
+    pin: 'AIML-HOD',
+    name: 'Prof. Padma (HOD AIML)',
+    branch: 'AIML'
+  }
+};
+
+const DEFAULT_CONVERSATIONS = {
+  CS: [
+    {
+      pin: '24259-CS-025',
+      name: 'KARNATI HIMESH',
+      branch: 'CS',
+      tag: 'Medical Board Appeal',
+      lastMessage: 'Respected Dr. Vamshi Krishna, I have submitted my Medical Board application for attendance condonation (Ref: SC-COND-041). Please consider my hospitalization records.',
+      lastTime: '10:45 AM',
+      initials: 'KH'
+    },
+    {
+      pin: '24259-CS-037',
+      name: 'EDAMANAPALLY SAMISAAC',
+      branch: 'CS',
+      tag: 'Internship NOC',
+      lastMessage: 'Respected HOD Sir, I have received an internship offer from Infosys Springboard AI Cohort. Kindly approve my NOC.',
+      lastTime: 'Yesterday',
+      initials: 'ES'
+    },
+    {
+      pin: '24259-CS-040',
+      name: 'TALLAPALLI TULASI RAM GOUD',
+      branch: 'CS',
+      tag: 'Bonafide Certificate',
+      lastMessage: 'Respected HOD Sir, I have submitted an urgent Bonafide Certificate request for passport physical verification.',
+      lastTime: '2 days ago',
+      initials: 'TT'
+    },
+    {
+      pin: '24259-CS-001',
+      name: 'GONA LAXMI NARASIMHA SWAMI',
+      branch: 'CS',
+      tag: 'Hall Ticket Clearance',
+      lastMessage: 'Good morning Sir, request regarding my hall ticket clearance and biometric punch verification.',
+      lastTime: '3 days ago',
+      initials: 'GS'
+    }
+  ],
+  AIML: [
+    {
+      pin: '24259-AIML-019',
+      name: 'KARNATI HITESH',
+      branch: 'AIML',
+      tag: 'Bonafide Request',
+      lastMessage: 'Respected Prof. Padma, I have submitted my Bonafide certificate application for State scholarship verification. Kindly review and approve.',
+      lastTime: '10:30 AM',
+      initials: 'KH'
+    },
+    {
+      pin: '24259-AIML-001',
+      name: 'AMANCHA RASAGNA',
+      branch: 'AIML',
+      tag: 'Internship NOC',
+      lastMessage: 'Respected HOD Sir, I have an internship offer from Tech Mahindra for AI Research. Requesting an Internship NOC on institutional letterhead.',
+      lastTime: 'Yesterday',
+      initials: 'AR'
+    },
+    {
+      pin: '24259-AIML-010',
+      name: 'ITTE NIKHIL TEJA',
+      branch: 'AIML',
+      tag: 'Bus Pass Form',
+      lastMessage: 'Good morning Sir, TSRTC bus pass endorsement form uploaded. Kindly sign off when convenient.',
+      lastTime: '2 days ago',
+      initials: 'IN'
+    }
+  ]
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+  initMessagesModule();
+});
 
 function getActiveDepartment() {
   const stored = localStorage.getItem('hod_active_dept');
@@ -18,362 +103,466 @@ function getActiveDepartment() {
     const userStr = localStorage.getItem('dc_user');
     if (userStr) {
       const u = JSON.parse(userStr);
+      if (u.branch === 'AIML' || (u.pin && u.pin.includes('AIML'))) return 'AIML';
       if (u.branch === 'CS' || (u.pin && u.pin.includes('CS'))) return 'CS';
     }
   } catch (_) {}
-  return 'AIML';
+  return 'CS';
 }
 
-const THREADS_DB = {
-  AIML: [
-    {
-      pin: '24259-AIML-119',
-      name: 'Karnati Hitesh',
-      initials: 'KH',
-      attendance: '43.2%',
-      status: 'Critical Shortage',
-      tag: 'Bonafide Request',
-      messages: [
-        { sender: 'student', text: 'Respected Prof. Padma Sir, I have submitted my Bonafide certificate application for Passport and scholarship verification (Ref: DOC-1). Kindly review and approve.', time: '10:30 AM' },
-        { sender: 'hod', text: 'Application received, Hitesh. Your current verified biometric attendance is 43.2%. I am approving your bonafide for official passport documentation. Ensure you attend the remedial sessions regularly.', time: '10:45 AM' }
-      ]
-    },
-    {
-      pin: '24259-AIML-001',
-      name: 'Amancha Rasagna',
-      initials: 'AR',
-      attendance: '43.2%',
-      status: 'Critical Shortage',
-      tag: 'Internship NOC',
-      messages: [
-        { sender: 'student', text: 'Respected HOD Sir, I have an internship offer from Tech Mahindra for AI Research. Requesting an Internship NOC on institutional letterhead.', time: 'Yesterday, 04:15 PM' },
-        { sender: 'hod', text: 'Congratulations Rasagna. Reviewed your curriculum portfolio. NOC request is queued for sign-off. Your request is registered for HOD endorsement.', time: 'Today, 09:15 AM' }
-      ]
-    },
-    {
-      pin: '24259-AIML-010',
-      name: 'Itte Nikhil Teja',
-      initials: 'IN',
-      attendance: '42.0%',
-      status: 'Critical Shortage',
-      tag: 'Bus Pass Form',
-      messages: [
-        { sender: 'student', text: 'Good morning Sir, TSRTC bus pass endorsement form uploaded. Kindly sign off.', time: '2 days ago' },
-        { sender: 'hod', text: 'Validated. Bring the physical printed pass form to the department office for seal verification.', time: 'Yesterday' }
-      ]
-    }
-  ],
-  CS: [
-    {
-      pin: '24259-CS-025',
-      name: 'Karnati Himesh',
-      initials: 'KH',
-      attendance: '38.6%',
-      status: 'Detained Deficit',
-      tag: 'Medical Board Appeal',
-      messages: [
-        { sender: 'student', text: 'Respected Dr. Vamshi Krishna, I have submitted my Medical Board application for attendance condonation (Ref: SC-COND-041). Please consider my hospitalization records.', time: '10:45 AM' },
-        { sender: 'hod', text: 'Application reviewed. Your attendance is at 38.6%, which falls under the statutory detention bracket. Bring the original Civil Surgeon fitness certificate and attendance appeal slip to my chamber at 2:30 PM today.', time: '11:15 AM' }
-      ]
-    },
-    {
-      pin: '24259-CS-040',
-      name: 'Tallapalli Tulasi Ram Goud',
-      initials: 'TT',
-      attendance: '84.5%',
-      status: 'Regular Eligible',
-      tag: 'Bonafide Requisition',
-      messages: [
-        { sender: 'student', text: 'Respected HOD Sir, I have requested an urgent Bonafide Certificate for my passport application. Kindly approve when possible.', time: 'Yesterday' },
-        { sender: 'hod', text: 'Verified your academic profile and 84.5% attendance record. Approval signed off. Pickup token OTP: 584386 issued.', time: 'Today, 09:20 AM' }
-      ]
-    },
-    {
-      pin: '24259-CS-011',
-      name: 'Rahul Verma',
-      initials: 'RV',
-      attendance: '78.4%',
-      status: 'Regular Eligible',
-      tag: 'Infosys Springboard NOC',
-      messages: [
-        { sender: 'student', text: 'Sir, I have received an internship offer from Infosys Springboard. Submitted the NOC requisition.', time: '2 days ago' },
-        { sender: 'hod', text: 'Congratulations Rahul. NOC request has been validated. Collect the official institutional letterhead seal from counter.', time: 'Yesterday' }
-      ]
-    }
-  ]
-};
-
-let activeThread = null;
-
-function initHodMessages() {
+function initMessagesModule() {
   activeDepartment = getActiveDepartment();
-  renderConversationList();
-  bindEmbeddedCardActions();
+  bindDepartmentSwitcher();
+  bindSearchInput();
   bindChatComposer();
+  bindQuickChips();
+  bindMobileBackButton();
+  initWebSocket();
+  loadConversations(activeDepartment);
 }
 
-function renderConversationList() {
-  const container = document.querySelector('aside .flex-col.gap-2\\.5') || document.querySelector('aside .overflow-y-auto');
+function bindDepartmentSwitcher() {
+  const csBtn = document.getElementById('deptCsBtn');
+  const aimlBtn = document.getElementById('deptAimlBtn');
+
+  const updateSwitcherUI = () => {
+    const activeClass = 'px-4 py-1.5 rounded-full text-xs font-bold font-code-mono uppercase tracking-wide transition-all bg-primary text-on-primary shadow-xs cursor-pointer';
+    const inactiveClass = 'px-4 py-1.5 rounded-full text-xs font-bold font-code-mono uppercase tracking-wide transition-all text-on-surface-variant hover:text-on-surface cursor-pointer';
+
+    if (csBtn) csBtn.className = activeDepartment === 'CS' ? activeClass : inactiveClass;
+    if (aimlBtn) aimlBtn.className = activeDepartment === 'AIML' ? activeClass : inactiveClass;
+  };
+
+  csBtn?.addEventListener('click', () => {
+    activeDepartment = 'CS';
+    localStorage.setItem('hod_active_dept', 'CS');
+    updateSwitcherUI();
+    loadConversations('CS');
+    showToast('Switched to CS Department Messages');
+  });
+
+  aimlBtn?.addEventListener('click', () => {
+    activeDepartment = 'AIML';
+    localStorage.setItem('hod_active_dept', 'AIML');
+    updateSwitcherUI();
+    loadConversations('AIML');
+    showToast('Switched to AIML Department Messages');
+  });
+
+  updateSwitcherUI();
+}
+
+function loadConversations(dept) {
+  activeThreads = [...(DEFAULT_CONVERSATIONS[dept] || DEFAULT_CONVERSATIONS.CS)];
+
+  const countBadge = document.getElementById('activeThreadsCount');
+  if (countBadge) countBadge.textContent = `${activeThreads.length} Active`;
+
+  renderThreadList();
+
+  // Automatically select first thread
+  if (activeThreads.length > 0) {
+    selectThread(activeThreads[0]);
+  }
+}
+
+function bindSearchInput() {
+  const searchInput = document.getElementById('threadSearch');
+  searchInput?.addEventListener('input', () => {
+    renderThreadList();
+  });
+
+  document.getElementById('btnRefreshThreads')?.addEventListener('click', () => {
+    loadConversations(activeDepartment);
+    showToast('Refreshed conversations');
+  });
+}
+
+function renderThreadList() {
+  const container = document.getElementById('threadsListContainer');
   if (!container) return;
 
-  const list = THREADS_DB[activeDepartment] || THREADS_DB.AIML;
-  activeThread = list[0];
+  const query = (document.getElementById('threadSearch')?.value || '').toLowerCase().trim();
 
-  container.innerHTML = list.map((item, idx) => {
-    const isSelected = idx === 0;
-    const lastMsg = item.messages[item.messages.length - 1];
+  const filtered = activeThreads.filter(t => {
+    if (!query) return true;
+    return (t.name || '').toLowerCase().includes(query) ||
+           (t.pin || '').toLowerCase().includes(query) ||
+           (t.tag || '').toLowerCase().includes(query);
+  });
+
+  if (filtered.length === 0) {
+    container.innerHTML = `
+      <div class="p-6 text-center text-on-surface-variant text-xs">
+        <span class="material-symbols-outlined text-3xl mb-1 text-outline">search_off</span>
+        <div>No matching conversations</div>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = filtered.map(t => {
+    const isSelected = activeStudent && activeStudent.pin === t.pin;
+    const selectedClass = isSelected
+      ? 'bg-primary-container/20 border-primary-fixed/40 shadow-xs'
+      : 'bg-surface-container-low hover:bg-surface-container-high/60 border-hairline';
 
     return `
-      <article class="conversation-thread-item ${isSelected ? 'bg-emerald-50/90 border-emerald-500/70 shadow-md' : 'bg-white/60 hover:bg-white'} rounded-2xl p-3.5 cursor-pointer transition-all border border-stone-200/60"
-               data-pin="${item.pin}" data-idx="${idx}">
-        <div class="flex items-start gap-3">
-          <div class="relative shrink-0">
-            <div class="w-11 h-11 rounded-full bg-[#003519] text-emerald-200 font-dg text-lg font-black flex items-center justify-center shadow-inner font-mono">
-              ${item.initials}
-            </div>
-            <span class="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-emerald-500 ring-2 ring-white"></span>
+      <article class="thread-item ${selectedClass} rounded-2xl p-3.5 cursor-pointer transition-all border flex items-start gap-3"
+               data-pin="${t.pin}">
+        <div class="relative shrink-0">
+          <div class="w-10 h-10 rounded-full bg-primary-container text-on-primary-container font-code-mono text-xs font-bold flex items-center justify-center border border-hairline">
+            ${t.initials}
           </div>
-          <div class="flex-1 min-w-0">
-            <div class="flex items-center justify-between gap-1">
-              <h3 class="font-dg text-lg font-bold text-on-surface truncate">
-                ${escapeHtml(item.name)}
-              </h3>
-              <span class="font-mono text-[11px] text-stone-500 shrink-0">${lastMsg ? lastMsg.time : ''}</span>
-            </div>
-            <div class="flex items-center gap-1.5 mb-1">
-              <span class="font-mono text-xs text-stone-500">PIN: ${item.pin}</span>
-              <span class="w-1 h-1 rounded-full bg-stone-300"></span>
-              <span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-900 font-dg text-[11px] font-bold uppercase tracking-wider">
-                ${item.tag}
-              </span>
-            </div>
-            <p class="font-dg text-sm text-stone-600 line-clamp-1 font-medium thread-preview-text">
-              ${lastMsg ? escapeHtml(lastMsg.text) : ''}
-            </p>
+          <span class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 ring-2 ring-surface-container"></span>
+        </div>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center justify-between gap-1">
+            <h4 class="font-bold text-on-surface text-xs sm:text-sm truncate">
+              ${escapeHtml(t.name)}
+            </h4>
+            <span class="font-code-mono-sm text-[10px] text-on-surface-variant shrink-0">${t.lastTime}</span>
           </div>
+          <div class="flex items-center gap-1.5 mt-0.5 mb-1">
+            <span class="font-code-mono-sm text-[10px] text-on-surface-variant">${t.pin}</span>
+            <span class="w-1 h-1 rounded-full bg-hairline"></span>
+            <span class="px-1.5 py-0.2 rounded-full bg-surface-container-high text-primary-fixed font-code-mono-sm text-[9px] font-bold">
+              ${escapeHtml(t.tag)}
+            </span>
+          </div>
+          <p class="text-xs text-on-surface-variant line-clamp-1 leading-normal font-sans">
+            ${escapeHtml(t.lastMessage)}
+          </p>
         </div>
       </article>
     `;
   }).join('');
 
-  bindThreadSwitching();
-  updateChatView(activeThread);
-}
-
-function bindThreadSwitching() {
-  const threads = document.querySelectorAll('.conversation-thread-item');
-  threads.forEach((thread) => {
-    thread.addEventListener('click', () => {
-      threads.forEach(t => {
-        t.classList.remove('bg-emerald-50/90', 'border-emerald-500/70', 'shadow-md');
-        t.classList.add('bg-white/60');
-      });
-      thread.classList.add('bg-emerald-50/90', 'border-emerald-500/70', 'shadow-md');
-      thread.classList.remove('bg-white/60');
-
-      const pin = thread.getAttribute('data-pin');
-      const list = THREADS_DB[activeDepartment] || THREADS_DB.AIML;
-      const found = list.find(it => it.pin === pin);
+  container.querySelectorAll('.thread-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const pin = item.getAttribute('data-pin');
+      const found = activeThreads.find(t => t.pin === pin);
       if (found) {
-        activeThread = found;
-        updateChatView(found);
-        showToast(`Switched active thread to ${found.name} (${found.pin})`);
+        selectThread(found);
+
+        // Mobile responsiveness: show chat workspace panel, hide left panel
+        if (window.innerWidth < 1024) {
+          const convPanel = document.getElementById('conversationsPanel');
+          const chatPanel = document.getElementById('chatWorkspacePanel');
+          if (convPanel) convPanel.classList.add('hidden');
+          if (chatPanel) {
+            chatPanel.classList.remove('hidden');
+            chatPanel.classList.add('flex');
+          }
+        }
       }
     });
   });
 }
 
-function updateChatView(item) {
-  if (!item) return;
+function bindMobileBackButton() {
+  const backBtn = document.getElementById('btnBackToThreads');
+  backBtn?.addEventListener('click', () => {
+    const convPanel = document.getElementById('conversationsPanel');
+    const chatPanel = document.getElementById('chatWorkspacePanel');
+    if (chatPanel) {
+      chatPanel.classList.add('hidden');
+      chatPanel.classList.remove('flex');
+    }
+    if (convPanel) {
+      convPanel.classList.remove('hidden');
+    }
+  });
+}
 
-  // Header
-  const headerName = document.querySelector('section h3.font-bold') || document.querySelector('header h3');
-  if (headerName) headerName.textContent = item.name;
+async function selectThread(student) {
+  activeStudent = student;
+  renderThreadList();
 
-  const headerPin = document.querySelector('section p.font-mono') || document.querySelector('header p.font-mono');
-  if (headerPin) headerPin.textContent = `${item.pin} • Scheme C-24 • Dept of ${activeDepartment}`;
+  const avatar = document.getElementById('chatHeaderAvatar');
+  const nameEl = document.getElementById('chatHeaderName');
+  const metaEl = document.getElementById('chatHeaderMeta');
+  const tagEl = document.getElementById('chatHeaderTag');
+  const dossierLink = document.getElementById('chatViewLedgerLink');
 
-  // Messages Box
-  const chatContainer = document.querySelector('main .space-y-4') || document.getElementById('chatMessagesBox') || document.querySelector('section.flex-col .overflow-y-auto');
-  if (!chatContainer) return;
+  if (avatar) avatar.textContent = student.initials;
+  if (nameEl) nameEl.textContent = student.name;
+  if (metaEl) metaEl.textContent = `${student.pin} • Scheme C-24 • Dept of ${activeDepartment}`;
+  if (tagEl) tagEl.textContent = student.tag;
+  if (dossierLink) dossierLink.href = `./students-info.html?search=${encodeURIComponent(student.pin)}`;
 
-  chatContainer.innerHTML = `
-    <!-- Encryption Banner -->
-    <div class="flex items-center justify-center my-2">
-      <span class="px-3 py-1 rounded-full bg-stone-100 text-stone-600 font-mono text-[11px] flex items-center gap-1.5 border border-stone-200">
-        <span class="material-symbols-outlined text-[13px] text-emerald-700">lock</span>
-        Zero-Trust Institutional Encrypted Channel (SBTET Gateway TLS 1.3)
-      </span>
-    </div>
+  await loadChatHistory(student);
+}
 
-    <!-- Embedded Application Card -->
-    <div class="bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-200 rounded-2xl p-4 my-3 shadow-xs">
-      <div class="flex items-start justify-between gap-3">
-        <div>
-          <span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-900 font-mono text-xs font-bold">
-            Formal Application Requisition
-          </span>
-          <h4 class="font-bold text-slate-900 text-sm mt-1">${item.tag} (Online Submittal)</h4>
-          <p class="text-xs text-slate-600 mt-0.5">Live SBTET Attendance: <strong class="text-emerald-800 font-mono">${item.attendance}</strong> &bull; Status: <strong class="text-slate-800">${item.status}</strong></p>
-        </div>
-        <a href="./document-approvals.html?pin=${encodeURIComponent(item.pin)}" 
-           class="px-3.5 py-1.5 rounded-full bg-[#003519] hover:bg-[#022c22] text-white text-xs font-bold transition shadow-sm shrink-0 flex items-center gap-1">
-          <span>Review &amp; Sign Off in Console →</span>
-        </a>
-      </div>
-    </div>
+async function loadChatHistory(student) {
+  const chatBox = document.getElementById('chatMessagesBox');
+  if (!chatBox) return;
 
-    <!-- Chat Bubbles -->
-    <div id="threadBubblesContainer" class="space-y-3">
-      ${item.messages.map(m => {
-        const isHod = m.sender === 'hod';
-        return `
-          <div class="flex flex-col ${isHod ? 'items-end' : 'items-start'}">
-            <div class="${isHod ? 'bg-[#003519] text-white rounded-br-none' : 'bg-white border border-stone-200 text-slate-900 rounded-bl-none'} max-w-lg rounded-2xl px-4 py-2.5 shadow-xs">
-              <p class="text-sm font-sans">${escapeHtml(m.text)}</p>
-            </div>
-            <span class="font-mono text-[10px] text-stone-500 mt-1 px-1">${m.time} &bull; ${isHod ? (activeDepartment === 'AIML' ? 'Prof. Padma (HOD)' : 'Dr. Vamshi (HOD)') : escapeHtml(item.name)}</span>
-          </div>
-        `;
-      }).join('')}
+  chatBox.innerHTML = `
+    <div class="py-10 text-center text-on-surface-variant text-xs">
+      <span class="material-symbols-outlined text-2xl animate-spin mb-1">progress_activity</span>
+      <div>Connecting secure channel...</div>
     </div>
   `;
 
-  chatContainer.scrollTop = chatContainer.scrollHeight;
+  const hod = DEPARTMENT_HOD_INFO[activeDepartment] || DEPARTMENT_HOD_INFO.CS;
+  let messages = [];
+
+  try {
+    const res = await fetch(`/api/v1/messages/history?user_pin=${encodeURIComponent(hod.pin)}&other_pin=${encodeURIComponent(student.pin)}`);
+    if (res.ok) {
+      const data = await res.json();
+      if (data && Array.isArray(data.messages) && data.messages.length > 0) {
+        messages = data.messages;
+      }
+    }
+  } catch (_) {}
+
+  // If server history is empty, populate with initial welcome/context messages
+  if (messages.length === 0) {
+    messages = [
+      {
+        sender_pin: student.pin,
+        sender_name: student.name,
+        content: student.lastMessage,
+        timestamp: new Date().toISOString()
+      },
+      {
+        sender_pin: hod.pin,
+        sender_name: hod.name,
+        content: `Application logged in the ${activeDepartment === 'AIML' ? 'AI & Machine Learning' : 'Computer Science & Engineering'} executive queue. Review in progress.`,
+        timestamp: new Date().toISOString()
+      }
+    ];
+  }
+
+  renderChatBubbles(messages, hod.pin);
 }
 
-function bindEmbeddedCardActions() {
-  document.querySelectorAll('a, button').forEach(el => {
-    if (el.textContent.includes('Review & Sign Off in Console')) {
-      el.addEventListener('click', (e) => {
-        e.preventDefault();
-        const pin = activeThread ? activeThread.pin : '24259-AIML-119';
-        window.location.href = `./document-approvals.html?pin=${encodeURIComponent(pin)}`;
-      });
+function renderChatBubbles(messages, hodPin) {
+  const chatBox = document.getElementById('chatMessagesBox');
+  if (!chatBox) return;
+
+  chatBox.innerHTML = messages.map(msg => {
+    const isHod = msg.sender_pin === hodPin || msg.sender_pin.includes('HOD') || (msg.sender_name && msg.sender_name.includes('HOD'));
+    const timeFormatted = formatTime(msg.timestamp);
+
+    if (isHod) {
+      // Outgoing message bubble from HOD
+      return `
+        <div class="flex flex-col items-end gap-1">
+          <div class="flex items-center gap-1.5 text-[10px] text-on-surface-variant font-code-mono pr-1">
+            <span class="font-bold text-primary-fixed">Executive Reply</span>
+            <span>·</span>
+            <span>${timeFormatted}</span>
+          </div>
+          <div class="max-w-[85%] sm:max-w-[70%] p-3.5 rounded-2xl rounded-tr-xs bg-primary-container text-on-primary-container text-xs font-medium shadow-xs leading-relaxed border border-primary-container/40">
+            ${escapeHtml(msg.content)}
+          </div>
+        </div>
+      `;
+    } else {
+      // Incoming student message
+      return `
+        <div class="flex flex-col items-start gap-1">
+          <div class="flex items-center gap-1.5 text-[10px] text-on-surface-variant font-code-mono pl-1">
+            <span class="font-bold text-on-surface">${escapeHtml(msg.sender_name || activeStudent.name)}</span>
+            <span>·</span>
+            <span>${timeFormatted}</span>
+          </div>
+          <div class="max-w-[85%] sm:max-w-[70%] p-3.5 rounded-2xl rounded-tl-xs bg-surface-container-high text-on-surface text-xs shadow-xs leading-relaxed border border-hairline">
+            ${escapeHtml(msg.content)}
+          </div>
+        </div>
+      `;
     }
-  });
+  }).join('');
+
+  scrollChatToBottom();
+}
+
+function scrollChatToBottom() {
+  const chatBox = document.getElementById('chatMessagesBox');
+  if (chatBox) {
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }
+}
+
+function formatTime(isoStr) {
+  if (!isoStr) return 'Just now';
+  try {
+    const d = new Date(isoStr);
+    return d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+  } catch (_) {
+    return 'Just now';
+  }
 }
 
 function bindChatComposer() {
-  const input = document.querySelector('footer input[type="text"]') || 
-                document.querySelector('input[placeholder*="Type an official directive"]') ||
-                document.querySelector('input[placeholder*="Type a message"]');
-  const sendBtn = document.querySelector('footer button') || document.getElementById('sendMessageBtn');
+  const form = document.getElementById('chatComposerForm');
+  const input = document.getElementById('messageInput');
 
-  if (!input || !sendBtn) return;
-
-  function doSend() {
-    const text = input.value.trim();
-    if (!text || !activeThread) return;
-
-    const now = new Date();
-    const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-    // Append to active thread
-    activeThread.messages.push({
-      sender: 'hod',
-      text: text,
-      time: timeStr
-    });
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const text = (input?.value || '').trim();
+    if (!text || !activeStudent) return;
 
     input.value = '';
+    const hod = DEPARTMENT_HOD_INFO[activeDepartment] || DEPARTMENT_HOD_INFO.CS;
 
-    // Render new bubble
-    const bubblesContainer = document.getElementById('threadBubblesContainer');
-    if (bubblesContainer) {
-      const bubble = document.createElement('div');
-      bubble.className = 'flex flex-col items-end';
-      const hodTitle = activeDepartment === 'AIML' ? 'Prof. Padma (HOD)' : 'Dr. Vamshi (HOD)';
-      bubble.innerHTML = `
-        <div class="bg-[#003519] text-white rounded-2xl rounded-br-none max-w-lg px-4 py-2.5 shadow-xs">
-          <p class="text-sm font-sans">${escapeHtml(text)}</p>
-        </div>
-        <span class="font-mono text-[10px] text-stone-500 mt-1 px-1">${timeStr} &bull; ${hodTitle}</span>
-      `;
-      bubblesContainer.appendChild(bubble);
+    // Optimistically render message bubble in chat box
+    appendOutgoingBubble(text, hod.pin);
 
-      const chatBox = bubblesContainer.closest('.overflow-y-auto');
-      if (chatBox) chatBox.scrollTop = chatBox.scrollHeight;
-    }
+    // Update thread preview
+    activeStudent.lastMessage = text;
+    activeStudent.lastTime = 'Just now';
+    renderThreadList();
 
-    if (navigator.vibrate) navigator.vibrate(12);
-    showToast(`Official directive dispatched to ${activeThread.name} (${activeThread.pin})`);
-  }
+    try {
+      const res = await fetch('/api/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          sender_pin: hod.pin,
+          sender_name: hod.name,
+          receiver_pin: activeStudent.pin,
+          receiver_name: activeStudent.name,
+          content: text,
+          category: 'DIRECT'
+        })
+      });
 
-  sendBtn.addEventListener('click', (e) => {
-    e.preventDefault();
-    doSend();
-  });
-
-  input.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      doSend();
+      if (res.ok) {
+        showToast('Message dispatched');
+      }
+    } catch (err) {
+      console.error('Failed to dispatch message:', err);
     }
   });
 }
 
-function checkUrlParams() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const pin = urlParams.get('pin');
-  if (!pin) return;
+function appendOutgoingBubble(text, hodPin) {
+  const chatBox = document.getElementById('chatMessagesBox');
+  if (!chatBox) return;
+
+  const bubble = document.createElement('div');
+  bubble.className = 'flex flex-col items-end gap-1';
+  bubble.innerHTML = `
+    <div class="flex items-center gap-1.5 text-[10px] text-on-surface-variant font-code-mono pr-1">
+      <span class="font-bold text-primary-fixed">Executive Reply</span>
+      <span>·</span>
+      <span>${formatTime(new Date().toISOString())}</span>
+    </div>
+    <div class="max-w-[85%] sm:max-w-[70%] p-3.5 rounded-2xl rounded-tr-xs bg-primary-container text-on-primary-container text-xs font-medium shadow-xs leading-relaxed border border-primary-container/40">
+      ${escapeHtml(text)}
+    </div>
+  `;
+  chatBox.appendChild(bubble);
+  scrollChatToBottom();
+}
+
+function bindQuickChips() {
+  document.querySelectorAll('.quick-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      const text = chip.getAttribute('data-text');
+      const input = document.getElementById('messageInput');
+      if (input && text) {
+        input.value = text;
+        input.focus();
+      }
+    });
+  });
+}
+
+function initWebSocket() {
+  const hod = DEPARTMENT_HOD_INFO[activeDepartment] || DEPARTMENT_HOD_INFO.CS;
+  const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+  const wsUrl = `${protocol}//${window.location.host}/ws?pin=${encodeURIComponent(hod.pin)}&name=${encodeURIComponent(hod.name)}`;
+
+  try {
+    ws = new WebSocket(wsUrl);
+
+    ws.onopen = () => {
+      const textEl = document.getElementById('socketStatusText');
+      if (textEl) textEl.textContent = 'Socket: Active';
+    };
+
+    ws.onmessage = (event) => {
+      try {
+        const payload = JSON.parse(event.data);
+        if (payload.type === 'NEW_MESSAGE' && payload.message) {
+          handleIncomingMessage(payload.message);
+        }
+      } catch (_) {}
+    };
+
+    ws.onerror = () => {
+      const textEl = document.getElementById('socketStatusText');
+      if (textEl) textEl.textContent = 'Socket: Reconnecting';
+    };
+
+    ws.onclose = () => {
+      const textEl = document.getElementById('socketStatusText');
+      if (textEl) textEl.textContent = 'Socket: Offline';
+      setTimeout(initWebSocket, 5000);
+    };
+  } catch (_) {}
+}
+
+function handleIncomingMessage(msg) {
+  const senderPin = (msg.sender_pin || '').toUpperCase();
+
+  // If message is from current student thread
+  if (activeStudent && activeStudent.pin.toUpperCase() === senderPin) {
+    const chatBox = document.getElementById('chatMessagesBox');
+    if (chatBox) {
+      const bubble = document.createElement('div');
+      bubble.className = 'flex flex-col items-start gap-1';
+      bubble.innerHTML = `
+        <div class="flex items-center gap-1.5 text-[10px] text-on-surface-variant font-code-mono pl-1">
+          <span class="font-bold text-on-surface">${escapeHtml(msg.sender_name || activeStudent.name)}</span>
+          <span>·</span>
+          <span>${formatTime(msg.timestamp)}</span>
+        </div>
+        <div class="max-w-[85%] sm:max-w-[70%] p-3.5 rounded-2xl rounded-tl-xs bg-surface-container-high text-on-surface text-xs shadow-xs leading-relaxed border border-hairline">
+          ${escapeHtml(msg.content)}
+        </div>
+      `;
+      chatBox.appendChild(bubble);
+      scrollChatToBottom();
+    }
+  }
+
+  // Update thread list preview
+  const thread = activeThreads.find(t => t.pin.toUpperCase() === senderPin);
+  if (thread) {
+    thread.lastMessage = msg.content;
+    thread.lastTime = formatTime(msg.timestamp);
+    renderThreadList();
+  }
+}
+
+function showToast(message) {
+  const toast = document.getElementById('toast');
+  const toastMsg = document.getElementById('toastMessage');
+  if (!toast || !toastMsg) return;
+
+  toastMsg.textContent = message;
+  toast.classList.remove('translate-y-20', 'opacity-0');
+  toast.classList.add('translate-y-0', 'opacity-100');
 
   setTimeout(() => {
-    const list = THREADS_DB[activeDepartment] || THREADS_DB.AIML;
-    let found = list.find(it => it.pin.toUpperCase() === pin.toUpperCase());
-    if (!found) {
-      // Create ad-hoc thread
-      found = {
-        pin: pin,
-        name: urlParams.get('name') || 'Student Candidate',
-        initials: 'ST',
-        attendance: '42.5%',
-        status: 'Active Enrolled',
-        tag: 'Official Query',
-        messages: [
-          { sender: 'student', text: `Respected HOD, regarding my attendance and marks trajectory for PIN ${pin}.`, time: 'Just now' }
-        ]
-      };
-      list.push(found);
-      renderConversationList();
-    }
-    activeThread = found;
-    updateChatView(found);
-  }, 200);
+    toast.classList.add('translate-y-20', 'opacity-0');
+    toast.classList.remove('translate-y-0', 'opacity-100');
+  }, 2600);
 }
 
 function escapeHtml(str) {
   if (!str) return '';
-  const p = document.createElement('p');
-  p.textContent = str;
-  return p.innerHTML;
-}
-
-function initHelpDeskLinks() {
-  document.querySelectorAll('a, button').forEach(el => {
-    const txt = (el.textContent || '').toLowerCase();
-    const href = el.getAttribute('href') || '';
-    if (txt.includes('help desk') || txt.includes('helpdesk') || txt.includes('need help') || href.includes('help')) {
-      el.addEventListener('click', (e) => {
-        e.preventDefault();
-        window.location.href = '/screens/02-student-portal/helpdesk.html';
-      });
-    }
-  });
-}
-
-function showToast(message) {
-  let toast = document.getElementById('campusToast');
-  if (!toast) {
-    toast = document.createElement('div');
-    toast.id = 'campusToast';
-    toast.className = 'fixed bottom-6 right-6 z-[65000] px-4 py-3 rounded-2xl bg-slate-900/95 text-white text-xs font-semibold shadow-xl border border-white/10 backdrop-blur-md transform transition-all duration-300 translate-y-8 opacity-0 pointer-events-none flex items-center gap-2.5';
-    document.body.appendChild(toast);
-  }
-  toast.innerHTML = `<span class="material-symbols-outlined text-emerald-400 text-[18px]">verified</span><span>${message}</span>`;
-  toast.classList.remove('translate-y-8', 'opacity-0', 'pointer-events-none');
-  clearTimeout(toast._timeout);
-  toast._timeout = setTimeout(() => {
-    toast.classList.add('translate-y-8', 'opacity-0', 'pointer-events-none');
-  }, 3200);
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }

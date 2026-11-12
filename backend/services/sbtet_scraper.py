@@ -11,6 +11,7 @@ class SBTETScraperService:
     SBTET Scraper and Live Data Bridge for sbtetconnect.app.
     Supports multi-department (CSE and AIML) high-speed multi-gateway failover,
     biometric attendance, and consolidated marksheet/backlogs across semesters under C-24 scheme.
+    Strictly eliminates fabricated defaults (0 / 88 days, 0.0%, CGPA 0.00).
     """
 
     GATEWAY_URLS = [
@@ -97,6 +98,8 @@ class SBTETScraperService:
                         s_info = res_c.json().get("student", {})
                         if s_info.get("StudentName"):
                             name = s_info.get("StudentName")
+                        elif s_info.get("Name"):
+                            name = s_info.get("Name")
                         if s_info.get("BranchCode"):
                             raw_branch = s_info.get("BranchCode")
 
@@ -120,8 +123,9 @@ class SBTETScraperService:
 
     async def scrape_attendance(self, pin: str) -> Dict[str, Any]:
         """
-        Scrapes live biometric attendance, working days, present days,
+        Scrapes live biometric attendance, elapsed working days, present days,
         monthly matrices, and trend data with gateway failover.
+        Rejects fabricated zero/88 defaults.
         """
         clean_pin = self._clean_pin(pin)
         gw_pin = self._gateway_pin(clean_pin)
@@ -131,38 +135,60 @@ class SBTETScraperService:
             try:
                 res = await self._fetch_with_failover(client, path)
                 if not res:
-                    return {"success": False, "pin": clean_pin, "error": "Gateway unavailable"}
+                    return {
+                        "success": False,
+                        "has_data": False,
+                        "pin": clean_pin,
+                        "error_code": "GATEWAY_TIMEOUT",
+                        "error": "Gateway connection timed out or unreachable"
+                    }
                 if res.status_code == 404:
-                    return {"success": False, "pin": clean_pin, "error": "PIN not found"}
+                    return {
+                        "success": False,
+                        "has_data": False,
+                        "pin": clean_pin,
+                        "error_code": "NO_ATTENDANCE_RECORD",
+                        "error": "PIN not registered on SBTET attendance database"
+                    }
                 raw = res.json().get("data", {})
             except Exception as e:
-                return {"success": False, "pin": clean_pin, "error": str(e)}
+                return {
+                    "success": False,
+                    "has_data": False,
+                    "pin": clean_pin,
+                    "error_code": "NETWORK_EXCEPTION",
+                    "error": str(e)
+                }
 
         table = raw.get("Table", [])
         if not table:
-            return {"success": False, "pin": clean_pin, "error": "No attendance records"}
+            return {
+                "success": False,
+                "has_data": False,
+                "pin": clean_pin,
+                "error_code": "NO_ATTENDANCE_RECORD",
+                "error": "No biometric attendance records found at SBTET gateway"
+            }
 
         summary = table[0]
-        working_days = float(summary.get("WorkingDays") or summary.get("TotalWorkingDays") or 88)
-        days_present = float(summary.get("NumberOfDaysPresent") or 0)
-        percentage = float(summary.get("Percentage") or summary.get("TotalPercentage") or 0)
-
-        if working_days <= 0:
-            return {"success": False, "pin": clean_pin, "error": "Invalid working days"}
-
-        if percentage == 0 and working_days > 0 and days_present > 0:
-            percentage = round((days_present / working_days) * 100, 2)
-
-        total_sem_days = int(summary.get("TotalWorkingDays") or summary.get("ExamsWorkingDays") or 90)
-        remaining_days = max(0, total_sem_days - int(working_days))
-        status_text = "Eligible" if percentage >= 75.0 else ("Condonation (65-75%)" if percentage >= 65.0 else "Shortage / Detention Risk")
-
         table1 = raw.get("Table1", [])
+
+        # Extract daily records from Table1
+        p_count = 0
+        a_count = 0
         monthly_logs_map: Dict[str, List[Dict[str, Any]]] = {}
         month_present_counts: Dict[str, int] = {}
         month_working_counts: Dict[str, int] = {}
 
         for row in table1:
+            st = (row.get("Status") or "").strip().upper()
+            is_p = st == "P"
+            is_a = st == "A"
+            if is_p:
+                p_count += 1
+            if is_a:
+                a_count += 1
+
             m_name = (row.get("AttendanceMonth") or "").strip().lower()
             if m_name:
                 if m_name not in monthly_logs_map:
@@ -171,9 +197,6 @@ class SBTETScraperService:
                     month_working_counts[m_name] = 0
 
                 day_num = int(row.get("Day") or 1)
-                st = row.get("Status", "A")
-                is_p = st == "P"
-                is_a = st == "A"
                 if is_p:
                     month_present_counts[m_name] += 1
                 if is_p or is_a:
@@ -187,6 +210,39 @@ class SBTETScraperService:
                     "absent": is_a
                 })
 
+        # Calculate true elapsed days and attendance percentage
+        elapsed_days = p_count + a_count
+        raw_working = float(summary.get("WorkingDays") or summary.get("TotalWorkingDays") or 180)
+        raw_present = float(summary.get("NumberOfDaysPresent") or 0)
+
+        if elapsed_days > 0:
+            present_days = p_count
+            working_days = elapsed_days
+            percentage = round((present_days / working_days) * 100, 2)
+        else:
+            present_days = int(raw_present)
+            working_days = int(raw_working)
+            percentage = round((present_days / max(1, working_days)) * 100, 2)
+
+        # Validation Barrier: reject impossible values
+        if working_days <= 0 or present_days < 0 or present_days > working_days or percentage < 0.0 or percentage > 100.0:
+            return {
+                "success": False,
+                "has_data": False,
+                "pin": clean_pin,
+                "error_code": "INVALID_ATTENDANCE_METRICS",
+                "error": f"Invalid biometric metrics: {present_days} present of {working_days} days ({percentage}%)"
+            }
+
+        total_sem_days = int(summary.get("TotalWorkingDays") or summary.get("ExamsWorkingDays") or 180)
+        remaining_days = max(0, total_sem_days - int(working_days))
+        status_text = "Eligible" if percentage >= 75.0 else ("Condonation (65-75%)" if percentage >= 65.0 else "Shortage / Detention Risk")
+
+        # Official exam accredited metrics from SBTET
+        exams_ndp = summary.get("ExamsNDP")
+        exams_per = summary.get("ExamsPer")
+        exams_attendance_pct = float(exams_per) if exams_per is not None else None
+
         months_ordered = ["june", "july", "august", "september", "october"]
         chart_labels = []
         chart_attendance_pcts = []
@@ -195,8 +251,8 @@ class SBTETScraperService:
             if m in monthly_logs_map:
                 chart_labels.append(m.capitalize())
                 w_count = month_working_counts.get(m, 1)
-                p_count = month_present_counts.get(m, 0)
-                m_pct = round((p_count / w_count) * 100, 1) if w_count > 0 else 0.0
+                p_c = month_present_counts.get(m, 0)
+                m_pct = round((p_c / w_count) * 100, 1) if w_count > 0 else 0.0
                 chart_attendance_pcts.append(m_pct)
 
         raw_name = summary.get("Name")
@@ -209,6 +265,7 @@ class SBTETScraperService:
 
         return {
             "success": True,
+            "has_data": True,
             "pin": clean_pin,
             "name": student_name,
             "college_code": summary.get("CollegeCode", "259"),
@@ -217,25 +274,29 @@ class SBTETScraperService:
             "scheme": summary.get("Scheme", "C24"),
             "semester": "5th Sem",
             "workingDays": int(working_days),
-            "presentDays": int(days_present),
-            "absentDays": max(0, int(working_days - days_present)),
+            "presentDays": int(present_days),
+            "absentDays": max(0, int(working_days - present_days)),
             "remainingDays": remaining_days,
             "totalSemesterDays": total_sem_days,
             "attendancePercentage": percentage,
+            "examsAttendancePct": exams_attendance_pct,
+            "examsNDP": float(exams_ndp) if exams_ndp is not None else None,
             "metrics": {
                 "working_days": int(working_days),
-                "days_present": int(days_present),
-                "days_absent": max(0, int(working_days - days_present)),
+                "total_semester_days": total_sem_days,
+                "days_present": int(present_days),
+                "days_absent": max(0, int(working_days - present_days)),
                 "percentage": f"{percentage:.2f}%",
                 "percentage_value": percentage,
+                "exams_percentage": f"{exams_attendance_pct:.2f}%" if exams_attendance_pct is not None else None,
                 "status": status_text,
                 "is_eligible": percentage >= 75.0,
-                "days_needed_for_75": max(0, int(round((working_days * 0.75) - days_present)))
+                "days_needed_for_75": max(0, int(round((working_days * 0.75) - present_days)))
             },
             "monthlyLogs": monthly_logs_map,
             "chart_data": {
                 "labels": chart_labels or ["June", "July", "August", "September", "October"],
-                "data": chart_attendance_pcts or [45.0, 40.0, 38.0, 39.0, 38.6]
+                "data": chart_attendance_pcts or [percentage]
             },
             "source": "SBTET_LIVE_GATEWAY"
         }
@@ -244,6 +305,7 @@ class SBTETScraperService:
         """
         Scrapes live consolidated semester marksheet, CGPA, total credits,
         and backlogs breakdown across all historical semesters under C-24 scheme.
+        Rejects fabricated 0.00 CGPA defaults.
         """
         clean_pin = self._clean_pin(pin)
         gw_pin = self._gateway_pin(clean_pin)
@@ -254,20 +316,46 @@ class SBTETScraperService:
             try:
                 res = await self._fetch_with_failover(client, path)
                 if not res:
-                    return {"success": False, "pin": clean_pin, "error": "Gateway unavailable"}
+                    return {
+                        "success": False,
+                        "has_data": False,
+                        "pin": clean_pin,
+                        "error_code": "GATEWAY_TIMEOUT",
+                        "error": "Gateway connection timed out or unreachable"
+                    }
                 if res.status_code == 404:
-                    return {"success": False, "pin": clean_pin, "error": "No marksheet found"}
+                    return {
+                        "success": False,
+                        "has_data": False,
+                        "pin": clean_pin,
+                        "error_code": "NO_RESULTS_RECORD",
+                        "error": "No marksheet found on SBTET portal"
+                    }
                 raw = res.json()
             except Exception as e:
-                return {"success": False, "pin": clean_pin, "error": str(e)}
+                return {
+                    "success": False,
+                    "has_data": False,
+                    "pin": clean_pin,
+                    "error_code": "NETWORK_EXCEPTION",
+                    "error": str(e)
+                }
 
         summary = raw.get("summary", {})
         subjects = raw.get("subjects", [])
         semester_summary = raw.get("semesterSummary", [])
         student_info = raw.get("student", {})
 
-        if not summary and not subjects:
-            return {"success": False, "pin": clean_pin, "error": "No marksheet data found from gateway"}
+        # Validation Barrier: if both summary and subjects are empty, or summary has only None values and no subjects
+        has_real_summary = any(v is not None for v in summary.values()) if isinstance(summary, dict) else False
+        if (not has_real_summary and not subjects) or (summary.get("CGPA") is None and not subjects and not student_info.get("StudentName") and not student_info.get("Name")):
+            return {
+                "success": False,
+                "has_data": False,
+                "pin": clean_pin,
+                "error_code": "NO_RESULTS_RECORD",
+                "error": "No marksheet data found from gateway"
+            }
 
         semesters_map: Dict[str, Any] = {}
         available_semesters: List[str] = []
@@ -311,11 +399,23 @@ class SBTETScraperService:
 
         available_semesters.sort(key=lambda s: int(''.join(filter(str.isdigit, s))) if any(c.isdigit() for c in s) else 0)
 
-        raw_cgpa = summary.get("CGPA") or summary.get("cgpa") or 0.0
-        try:
-            cgpa_val = round(float(raw_cgpa), 2)
-        except (ValueError, TypeError):
-            cgpa_val = 0.0
+        raw_cgpa = summary.get("CGPA") or summary.get("cgpa")
+        cgpa_val: Optional[float] = None
+        if raw_cgpa is not None:
+            try:
+                cgpa_candidate = round(float(raw_cgpa), 2)
+                if 0.0 <= cgpa_candidate <= 10.0:
+                    cgpa_val = cgpa_candidate
+                else:
+                    return {
+                        "success": False,
+                        "has_data": False,
+                        "pin": clean_pin,
+                        "error_code": "INVALID_CGPA",
+                        "error": f"CGPA value out of valid bounds: {cgpa_candidate}"
+                    }
+            except (ValueError, TypeError):
+                cgpa_val = None
 
         backlogs_count = int(len(backlogs))
         credits_gained = float(summary.get("CreditsGained", 0.0) or 0.0)
@@ -332,16 +432,18 @@ class SBTETScraperService:
             "promotionStatus": "Promoted" if backlogs_count == 0 else f"{backlogs_count} Backlogs"
         }
 
-        raw_student_name = student_info.get("Name")
+        # Proper student name extraction
+        raw_student_name = student_info.get("StudentName") or student_info.get("Name")
         student_name = raw_student_name.strip() if raw_student_name else None
 
-        raw_branch = (student_info.get("Branch_Code") or "").strip().upper()
+        raw_branch = (student_info.get("Branch_Code") or student_info.get("BranchCode") or "").strip().upper()
         if not raw_branch:
             raw_branch = "AIML" if "-AIML-" in clean_pin else "CS"
         branch = "AIML" if raw_branch in ["AIML", "AI"] else raw_branch
 
         return {
             "success": True,
+            "has_data": True,
             "studentName": student_name,
             "pin": clean_pin,
             "scheme": scheme_clean,
@@ -363,8 +465,12 @@ class SBTETScraperService:
     async def scrape_student_complete(self, pin: str, scheme: str = "C24") -> Dict[str, Any]:
         """
         Synchronously coordinates biometric attendance AND academic results/CGPA/backlogs
-        in parallel to ensure atomic, unified student records during department auto-sync.
-        Supports both CS (180 students) and AIML (120 students).
+        in parallel to ensure atomic, unified student records.
+        Strictly distinguishes:
+          - "ok": both attendance and results succeeded
+          - "partial": one succeeded, the other failed/missing
+          - "failed": neither succeeded
+        Never fabricates zero or 88-day defaults.
         """
         clean_pin = self._clean_pin(pin)
         scheme_clean = (scheme or "C24").replace("-", "").upper()
@@ -374,11 +480,29 @@ class SBTETScraperService:
             return_exceptions=True
         )
 
-        att_success = isinstance(att_res, dict) and att_res.get("success") is True and att_res.get("workingDays", 0) > 0
-        res_success = isinstance(res_res, dict) and res_res.get("success") is True
+        att_success = isinstance(att_res, dict) and att_res.get("success") is True and att_res.get("has_data") is True
+        res_success = isinstance(res_res, dict) and res_res.get("success") is True and res_res.get("has_data") is True
 
-        att = att_res if att_success else {}
-        res = res_res if res_success else {}
+        att: Dict[str, Any] = att_res if att_success else (att_res if isinstance(att_res, dict) else {})
+        res: Dict[str, Any] = res_res if res_success else (res_res if isinstance(res_res, dict) else {})
+
+        # Determine overall sync status
+        if att_success and res_success:
+            sync_status = "ok"
+            error_code = None
+            error_message = None
+        elif att_success or res_success:
+            sync_status = "partial"
+            if not att_success:
+                error_code = att.get("error_code", "ATTENDANCE_FAILED")
+                error_message = f"Attendance: {att.get('error', 'Failed to fetch attendance')}"
+            else:
+                error_code = res.get("error_code", "RESULTS_FAILED")
+                error_message = f"Results: {res.get('error', 'Failed to fetch results')}"
+        else:
+            sync_status = "failed"
+            error_code = att.get("error_code") or res.get("error_code") or "SYNC_FAILED"
+            error_message = f"Attendance: {att.get('error', 'Unavailable')}; Results: {res.get('error', 'Unavailable')}"
 
         # Resolve branch
         pin_branch = "AIML" if ("-AIML-" in clean_pin or "-AI-" in clean_pin) else "CS"
@@ -389,15 +513,29 @@ class SBTETScraperService:
 
         # Resolve real student name without forcing placeholder
         name = att.get("name") or res.get("studentName") or None
-        working_days = att.get("workingDays") or 88
-        present_days = att.get("presentDays") or 0
-        att_pct = att.get("attendancePercentage", 0.0)
 
-        cgpa = res.get("cgpa", 0.0)
-        backlogs = res.get("backlogs_count", 0)
+        # Fields updated list
+        fields_updated = []
+        if att_success:
+            fields_updated.append("attendance")
+        if res_success:
+            fields_updated.append("results")
+
+        working_days = att.get("workingDays") if att_success else None
+        present_days = att.get("presentDays") if att_success else None
+        att_pct = att.get("attendancePercentage") if att_success else None
+        exams_att_pct = att.get("examsAttendancePct") if att_success else None
+        total_sem_days = att.get("totalSemesterDays", 180) if att_success else 180
+
+        cgpa = res.get("cgpa") if res_success else None
+        backlogs = res.get("backlogs_count") if res_success else None
 
         return {
-            "success": bool(att_success or res_success),
+            "success": sync_status in ["ok", "partial"],
+            "sync_status": sync_status,
+            "error_code": error_code,
+            "error_message": error_message,
+            "fields_updated": ",".join(fields_updated),
             "attendance_success": att_success,
             "results_success": res_success,
             "has_attendance": att_success,
@@ -408,18 +546,20 @@ class SBTETScraperService:
             "department": department,
             "scheme": "C-24",
             "semester": "5th Sem",
-            "workingDays": int(working_days),
-            "presentDays": int(present_days),
-            "attendancePercentage": float(att_pct or 0.0),
-            "attendance_val": float(att_pct or 0.0),
-            "attendance_pct": f"{float(att_pct or 0.0):.2f}%",
-            "cgpa": float(cgpa or 0.0),
-            "backlogs": int(backlogs or 0),
-            "backlogs_count": int(backlogs or 0),
-            "credits_earned": float(res.get("credits_gained", 0.0)),
-            "backlog_subjects": res.get("backlog_subjects", []),
-            "attendance": att,
-            "results": res
+            "workingDays": working_days,
+            "totalSemesterDays": total_sem_days,
+            "presentDays": present_days,
+            "attendancePercentage": att_pct,
+            "attendance_val": att_pct,
+            "attendance_pct": f"{att_pct:.2f}%" if att_pct is not None else None,
+            "exams_attendance_pct": exams_att_pct,
+            "cgpa": cgpa,
+            "backlogs": backlogs,
+            "backlogs_count": backlogs,
+            "credits_earned": float(res.get("credits_gained", 0.0)) if res_success else None,
+            "backlog_subjects": res.get("backlog_subjects", []) if res_success else [],
+            "attendance": att if att_success else None,
+            "results": res if res_success else None
         }
 
 # Global Instance

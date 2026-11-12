@@ -70,6 +70,16 @@ class StudentDB(Base):
     backlogs_count = Column(Integer, default=0)
     last_synced = Column(String(40), nullable=True)
 
+    # Phase 2 Sync & Audit Columns
+    sync_status = Column(String(20), default="never")  # never, ok, partial, failed
+    last_attempt_at = Column(String(40), nullable=True)
+    last_success_at = Column(String(40), nullable=True)
+    error_code = Column(String(50), nullable=True)
+    error_message = Column(Text, nullable=True)
+    fields_updated = Column(String(100), nullable=True)
+    exams_attendance_pct = Column(Float, nullable=True)
+    total_semester_days = Column(Integer, default=180)
+
     # Online Presence
     is_online = Column(Boolean, default=False)
     last_seen = Column(String(40), nullable=True)
@@ -91,6 +101,21 @@ class BacklogRecordDB(Base):
     total_marks = Column(String(10), nullable=True)
     grade = Column(String(10), nullable=True)
     created_at = Column(String(40), default=lambda: datetime.utcnow().isoformat())
+
+# --- 2c. STUDENT SYNC LOGS TABLE ---
+class StudentSyncLogDB(Base):
+    """Audit logs for student sync operations."""
+    __tablename__ = "student_sync_logs"
+
+    id = Column(Integer, primary_key=True, index=True)
+    pin = Column(String(30), index=True, nullable=False)
+    masked_pin = Column(String(30), nullable=False)
+    branch = Column(String(20), default="CS")
+    status = Column(String(20), nullable=False)  # ok, partial, failed
+    error_code = Column(String(50), nullable=True)
+    error_message = Column(Text, nullable=True)
+    fields_updated = Column(String(100), nullable=True)
+    attempted_at = Column(String(40), default=lambda: datetime.utcnow().isoformat())
 
 # --- 3. MARKETPLACE ITEMS TABLE ---
 class MarketplaceItemDB(Base):
@@ -192,6 +217,10 @@ class SyncProgressDB(Base):
     department_clearance_rate = Column(Float, default=0.0)
     started_at = Column(String(40), nullable=True)
     completed_at = Column(String(40), nullable=True)
+    ok_count = Column(Integer, default=0)
+    failed_count = Column(Integer, default=0)
+    partial_count = Column(Integer, default=0)
+    failed_pins_json = Column(Text, default="[]")
 
 
 class AnnouncementDB(Base):

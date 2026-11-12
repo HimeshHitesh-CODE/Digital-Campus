@@ -27,9 +27,9 @@
   const HOD_NAV = [
     { id: 'dashboard', label: 'Dashboard', file: 'hod-dashboard.html', icon: 'space_dashboard', url: '/screens/04-hod-portal/hod-dashboard.html' },
     { id: 'students', label: 'Students', file: 'students-info.html', icon: 'school', url: '/screens/04-hod-portal/students-info.html' },
+    { id: 'roster', label: 'Roster', file: 'security-roster.html', icon: 'badge', url: '/screens/04-hod-portal/security-roster.html' },
     { id: 'attendance', label: 'Attendance', file: 'attendance', icon: 'fact_check', url: '/screens/04-hod-portal/students-info.html?view=attendance' },
-    { id: 'marks', label: 'Marks', file: 'marks', icon: 'analytics', url: '/screens/04-hod-portal/students-info.html?view=marks' },
-    { id: 'requests', label: 'Requests', file: 'document-approvals.html', icon: 'approval_delegation', url: '/screens/04-hod-portal/document-approvals.html', badgeId: 'badgeRequests' },
+    { id: 'requests', label: 'Approvals', file: 'document-approvals.html', icon: 'approval_delegation', url: '/screens/04-hod-portal/document-approvals.html', badgeId: 'badgeRequests' },
     { id: 'announcements', label: 'Announcements', file: 'circulars.html', icon: 'campaign', url: '/screens/02-student-portal/circulars.html' },
     { id: 'messages', label: 'Messages', file: 'messages.html', icon: 'forum', url: '/screens/04-hod-portal/messages.html', badgeId: 'badgeMessages' }
   ];
@@ -142,6 +142,9 @@
       }
       if (it.id === 'students') {
         return currentPath.endsWith('students-info.html') && !search.includes('view=attendance') && !search.includes('view=marks');
+      }
+      if (it.id === 'roster') {
+        return currentPath.endsWith('security-roster.html');
       }
       if (it.id === 'attendance') {
         return currentPath.endsWith('students-info.html') && search.includes('view=attendance');

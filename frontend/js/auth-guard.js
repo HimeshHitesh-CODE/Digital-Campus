@@ -92,6 +92,13 @@ export function requireAuth(allowedRoles = []) {
     return null;
   }
 
+  // If Student user landed on HOD portal, redirect them to Student portal
+  if (!isHodRole && window.location.pathname.includes('/04-hod-portal/')) {
+    console.warn(`[Auth Guard] Student role [${role}] attempted access to HOD portal — redirecting to student dashboard.`);
+    window.location.replace('/screens/02-student-portal/dashboard.html');
+    return null;
+  }
+
   return user;
 }
 
