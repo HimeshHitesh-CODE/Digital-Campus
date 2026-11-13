@@ -151,7 +151,7 @@
 
         <!-- Center: Iconic "CC" Dynamic Island Pill (Hover-Expand Morph) -->
         <div class="cc-header-nav-anchor">
-          <div class="cc-dynamic-island is-collapsed" id="ccDynamicIsland" role="navigation" aria-label="Campus Connect Dynamic Island">
+          <div class="cc-dynamic-island is-collapsed" id="ccDynamicIsland" data-role="${role}" role="navigation" aria-label="Campus Connect Dynamic Island">
             
             <!-- Collapsed State: Iconic "CC" Pill -->
             <div class="cc-pill-collapsed" id="ccPillCollapsed" aria-label="Expand Navigation Dock">
@@ -333,7 +333,7 @@
       }
     }, { passive: true });
 
-    // Dynamic Island Hover Expansion with Grace Delay (180ms)
+    // Dynamic Island Hover Expansion with Grace Delay (220ms)
     const island = document.getElementById('ccDynamicIsland');
     const dockExpanded = document.getElementById('ccDockExpanded');
     let collapseTimer = null;
@@ -357,7 +357,7 @@
           if (dockExpanded) dockExpanded.setAttribute('aria-hidden', 'true');
           const slidingPill = island.querySelector('.cc-nav-sliding-pill');
           if (slidingPill) slidingPill.style.opacity = '0';
-        }, 180); // 180ms grace delay
+        }, 220); // 220ms natural human grace period
       }
 
       island.addEventListener('mouseenter', expandIsland);
@@ -387,6 +387,11 @@
       const slots = navContainer.querySelectorAll('.cc-nav-slot');
       slots.forEach(slot => {
         slot.addEventListener('mouseenter', () => {
+          // If hovering active slot, hide sliding highlight to avoid visual clash
+          if (slot.classList.contains('is-active')) {
+            slidingPill.style.opacity = '0';
+            return;
+          }
           const left = slot.offsetLeft;
           const width = slot.offsetWidth;
           slidingPill.style.transform = `translate3d(${left}px, 0, 0)`;
